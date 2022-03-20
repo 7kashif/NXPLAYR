@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="bottom"
+        android:background="@color/black"
+        android:orientation="vertical"
+        android:padding="@dimen/_10sdp"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/tv_Title"
+            style="@style/Font.SubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/_10sdp"
+            android:gravity="center"
+            android:padding="@dimen/_10sdp"
+            android:text="Sort by"
+            android:textSize="@dimen/_20ssp" />
+
+        <TextView
+            android:id="@+id/tv_popular"
+            style="@style/Font.SubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_5sdp"
+            android:text="Popular" />
+
+        <TextView
+            android:id="@+id/tv_newest"
+            style="@style/Font.SubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_5sdp"
+            android:text="Newest" />
+
+        <TextView
+            android:id="@+id/tv_custom_review"
+            style="@style/Font.SubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_5sdp"
+            android:text="Custom review" />
+
+        <TextView
+            android:id="@+id/tv_lowest_to_high"
+            style="@style/Font.SubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_5sdp"
+            android:text="Price: lowest to high" />
+
+        <TextView
+            android:id="@+id/tv_highest_to_low"
+            style="@style/Font.SubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_5sdp"
+            android:text="Price: highest to low" />
+    </LinearLayout>
+
+</LinearLayout>

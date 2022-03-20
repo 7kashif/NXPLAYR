@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.fragments.invite.view.ShareFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:id="@+id/shareLinearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_30sdp"
+                        android:layout_marginTop="@dimen/_30sdp"
+                        android:layout_marginRight="@dimen/_30sdp"
+                        android:layout_marginBottom="@dimen/_5sdp">
+
+
+                        <!--  <androidx.cardview.widget.CardView
+                              android:id="@+id/blur_bg"
+                              android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              app:cardCornerRadius="@dimen/_8sdp">-->
+
+                        <com.facebook.drawee.view.SimpleDraweeView
+                            android:id="@+id/blur_image"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            app:roundedCornerRadius="@dimen/_10sdp"
+                            fresco:actualImageScaleType="centerCrop"
+                            fresco:placeholderImageScaleType="centerCrop" />
+
+                        <!--                            <com.facebook.drawee.view.SimpleDraweeView-->
+                        <!--                                android:id="@+id/blur_image"-->
+                        <!--                                android:layout_width="@dimen/_120sdp"-->
+                        <!--                                android:layout_height="@dimen/_120sdp"-->
+                        <!--                                android:layout_gravity="center"-->
+                        <!--                                android:layout_marginTop="@dimen/_20sdp"-->
+                        <!--                                fresco:actualImageScaleType="fitXY"-->
+                        <!--                                fresco:placeholderImageScaleType="fitXY"-->
+                        <!--                                 />-->
+                        <!--            <androidx.appcompat.widget.AppCompatImageView
+                                        android:id="@+id/blur_image"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="@dimen/_320sdp"
+                                        android:scaleType="fitXY"
+                                        android:src="@drawable/profile_pic_signup" />-->
+
+                        <LinearLayout
+                            android:id="@+id/imgLL2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:orientation="vertical">
+
+                                <com.facebook.drawee.view.SimpleDraweeView
+                                    android:id="@+id/img_user_profile"
+                                    android:layout_width="@dimen/_120sdp"
+                                    android:layout_height="@dimen/_120sdp"
+                                    android:layout_gravity="center"
+                                    android:layout_marginTop="@dimen/_20sdp"
+                                    app:actualImageResource="@drawable/profile_pic_placeholder"
+                                    app:actualImageScaleType="fitXY"
+                                    app:placeholderImage="@drawable/profile_pic_placeholder"
+                                    app:placeholderImageScaleType="fitXY"
+                                    app:roundAsCircle="true"
+                                    app:roundingBorderColor="@color/black_overlay"
+                                    app:roundingBorderWidth="@dimen/_5sdp" />
+
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tv_username"
+                                style="@style/Font.SubTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:textColorHint="@color/white"
+                                android:textSize="@dimen/_20ssp" />
+
+                            <TextView
+                                style="@style/Font.Title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="@dimen/_10sdp"
+                                android:gravity="center"
+                                android:padding="@dimen/_5sdp"
+                                android:text="@string/join_me_on"
+                                android:textSize="@dimen/_25sdp" />
+
+                            <ImageView
+                                android:layout_width="@dimen/_100sdp"
+                                android:layout_height="@dimen/_100sdp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/logo_share" />
+                        </LinearLayout>
+
+                        <!--     </androidx.cardview.widget.CardView>-->
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+                <TextView
+                    style="@style/Font.SubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/download_on"
+                    android:textSize="@dimen/_20sdp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/apple_icon_share" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_2sdp"
+                        android:background="@color/gray_text_color" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/android_icon_share" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_40sdp"
+
+                android:orientation="vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_shareCard"
+                    style="@style/Widget.Fusion.Button.Yellow"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_50sdp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:background="@color/colorPrimary"
+                    android:fontFamily="@font/brandon_reg"
+                    android:gravity="center"
+                    android:padding="@dimen/_5sdp"
+                    android:text="@string/share_this_card"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_20ssp" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.appcompat.widget.LinearLayoutCompat>

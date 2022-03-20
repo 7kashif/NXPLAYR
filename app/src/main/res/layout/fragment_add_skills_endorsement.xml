@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_mainSkillEndorsement"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/appbg"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:id="@+id/ll_mainsearchSkillsList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <include layout="@layout/toolbar" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:overScrollMode="never">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <EditText
+                        android:id="@+id/search_skills"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_15sdp"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginEnd="@dimen/_15sdp"
+                        android:layout_marginBottom="@dimen/_7sdp"
+                        android:background="@drawable/round_search_box_bg"
+                        android:clickable="true"
+                        android:drawableRight="@drawable/search_icon"
+                        android:focusable="true"
+                        android:fontFamily="@font/brandon_reg"
+                        android:hint="@string/skills_ex_data_analysis"
+                        android:padding="@dimen/_7sdp"
+                        android:singleLine="true"
+                        android:textColor="@color/gray_text_color"
+                        android:textColorHint="@color/gray_text_color"
+                        android:textSize="@dimen/_14ssp" />
+
+                    <!--   <androidx.recyclerview.widget.RecyclerView
+                           android:id="@+id/rv_skills"
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:layout_marginTop="@dimen/_15sdp"
+                           android:background="@color/white"
+                           android:visibility="gone" />-->
+
+
+                    <TextView
+                        android:id="@+id/tv_skill_count"
+                        style="@style/Font.SubTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/rounded_text2"
+                        android:padding="@dimen/_5sdp"
+                        android:paddingStart="@dimen/_15sdp"
+                        android:text="@string/skills_added"
+                        android:textSize="@dimen/_16ssp" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_mainSkills"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/RV_addedSkillsList"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:overScrollMode="never" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/RV_suggestedSkills"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:overScrollMode="never" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_suggested_skill_added"
+                        style="@style/Font.SubTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:background="@drawable/rounded_text2"
+                        android:padding="@dimen/_5sdp"
+                        android:paddingStart="@dimen/_15sdp"
+                        android:text="@string/suggested_skills_based_off_your_profile"
+                        android:textSize="@dimen/_16ssp" />
+
+                    <include layout="@layout/common_recyclerview" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:orientation="vertical">
+
+            <com.chand.progressbutton.ProgressButton
+                android:id="@+id/btn_add_skills"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_50sdp"
+                android:layout_gravity="center|bottom"
+                android:layout_marginLeft="@dimen/_25sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginRight="@dimen/_25sdp"
+                app:p_arrowVisible="false"
+                app:p_backgroundTint="@android:color/transparent"
+                app:p_cornerRadius="@dimen/_3sdp"
+                app:p_fontFamily="brandon_reg"
+                app:p_progressColor="@color/colorPrimary"
+                app:p_strokeColor="@color/grayborder"
+                app:p_strokeWidth="@dimen/_1sdp"
+                app:p_style="progressBar"
+                app:p_text="@string/save"
+                app:p_textColor="@color/colorPrimary"
+                app:p_textSize="@dimen/_18ssp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <!--        <LinearLayout
+                android:id="@+id/ll_mainSearchHobbies"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/profile_background"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/img_backSkill"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:paddingStart="@dimen/_13sdp"
+                        android:paddingTop="@dimen/_5sdp"
+                        android:paddingBottom="@dimen/_5sdp"
+                        android:src="@drawable/back_arrow_signup" />
+
+                    <TextView
+                        android:id="@+id/edittext_addHashtags"
+                        style="@style/Font.SubTitle_blue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/_25sdp"
+                        android:paddingTop="@dimen/_10sdp"
+                        android:paddingBottom="@dimen/_10sdp"
+                        android:text="@string/add"
+                        android:textSize="@dimen/_18ssp" />
+
+                </LinearLayout>
+
+                <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:overScrollMode="never">
+
+                    <LinearLayout
+                        android:id="@+id/ll_searchskills"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+
+                    </LinearLayout>
+                </androidx.core.widget.NestedScrollView>
+
+            </LinearLayout>-->
+
+
+</LinearLayout>

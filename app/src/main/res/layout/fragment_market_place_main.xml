@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical"
+    tools:context=".fragment.MarketPlaceMainFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:background="#2C3238"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_5sdp">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:padding="@dimen/_3sdp"
+                app:roundAsCircle="true"
+                fresco:actualImageResource="@drawable/profile_pic_placeholder"
+                fresco:actualImageScaleType="fitXY"
+                fresco:placeholderImage="@drawable/profile_pic_placeholder"
+                fresco:placeholderImageScaleType="fitXY" />
+
+            <AutoCompleteTextView
+                android:id="@+id/tv_search_product1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_7sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_weight="1"
+                android:background="@drawable/round_corner_box"
+                android:backgroundTint="#373A3F"
+                android:clickable="true"
+                android:cursorVisible="false"
+                android:drawableRight="@drawable/search_place_create_post"
+                android:dropDownHeight="@dimen/_80sdp"
+                android:gravity="center|left"
+                android:hint="@string/search"
+                android:padding="@dimen/_7sdp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/gray_text_color"
+                android:textSize="@dimen/_12ssp" />
+
+            <ImageView
+                android:id="@+id/menu_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center"
+                android:src="@drawable/profile_top_menu_icon2_unselected" />
+
+        </LinearLayout>
+
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayOutMarketPlace"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#2C3238"
+            app:tabIconTint="@color/white"
+            app:tabIndicatorColor="@android:color/transparent"
+            app:tabMode="fixed"
+            app:tabPadding="0dp"
+            app:tabSelectedTextColor="@color/colorAccent"
+            app:tabTextAppearance="@style/MyCustomTabText"
+            app:tabTextColor="@color/white">
+
+        </com.google.android.material.tabs.TabLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:orientation="vertical">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewpagerMarketplace"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </androidx.viewpager.widget.ViewPager>
+
+    </LinearLayout>
+
+</LinearLayout>

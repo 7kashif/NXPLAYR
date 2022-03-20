@@ -1,0 +1,843 @@
+<resources>
+    <string name="app_name">FSL</string>
+    <string name="signup">Sign up</string>
+    <string name="login">Login</string>
+    <string name="connect_yourself_to_catch_nopportunities_amp_achieve_your_goals">
+        <![CDATA[Connect yourself to catch \nopportunities & achieve your goals]]></string>
+    <string name="lets_get_started">Let\'s Get Started</string>
+    <string name="sign_up_with_linkedin">Sign up with LinkedIn</string>
+    <string name="sign_up_with_facebook">Sign up with Facebook</string>
+    <string name="sign_up_with_instagram">Sign up with Instagram</string>
+    <string name="create_your_account">Create your account</string>
+    <string name="by_creating_or_logging_into_an_account_you_re_agreeing_with_our_terms_amp_conditions">
+        <![CDATA[By Creating or logging into an account, you\'re \nagreeing with our Terms & Conditions.]]></string>
+    <string name="less_business_more_social">Less Business, More Social.</string>
+    <string name="dream_big_show_talent">Dream Big. Show your Talent.</string>
+    <string name="intro_screen2_subtitle">
+        <![CDATA[Be great at what you do, and show it \nto the world. Post CVs, share videos, \nphotos & lifestyle]]></string>
+    <string name="intro_title_3">Build your Future, Success.</string>
+    <string name="intro_screen3_subtitle">Find and Engage the right, best \nTalents to reinforce your Portfolio, \nClub,
+        Team, Academy
+    </string>
+    <string name="intro_title_4">Explore. Select. Chat.</string>
+    <string name="intro_screen4_subtitle"><![CDATA[Send & receive Instant, \nPrivate Messages]]></string>
+
+    <string name="intro_title_5">Categorize your Connections.</string>
+    <string name="intro_screen5_subtitle">Rank your contacts as per \nyour priorities</string>
+    <string name="intro_title_6">Control your Privacy easily.</string>
+    <string name="intro_screen6_subtitle">
+        <![CDATA[Post & communicate while managing \nyour privacy, by tailoring your \naudience]]></string>
+    <string name="intro_title_7">Buy. Wear. Play. Win.</string>
+    <string name="intro_screen7_subtitle">Enjoy an e-Boutique to purchase your \nfavourite team\'s equipment, Perhaps \nyour
+        Next One
+    </string>
+    <string name="intro_title_8">Vote for Players. The Best.</string>
+    <string name="intro_screen8_subtitle"><![CDATA[NxPlay.R Is home to \ncelebrities, current & future talents. \nVote for the Best Rising Stars]]></string>
+
+    <string name="intro_title_9">Reward for the Best 12th \nPlayer. Fans.</string>
+    <string name="intro_screen9_subtitle">Vote for the Best Fans based on their \nTifos, Anthems, Influence</string>
+
+    <string name="intro_title_10">Call for Duty. Willing \nto Donate</string>
+    <string name="intro_screen10_subtitle">For every subscription, we reverse a % to \nhelp children in need in poor countries</string>
+
+    <string name="no_data_found">No Record Found.</string>
+    <string name="loading">Loading</string>
+    <string name="error_common_network">It seems there is no internet connection.</string>
+    <string name="error_crash_error_message">Oops! It seems something went wrong.Please try again.</string>
+    <string name="retry">retry</string>
+    <string name="likes">Likes</string>
+    <string name="connections">Connections</string>
+    <string name="connections_selected">Connections Selected</string>
+    <string name="select_all">Select All</string>
+    <string name="search">Search</string>
+    <string name="send">Send</string>
+    <string name="why_are_you_reposting_this">Why are you reposting this?</string>
+    <string name="submit">Submit</string>
+    <string name="share">Share</string>
+    <string name="sms">SMS</string>
+    <string name="mail">Mail</string>
+    <string name="notification_remove_dialog"><![CDATA[Are you sure want to remove this notification?]]></string>
+    <string name="experience_remove_dialog"><![CDATA[Are you sure want to delete Experience?]]></string>
+    <string name="education_remove_dialog"><![CDATA[Are you sure want to delete Education?]]></string>
+    <string name="language_remove_dialog"><![CDATA[Are you sure want to delete Language?]]></string>
+
+    <string name="sign_in">Sign in</string>
+    <string name="welcome_back">Welcome back!</string>
+    <string name="email_mobile">Email/Mobile</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="forgot_passwordis">Forgot Password</string>
+    <string name="new_user">New User</string>
+    <string name="enter_your_registered_email_address_or_mobile_number_to_reset_your_password">Enter Your registered email address or \n mobile number to reset your password</string>
+    <string name="continueis">Continue</string>
+    <string name="profile_registered">Profile Registered!</string>
+    <string name="still_few_more_steps_to_go">(Still Few More Steps To Go)</string>
+    <string name="next">Next</string>
+    <string name="hey_you_re">Hey! you\'re..</string>
+    <string name="select_your_gender">Select your gender</string>
+    <string name="Male">Male</string>
+    <string name="Female">Female</string>
+    <string name="what_kind_of_user_are_you">What kind of user are you?</string>
+    <string name="to_enhance_your_experience_select_which_category_your_profile_fits_into">To enhance your experience,\nselect which category your\nprofile fits into</string>
+    <string name="which_football_type_are_you_in">Which football type are you in?</string>
+    <string name="select_which_type_of_football_are_you_playing">Select which type of football\n are you playing</string>
+    <string name="your_age_group">Your Age Group</string>
+    <string name="select_your_age_group">Select your age group</string>
+    <string name="let_s_build_your_profile">Let\'s Build Your Profile</string>
+    <string name="building_real_connections_between_real_people_please_add_one_photo_of_yourself">Building real connections between real people. Please add one photo of yourself</string>
+    <string name="introduce_yourself">Introduce Yourself</string>
+    <string name="introduce_your_parents">Introduce Your Parents</string>
+    <string name="fill_out_the_rest_of_your_details_so_people_know_a_little_more_about_you">Fill out the rest of your details so people know a little more about you</string>
+    <string name="first_name">First Name</string>
+    <string name="family_name">Family Name</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="close">Close</string>
+    <string name="storage_permission_denied">Permission denied</string>
+    <string name="selectImage">Select Image</string>
+    <string name="send_code_again"><u>Send Code Again</u></string>
+
+    <string name="last_name">Last Name</string>
+    <string name="gender">Gender</string>
+    <string name="date_of_birth">Date of Birth</string>
+    <string name="basic_details">Basic Details</string>
+    <string name="passport_nationality">Passport Nationality</string>
+    <string name="current_country_location_pin">Current Country + Location Pin</string>
+    <string name="football_age_category">Football Age Category</string>
+    <string name="height_cm_weight_kg"><![CDATA[Height(cm) & Weight(kg)]]></string>
+    <string name="height_weight"><![CDATA[Height & Weight]]></string>
+    <string name="football_level">Football Level</string>
+    <string name="football_league">Football League</string>
+    <string name="current_club">Current Club</string>
+    <string name="pitch_position_s">Pitch Position(s)</string>
+    <string name="current_location">Current Location</string>
+    <string name="height_cm">Height(cm)</string>
+    <string name="weight_kg">Weight(kg)</string>
+    <string name="best_foot_feet">Best Foot/Feet</string>
+    <string name="grant_access_contacts">You need to grant access Contacts.</string>
+    <string name="start_sync_with_fsl">Start Sync with FSL</string>
+
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="professionals">Professionals</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="job_title">Job Title</string>
+    <string name="description">Description</string>
+    <string name="media">Media</string>
+    <string name="select_connection_to_request_recommendation">Select connection to request\nrecommendation</string>
+    <string name="select_reletionship">Select reletionship</string>
+    <string name="select_your_role_and_company">Select your role and company</string>
+    <string name="message">Message</string>
+    <string name="_2_request_received">2 request received</string>
+    <string name="title">Title</string>
+    <string name="company_name">Company Name</string>
+    <string name="location">Location</string>
+    <string name="i_am_currently_working_here">I currently work here</string>
+    <string name="add_or_link_to_external_documents_photos_sites_videos_and_presentations">Add or link to external documents, photos, sites,\nvideos and presentations.</string>
+    <string name="mm_yyyy">MM/YYYY</string>
+    <string name="_7_457_20_followers">7_457_20_followers</string>
+    <string name="coach_fifa_club">Coach-FIFA Club</string>
+    <string name="set_your_privacy">Set Your Privacy</string>
+    <string name="allow_people_to_follow_me">Allow People To Follow Me</string>
+    <string name="allow_connect_request">Allow Connect Requests</string>
+    <string name="general">General</string>
+    <string name="follow_unfollow">Follow/Unfollow</string>
+    <string name="follow">Follow</string>
+    <string name="following">Following</string>
+    <string name="connect_disconnect">Connect/Disconnect</string>
+    <string name="like">Like</string>
+    <string name="vote">Vote</string>
+    <string name="comment">Comment</string>
+    <string name="english">English</string>
+    <string name="photo_2h">Photo 2h</string>
+    <string name="name">Name</string>
+    <string name="update">Update</string>
+    <string name="save">Save</string>
+
+    <string name="unsave_this_post">Unsave this Post</string>
+    <string name="unblock">Unblock</string>
+    <string name="alternative_email_address">Alternative Email Address</string>
+    <string name="website">Website</string>
+    <string name="current_country">Current Country</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="email_address">Email Address</string>
+    <string name="settings">Settings</string>
+    <string name="privacy">Privacy</string>
+    <string name="my_account">My Account</string>
+    <string name="notification_settings">Notification Settings</string>
+    <string name="saved_posts">Saved Posts</string>
+    <string name="hidden_posts">Hidden Posts</string>
+    <string name="change_password">Change Password</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="invite">Invite</string>
+    <string name="current_password">Current Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="are_you_sure">Are you Sure?</string>
+
+    <string name="why_are_you_leaving">Why are you leaving?</string>
+    <string name="proceed">Proceed</string>
+    <string name="wood_green">Wood Green</string>
+    <string name="degree">Degree</string>
+    <string name="schoolcollege">School/College</string>
+    <string name="grade">Grade</string>
+    <string name="i_am_currently_studying_here">I currently study here</string>
+    <string name="proficiency">Proficiency</string>
+    <string name="skills_added">Skills Added</string>
+    <string name="skills_ex_data_analysis">Skills: ex: Data Analysis</string>
+    <string name="marketing_executive">Marketing Executive</string>
+    <string name="change">Change</string>
+
+    <string name="lorem_ipsum_dolor_sit_amet_consecter_ur_adipisicing_elit_ipsum_dolor">Lorem ipsum dolor sit amet, consectetur adipisicing elit ipsum dolor</string>
+    <string name="work_experience">Work Experience</string>
+    <string name="education">Education</string>
+    <string name="skills_endorsements"><![CDATA[Skills & Endorsements]]></string>
+    <string name="add">Add</string>
+    <string name="hobbies">Hobbies</string>
+    <string name="interests">Interests</string>
+    <string name="contact_information">Contact Information</string>
+    <string name="lorem_Ipsum_is_simply_dummy_text_of_the">Lorem Ipsum is simply dummy text of the</string>
+    <string name="view">View</string>
+    <string name="view_more"><u>View More</u></string>
+    <string name="we_would_hate_to_see_you_go_but_if_you_are_completely_sure_enter_your_password_and_we_will_close_your_account_and_delete_all_publications">   We would hate to see you go, but if you are completely sure, enter your password and we will close your account and delete all publications.</string>
+    <string name="note_remember_there_is_no_going_back">Note: Remember there is no going back</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="block_this_user">Block this User</string>
+    <string name="report">Report</string>
+    <string name="send_message">Send Message</string>
+    <string name="lorem_ipsum_is_simply">Lorem Ipsum is simply</string>
+    <string name="lorem_ipsum_is_simply_dummy_text_of_the_printing_and_typesetting_industry">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
+    <string name="loremI_sum_is_simply_dummy_text_of_the_printing_and_has_been_the_industrys_standard_printing_and_type_see_more">Lorem Ipsum is simply dummy text of the printing and has been the industry\'s standard(printing and type)... See More</string>
+    <string name="text">Text</string>
+    <string name="photo">Photo</string>
+    <string name="video">Video</string>
+    <string name="document">Document</string>
+    <string name="place">Place</string>
+    <string name="link">Link</string>
+    <string name="connection">Connection</string>
+    <string name="get_VIP">Get VIP</string>
+    <string name="donet">Donet</string>
+    <string name="create_post">Create Post</string>
+    <string name="add_connections">Add Connections</string>
+    <string name="add_contact_information">Add Contact Information</string>
+    <string name="add_education">Add Education</string>
+    <string name="edit_education">Edit Education</string>
+    <string name="add_experience">Add Experience</string>
+    <string name="edit_experience">Edit Experience</string>
+    <string name="add_hashtags">Add Hashtags</string>
+    <string name="add_hobbies">Add Hobbies</string>
+    <string name="add_interests">Add Interests</string>
+    <string name="add_languages">Add Languages</string>
+    <string name="edit_languages">Edit Languages</string>
+    <string name="add_media">Add Media</string>
+    <string name="edit_media">Edit Media</string>
+    <string name="add_link">Add Link</string>
+    <string name="edit_link">Edit Link</string>
+    <string name="add_skills_endorsements"><![CDATA[Add Skills & Endorsements]]></string>
+    <string name="blocked_users">Blocked Users</string>
+    <string name="profile">Profile</string>
+    <string name="followers_following"><![CDATA[Followers & Following]]></string>
+    <string name="recommendations">Recommendations</string>
+    <string name="add_recommendations">Add Recommendations</string>
+    <string name="hashtags">Hashtags</string>
+    <string name="language">Language</string>
+    <string name="notification">Notifications</string>
+    <string name="recommendation_requests">Recommendation requests</string>
+    <string name="request_recommendation">Request recommendation</string>
+    <string name="languages">Languages</string>
+    <string name="e26889488_f58c9e6e_7ecb7e69aaa9_pdf">26889488-f58c9e6e-\n7ecb7e69aaa9.pdf</string>
+    <string name="football_club_doc">football club.doc</string>
+    <string name="search_place">Search Place</string>
+    <string name="add_location">Add Location</string>
+    <string name="select_a_place">Select a Place</string>
+    <string name="write_something">Write something..</string>
+    <string name="view_profile">View Profile</string>
+    <string name="home">Home</string>
+    <string name="chat">Chat</string>
+    <string name="events">Events</string>
+    <string name="groups">Groups</string>
+    <string name="donate">Donate</string>
+    <string name="e_shop">e-Shop</string>
+    <string name="channels">Channels</string>
+    <string name="jobs">Jobs</string>
+    <string name="more_info">More Info</string>
+    <string name="logout">Logout</string>
+    <string name="i_appeare_in_this_video_without_permission">I appeare in this video without\npermission</string>
+    <string name="inappropriate_content_nudity_viomence_etc">Inappropriate content\nNudity,viomence,etc.)</string>
+    <string name="abuse_arrassment_someone_is_attacking_me">Abuse/Harrassment\n(Someone is attacking me)</string>
+    <string name="trademark_infringement_someone_is_using_my_trademark">Trademark infringement\n(Someone is using my trademark)</string>
+    <string name="copyright_infringement_someone_copied_my_creation">Copyright infringement\n(Someone copied my creation)</string>
+    <string name="other_legal_issue">Other legal issue</string>
+    <string name="privacy_someone_is_using_my_image">Privacy(Someone is using my image)</string>
+    <string name="we_are_here_to_help_you">We are here to help you</string>
+    <string name="lorem_ipsum_is_simply_dummy_text_of_the_printing_and_typesetting_industry_lorem_ipsum_has_been_the_industry_s_standard_dummy_text_ever_since_the_1500s">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.</string>
+    <string name="for_support_related_queries_write_to">For support related queries write to</string>
+    <string name="support_fsl_com">Support@fsl.com</string>
+    <string name="talk_with_our_expert_on_below_number">Talk with our expert on below number</string>
+    <string name="need_more_help">Need more help?</string>
+    <string name="faq">FAQ</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="friend">Friend</string>
+    <string name="pending">Pending</string>
+    <string name="undo">Undo</string>
+    <string name="june_22_2019">June 22, 2019</string>
+    <string name="using_GPS">Using GPS</string>
+    <string name="semi">Semi</string>
+    <string name="professional">Professional</string>
+    <string name="aspiring">Aspiring</string>
+    <string name="amateur">Amateur</string>
+    <string name="selected_club">Selected Club</string>
+    <string name="suggestions">Suggestions</string>
+    <string name="select_club">Select Club</string>
+    <string name="search_country">Search Country</string>
+    <string name="search_location">Search Location</string>
+    <string name="under_13">Under\n13</string>
+    <string name="under_15">Under\n15</string>
+    <string name="under_17">Under\n17</string>
+    <string name="under_19">Under\n19</string>
+    <string name="under_21">Under\n21</string>
+    <string name="left">Left</string>
+    <string name="right">Right</string>
+    <string name="right_left"><![CDATA[Right & Left]]></string>
+    <string name="write_a_comment">Write a comment...</string>
+    <string name="tell_us_briefly_about_yourself_what_you_are_passionate_about_and_what_your_goals_are_in_life">Tell us briefly about yourself what you are passionate about and what your goals are in life.</string>
+    <string name="name_bio"><![CDATA[Name & Bio]]></string>
+    <string name="rashid_siddiq">Rashid Siddiq</string>
+    <string name="write_about_yourself">Write about yourself</string>
+    <string name="full_name">Full Name</string>
+    <string name="bio">Bio</string>
+    <string name="zahir_abbas">Zahir Abbas</string>
+    <string name="join_me_on">Join me on</string>
+    <string name="download_on">Download on</string>
+    <string name="share_this_card">Share this card</string>
+    <string name="our_fun_chat">Our Fun Chat</string>
+    <string name="members">25 Members</string>
+    <string name="admins">4 Admins</string>
+    <string name="invited">Invited</string>
+    <string name="blocked">Blocked</string>
+    <string name="hassan_sr_khan_lorem_ipsum_is_simply_dummy_text_of_the_printing_and_has_been_the_industrys_standard_printing_and_type_see_more">Hassan Sr Khan Lorem Ipsum is simply dummy text of the printing and has been the industry\'s standard(printing and type)... See More</string>
+    <string name="group_name">Group Name</string>
+    <string name="add_hashtag">+ Add Hashtag</string>
+    <string name="permission_denied">Permission denied</string>
+
+    <string name="grant_access_location">You need to grant access location permission !</string>
+
+
+    <string name="are_you_sure_you_want_to_discard_post">Are you sure you want to discard post?</string>
+    <string name="discard_title">Discard</string>
+    <string name="select_place">Select Place</string>
+    <string name="write_about_group">Write about group</string>
+    <string name="tell_us_briefly_about_group">Tell us briefly about group</string>
+    <string name="group_rules">Group rules</string>
+    <string name="write_about_group_rules">Write about group rules</string>
+    <string name="select_privacy">Select Privacy</string>
+    <string name="about_group">About Group</string>
+    <string name="share_in_a_post">Share in a Post</string>
+    <string name="send_in_a_private_message">Send in a Private Message</string>
+    <string name="share_via">Share via</string>
+    <string name="hide_this_post">Hide this Post</string>
+    <string name="unfollow">Unfollow</string>
+    <string name="report_this_Post_ad">Report this Post/Ad</string>
+    <string name="report_copyright_infringement">Report Copyright Infringement</string>
+    <string name="save_this_post">Save this Post</string>
+    <string name="leave_group">Leave Group</string>
+    <string name="feed_has_been_removed_you_can_not_longer_see_this">Feed has been removed\nYou cannot longer see this.</string>
+    <string name="hobbies_ex_Football">Hobbies ex:Football</string>
+    <string name="hobbies_added">Hobbies Added</string>
+    <string name="select_modes">Select Mode</string>
+    <string name="lorem_ipsum_is_simply_dummy_text_of_the_printing">Lorem Ipsum is simply dummy\n text of the printing</string>
+    <string name="marketplace">Marketplace</string>
+    <string name="business_networking">Business\nNetworking</string>
+    <string name="talent_pool">Talent Pool</string>
+    <string name="verification_code">Verification Code</string>
+    <string name="Please_enter_the_digit_code_you_received_by_SMS">Please enter the 4-digit code you received by SMS</string>
+    <string name="view_all_professionals">View All Professionals</string>
+    <string name="companies">Companies</string>
+    <string name="view_all_companies">View All Companies</string>
+    <string name="by_creating_your_account_you_agree_with_our_terms_conditions"><![CDATA[By creating your account, you agree with our Terms & Conditions.]]></string>
+    <string name="manchister_united">Manchister United</string>
+    <string name="center_forward">Center Forward</string>
+    <string name="ahmedabad">Ahmedabad</string>
+    <string name="hi_rashid_siddiq_could_you_write_me_a_recommendation_for_my_profile_Thank_you">Hi Rashid Siddiq,could you write me a recommendation for my profile?Thank you!</string>
+    <string name="please_select_other_profile_pic">Please select other Profile Pic</string>
+    <string name="write_a_review"><u>Write a Review</u></string>
+    <string name="shipping_addresses">Shipping Addresses</string>
+    <string name="my_reviews">My Reviews</string>
+    <string name="my_wishlist">My Wishlist</string>
+    <string name="payment_methods">Payment Methods:</string>
+    <string name="address">Address</string>
+    <string name="city">City</string>
+    <string name="state">State</string>
+    <string name="pincode">Pincode</string>
+    <string name="add_shipping_address">Add Shipping Address</string>
+    <string name="save_address">Save Address</string>
+    <string name="edit">Edit</string>
+    <string name="remove">Remove</string>
+    <string name="payment">Payment</string>
+    <string name="net_amount">Net Amount</string>
+    <string name="delivery_charge">Delivery charge</string>
+    <string name="total_amount">Total Amount</string>
+    <string name="place_your_order">Place Your Order</string>
+    <string name="checkout">Checkout</string>
+    <string name="rating_reviews"><![CDATA[Rating & Reviews]]></string>
+    <string name="filters">Filters</string>
+    <string name="add_to_cart">Add to Cart</string>
+    <string name="please_share_your_opinion_about_the_product">Please share your opinion about the product</string>
+    <string name="send_review">Send Review</string>
+    <string name="name_on_card">Name on Card</string>
+    <string name="card_number">Card number</string>
+    <string name="expire_date">Expire Date</string>
+    <string name="add_card">Add Card</string>
+    <string name="discount">Discount</string>
+    <string name="success">Success!</string>
+    <string name="your_order_will_be_delivered_soon">Your Order will be delivered soon.</string>
+    <string name="continue_shopping">Continue Shopping</string>
+    <string name="coupon_discount">Coupon Discount</string>
+    <string name="your_promo_codes">Your Promo Codes</string>
+    <string name="brand">Brand</string>
+    <string name="order_details">Order Details</string>
+    <string name="shipping_address">Shipping Address:</string>
+    <string name="shop_By_Category">Shop By Category</string>
+    <string name="suggested_Products">Suggested Products</string>
+    <string name="best_seller_Products">Best Seller Products</string>
+    <string name="trending_Products">Trending Products</string>
+    <string name="valid_email">Please enter valid Email</string>
+    <string name="valid_email_address">Please enter valid Email Address</string>
+
+    //signup validation
+    <string name="valid_mobile">Please enter valid Mobile Number</string>
+    <string name="passwordValidation">Password must contain minimum 6 and maximum 15 characters with 1 letter, 1 number and 1 special character.</string>
+    <string name="passwordLenghtValidation">Password must contain minimum 6 and Maximum 15 characters with 1 letter, 1 number and 1 special character.</string>
+    <string name="wait">Wait</string>
+    <string name="please_select_mode">Please select mode</string>
+    <string name="please_select_user_type">Please select user type</string>
+    <string name="please_select_football_type">Please select football type</string>
+    <string name="please_enter_first_name">Please enter First Name</string>
+    <string name="please_enter_valid_first_name">First Name should have atleast 3 character</string>
+    <string name="please_enter_valid_family_name">Family Name should have atleast 3 character</string>
+    <string name="please_enter_family_name">Please enter Family Name</string>
+    <string name="please_enter_country_code">Please select country code </string>
+    <string name="please_enter_mobile_number">Please enter Mobile Number</string>
+    <string name="please_enter_email_id">Please enter Email Address</string>
+    <string name="please_enter_password">Please enter Password</string>
+    <string name="please_enter_confirm_password">Please enter Confirm Password</string>
+    <string name="passwords_mismatch">Confirm Password must be similar with Password</string>
+    <string name="please_enter_valid_password">Please enter valid Password</string>
+    <string name="enter_email_mobile_msg">Please enter Email/Mobile</string>
+
+
+    <string name="please_enter_valid_mobile_number">Please enter valid Mobile Number</string>
+
+    //forgot validation and login validation
+    <string name="payment_Methods">Payment Methods</string>
+    <string name="order_no">Order No:</string>
+
+
+    <string name="read_more">Read More</string>
+    <string name="please_select_another_pic">Please, select another profile pic.</string>
+    <string name="suggested_skills_based_off_your_profile">Suggested skills based off your profile:</string>
+    <string name="please_select_foot">Please select Foot/Feet</string>
+    <string name="please_select_ageCategory">Please select AgeCategory</string>
+    <string name="please_select_language">Please select Language</string>
+    <string name="please_select_footballLevel">Please select footballLevel</string>
+    <string name="please_select_footballLeague">Please select footballLeague</string>
+    <string name="india">India</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="new_password">New Password</string>
+    <string name="re_enter_new_password">Re-enter New Password</string>
+    <string name="psswordnewmsg">Please enter New Password.</string>
+    <string name="psswordresetpemsg">Please Re-enter New Password</string>
+
+    <string name="resetpassword_does_not_match">Re-enter New Password must be similar with New Password</string>
+    <string name="enter_current_password">Enter Current Password</string>
+    <string name="enter_new_password">Enter New Password</string>
+    <string name="password_should_contain_six_character">New Password should contain atleast 6 characters with atleast 1
+        number,1 alphabet and 1 symbol
+    </string>
+    <string name="new_password_should_not_same">New Password should not be same as Current Password</string>
+    <string name="new_password_retypepass_not_match"><![CDATA[New Password & Confirm New Password did not matched]]></string>
+    <string name="enter_confirm_new_pass">Enter Confirm New Password</string>
+    <string name="by_creating_your_account_you_agree_with_our">By creating your account, you agree with our</string>
+    <string name="terms_conditions"><![CDATA[Terms & Conditions.]]></string>
+    <string name="terms_condition"><![CDATA[Terms & Conditions]]></string>
+    <string name="give_permission_ro_read_contacts">Please give permission to read contacts.</string>
+    <string name="more_contact_sync">Sync more contact</string>
+    <string name="contact_sync">Contact Sync</string>
+
+
+    <string name="if_you_have_not_received_the_code_yet_please_click">If you have not received the code yet, please click</string>
+    <string name="password_and_confirm_password_match">Password and confirm password doesn\'t match</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="about_us">About Us</string>
+    <string name="agent">Agent</string>
+    <string name="static_website">Links to Statics Websites</string>
+    <string name="edit_website">Edit Statics Websites</string>
+    <string name="static_site">Facebook, Twitter</string>
+    <string name="jorge_mendes">Jorge Mendes</string>
+    <string name="add_work_experience">Add Work Experience</string>
+    <string name="add_language">Add Languages</string>
+    <string name="rankings">Rankings</string>
+    <string name="profile_title">Profile Title</string>
+    <string name="position">Position</string>
+    <string name="organization">Organization</string>
+    <string name="proile_view">Proile View</string>
+    <string name="who_am_i">Who Am I</string>
+    <string name="select_position">Select Position</string>
+    <string name="select_organization">Select_organization</string>
+    <string name="Public">Public</string>
+    <string name="profile_summary">Profile Summary</string>
+    <string name="gestifute">GestiFute</string>
+    <string name="rate_the_agent">Rate the Agent</string>
+    <string name="your_review">Your Review</string>
+    <string name="write_here">Write here</string>
+    <string name="wait1">Wait....</string>
+    <string name="upload">Upload</string>
+    <string name="your_position_on_the_pitch">Your Position(s) on the Pitch</string>
+    <string name="post">Post</string>
+    <string name="email">Email</string>
+    <string name="no_comment_list">Add Comment</string>
+    <string name="explain_what_s_wrong_with_this_post">Explain what\'s wrong with this post?</string>
+    <string name="unhide_this_post">Unhide this Post</string>
+    <string name="send_to">Send To</string>
+    <string name="select_mode_dummy_text">Choose the one that matches your\n current needs (you can easily switch\n anytime between the modes)</string>
+    <string name="post_link">Post Link</string>
+
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="facebook_id">267530364354372</string>
+
+    <string name="your_profile">Your Profile</string>
+    <string name="appbar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="create_event">Create Event</string>
+    <string name="nearby">Nearby</string>
+    <string name="interested">Interested</string>
+    <string name="upload_a_event_image">Upload a event image</string>
+    <string name="event_name">Event Name</string>
+    <string name="date">Date</string>
+    <string name="ticket_url">Ticket URL</string>
+    <string name="details">Details</string>
+    <string name="enter_ticket_url">Enter Ticket URL</string>
+    <string name="enter_details">Enter Details</string>
+    <string name="select_event_type">Select Event Type</string>
+    <string name="Private">Private</string>
+    <string name="group">Group</string>
+    <string name="select_group">Select Group</string>
+    <string name="fifa_group">FIFA Group</string>
+    <string name="synchronize">Synchronize</string>
+    <string name="give_me_a_star">Give Me a Star</string>
+    <string name="connect">Connect</string>
+    <string name="cancle_connect">Cancel Request</string>
+    <string name="videos">Videos</string>
+    <string name="tricks">Tricks</string>
+    <string name="clear_all">Clear All</string>
+    <string name="contract_situation">Contract Situation</string>
+    <string name="national_team">National Team</string>
+    <string name="country">Country</string>
+    <string name="caps">Caps</string>
+    <string name="goals">Goals</string>
+    <string name="jersey_number">Jersey Number</string>
+    <string name="geographical_mobility">Geographical Mobility</string>
+    <string name="set_of_skill">Set of Skills</string>
+    <string name="preferred_outfitters">Preferred Outfitters</string>
+    <string name="trophy_amp_honors"><![CDATA[Trophy & Honors]]></string>
+    <string name="view_all_comments">View All Comments</string>
+    <string name="view_all">View All</string>
+    <string name="featured">Featured</string>
+    <string name="previous_club">Previous Club</string>
+    <string name="club_name">Club Name</string>
+    <string name="place_of_birth">Place of Birth</string>
+    <string name="suggested_feature">Suggested Feature</string>
+    <string name="rate_the_app">Rate The App</string>
+    <string name="provide_any_feedback">Provide any feedback</string>
+    <string name="invite_contacts">Invite Contacts</string>
+    <string name="community_guidelines">Community Guidelines</string>
+    <string name="label_brush">Brush</string>
+    <string name="label_emoji">Emoji</string>
+
+
+    <string name="label_sticker">Sticker</string>
+    <string name="label_eraser">Eraser</string>
+    <string name="label_eraser_mode">Eraser Mode</string>
+    <string name="label_text">Text</string>
+    <string name="label_filter">Filter</string>
+    <string name="label_adjust">Adjust</string>
+    <string name="msg_save_image_to_share">Please save image to share</string>
+    <string name="msg_share_image">Share Image</string>
+    <string name="msg_save_image">Are you want to exit without saving image ?</string>
+    <string name="error_qb_credentials_empty">Credentials are wrong or empty. You have to set:
+        Application ID, Authentification Key, Authentification Secret, Account Key in constants in App.java
+        and you have to set Sender ID in the string resources to launch application.
+        If you haven\'t them you can register new account and application at https://admin.quickblox.com
+        then put Application credentials from Overview page + Account key from https://admin.quickblox.com/account/settings</string>
+    <string name="error_chat_credentails_empty">Some parameter for Chat Settings is wrong. Please check the Chat Settings</string>
+    <string name="dlg_error">Error occurred</string>
+    <string name="dlg_choose_image_from">Take image from</string>
+    <string name="chat_empty_you_are_alone_here">You\'re all alone out here.</string>
+    <string name="dialogs_actionmode_subtitle">%s chats selected</string>
+    <string name="dialogs_actionmode_subtitle_single">%s chat selected</string>
+    <string name="dlg_loading">Loading</string>
+    <string name="dlg_relogin">Relogin</string>
+
+    <string name="dlg_restoring_chat_session">Restoring chat session…</string>
+    <string name="dlg_login">Login…</string>
+    <string name="dlg_logout">Logout…</string>
+    <string name="dlg_retry">Retry</string>
+    <string name="dlg_hide">Hide</string>
+    <string name="dlg_choose_file_from">Select file from…</string>
+    <string name="dlg_sending">Sending…</string>
+    <string name="create_chat">Creating chat…</string>
+    <string name="login_chat_login_error">Login to Chat error. Please relogin. </string>
+    <string name="menu_chat_info">Chat Info</string>
+
+    <string name="menu_add_users_to_chat">Add Users to Chat</string>
+
+
+    <string name="menu_leave_chat">Leave Chat</string>
+    <string name="menu_delete_chat">Delete Chat</string>
+    <string name="menu_dialogs_logout">Logout</string>
+    <string name="menu_dialogs_delete">Delete</string>
+    <string name="menu_dialogs_app_info">App Info</string>
+    <string name="menu_create">Create</string>
+    <string name="menu_done">Done</string>
+    <string name="menu_finish">Finish</string>
+    <string name="menu_send">Send</string>
+    <string name="menu_save_attachment">Save attachment</string>
+    <string name="menu_message_edit">Edit</string>
+    <string name="menu_message_delete">Delete</string>
+
+    <string name="menu_message_forward">Forward</string>
+    <string name="menu_message_delivered_to">Delivered to…</string>
+    <string name="menu_message_viewed_by">Viewed by…</string>
+    <string name="menu_file_save">Save File</string>
+    <string name="field_name_user_login">User name</string>
+    <string name="field_name_user_fullname">User Full Name</string>
+
+    <string name="new_chat_created">%s created new chat </string>
+    <string name="occupant_added">%s added %s</string>
+
+
+    <string name="occupant_left">%s has left</string>
+    <string name="chat_still_joining">You\'re still joining a group chat, please wait a bit</string>
+    <string name="chat_error_send_message">Can\'t send a message, You are not connected to chat</string>
+
+    <string name="placeholder_username_you">%s (you)</string>
+    <string name="error_recreate_session">Login Chat error</string>
+
+    <string name="splash_app_version">v %s</string>
+    <string name="login_toolbar_title">Enter to chat</string>
+
+    <string name="login_welcoming_message">Please enter your login \nand username</string>
+
+    <string name="login_label_login">Login</string>
+    <string name="login_label_button_login">Login</string>
+    <string name="login_label_username">Username</string>
+    <string name="login_login_hint">Use your email or alphanumeric characters in a range from 3 to 50. First character must be a letter.</string>
+    <string name="login_username_hint">Use alphanumeric characters and spaces in a range from 3 to 20. Cannot contain more than one space in a row.</string>
+    <string name="login_sign_up_error">Sign up error.</string>
+    <string name="login_save">Save Login and Username for further sessions</string>
+    <string name="dialogs_logged_in_as">Logged in as %s</string>
+    <string name="dialogs_cannot_delete_chat">You can not leave from dialog %s</string>
+
+    <string name="dialogs_creation_error">Dialog creation errors</string>
+    <string name="dialogs_deletion_error">Dialog deletion errors</string>
+    <string name="dialogs_actionmode_title">Delete Chats</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+
+    <string name="select_users_search_hint">Search</string>
+    <string name="select_users_create_chat_title">New Chat</string>
+
+    <string name="select_users_create_chat_subtitle">%s users selected</string>
+    <string name="select_users_create_chat_subtitle_single">%s user selected</string>
+    <string name="select_users_edit_chat">Add Occupants</string>
+    <string name="select_users_get_users_error">Get users errors</string>
+    <string name="select_users_get_dialog_error">Error getting dialog from server</string>
+    <string name="select_users_get_users_dialog_error">Error getting users dialog from server</string>
+    <string name="select_users_choose_users">Please, choose at least one participant</string>
+    <string name="select_users_not_found">No user with that name</string>
+    <string name="you">You</string>
+    <string name="chat_send">Send</string>
+
+    <string name="chat_edit_text_hint">Send message…</string>
+    <string name="chat_me">Me</string>
+    <string name="chat_send_message_error">Failed to send a message</string>
+    <string name="chat_load_users_error">Load chat users errors</string>
+    <string name="chat_attachment">Attachment</string>
+    <string name="chat_unsupported_type">Unsupported dialog type</string>
+    <string name="chat_wait_for_attachments_to_upload">Wait for all attachments to upload</string>
+    <string name="notification_title">Quickblox Chat Notification</string>
+    <string name="connection_error">Chat connection has been dropped</string>
+    <string name="reconnect_alert">Reconnecting in %s seconds</string>
+    <string name="update_dialog_error">Update Dialog error</string>
+    <string name="chat_info_subtitle">%s members</string>
+
+    <string name="chat_info_add_people_error">Add people errors</string>
+
+    <string name="chat_info_updating">Updating…</string>
+    <string name="message_forwarded_from">Forwarded from\u0020</string>
+    <string name="message_info_delivered_to">Message Delivered to</string>
+
+    <string name="message_info_read_by">Message Viewed by</string>
+    <string name="message_info_noone">no one</string>
+    <string name="message_info_single_user">1 member</string>
+
+    <string name="message_info_multiple_users"> members</string>
+    <string name="forward_to">Forward to</string>
+    <string name="public_group_chat_cannot_be_deleted">Public Group chat can be deleted only by owner</string>
+
+    <string name="error_leave_chat">Error leaving room</string>
+
+    <string name="appinfo_application_version">Application version:</string>
+    <string name="appinfo_qbsdk_version">QuickBlox SDK version:</string>
+
+    <string name="appinfo_application_id">Application ID:</string>
+    <string name="appinfo_authorization_key">Authorization key:</string>
+    <string name="appinfo_authorization_secret">Authorization secret:</string>
+    <string name="appinfo_account_key">Account key:</string>
+    <string name="appinfo_api_domain">API domain:</string>
+    <string name="appinfo_chat_domain">Chat domain:</string>
+    <string name="appinfo_title">App Info</string>
+    <string name="appinfo_qa_verion">QA version:</string>
+    <string name="typing_postfix_singular">is typing…</string>
+    <string name="typing_postfix_plural">are typing…</string>
+
+    <string name="typing_ellipsis">…</string>
+    <string name="dialog_chat_name">Chat Name</string>
+    <string name="dialog_chat_name_hint">Must be in a range from 3 to 20 characters</string>
+
+    <string name="added_users">The users have been added</string>
+    <string name="error_connection">Connection failed. Please check your internet connection.</string>
+
+    <string name="error_response_timeout">No response received within reply timeout</string>
+
+    <!--Error strings-->
+    <string name="no_server_connection">Server connection timeout</string>
+    <string name="error_load_image">Error load image</string>
+    <string name="error_load_video">Can not play video file. It might be corrupt</string>
+    <string name="error_attachment_corrupted">Attachment is corrupted</string>
+    <string name="error_attachment_size">The uploaded file exceeds maximum file size (100MB)</string>
+    <string name="error_forwarding_not_connected">Unable to forward message. Not Connected to Chat</string>
+    <string name="error_attachment_count">You can send 1 attachment per message</string>
+    <string name="login_chat_login_erro">login_chat_login_erro</string>
+    <string name="current_plan">Current Plan</string>
+    <string name="content_language">Content Language</string>
+    <string name="select_a_language_for_translation">Select a language for translation</string>
+    <string name="select_the_language_you_want_content_on_linkedin_translated_into_we_ll_show_options_to_translate_content_such_as_posts_and_comments_to_this_language_and_use_this_information_to_improve_your_overall_fsl_experience">Select the language you want content on LinkedIn translated into. We\'ll show options to translate content such as posts and comments to this language and use this information to improve your overall FSL experience</string>
+    <string name="apply_for_instagram_verifiction">Apply for Instagram Verification</string>
+    <string name="apply_for_instagram_verifiction_desc">A verified badge is a check that appears next to an Instagram account\'s name to indicate that the account is the authentic presence of a notable public figure, celebrity, global brand or entity it represents. \n\nSubmitting a request for verification does not guarantee that your account will be verified.</string>
+
+
+    <string name="apply_for_instagram_verifiction_desc_second">We require a government-issued photo ID that shows your name and date of birth(e.g drivers\'s licence, passport or national identification card) or official business document (tax filing, recent utility bll, article of incorporation) in order to review your request.</string>
+    <string name="known_as">Known As</string>
+    <string name="category">Category</string>
+    <string name="please_attach_a_photo_of_your_id">Please attach a photo of your ID</string>
+    <string name="choose_file">Choose File</string>
+    <string name="verification_requested_submitted">Verification Request Submitted</string>
+    <string name="verification_requested_submitted_desc">We\'ll let you know once we\'ve reviewd your request for a verifed badge.</string>
+    <string name="request_verification">Request Verification</string>
+    <string name="msg_empty_first_name">First Name should not be empty</string>
+    <string name="msg_empty_last_name">Last Name should not be empty</string>
+    <string name="msg_empty_known_as">Known as should not be empty</string>
+    <string name="selected_skill">Selected Skill</string>
+    <string name="search_skill">Search Skill</string>
+    <string name="referralCode">Referral code</string>
+    <string name="copyright_policy">Copyright Policy</string>
+    <string name="partner_invest_with_us">Partner/Invest with us</string>
+    <string name="please_fill_your_details_and_we_will_get_back_to_you_after_review_your_information">Please fill your details and we will get back to you after review your information</string>
+    <string name="write_message">Write Message...</string>
+    <string name="please_enter_message">Please write message</string>
+    <string name="delete">Delete</string>
+    <string name="all">All</string>
+    <string name="friends">Friends</string>
+    <string name="acquaintances">Acquaintances</string>
+    <string name="no_internet">No Internet</string>
+    <string name="allow_notification">Allow Notification</string>
+    <string name="receive_push_notification">Receive Push Notification.</string>
+    <string name="receive_push_notification_when_mention_you">Receive Push notification when @mention you.</string>
+    <string name="send_feedback">Send a Feedback</string>
+    <string name="apply">Apply</string>
+    <string name="unsave">Unsave</string>
+
+    <string-array name="animals">
+        <item>Abyssinian</item>
+        <item>Adelie Penguin</item>
+        <item>Affenpinscher</item>
+        <item>Bactrian Camel</item>
+        <item>Badger</item>
+        <item>Balinese</item>
+        <item>Banded Palm Civet</item>
+        <item>Crab-Eating Macaque</item>
+        <item>Crane</item>
+        <item>Crested Penguin</item>
+        <item>Crocodile</item>
+        <item>Cross River Gorilla</item>
+        <item>Curly Coated Retriever</item>
+        <item>Cuscus</item>
+        <item>Cuttlefish</item>
+        <item>Dachshund</item>
+        <item>Dalmatian</item>
+        <item>Fox</item>
+        <item>Fox Terrier</item>
+        <item>French Bulldog</item>
+        <item>Frigatebird</item>
+        <item>Frilled Lizard</item>
+        <item>Frog</item>
+        <item>Fur Seal</item>
+        <item>Galapagos Penguin</item>
+        <item>Galapagos Tortoise</item>
+        <item>Gar</item>
+        <item>Gecko</item>
+        <item>Gentoo Penguin</item>
+        <item>Geoffroys Tamarin</item>
+        <item>Gerbil</item>
+        <item>German Pinscher</item>
+        <item>German Shepherd</item>
+        <item>Gharial</item>
+        <item>Giant African Land Snail</item>
+        <item>Giant Clam</item>
+        <item>Giant Panda Bear</item>
+        <item>Giant Schnauzer</item>
+        <item>Gibbon</item>
+        <item>Gila Monster</item>
+        <item>Radiated Tortoise</item>
+        <item>Ragdoll</item>
+        <item>Yellow-Eyed Penguin</item>
+        <item>Yorkshire Terrier</item>
+        <item>Zebra</item>
+        <item>Zebra Shark</item>
+        <item>Zebu</item>
+        <item>Zonkey</item>
+        <item>Zorse</item>
+    </string-array>
+    <string-array name="alphabet">
+        <item>A</item>
+        <item>B </item>
+        <item>C</item>
+        <item>D </item>
+        <item>E</item>
+        <item>F</item>
+        <item>G</item>
+        <item>H</item>
+        <item>I</item>
+        <item>J </item>
+        <item>K</item>
+        <item>L</item>
+        <item>M</item>
+        <item>N</item>
+        <item>O</item>
+        <item>P</item>
+        <item>Q</item>
+        <item>R</item>
+        <item>S</item>
+        <item>T</item>
+        <item>U</item>
+        <item>V</item>
+        <item>W</item>
+        <item>X</item>
+        <item>Y</item>
+        <item>Z</item>
+
+    </string-array>
+</resources>
+

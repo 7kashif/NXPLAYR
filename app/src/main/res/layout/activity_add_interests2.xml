@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/_5sdp"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:background="@drawable/appbg"
+    tools:context=".AddInterestsActivity">
+
+    <include layout="@layout/toolbar" />
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+       >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/professionals"
+            android:textSize="@dimen/_18ssp"
+            android:padding="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:fontFamily="@font/brandon_reg"
+            android:background="@drawable/rounded_text2"
+            android:textColor="@color/white"
+
+            />
+
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:overScrollMode="never"
+            android:id="@+id/recyclerview_addinterest"
+
+            />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View All Professionals"
+            android:textSize="@dimen/_18ssp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:fontFamily="@font/brandon_reg"
+            android:textColor="@color/colorPrimary"
+
+            />
+
+
+        <TextView
+            android:id="@+id/companies"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@drawable/rounded_text2"
+            android:fontFamily="@font/brandon_reg"
+            android:padding="@dimen/_3sdp"
+            android:text="Companies"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_18ssp"
+
+            />
+
+      <!--  <com.google.android.material.internal.BaselineLayout
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/tv_total_like"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:background="#253036">
+        </com.google.android.material.internal.BaselineLayout>-->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            android:id="@+id/recyclerview_professionals"
+
+            />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/brandon_reg"
+            android:text="View All Companies"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_18ssp"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:padding="@dimen/_5sdp"
+
+            />
+
+    </LinearLayout>
+</LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

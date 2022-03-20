@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.fragments.UserAccountDetail">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_shippingAddress"
+            style="@style/Font.SubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_underline_selector"
+            android:backgroundTint="#445F68"
+            android:drawableEnd="@drawable/calendar_arrow_blue_search_mentor"
+            android:drawableTint="@color/colorAccent"
+            android:padding="@dimen/_15sdp"
+            android:paddingStart="@dimen/_5sdp"
+            android:text="@string/shipping_addresses"
+            android:textSize="@dimen/_16ssp" />
+
+
+        <TextView
+            android:id="@+id/tv_myReviews"
+            style="@style/Font.SubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_underline_selector"
+            android:backgroundTint="#445F68"
+            android:drawableEnd="@drawable/calendar_arrow_blue_search_mentor"
+            android:drawableTint="@color/colorAccent"
+            android:padding="@dimen/_15sdp"
+            android:paddingStart="@dimen/_5sdp"
+            android:text="@string/my_reviews"
+            android:textSize="@dimen/_16ssp" />
+
+        <TextView
+            android:id="@+id/tv_myWishlist"
+            style="@style/Font.SubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_underline_selector"
+            android:backgroundTint="#445F68"
+            android:drawableEnd="@drawable/calendar_arrow_blue_search_mentor"
+            android:drawableTint="@color/colorAccent"
+            android:padding="@dimen/_15sdp"
+            android:paddingStart="@dimen/_5sdp"
+            android:text="@string/my_wishlist"
+            android:textSize="@dimen/_16ssp" />
+
+        <TextView
+            android:id="@+id/tv_paymentMethod"
+            style="@style/Font.SubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/calendar_arrow_blue_search_mentor"
+            android:drawableTint="@color/colorAccent"
+            android:padding="@dimen/_15sdp"
+            android:paddingStart="@dimen/_5sdp"
+            android:text="@string/payment_Methods"
+            android:textSize="@dimen/_16ssp" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

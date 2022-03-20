@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/nointernetMainRelativelayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+        <ImageView
+            android:id="@+id/nointernetImageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:minHeight="@dimen/_50sdp"
+            android:minWidth="@dimen/_50sdp"
+            android:src="@drawable/ic_signal_wifi_off_black_24dp"/>
+
+        <TextView
+            android:id="@+id/nointernettextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/nointernetImageview"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/_5sdp"
+            android:fontFamily="@font/brandon_reg"
+            android:gravity="center"
+            android:padding="@dimen/_5sdp"
+            android:textColor="@color/white"
+            android:text="@string/error_common_network"
+            android:textSize="@dimen/_14ssp"/>
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRetry"
+            android:layout_width="@dimen/_90sdp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/brandon_reg"
+            android:textAllCaps="true"
+            android:text="@string/retry"
+            android:textSize="@dimen/_14ssp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:backgroundTint="@color/colorSecondary"
+            android:layout_gravity="center"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</RelativeLayout>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainRootRv"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragments.feed.view.HomeFeedListFragment">
+
+    <LinearLayout
+        android:id="@+id/ll_uploading_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/_10sdp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/tvToolbarTitle"
+            style="@style/Font.SubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:fontFamily="@font/brandon_reg"
+            android:text="Uploading Post"
+            android:textSize="@dimen/_16ssp"
+            android:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_6sdp"
+            android:layout_below="@+id/headerView"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:max="50"
+            android:progress="0"
+            android:progressDrawable="@drawable/horizontal_progressbar" />
+    </LinearLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swiperefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/ll_uploading_progress">
+
+        <include
+            layout="@layout/common_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/floating_btn_createpost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:clickable="true"
+        android:src="@drawable/floting_icon"
+        app:layout_anchorGravity="bottom|center">
+
+    </androidx.appcompat.widget.AppCompatImageView>
+    <!--
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/floating_btn_createpost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_20sdp"
+                android:clickable="true"
+                android:src="@drawable/floting_icon"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                app:layout_anchorGravity="bottom|center"
+                />
+    -->
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/floating_btn_scroll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:clickable="true"
+        android:visibility="gone"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:src="@drawable/scroll_to_top"
+        app:layout_anchorGravity="bottom|right">
+
+    </androidx.appcompat.widget.AppCompatImageView>
+
+</RelativeLayout>

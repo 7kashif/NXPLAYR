@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+
+    tools:context=".fragment.FilterFragment">
+
+    <include layout="@layout/toolbar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+
+        <TextView
+            style="@style/Font.SubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="Price range"
+            android:textColor="@color/colorAccent" />
+
+        <com.yahoo.mobile.client.android.util.rangeseekbar.RangeSeekBar
+            android:id="@+id/rangeSeekbar"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:backgroundTint="@color/colorAccent"
+            android:tint="@color/colorAccent"
+            app:absoluteMaxValue="100"
+            app:absoluteMinValue="0" />
+
+
+        <!--  <com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
+              android:id="@+id/rangeSeekbar3"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="@dimen/_10sdp"
+              android:layout_marginTop="@dimen/_10sdp"
+              android:layout_marginBottom="@dimen/_10sdp"
+              app:bar_color="#8990C4"
+              app:bar_highlight_color="#2434AD"
+              app:corner_radius="10"
+              app:data_type="_integer"
+              app:gap="20"
+              app:left_thumb_color="#1A246D"
+              app:left_thumb_color_pressed="#030B47"
+              app:max_value="100"
+              app:min_value="50"
+              app:right_thumb_color="#1A246D"
+              app:right_thumb_color_pressed="#030B47" />
+      -->
+        <TextView
+            style="@style/Font.SubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:padding="@dimen/_10sdp"
+            android:text="Colors"
+            android:textColor="@color/colorAccent" />
+
+        <LinearLayout
+            android:id="@+id/ll_layout_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:orientation="horizontal">
+
+
+        </LinearLayout>
+
+
+        <TextView
+            style="@style/Font.SubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:padding="@dimen/_10sdp"
+            android:text="Size"
+            android:textColor="@color/colorAccent" />
+
+        <LinearLayout
+            android:id="@+id/ll_main_Size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:orientation="horizontal">
+
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tv_brandName"
+            style="@style/Font.SubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:drawableRight="@drawable/arrow_left"
+            android:drawableTint="@color/colorAccent"
+            android:text="Brand"
+            android:textColor="@color/colorAccent" />
+
+
+        <TextView
+            style="@style/Font.SubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:text="Puma,Nike,Vector X,Adidas,Nivia" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_discard"
+            style="@style/Widget.Fusion.Button.Accent"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/_10sdp"
+            android:layout_weight="1"
+            android:backgroundTint="@android:color/transparent"
+            android:fontFamily="@font/brandon_reg"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="Discard"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_14ssp"
+            app:cornerRadius="5dp"
+            app:strokeColor="@color/colorAccent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_apply"
+            style="@style/Widget.Fusion.Button.Yellow"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/_10sdp"
+            android:layout_weight="1"
+            android:background="@color/colorAccent"
+            android:backgroundTint="@color/colorAccent"
+            android:fontFamily="@font/brandon_reg"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="Apply"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_14ssp"
+            app:cornerRadius="5dp"
+            app:strokeColor="@color/colorAccent" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

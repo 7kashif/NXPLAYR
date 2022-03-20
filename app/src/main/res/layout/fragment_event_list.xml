@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".fragment.EventListFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/Font.SubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="@dimen/_5sdp"
+            android:text="@string/events" />
+
+        <TextView
+            android:id="@+id/btn_nearBy"
+            style="@style/Font.SubTitle_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center"
+            android:background="@drawable/rounded_edittext_primary"
+            android:gravity="center"
+            android:paddingLeft="@dimen/_10ssp"
+            android:paddingTop="@dimen/_3ssp"
+            android:paddingRight="@dimen/_10ssp"
+            android:paddingBottom="@dimen/_3ssp"
+            android:text="@string/nearby"
+            android:textSize="@dimen/_14ssp" />
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/common_recyclerview" />
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/floating_btn_createEvent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:clickable="true"
+            android:src="@drawable/floting_icon"
+            app:layout_anchorGravity="bottom|center">
+
+        </androidx.appcompat.widget.AppCompatImageView>
+    </RelativeLayout>
+
+</LinearLayout>

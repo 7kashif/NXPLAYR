@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_main_contact"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.fragments.userprofile.view.AddContactInformationFragment">
+
+
+    <include layout="@layout/toolbar" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="@dimen/_5sdp">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:hint="@string/mobile_number"
+                    android:textColorHint="@color/colorPrimary"
+                    android:theme="@style/MyEditTextTheme">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/mobile_number_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:imeOptions="actionNext"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_16ssp"
+                        android:theme="@style/MyEditTextTheme" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/Tv_countryCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/emailId_edit_text"
+                    android:drawableRight="@drawable/dropdown_icon"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:fontFamily="@font/brandon_reg"
+                    android:paddingTop="@dimen/_14ssp"
+                    android:paddingRight="@dimen/_30sdp"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_16ssp"
+                    android:visibility="gone"
+                    tools:ignore="NotSibling" />
+
+            </RelativeLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:hint="@string/email_address"
+                android:textColorHint="@color/colorPrimary"
+                android:theme="@style/MyEditTextTheme">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/emailId_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_16ssp"
+                    android:theme="@style/MyEditTextTheme" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:hint="@string/alternative_email_address"
+                android:textColorHint="@color/colorPrimary"
+                android:theme="@style/MyEditTextTheme">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/alternative_email_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_16ssp"
+                    android:theme="@style/MyEditTextTheme" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:hint="@string/website"
+                android:textColorHint="@color/colorPrimary"
+                android:theme="@style/MyEditTextTheme">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/website_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_16ssp"
+                    android:theme="@style/MyEditTextTheme" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/current_city_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:hint="Current City"
+                android:textColorHint="@color/colorPrimary"
+                android:theme="@style/MyEditTextTheme">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/current_city_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_16ssp"
+                    android:theme="@style/MyEditTextTheme" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:hint="@string/current_country"
+                android:textColorHint="@color/colorPrimary"
+                android:theme="@style/MyEditTextTheme">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/current_country_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_16ssp"
+                    android:theme="@style/MyEditTextTheme" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/layout_contact_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_weight="0.5"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+        <!-- <com.google.android.material.button.MaterialButton
+             android:id="@+id/btn_save_contact"
+             style="@style/Widget.Fusion.Button.Yellow"
+             android:layout_width="match_parent"
+             android:layout_height="@dimen/_55sdp"
+             android:layout_gravity="bottom"
+             android:layout_marginStart="@dimen/_30sdp"
+             android:layout_marginEnd="@dimen/_30sdp"
+             android:background="@color/colorPrimary"
+             android:fontFamily="@font/brandon_reg"
+             android:gravity="center"
+             android:padding="@dimen/_5sdp"
+             android:text="@string/save"
+             android:textColor="@color/black"
+             android:textSize="@dimen/_20ssp" />-->
+
+        <com.chand.progressbutton.ProgressButton
+            android:id="@+id/btn_save_contact"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            app:p_arrowVisible="false"
+            app:p_backgroundTint="@android:color/transparent"
+            app:p_cornerRadius="@dimen/_3sdp"
+            app:p_fontFamily="brandon_reg"
+            app:p_progressColor="@color/colorPrimary"
+            app:p_strokeColor="@color/grayborder"
+            app:p_strokeWidth="@dimen/_1sdp"
+            app:p_style="progressBar"
+            app:p_text="@string/save"
+            app:p_textColor="@color/colorPrimary"
+            app:p_textSize="@dimen/_18ssp" />
+
+    </LinearLayout>
+
+</LinearLayout>

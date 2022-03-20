@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_mainContactSync"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <EditText
+        android:id="@+id/search_sms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginRight="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:background="@drawable/round_search_box_bg"
+        android:drawableRight="@drawable/search_icon"
+        android:fontFamily="@font/brandon_reg"
+        android:hint="@string/search"
+        android:padding="@dimen/_5sdp"
+        android:singleLine="true"
+        android:textColor="@color/gray_text_color"
+        android:textColorHint="@color/gray_text_color" />
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_select_connections"
+            style="@style/Font.SubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/connection_icon_share"
+            android:drawablePadding="@dimen/_5sdp"
+            android:padding="@dimen/_5sdp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@string/connections_selected"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_14ssp" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/tv_SelectAll"
+                style="@style/Font.SubTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_weight="1"
+                android:padding="@dimen/_5sdp"
+                android:text="@string/select_all"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_14ssp" />
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/btn_SelectAll"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_gravity="end|center"
+                android:layout_marginRight="@dimen/_15sdp"
+                android:gravity="center"
+                android:padding="1sp"
+                android:src="@drawable/checkbox_unselected" />
+
+            <!--<TextView
+                android:id="@+id/tv_select_contacts"
+                style="@style/Font.SubTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/_20sdp"
+                android:layout_weight="1"
+                android:drawableLeft="@drawable/send_tick_icon"
+                android:drawablePadding="@dimen/_2sdp"
+                android:padding="@dimen/_5sdp"
+                android:text="@string/send"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_14ssp" />-->
+
+            <!--  <androidx.appcompat.widget.AppCompatImageView
+                  android:layout_width="@dimen/_30sdp"
+                  android:layout_height="@dimen/_30sdp"
+                  android:layout_gravity="end|center"
+                  android:layout_marginRight="@dimen/_30sdp"
+                  android:padding="@dimen/_5sdp"
+                  android:src="@drawable/send_tick_icon" />-->
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <include layout="@layout/common_recyclerview" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview_alphabet"
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:overScrollMode="never"
+                android:visibility="visible" />
+
+
+        </FrameLayout>
+
+        <include
+            layout="@layout/nodafound"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <include
+            layout="@layout/progressbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <include
+            layout="@layout/nointernetconnection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

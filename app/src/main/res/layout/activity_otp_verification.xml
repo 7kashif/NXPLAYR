@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_main_otpVerification"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/appbg"
+    android:orientation="vertical"
+    tools:context=".ui.activity.onboarding.view.ParentsOtpVerificationActivity">
+
+
+    <!--  <ImageView
+          android:id="@+id/img_back_otpVerification"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/back_arrow_signup"
+          android:padding="@dimen/_5sdp" />-->
+    <include layout="@layout/toolbar" />
+
+    <TextView
+        android:id="@+id/tv_verificationCode"
+        style="@style/Font.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="@dimen/_2sdp"
+        android:text="@string/verification_code"
+        android:textSize="@dimen/_22ssp" />
+
+    <TextView
+        style="@style/Font.SubTitle_blue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|top"
+        android:layout_marginLeft="@dimen/_25sdp"
+        android:layout_marginRight="@dimen/_25sdp"
+        android:gravity="center"
+        android:padding="@dimen/_5sdp"
+        android:text="@string/Please_enter_the_digit_code_you_received_by_SMS"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_18ssp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginRight="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et1"
+            style="@style/Font.Title"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:background="@drawable/background_otp"
+            android:fontFamily="@font/brandon_reg"
+            android:inputType="number"
+            android:maxLength="1"
+            android:padding="@dimen/_10sdp"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/color_cursor" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et2"
+            style="@style/Font.Title"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:background="@drawable/background_otp"
+            android:fontFamily="@font/brandon_reg"
+            android:inputType="number"
+            android:maxLength="1"
+            android:padding="@dimen/_10sdp"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/color_cursor" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et3"
+            style="@style/Font.Title"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:background="@drawable/background_otp"
+            android:fontFamily="@font/brandon_reg"
+            android:inputType="number"
+            android:maxLength="1"
+            android:padding="@dimen/_10sdp"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/color_cursor" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et4"
+            style="@style/Font.Title"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:background="@drawable/background_otp"
+            android:fontFamily="@font/brandon_reg"
+            android:inputType="number"
+            android:maxLength="1"
+            android:padding="@dimen/_10sdp"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/color_cursor" />
+    </LinearLayout>
+
+    <!--  <com.chand.progressbutton.ProgressButton
+          android:id="@+id/btn_otpVerified"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/_50sdp"
+          android:layout_gravity="center"
+          android:layout_marginLeft="@dimen/_20sdp"
+          android:layout_marginTop="@dimen/_10sdp"
+          android:layout_marginRight="@dimen/_20sdp"
+          app:p_arrowVisible="false"
+          app:p_backgroundTint="@android:color/transparent"
+          app:p_cornerRadius="@dimen/_3sdp"
+          app:p_fontFamily="roboto_regular"
+          app:p_progressColor="@color/colorPrimary"
+          app:p_style="progressBar"
+          app:p_text="@string/continueis"
+          android:background="@color/"
+          app:p_textColor="@color/colorPrimary"
+          app:p_textSize="@dimen/_16ssp"
+
+          />-->
+    <com.chand.progressbutton.ProgressButton
+        android:id="@+id/btn_otpVerified"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginRight="@dimen/_20sdp"
+        app:p_arrowVisible="false"
+        app:p_backgroundTint="@android:color/transparent"
+        app:p_cornerRadius="@dimen/_3sdp"
+        app:p_fontFamily="brandon_reg"
+        app:p_progressColor="@color/colorPrimary"
+        app:p_strokeColor="@color/colorPrimary"
+        app:p_strokeWidth="@dimen/_1sdp"
+        app:p_style="progressBar"
+        app:p_text="@string/continueis"
+        app:p_textColor="@color/colorPrimary"
+        app:p_textSize="@dimen/_18ssp"
+
+        />
+
+    <TextView
+        style="@style/Font.SubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:gravity="center"
+        android:padding="@dimen/_2sdp"
+        android:text="@string/if_you_have_not_received_the_code_yet_please_click"
+        android:textAlignment="center"
+        android:textSize="@dimen/_14ssp" />
+
+    <TextView
+        android:id="@+id/tv_sendCodeAgain"
+        style="@style/Font.SubTitle_blue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="@dimen/_2sdp"
+        android:text="@string/send_code_again"
+        android:textColor="@color/colorPrimary" />
+
+
+</LinearLayout>

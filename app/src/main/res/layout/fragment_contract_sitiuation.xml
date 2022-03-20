@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/llycontract"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".ui.fragments.usercontractsituation.view.ContractSitiuationFragment">
+    <include layout="@layout/toolbar2" />
+
+    <include layout="@layout/common_recyclerview"
+        android:layout_below="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_addNationality"
+       />
+    <com.chand.progressbutton.ProgressButton
+        android:id="@+id/btn_addNationality"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center|bottom"
+        android:layout_marginLeft="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginRight="@dimen/_20sdp"
+        android:visibility="visible"
+        app:p_arrowVisible="false"
+        app:p_backgroundTint="@android:color/transparent"
+        app:p_cornerRadius="@dimen/_3sdp"
+        app:p_fontFamily="brandon_reg"
+        app:p_progressColor="@color/colorPrimary"
+        app:p_strokeColor="@color/grayborder1"
+        app:p_strokeWidth="@dimen/_1sdp"
+        app:p_style="progressBar"
+        app:p_text="@string/save"
+        app:p_textColor="@color/colorPrimary"
+        app:p_textSize="@dimen/_18ssp" />
+</RelativeLayout>

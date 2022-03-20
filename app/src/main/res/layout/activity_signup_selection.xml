@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_signup_selection_data"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:orientation="vertical"
+    tools:context=".ui.activity.onboarding.view.SignUpSelectionActivity">
+
+    <FrameLayout
+        android:id="@+id/frame_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/typeSelectionViewpager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_40sdp"
+            android:overScrollMode="never">
+
+            <include
+                android:id="@+id/page_select_gender"
+                layout="@layout/fragment_select_gender" />
+
+            <include
+                android:id="@+id/page_select_age"
+                layout="@layout/fragment_select_age" />
+
+            <include
+                android:id="@+id/page_upload_picture"
+                layout="@layout/layout_upload_picture" />
+
+            <include
+                android:id="@+id/page_introduce_yourself"
+                layout="@layout/layout_introduce_yourself" />
+
+        </androidx.viewpager.widget.ViewPager>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_Layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_gravity="top|center"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:background="@android:color/transparent"
+            app:tabBackground="@drawable/tab_selector_pink"
+            app:tabGravity="center"
+            app:tabIndicatorHeight="0dp"
+            app:tabIndicator="@null"
+            app:tabMaxWidth="20dp"
+            app:tabPaddingStart="@dimen/_5sdp"
+            app:tabSelectedTextColor="@color/colorPrimary"
+            app:tabTextColor="@color/colorPrimary" />
+
+           <include
+               android:id="@+id/camera_layout"
+               layout="@layout/layout_select_dialog_camera"
+               android:visibility="gone" />
+    </FrameLayout>
+
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_mainContactList"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:orientation="vertical"
+    tools:context=".ui.activity.ContactListActivity">
+
+    <include layout="@layout/toolbar1" />
+
+
+    <EditText
+        android:id="@+id/search_contact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_17sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_17sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:background="@drawable/round_search_box_bg"
+        android:clickable="true"
+        android:drawableRight="@drawable/search_icon"
+        android:focusable="true"
+        android:fontFamily="@font/brandon_reg"
+        android:hint="@string/search"
+        android:padding="@dimen/_7sdp"
+        android:paddingStart="@dimen/_10sdp"
+        android:singleLine="true"
+        android:textColor="@color/gray_text_color"
+        android:textColorHint="@color/gray_text_color"
+        android:textSize="@dimen/_14ssp" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <include layout="@layout/common_recyclerview" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/RV_alphabet"
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:overScrollMode="never"
+                android:visibility="visible" />
+
+
+            <include layout="@layout/progressbar" />
+        </FrameLayout>
+    </RelativeLayout>
+
+</LinearLayout>

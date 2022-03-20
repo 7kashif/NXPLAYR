@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_main_login"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--   <include layout="@layout/toolbar" />-->
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginLeft="@dimen/_20sdp"
+        android:layout_marginRight="@dimen/_20sdp"
+        android:orientation="vertical">
+
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:hint="@string/height_cm"
+            android:textColorHint="@color/colorPrimary"
+            android:theme="@style/MyEditTextTheme">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edittext_height"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_16ssp"
+                android:theme="@style/MyEditTextTheme" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:hint="@string/weight_kg"
+            android:textColorHint="@color/colorPrimary"
+            android:theme="@style/MyEditTextTheme">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edittext_weight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_16ssp"
+                android:theme="@style/MyEditTextTheme" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    <com.chand.progressbutton.ProgressButton
+        android:id="@+id/btn_save_heightWeight"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_gravity="center|bottom"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        app:p_arrowVisible="false"
+        app:p_backgroundTint="@android:color/transparent"
+        app:p_cornerRadius="@dimen/_3sdp"
+        app:p_fontFamily="brandon_reg"
+        app:p_progressColor="@color/colorPrimary"
+        app:p_strokeColor="@color/grayborder1"
+        app:p_strokeWidth="@dimen/_1sdp"
+        app:p_style="progressBar"
+        app:p_text="@string/save"
+        app:p_textColor="@color/colorPrimary"
+        app:p_textSize="@dimen/_18ssp" />
+
+
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

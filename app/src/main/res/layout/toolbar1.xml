@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toolbar1"
+    style="@style/Widget.Fusion.Toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:elevation="@dimen/_1sdp"
+    android:gravity="center"
+    app:contentInsetLeft="0dp"
+    app:contentInsetStart="0dp"
+    app:navigationIcon="@drawable/back_arrow_signup"
+    app:contentInsetStartWithNavigation="0dp"
+    app:titleMarginStart="@dimen/_5sdp"
+    app:titleTextColor="@color/white">
+
+
+ <!--   <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvToolbarskipContact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/brandon_reg"
+        android:padding="@dimen/_5sdp"
+        android:layout_marginLeft="@dimen/_5sdp"
+        android:text="Skip"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/_16ssp"
+        android:visibility="visible"
+        tools:visibility="visible" />-->
+
+
+    <TextView
+        android:id="@+id/tvToolbarTitle1"
+        style="@style/Font.SubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="@font/brandon_reg"
+        android:textSize="@dimen/_18ssp"
+        android:visibility="visible"
+        tools:text="Header" />
+    <!--  <TextView
+      android:id="@+id/tvToolbarright"
+      style="@style/Font.SubTitle"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="right"
+      android:gravity="right"
+      android:textSize="@dimen/_16ssp"
+      android:visibility="gone"
+      android:textColor="@color/colorSecondary"
+      android:layout_marginRight="@dimen/_10sdp"
+      tools:text="@string/send" />
+      -->
+
+    <!--  <androidx.appcompat.widget.AppCompatImageView android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:id="@+id/add_icon_connection"
+          android:layout_gravity="right"
+          tools:visibility="gone"
+          android:padding="@dimen/_5sdp"
+          android:layout_marginEnd="@dimen/_10sdp"
+          android:tint="@color/colorPrimary"
+          android:visibility="gone"
+          android:background="?selectableItemBackground"
+          android:src="@drawable/add_icon_connection"
+
+
+          />-->
+
+    <LinearLayout
+        android:id="@+id/llToolbarmain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="?selectableItemBackground"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvToolbarNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/brandon_reg"
+            android:padding="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:text="@string/next"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_16ssp"
+            android:visibility="visible"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llToolbar1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="?selectableItemBackground"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivToolbarPostSubmit1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_5sdp"
+            android:src="@drawable/tick_black"
+            android:tint="@color/colorPrimary"
+            android:visibility="visible"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvToolbarPostSubmit1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/brandon_reg"
+            android:padding="@dimen/_5sdp"
+            android:text="Post"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_20ssp"
+            android:visibility="visible"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+
+</androidx.appcompat.widget.Toolbar>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/custom_view_top_left"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_55sdp"
+                android:background="@drawable/triangle_chat_left"/>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="-20dp"
+                android:background="@drawable/background_blue_fill"
+                android:paddingTop="@dimen/_6sdp"
+                android:paddingRight="@dimen/_20sdp"
+                android:paddingLeft="@dimen/_6sdp"
+                android:paddingBottom="@dimen/_6sdp">
+            <TextView
+                    android:id="@+id/opponent_name_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Opponent Name"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:fontFamily="@font/helvetica"
+                    android:textColor="@color/black"/>
+            <TextView
+                    android:id="@+id/custom_msg_text_time_message"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:fontFamily="@font/helvetica"
+                    tools:text="Opponent Name"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:textColor="@color/black"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        <TextView
+                android:id="@+id/custom_msg_text_time"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                tools:text="12:42"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_gravity="bottom"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</RelativeLayout>-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/custom_view_top_left"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal">
+
+    <!--com.devspark.robototextview.widget.RobotoTextView-->
+
+    <TextView
+            android:id="@+id/opponent_name_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:fontFamily="@font/roboto_regular"
+            android:visibility="visible"
+            tools:text="Opponent Name"/>
+
+    <TextView
+            android:id="@+id/custom_msg_text_time_message"
+            android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:fontFamily="@font/roboto_regular"
+            android:layout_gravity="center|end"
+            android:gravity="center|end"
+            tools:text="12:42"/>
+</LinearLayout>

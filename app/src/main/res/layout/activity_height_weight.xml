@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_main_login"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/appbg"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/_40sdp"
+        android:layout_marginRight="@dimen/_40sdp"
+        android:orientation="vertical">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_40sdp"
+            android:hint="@string/height_cm"
+            android:textColorHint="@color/colorPrimary"
+            android:theme="@style/TextInputLayout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/primaryInputTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_underline_selector"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1"
+                app:backgroundTint="@color/blue_text_color" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/weight_kg"
+            android:textColorHint="@color/colorPrimary"
+            android:theme="@style/TextInputLayout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/primaryInputTextStyleInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_underline_selector"
+                android:imeOptions="actionNext"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                app:backgroundTint="@color/blue_text_color" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+        <!--<com.chand.progressbutton.ProgressButton
+            android:id="@+id/btn_save_height_weight"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_55sdp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            app:p_arrowVisible="false"
+            app:p_backgroundTint="@color/colorPrimary"
+            app:p_cornerRadius="@dimen/_3sdp"
+            app:p_fontFamily="roboto_regular"
+            app:p_progressColor="@color/colorPrimary"
+            app:p_style="progressBar"
+            app:p_text="@string/save"
+            app:p_textColor="@color/black"
+            app:p_textSize="@dimen/_16ssp" />-->
+
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

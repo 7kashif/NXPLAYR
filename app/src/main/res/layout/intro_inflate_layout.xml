@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/introImagesIv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:scaleType="centerCrop" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="@dimen/_30sdp"
+            android:gravity="bottom">
+
+            <TextView
+                android:id="@+id/introTitleTextView"
+                style="@style/Font.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|bottom"
+                android:gravity="center"
+                android:padding="@dimen/_2sdp"
+                android:text="Less Business, More Social"
+                android:textSize="@dimen/_26ssp">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/introSubTitleTextView"
+                style="@style/Font.SubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/introTitleTextView"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:gravity="center|bottom"
+                android:text="@string/connect_yourself_to_catch_nopportunities_amp_achieve_your_goals"
+                android:textSize="@dimen/_16ssp">
+
+            </TextView>
+        </RelativeLayout>
+    </FrameLayout>
+
+
+</LinearLayout>

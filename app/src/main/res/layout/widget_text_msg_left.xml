@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/msg_linear_frame_left"
+    style="@style/WidgetTextMessage.Left">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/msg_image_avatar"
+        style="@style/AvatarImageViewStyle.Left"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/msg_bubble_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/outgoing_message_bg"
+        android:paddingTop="@dimen/_4sdp"
+        android:paddingBottom="@dimen/_2sdp">
+
+        <LinearLayout
+            android:id="@+id/msg_linear_list_item_left"
+            style="@style/LinearWidgetTextMsg.Left"
+            android:paddingRight="@dimen/_4sdp">
+
+            <!--LinearLayout should place its actual message widget here.-->
+            <LinearLayout
+                android:id="@+id/msg_custom_widget_frame_top"
+                style="@style/CustomWidgetFrame.Left" />
+
+            <TextView
+                android:id="@+id/msg_text_time_message"
+                style="@style/TextViewTimeMsg.Left"
+                tools:text="August 16"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/msg_text_time_message1"
+                style="@style/TextViewTimeMsg.Left"
+                tools:text="August 16"
+                android:textColor="@color/blue"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="@dimen/_16ssp"
+                android:letterSpacing="0.08"
+                android:paddingRight="@dimen/_8sdp"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/msg_text_message"
+                style="@style/TextViewTextMsg.Left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="messagertdfssksflsdfsdfsdfsadasdsasd"
+                android:textColor="@color/black"
+                android:fontFamily="@font/roboto_regular"
+                android:letterSpacing="0.08"
+                android:lineSpacingExtra="@dimen/_4sdp"
+                android:textSize="@dimen/_16ssp"/>
+
+            <TextView
+                android:id="@+id/msg_text_time"
+                style="@style/TextViewTextMsg.Left"
+                tools:text="da"
+                android:layout_gravity="end"
+                android:gravity="end"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="@dimen/_12sdp"
+                android:textColor="@color/gray_text_color1"
+                android:letterSpacing="0.08"
+                android:paddingRight="@dimen/_8sdp"
+                />
+
+            <LinearLayout
+                android:id="@+id/msg_link_preview"
+                style="@style/LinkPreviewFrame.Left"
+                android:visibility="gone"/>
+
+            <!--LinearLayout should place its actual message widget here.-->
+            <LinearLayout
+                android:id="@+id/msg_custom_widget_frame_bottom"
+                style="@style/CustomWidgetFrame.Left"
+                android:visibility="gone"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

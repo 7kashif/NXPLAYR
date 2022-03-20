@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/_5sdp">
+
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/img_blockUserProfile"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:padding="@dimen/_5sdp"
+            app:actualImageResource="@drawable/profile_pic_placeholder"
+            app:placeholderImage="@drawable/profile_pic_placeholder"
+            fresco:actualImageScaleType="fitXY"
+            fresco:placeholderImageScaleType="fitXY"
+            fresco:roundAsCircle="true" />
+
+        <TextView
+            android:id="@+id/tv_username"
+            style="@style/Font.SubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_weight="1"
+            android:fontFamily="@font/brandon_reg"
+            android:hint="Sara Wallker"
+            android:textSize="@dimen/_16ssp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_unblock"
+            style="@style/Widget.Fusion.Button.Yellow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/brandon_reg"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/unblock"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_14ssp"
+            app:cornerRadius="5dp" />
+
+    </LinearLayout>
+</LinearLayout>

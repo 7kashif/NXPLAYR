@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_main_resetPass"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/appbg"
+    android:orientation="vertical"
+    tools:context=".ui.activity.onboarding.view.ResetPassActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="@dimen/_20sdp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:fontFamily="@font/title"
+            android:gravity="center"
+            android:padding="@dimen/_2sdp"
+            android:text="@string/reset_password"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_26ssp" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/new_password_textInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:backgroundTint="@color/transperent"
+            android:hint="@string/new_password"
+            android:textColorHint="@color/colorPrimary"
+            android:theme="@style/MyEditTextTheme"
+            app:errorEnabled="false">
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/new_password_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:drawableEnd="@drawable/show_icon_login"
+                android:imeOptions="actionNext"
+                android:inputType="textPassword"
+                android:longClickable="false"
+                android:maxLength="15"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textCursorDrawable="@null"
+                android:textIsSelectable="false"
+                android:textSize="@dimen/_16ssp"
+                android:theme="@style/MyEditTextTheme" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/retypenew_password_textInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:backgroundTint="@color/transperent"
+            android:hint="@string/re_enter_new_password"
+            android:textColorHint="@color/colorPrimary"
+            android:theme="@style/MyEditTextTheme"
+            app:errorEnabled="false">
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/reenter_password_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:drawableEnd="@drawable/show_icon_login"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:longClickable="false"
+                android:maxLength="15"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textCursorDrawable="@null"
+                android:textIsSelectable="false"
+                android:textSize="@dimen/_16ssp"
+                android:theme="@style/MyEditTextTheme" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.chand.progressbutton.ProgressButton
+            android:id="@+id/btn_resetPass"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginLeft="@dimen/_30sdp"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:layout_marginRight="@dimen/_30sdp"
+            android:layout_marginBottom="@dimen/_20sdp"
+            app:p_arrowVisible="false"
+            app:p_backgroundTint="@color/colorPrimary"
+            app:p_cornerRadius="@dimen/_3sdp"
+            app:p_fontFamily="brandon_reg"
+            app:p_progressColor="@color/colorPrimary"
+            app:p_style="progressBar"
+            app:p_text="@string/reset_password"
+            app:p_textColor="@color/black"
+            app:p_textSize="@dimen/_18ssp" />
+
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/appbg"
+    android:orientation="vertical"
+    tools:context=".ui.activity.intro.view.IntroScreenActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <com.nxplayr.fsl.util.AutoScrollViewPager
+            android:id="@+id/intro_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"/>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:background="@android:color/transparent"
+            app:tabBackground="@drawable/tab_selector"
+            app:tabGravity="center"
+            app:tabIndicatorHeight="0dp"
+            app:tabMaxWidth="20dp"
+            app:tabPaddingStart="@dimen/_5sdp"
+            app:tabSelectedTextColor="@color/colorPrimary"
+            app:tabTextColor="@color/colorPrimary" />
+
+    </FrameLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/_25sdp"
+        android:paddingEnd="@dimen/_25sdp">
+
+        <com.chand.progressbutton.ProgressButton
+            android:id="@+id/introLoginButton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_gravity="center"
+            android:layout_marginRight="@dimen/_7sdp"
+            android:layout_weight="1"
+            app:p_arrowVisible="false"
+            app:p_backgroundTint="@color/colorPrimary"
+            app:p_cornerRadius="@dimen/_3sdp"
+            app:p_fontFamily="brandon_reg"
+            app:p_progressColor="@color/colorPrimary"
+            app:p_strokeColor="@color/colorPrimary"
+            app:p_strokeWidth="@dimen/_1sdp"
+            app:p_style="progressBar"
+            app:p_text="@string/login"
+            app:p_textColor="@color/black"
+            app:p_textSize="@dimen/_18ssp" />
+
+        <com.chand.progressbutton.ProgressButton
+            android:id="@+id/introSignupButton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/_7sdp"
+            android:layout_weight="1"
+            app:p_arrowVisible="false"
+            app:p_backgroundTint="@android:color/transparent"
+            app:p_cornerRadius="@dimen/_3sdp"
+            app:p_fontFamily="brandon_reg"
+            app:p_progressColor="@color/colorPrimary"
+            app:p_strokeColor="@color/grayborder"
+            app:p_strokeWidth="0.7dp"
+            app:p_style="progressBar"
+            app:p_text="@string/signup"
+            app:p_textColor="@color/colorPrimary"
+            app:p_textSize="@dimen/_18ssp" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

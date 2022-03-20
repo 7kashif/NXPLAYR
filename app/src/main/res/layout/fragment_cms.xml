@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/appbg"
+    tools:context=".ui.fragments.cms.view.CmsFragment">
+
+    <include layout="@layout/toolbar" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+      >
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/llMain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <WebView
+                android:id="@+id/webView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:layout_weight="1"
+              ></WebView>
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <include layout="@layout/nointernetconnection"></include>
+
+        <include layout="@layout/nodafound"></include>
+
+        <include layout="@layout/progressbar"></include>
+    </RelativeLayout>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

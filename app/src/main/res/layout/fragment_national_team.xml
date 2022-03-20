@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/ll_nationteam"
+    tools:context=".ui.fragments.usernationteam.view.NationalTeamFragment">
+
+    <include layout="@layout/toolbar2" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/country"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:textColorHint="@color/colorPrimary"
+        android:theme="@style/MyEditTextTheme">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_country"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:imeOptions="actionNext"
+            android:inputType="textCapSentences"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16ssp"
+            android:theme="@style/MyEditTextTheme"
+            android:clickable="true"
+            android:focusable="false" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/caps"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:textColorHint="@color/colorPrimary"
+        android:theme="@style/MyEditTextTheme">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_caps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16ssp"
+            android:theme="@style/MyEditTextTheme" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/goals"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:textColorHint="@color/colorPrimary"
+        android:theme="@style/MyEditTextTheme">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_goals"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16ssp"
+            android:theme="@style/MyEditTextTheme" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.chand.progressbutton.ProgressButton
+        android:id="@+id/btnUpdateBasicDetail"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_gravity="center|bottom"
+        android:layout_marginStart="@dimen/_25sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_25sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        app:p_arrowVisible="false"
+        app:p_backgroundTint="@color/colorPrimary"
+        app:p_cornerRadius="@dimen/_3sdp"
+        app:p_fontFamily="brandon_reg"
+        app:p_progressColor="@color/colorPrimary"
+        app:p_strokeColor="@color/colorPrimary"
+        app:p_strokeWidth="@dimen/_1sdp"
+        app:p_style="progressBar"
+        app:p_text="@string/save"
+        app:p_textColor="@color/text_primary"
+        app:p_textSize="@dimen/_18ssp" />
+
+</LinearLayout>

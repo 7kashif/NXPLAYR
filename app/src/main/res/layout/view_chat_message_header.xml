@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/_5sdp"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <com.google.android.material.internal.BaselineLayout
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:background="@color/chat_detail_gray"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/header_date_textview"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:layout_marginRight="@dimen/_10sdp"
+        android:background="@color/colorPrimary"
+        android:fontFamily="@font/roboto_regular"
+        android:padding="@dimen/_4sdp"
+        android:textColor="@color/chat_gray"
+        tools:text="MARCH 06" />
+
+    <com.google.android.material.internal.BaselineLayout
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:background="@color/chat_detail_gray"
+        android:visibility="invisible"></com.google.android.material.internal.BaselineLayout>
+</LinearLayout>

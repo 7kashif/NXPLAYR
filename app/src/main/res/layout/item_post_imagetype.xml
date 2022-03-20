@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/tools"
+    android:layout_width="@dimen/_90sdp"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_5sdp"
+    android:background="@android:color/transparent"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardCornerRadius="@dimen/_5sdp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/black"
+        android:id="@+id/ll_grid">
+
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/img_postImageType1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_80sdp"
+            android:visibility="visible"
+            app:actualImageScaleType="fitXY"
+            android:layout_gravity="center"
+            app:placeholderImage="@drawable/create_post_photo_nobg"
+            app:placeholderImageScaleType="fitXY"
+            app:roundBottomEnd="false"
+            app:roundBottomStart="false"
+            />
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/img_placeolder"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_80sdp"
+            android:scaleType="fitXY"
+            android:visibility="gone"
+            android:background="@color/black"
+            app:actualImageResource="@drawable/post_video_placeholder"
+            app:actualImageScaleType="fitXY"
+            app:placeholderImageScaleType="fitXY"
+            app:roundBottomEnd="false"
+            app:roundBottomStart="false"
+            app:roundedCornerRadius="@dimen/_5sdp" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/img_postImageType"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:visibility="gone"
+                app:roundTopEnd="false"
+                app:roundTopStart="false"
+                app:roundBottomStart="true"
+                app:roundBottomEnd="true"
+                app:roundedCornerRadius="@dimen/_5sdp"
+                app:roundingBorderColor="@android:color/transparent"
+                fresco:actualImageScaleType="fitXY"
+                fresco:placeholderImageScaleType="fitXY" />
+
+            <RelativeLayout
+                android:id="@+id/bluroverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/transparentlayer_dark"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_3sdp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/icon_feedType"
+                        android:layout_width="@dimen/_10sdp"
+                        android:layout_height="@dimen/_10sdp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/photo_icon_post" />
+
+                    <TextView
+                        android:id="@+id/tv_feedType"
+                        style="@style/Font.SubTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/photo_2h"
+                        android:padding="@dimen/_3sdp"
+                        android:textColorHint="@color/white"
+                        android:textSize="@dimen/_10ssp" />
+
+                </LinearLayout>
+
+                <com.nxplayr.fsl.util.PostDesTextView
+                    android:id="@+id/tv_feedText"
+                    style="@style/Font.SubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/_3sdp"
+                    android:ellipsize="end"
+                    android:paddingBottom="@dimen/_3sdp"
+                    android:singleLine="true"
+                    android:textColorHint="@color/white"
+                    android:textSize="@dimen/_10ssp" />
+            </LinearLayout>
+
+        </FrameLayout>
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

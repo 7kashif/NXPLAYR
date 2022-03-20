@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/commentLayoutMain"
+    tools:context=".ui.fragments.postcomment.view.PostCommentListFragment">
+
+    <include layout="@layout/toolbar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/ll_comment"
+        android:visibility="gone"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/btn_chat"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_gravity="center"
+            android:layout_marginRight="@dimen/_3sdp"
+            android:scaleType="fitXY"
+            android:src="@drawable/comment_replies_icon_selected" />
+
+        <TextView
+            android:id="@+id/tv_chat_count"
+            style="@style/Font.SubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            tools:text="10"
+            android:textColorHint="@color/white"
+            android:textSize="@dimen/_12ssp" />
+
+    </LinearLayout>
+
+    <include layout="@layout/common_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rootHeaderLayout"
+        android:layout_above="@+id/card_add_comment"
+        android:layout_weight="1"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_5sdp"
+        android:layout_marginLeft="@dimen/_5sdp"
+        android:layout_marginRight="@dimen/_5sdp"
+        android:visibility="gone"
+        android:background="@color/colorPrimary"
+        android:id="@+id/ll_comment_reply">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvCommentReplyName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/roboto_regular"
+            android:paddingLeft="@dimen/_10sdp"
+            android:paddingTop="@dimen/_1sdp"
+            android:paddingRight="@dimen/_10sdp"
+            android:paddingBottom="@dimen/_1sdp"
+            android:text="Reply to"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_14ssp" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_clear"
+            android:layout_width="wrap_content"
+            android:visibility="visible"
+            android:layout_height="wrap_content"
+            android:src="@drawable/close_icon_club"/>
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/card_add_comment"
+        app:cardBackgroundColor="@color/black"
+        android:layout_alignParentBottom="true"
+        app:cardCornerRadius="@dimen/_20sdp"
+        android:layout_marginLeft="@dimen/_5sdp"
+        android:layout_marginRight="@dimen/_5sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        >
+        <com.google.android.material.internal.BaselineLayout
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/colorPrimaryDark" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/_10sdp"
+                android:paddingRight="@dimen/_10sdp"
+                android:paddingTop="@dimen/_5sdp"
+                android:background="@color/black"
+                android:paddingBottom="@dimen/_5sdp"
+                android:id="@+id/ll_add_comment">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/imv_user_dp_comment"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    app:roundingBorderColor="@color/colorPrimary"
+                    app:roundingBorderWidth="1dp"
+                    app:placeholderImage="@drawable/profile_pic_placeholder"
+                    app:actualImageResource="@drawable/profile_pic_placeholder"
+                    app:placeholderImageScaleType="fitXY"
+                    app:roundAsCircle="true"
+                    app:actualImageScaleType="fitXY"
+                    app:roundBottomEnd="true"
+                    app:roundBottomLeft="true"
+                    app:roundBottomStart="true"
+                    app:roundBottomRight="true"
+                    app:roundTopEnd="true"
+                    app:roundTopLeft="true"
+                    app:roundTopStart="true"
+                    app:roundTopRight="true"/>
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/editComment"
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:layout_width="305dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/roboto_regular"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLength="200"
+                    android:paddingLeft="@dimen/_10sdp"
+                    android:paddingRight="@dimen/_10sdp"
+                    android:textColor="@color/white"
+                    android:textColorHint="#787878"
+                    tools:hint="Write a comment..." />
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_gravity="end|center"
+                    android:id="@+id/send"
+                    android:padding="@dimen/_3sdp"
+                    app:actualImageResource="@drawable/send_arrow"
+                    app:placeholderImage="@drawable/send_arrow"
+                    app:actualImageScaleType="fitXY"
+                    app:placeholderImageScaleType="fitXY"
+                    app:roundedCornerRadius="@dimen/_3sdp" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.appcompat.widget.LinearLayoutCompat>

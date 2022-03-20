@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_football_type"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_10sdp"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/imageFootballType"
+            android:layout_width="@dimen/_90sdp"
+            android:layout_height="@dimen/_90sdp"
+            android:layout_gravity="center"
+            fresco:actualImageResource="@drawable/football_type1"
+            fresco:actualImageScaleType="fitXY"
+            fresco:placeholderImage="@drawable/football_type1"
+            android:visibility="gone"
+            tools:visibility="visible"
+            fresco:placeholderImageScaleType="fitXY" />
+
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/image_tick"
+            android:layout_width="@dimen/_90sdp"
+            android:layout_height="@dimen/_90sdp"
+            android:layout_gravity="center"
+            fresco:actualImageResource="@drawable/football_type_selection_tick_black"
+            fresco:actualImageScaleType="fitXY"
+            fresco:placeholderImage="@drawable/football_type_selection_tick_black"
+            android:visibility="gone"
+            tools:visibility="visible"
+            fresco:placeholderImageScaleType="fitXY" />
+       <!-- <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/image_tick"
+            android:layout_width="@dimen/_90sdp"
+            android:layout_height="@dimen/_90sdp"
+            android:layout_gravity="center"
+            android:src="@drawable/tick_mark_registered"
+            android:tint="@color/transperent1"
+            android:scaleType="fitXY"
+            android:background="@color/colorPrimary"
+            android:backgroundTint="@android:color/transparent"
+            android:visibility="gone"
+            tools:visibility="visible" />-->
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_football_type"
+        style="@style/Font.SubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:gravity="center"
+        android:text="shradhddha"
+        app:autoSizeTextType="uniform" />
+
+</LinearLayout>

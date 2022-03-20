@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#00F0FF</color>
+    <color name="colorPrimaryDark">#00F0FF</color>
+    <color name="colorAccent">#FF387C</color>
+    <color name="colorSecondary">#00F0FF</color>
+    <color name="red">#E33244</color>
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorError">#18CEA6</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorOnSecondary">#1E1E1E</color>
+    <color name="colorSecondaryVariant">#14DCE9</color>
+    <color name="colorOnError">#FFFFFF</color>
+    <color name="colorOnBackground">#FFFFFF</color>
+
+    <color name="text_primary">#1E1E1E</color>
+    <color name="text_secondary">#959595</color>
+    <color name="dark_gray">#474B56</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="black_gray">#252527</color>
+    <color name="sticky_header_color">#143133</color>
+    <color name="base_line">#1D2C33</color>
+    <color name="blue_text_color">#01E4F3</color>
+    <color name="blue_tab_color">#133841</color>
+    <color name="gray_text_color">#8D8F8E</color>
+    <color name="gray_text_color1">#B0B0B0</color>
+    <color name="bg_black">#141F23</color>
+    <color name="transperent">#25000000</color>
+    <color name="transperent1">#00000000</color>
+    <color name="transperent2">#4D000000</color>
+    <color name="grayborder">#3E4043</color>
+    <color name="grayborder1">#4A535A</color>
+    <color name="baseLineGray">#3E484C</color>
+    <color name="yellow">#DFA44B</color>
+    <color name="yellow_modes">#FFF38D</color>
+    <color name="light_blue">#89DCD2</color>
+    <color name="tab_background">#252B31</color>
+    <color name="transparentlayer">#20000000</color>
+    <color name="transparentlayer_dark">#40000000</color>
+    <color name="transparent_dark">#323439</color>
+    <color name="text_blue">#007AFF</color>
+    <color name="colorPrimary1">#6200EE</color>
+    <color name="colorPrimaryDark1">#3700B3</color>
+    <color name="colorAccent1">#03DAC5</color>
+    <color name="textColorHint">#1AD2EA</color>
+    <color name="grey">#F4F4F4</color>
+    <color name="blue_water">#2389da</color>
+    <color name="image_bg_gray">#4E515A</color>
+    <color name="filter_bg">#3E8D98</color>
+    <color name="search_bar">#373940</color>
+
+    <color name="semi_black_transparent">#99000000</color>
+    <color name="tool_bg">#151414</color>
+    <color name="blue_color_picker">#0066FF</color>
+    <color name="brown_color_picker">#AF593E</color>
+    <color name="green_color_picker">#01A368</color>
+    <color name="orange_color_picker">#FF861F</color>
+    <color name="red_color_picker">#ED0A3F</color>
+    <color name="red_orange_color_picker">#FF3F34</color>
+    <color name="sky_blue_color_picker">#76D7EA</color>
+    <color name="violet_color_picker">#8359A3</color>
+    <color name="yellow_color_picker">#FBE870</color>
+    <color name="yellow_green_color_picker">#C5E17A</color>
+
+    <color name="success">#1D9C5A</color>
+    <color name="bordercolor">#464947</color>
+    <color name="bgpopopup">#464947</color>
+    <color name="headercolor">#464947</color>
+    <color name="primary_text">@color/white</color>
+    <color name="outside_color_trans">#00000000</color>
+    <color name="color_rbg">#F3F3F1</color>
+
+    <color name="chat_red">#DF4F53</color>
+    <color name="chat_gray">#7A7D81</color>
+    <color name="chat_detail_gray">#DDE2E6</color>
+    <color name="cart_rbg">#c7c6c6</color>
+    <color name="chat_gray_1">#959595</color>
+    <color name="text_color_black">#141414</color>
+
+
+
+    <color name="color_green_qb">#4ad24d</color>
+    <color name="color_light_blue_qb">#87cefa</color>
+    <color name="color_grey">#d3d3d3</color>
+    <color name="color_red">#ff0000</color>
+    <color name="color_new_blue">#3978FC</color>
+    <color name="color_unread">#00CC4C</color>
+    <color name="color_text_highlight">#DAE5FE</color>
+    <color name="color_text_last_message">#6C7A92</color>
+    <color name="color_search_hint">#6C7A92</color>
+    <color name="color_checked_item">#F4F6F9</color>
+    <color name="color_middle_gray">#CBCBCB</color>
+
+    <color name="background_chat_color">#f5f6f5</color>
+    <color name="chat_bubble_date_color">#80dedede</color>
+
+    <color name="divider_color">#e0e0e0</color>
+    <color name="selected_list_item_color">#D9E3F7</color>
+
+    <color name="background_app_color">#ffffff</color>
+
+    <color name="color_blue_qb">#046ad0</color>
+
+    <color name="color_popup_menu">#F2FFFFFF</color>
+    <color name="color_username_rectangle">#99000000</color>
+
+    <color name="random_color_1">#53C6A2</color>
+    <color name="random_color_2">#FDD762</color>
+    <color name="random_color_3">#9261D3</color>
+    <color name="random_color_4">#43DCE7</color>
+    <color name="random_color_5">#FFCC5A</color>
+    <color name="random_color_6">#EA4398</color>
+    <color name="random_color_7">#4A5DE1</color>
+    <color name="random_color_8">#E95555</color>
+    <color name="random_color_9">#7EDA54</color>
+    <color name="random_color_10">#F9B647</color>
+
+    <color name="transparent">#00ffffff</color>
+    <color name="blue">#007FFF</color>
+
+    <color name="text_color_primary">#212121</color>
+    <color name="text_color_white">#ffffff</color>
+    <color name="text_color_white_alpha_06">#96ffffff</color>
+    <color name="text_color_medium_grey">#b1b1b1</color>
+    <color name="text_color_dark_grey">#6e6e6e</color>
+    <color name="textcolor02">#8A8A8A</color>
+    <color name="btn_purchase">#6D7376</color>
+    <color name="notification_setting">#363D44</color>
+
+</resources>

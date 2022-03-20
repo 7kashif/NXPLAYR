@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/ll_mainReportCopyRight"
+    android:layout_height="match_parent"
+    android:background="@drawable/fsl_semi_transparent_dark_appbg_480px"
+    android:orientation="vertical"
+    tools:context=".ReportCopyRightActivity">
+
+    <ImageView
+        android:id="@+id/closeIconReport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/close_icon_white_signup"
+        android:paddingStart="@dimen/_10sdp"
+        android:paddingTop="@dimen/_10sdp"/>
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:overScrollMode="never">
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/Font.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:fontFamily="@font/title"
+                android:text="What is the isuue?"
+                android:textSize="@dimen/_28ssp" />
+
+
+            <LinearLayout
+                android:id="@+id/reportcopyrightInflateLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+
+                 <com.google.android.material.button.MaterialButton
+                     android:id="@+id/btn_submitReportCopyRight"
+                     style="@style/Widget.Fusion.Button.Yellow"
+                     android:layout_width="match_parent"
+                     android:layout_height="@dimen/_50sdp"
+                     android:layout_gravity="center|bottom"
+                     android:layout_marginStart="@dimen/_25sdp"
+                     android:layout_marginTop="@dimen/_20sdp"
+                     android:layout_marginEnd="@dimen/_25sdp"
+                     android:layout_marginBottom="@dimen/_20sdp"
+                     android:fontFamily="@font/brandon_reg"
+                     android:padding="@dimen/_5sdp"
+                     android:text="@string/submit"
+                     android:textAllCaps="false"
+                     android:textColor="@color/black"
+                     android:textSize="@dimen/_20ssp" />
+
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

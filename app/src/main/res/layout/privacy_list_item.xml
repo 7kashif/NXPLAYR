@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="true"
+    android:orientation="horizontal"
+    android:padding="@dimen/_10sdp">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/privacyImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/privacyTextView"
+        style="@style/Font.SubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_16ssp" />
+
+</LinearLayout>

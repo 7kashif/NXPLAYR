@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_main_parents"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="false"
+    android:background="@drawable/appbg"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/introduce_your_parents"
+        style="@style/Font.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/introduce_your_parents"
+        android:textSize="@dimen/_25ssp" />
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/textinput_parent_info_email"
+        android:hint="@string/email_address"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:textColorHint="@color/colorPrimary"
+        android:theme="@style/MyEditTextTheme">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/emailAddress_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:imeOptions="actionNext"
+            android:inputType="textCapSentences"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16ssp"
+            android:theme="@style/MyEditTextTheme" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:orientation="horizontal">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/mobile_textInputLayout"
+                style="@style/MyEditTextTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/transperent"
+                android:hint="@string/mobile_number"
+                android:textColorHint="@color/colorPrimary"
+                android:theme="@style/MyEditTextTheme"
+                app:errorEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/mobile_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%?()._-+=!-"
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+                    android:maxLength="50"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textCursorDrawable="@null"
+                    android:textSize="@dimen/_16ssp"
+                    android:theme="@style/MyEditTextTheme" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/tv_countryCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/emailId_edit_text"
+                android:drawableRight="@drawable/dropdown_icon"
+                android:drawablePadding="@dimen/_5sdp"
+                android:fontFamily="@font/brandon_reg"
+                android:paddingRight="@dimen/_30sdp"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_16ssp"
+                android:visibility="gone"
+                tools:ignore="NotSibling" />
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+    <com.chand.progressbutton.ProgressButton
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        app:p_arrowVisible="false"
+        app:p_backgroundTint="@android:color/transparent"
+        app:p_cornerRadius="@dimen/_3sdp"
+        app:p_fontFamily="brandon_reg"
+        app:p_progressColor="@color/colorPrimary"
+        app:p_strokeColor="@color/colorPrimary"
+        app:p_strokeWidth="@dimen/_1sdp"
+        app:p_style="progressBar"
+        app:p_text="@string/submit"
+        app:p_textColor="@color/colorPrimary"
+        app:p_textSize="@dimen/_18ssp" />
+
+</LinearLayout>
+

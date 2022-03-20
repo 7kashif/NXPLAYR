@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_total_like"
+            style="@style/Font.SubTitle_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:drawableLeft="@drawable/like_post_icon_selected"
+            android:drawablePadding="@dimen/_5sdp"
+            android:drawableTint="@color/colorPrimary"
+            android:padding="@dimen/_5sdp"
+            android:text="@string/likes" />
+
+        <com.google.android.material.internal.BaselineLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/tv_total_like"
+            android:background="#253036">
+
+        </com.google.android.material.internal.BaselineLayout>
+
+        <include layout="@layout/common_recyclerview" />
+
+    </LinearLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

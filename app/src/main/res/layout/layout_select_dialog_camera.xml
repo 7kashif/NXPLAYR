@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_SelectImageUploadOption"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/fsl_semi_transparent_dark_appbg_480px"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/img_select_camera"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_100sdp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:src="@drawable/camera_icon_unselected_popup" />
+
+        <TextView
+            android:id="@+id/tv_camera"
+            style="@style/Font.SubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="center"
+            android:text="@string/camera" />
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/img_select_gallery"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_100sdp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/gallery_icon" />
+
+        <TextView
+            android:id="@+id/tv_gallery"
+            style="@style/Font.SubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="center"
+            android:text="@string/gallery" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+  <!--  <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCloseProfileSelection"
+        style="@style/Widget.Fusion.Button.Yellow"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_marginLeft="@dimen/_30sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginRight="@dimen/_30sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:background="@drawable/rounded_edittext"
+        android:backgroundTint="@color/transperent"
+        android:fontFamily="@font/brandon_reg"
+        android:gravity="center"
+        android:padding="@dimen/_5sdp"
+        android:text="@string/close"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/_18ssp"
+        app:strokeColor="@color/grayborder" />-->
+
+    <com.chand.progressbutton.ProgressButton
+        android:id="@+id/btnCloseProfileSelection"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/_30sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginRight="@dimen/_30sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        app:p_arrowVisible="false"
+        app:p_backgroundTint="@color/transperent"
+        app:p_cornerRadius="@dimen/_3sdp"
+        app:p_fontFamily="brandon_reg"
+        app:p_progressColor="@color/colorPrimary"
+        app:p_strokeColor="@color/grayborder"
+        app:p_strokeWidth="@dimen/_1sdp"
+        app:p_style="progressBar"
+        app:p_text="@string/close"
+        app:p_textColor="@color/colorPrimary"
+        app:p_textSize="@dimen/_18ssp" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

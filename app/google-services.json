@@ -1,0 +1,115 @@
+{
+  "project_info": {
+    "project_number": "851847822449",
+    "firebase_url": "https://fslapp.firebaseio.com",
+    "project_id": "fslapp",
+    "storage_bucket": "fslapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:851847822449:android:64ae29828c654698056fd0",
+        "android_client_info": {
+          "package_name": "com.nxplayr.fsl"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "851847822449-07qcb7402g3vo89gr7g10nvag9aj4frp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nxplayr.fsl",
+            "certificate_hash": "8b40d6504975dfd647a5ad3968c44bbd25fb23a3"
+          }
+        },
+        {
+          "client_id": "851847822449-n6cj59bbcuqa17dr5kh1lcqanflp47er.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nxplayr.fsl",
+            "certificate_hash": "60d173dc5ff1fb06322af46b29dcaeb00ced6330"
+          }
+        },
+        {
+          "client_id": "851847822449-69pen3qsie6l61tqcqffocmn4pikfp2f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPbSuaaNiQS1lx_UxNf69z0B11TTZRLQU"
+        },
+        {
+          "current_key": "AIzaSyD031mRPfYTWoyt4Mv0iWZfsYQJ6u9n7vY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "851847822449-69pen3qsie6l61tqcqffocmn4pikfp2f.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "851847822449-d3s1lae5vqt1hlkhgqqilurk0bmk4kl6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nxplayr.FSL",
+                "app_store_id": "1496112324"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:851847822449:android:635f604dacfe1631056fd0",
+        "android_client_info": {
+          "package_name": "com.nxplayr.fsl"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "851847822449-nrea9lc1jkkded55c5e5lpibsc6m4uq4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nxplayr.fsl",
+            "certificate_hash": "60d173dc5ff1fb06322af46b29dcaeb00ced6330"
+          }
+        },
+        {
+          "client_id": "851847822449-69pen3qsie6l61tqcqffocmn4pikfp2f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPbSuaaNiQS1lx_UxNf69z0B11TTZRLQU"
+        },
+        {
+          "current_key": "AIzaSyD031mRPfYTWoyt4Mv0iWZfsYQJ6u9n7vY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "851847822449-69pen3qsie6l61tqcqffocmn4pikfp2f.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "851847822449-d3s1lae5vqt1hlkhgqqilurk0bmk4kl6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nxplayr.FSL",
+                "app_store_id": "1496112324"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

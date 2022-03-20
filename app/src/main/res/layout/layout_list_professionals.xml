@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:orientation="horizontal">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
+                    android:layout_gravity="start"
+                    android:padding="@dimen/_5sdp"
+                    app:actualImageResource="@drawable/profile_icon_connection"
+                    app:actualImageScaleType="fitXY"
+                    app:placeholderImage="@drawable/profile_icon_connection"
+                    app:placeholderImageScaleType="fitXY"
+                    app:roundAsCircle="true" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/tv_followers_name"
+                    style="@style/Font.SubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Arif Sheliya"
+                    android:textColorHint="@color/white" />
+
+                <TextView
+                    android:id="@+id/tv_followers_name"
+                    style="@style/Font.SubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Coach-FIFA Club"
+                    android:textColorHint="@color/white"
+                    android:textSize="@dimen/_14ssp" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_gravity="start|center"
+                    android:layout_margin="@dimen/_5sdp"
+                    app:actualImageResource="@drawable/follow_icon"
+                    app:actualImageScaleType="fitXY"
+                    app:placeholderImage="@drawable/follow_icon"
+                    app:placeholderImageScaleType="fitXY"
+
+                    />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <com.google.android.material.internal.BaselineLayout
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_marginBottom="@dimen/_3sdp"
+            android:background="@color/baseLineGray">
+
+        </com.google.android.material.internal.BaselineLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>
+
+    <!--<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/_5sdp"
+        >
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:orientation="horizontal">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
+                android:layout_margin="@dimen/_5sdp"
+                app:roundAsCircle="true"
+                android:layout_gravity="start"
+                app:actualImageScaleType="fitXY"
+                app:actualImageResource="@drawable/profile_pic_signup"
+                app:placeholderImage="@drawable/profile_pic_signup"
+                app:placeholderImageScaleType="fitXY"
+                />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_followers_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Arif Sheliya"
+                android:textColorHint="@color/white"
+                style="@style/Font.SubTitle"
+                />
+
+            <TextView
+                android:id="@+id/tv_followers_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Font.SubTitle"
+                android:hint="@string/_7_457_20_followers"
+                android:textColorHint="@color/white"
+                android:textSize="@dimen/_14ssp"
+                />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_margin="@dimen/_5sdp"
+                android:layout_gravity="start"
+                app:actualImageScaleType="fitXY"
+                app:actualImageResource="@drawable/follow_icon"
+                app:placeholderImage="@drawable/follow_icon"
+                app:placeholderImageScaleType="fitXY"
+                />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+        <com.google.android.material.internal.BaselineLayout
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="#3E484C">
+
+        </com.google.android.material.internal.BaselineLayout>
+
+    </LinearLayout>-->
+
+
+
+
+

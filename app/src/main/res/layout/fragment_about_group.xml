@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".fragment.AboutGroupFragment">
+
+    <include layout="@layout/toolbar" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/_5sdp"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@drawable/rounded_text2"
+            android:fontFamily="@font/brandon_reg"
+            android:padding="@dimen/_5sdp"
+            android:text="@string/name"
+            style="@style/Font.SubTitle_blue" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_5sdp"
+            android:orientation="vertical">
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:hint="@string/group_name"
+                android:textColorHint="@color/colorPrimary"
+                android:theme="@style/MyEditTextTheme">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/groupName_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:textSize="@dimen/_16ssp"
+                    android:textColor="@color/white"
+                    android:theme="@style/MyEditTextTheme" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_text2"
+            android:layout_marginTop="@dimen/_20sdp"
+
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_name"
+                style="@style/Font.SubTitle_blue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start|center"
+                android:padding="@dimen/_5sdp"
+                android:paddingStart="@dimen/_10sdp"
+                android:text="About this group" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                style="@style/Font.SubTitle_blue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end|center"
+                android:padding="@dimen/_5sdp"
+                android:paddingEnd="@dimen/_10sdp"
+                android:text="150" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_5sdp"
+            android:orientation="vertical">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:hint="@string/write_about_group"
+                android:textColorHint="@color/colorPrimary"
+                android:theme="@style/MyEditTextTheme">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/about_group_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:textSize="@dimen/_16ssp"
+                    android:textColor="@color/white"
+                    android:theme="@style/MyEditTextTheme" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tell_us_briefly_about_group"
+                style="@style/Font.SubTitle"
+                android:padding="@dimen/_5sdp"
+                android:textSize="@dimen/_16ssp"
+                ></TextView>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Font.SubTitle_blue"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:background="@drawable/rounded_text2"
+            android:padding="@dimen/_5sdp"
+            android:text="@string/group_rules"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_5sdp"
+            android:orientation="vertical">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:hint="@string/write_about_group_rules"
+            android:textColorHint="@color/colorPrimary"
+            android:theme="@style/MyEditTextTheme">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/group_rules_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:singleLine="true"
+                android:textSize="@dimen/_16ssp"
+                android:textColor="@color/white"
+                android:theme="@style/MyEditTextTheme" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Font.SubTitle_blue"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:background="@drawable/rounded_text2"
+            android:padding="@dimen/_5sdp"
+            android:text="@string/select_privacy"
+            android:textSize="@dimen/_18sdp" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Public"
+                android:buttonTint="@color/colorPrimary"
+                android:checked="true"
+                android:layout_weight="0.5"
+                style="@style/Font.SubTitle"
+                />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Private"
+                android:buttonTint="@color/colorPrimary"
+                android:layout_weight="1"
+                style="@style/Font.SubTitle"
+                />
+
+        </RadioGroup>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_submit_group_chat"
+            style="@style/Widget.Fusion.Button.Yellow"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_55sdp"
+            android:padding="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_25sdp"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:layout_gravity="bottom"
+            android:text="@string/submit"
+            android:fontFamily="@font/brandon_reg"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_20ssp" />
+
+    </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

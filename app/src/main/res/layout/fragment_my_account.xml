@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.fragments.setting.view.MyAccountFragment">
+
+    <include layout="@layout/toolbar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:hint="@string/full_name"
+            android:textColorHint="@color/colorPrimary"
+            android:theme="@style/MyEditTextTheme">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_full_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:singleLine="true"
+                android:clickable="false"
+                android:focusable="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_16ssp"
+                android:theme="@style/MyEditTextTheme" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:hint="@string/email"
+            android:textColorHint="@color/colorPrimary"
+            android:theme="@style/MyEditTextTheme">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_emailId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:singleLine="true"
+                android:clickable="false"
+                android:focusable="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_16ssp"
+                android:theme="@style/MyEditTextTheme" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:hint="@string/mobile_number"
+            android:textColorHint="@color/colorPrimary"
+            android:theme="@style/MyEditTextTheme">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_mobileNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:singleLine="true"
+                android:clickable="false"
+                android:focusable="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_16ssp"
+                android:theme="@style/MyEditTextTheme" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:orientation="vertical">
+
+
+        <com.chand.progressbutton.ProgressButton
+            android:id="@+id/btn_logout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_gravity="center|bottom"
+            app:p_arrowVisible="false"
+            app:p_backgroundTint="@color/colorPrimary"
+            app:p_cornerRadius="@dimen/_3sdp"
+            app:p_fontFamily="brandon_reg"
+            app:p_progressColor="@color/colorPrimary"
+            app:p_style="progressBar"
+            app:p_text="@string/logout"
+            app:p_textColor="@color/black"
+            app:p_textSize="@dimen/_18ssp" />
+
+        <com.chand.progressbutton.ProgressButton
+            android:id="@+id/btn_deleteAccount"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            app:p_arrowVisible="false"
+            app:p_backgroundTint="@color/colorPrimary"
+            app:p_cornerRadius="@dimen/_3sdp"
+            app:p_fontFamily="brandon_reg"
+            app:p_progressColor="@color/colorPrimary"
+            app:p_style="progressBar"
+            app:p_text="@string/delete_account"
+            app:p_textColor="@color/black"
+            app:p_textSize="@dimen/_18ssp" />
+
+    </LinearLayout>
+</LinearLayout>

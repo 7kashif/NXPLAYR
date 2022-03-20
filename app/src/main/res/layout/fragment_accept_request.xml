@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.fragments.friendrequest.view.AcceptRequestFragment">
+
+
+  <!--  <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">-->
+
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout_request"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_underline_selector_gray"
+            android:backgroundTint="@color/baseLineGray"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/colorPrimary"
+            app:tabMode="fixed"
+            app:tabPadding="0dp"
+            app:tabSelectedTextColor="@color/colorPrimary"
+            app:tabTextAppearance="@style/MyCustomTabText"
+            style="@style/tab_text"
+            app:tabTextColor="@color/white"/>
+
+
+
+   <!-- </LinearLayout>
+        android:layout_height="match_parent">-->
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewpager_request"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+           />
+
+
+
+   <!-- </FrameLayout>-->
+
+
+</LinearLayout>

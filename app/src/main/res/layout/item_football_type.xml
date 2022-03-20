@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_10sdp"
+
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_football_type"
+        style="@style/Font.SubTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_10sdp"
+        android:background="@drawable/rounded_edittext"
+        android:gravity="center"
+        android:text="@string/sign_up_with_linkedin"
+        android:textSize="@dimen/_20ssp" />
+
+</LinearLayout>

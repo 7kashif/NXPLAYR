@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/_5sdp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/sdBannerImage1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_125sdp"
+            android:scaleType="fitXY"
+           android:src="@drawable/donation_banner"/>
+
+<!--        <com.facebook.drawee.view.SimpleDraweeView-->
+<!--            android:id="@+id/sdBannerImage"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="@dimen/_125sdp"-->
+<!--            fresco:actualImageScaleType="fitXY"-->
+<!--            fresco:placeholderImage="@drawable/donation_banner"-->
+<!--            fresco:placeholderImageScaleType="fitXY"-->
+<!--            fresco:roundBottomEnd="true"-->
+<!--            fresco:roundBottomStart="true"-->
+<!--            fresco:roundTopEnd="true"-->
+<!--            fresco:roundTopStart="true"/>-->
+
+        <TextView
+            android:id="@+id/tvbannerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|bottom"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:fontFamily="@font/roboto_regular"
+            android:paddingStart="@dimen/_5sdp"
+            android:paddingTop="@dimen/_3sdp"
+            android:paddingEnd="@dimen/_5sdp"
+            android:paddingBottom="@dimen/_3sdp"
+            android:singleLine="true"
+            android:text="Promoted"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_12ssp"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+    </FrameLayout>
+
+</LinearLayout>

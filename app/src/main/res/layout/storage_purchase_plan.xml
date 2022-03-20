@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/fsl_semi_transparent_dark_appbg_480px"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/Font.SubTitle_blue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_10ssp"
+        android:text="@string/current_plan"
+        android:textSize="@dimen/_16ssp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:padding="@dimen/_5sdp"
+        android:visibility="visible"
+        tools:visibility="visible" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        >
+        <com.chand.progressbutton.ProgressButton
+            android:id="@+id/btn_current_gb"
+            android:layout_width="@dimen/_75sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            app:p_arrowVisible="false"
+            app:p_backgroundTint="@color/btn_purchase"
+            app:p_cornerRadius="@dimen/_3sdp"
+            app:p_fontFamily="brandon_reg"
+            app:p_progressColor="@color/btn_purchase"
+            app:p_strokeColor="@color/btn_purchase"
+            app:p_strokeWidth="@dimen/_1sdp"
+            app:p_style="progressBar"
+            app:p_text="100 GB"
+            app:p_textColor="@color/white"
+            app:p_textSize="@dimen/_14ssp" />
+
+        <TextView
+            style="@style/Font.SubTitle_blue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_10ssp"
+            android:text="Free"
+            android:id="@+id/txt_current_gb"
+            android:textSize="@dimen/_16ssp"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:padding="@dimen/_5sdp"
+            android:visibility="visible"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+    <TextView
+        style="@style/Font.SubTitle_blue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_10ssp"
+        android:text="Choose Upgrade"
+        android:textSize="@dimen/_16ssp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:padding="@dimen/_5sdp"
+        android:visibility="visible"
+        tools:visibility="visible" />
+    <include layout="@layout/common_recyclerview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/_10ssp"
+
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_10sdp">
+
+        <com.chand.progressbutton.ProgressButton
+            android:id="@+id/btn_cancel"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            app:p_arrowVisible="false"
+            app:p_backgroundTint="@color/colorPrimary"
+            app:p_cornerRadius="@dimen/_3sdp"
+            app:p_fontFamily="brandon_reg"
+            app:p_progressColor="@color/colorPrimary"
+            app:p_strokeColor="@color/colorPrimary"
+            app:p_strokeWidth="@dimen/_1sdp"
+            app:p_style="progressBar"
+            app:p_text="Cancel"
+            app:p_textColor="@color/black"
+            app:p_textSize="@dimen/_14ssp" />
+
+        <com.chand.progressbutton.ProgressButton
+            android:id="@+id/btn_confirm"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            app:p_arrowVisible="false"
+            app:p_backgroundTint="@color/colorPrimary"
+            app:p_cornerRadius="@dimen/_3sdp"
+            app:p_fontFamily="brandon_reg"
+            app:p_progressColor="@color/colorPrimary"
+            app:p_strokeColor="@color/colorPrimary"
+            app:p_strokeWidth="@dimen/_1sdp"
+            app:p_style="progressBar"
+            app:p_text="Confirm"
+            app:p_textColor="@color/black"
+            app:p_textSize="@dimen/_14ssp" />
+
+    </LinearLayout>
+
+</LinearLayout>

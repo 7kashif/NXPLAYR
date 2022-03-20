@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/msg_linear_frame_right"
+    style="@style/WidgetTextMessage.Right">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/message_sttus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="sent"
+        android:gravity="center"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/_2sdp"
+        android:layout_marginRight="@dimen/_4sdp"/>
+
+    <LinearLayout
+        android:id="@+id/msg_bubble_background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/incoming_message_bg"
+        android:layout_gravity="end"
+        android:gravity="end"
+        android:layout_weight="1"
+        android:paddingTop="@dimen/_4sdp"
+        android:paddingBottom="@dimen/_4sdp">
+
+        <LinearLayout
+            android:id="@+id/msg_linear_list_item_right"
+            style="@style/LinearWidgetTextMsg.Right"
+            android:layout_gravity="end"
+            android:gravity="end">
+
+            <!--LinearLayout should place its actual message widget here.-->
+            <LinearLayout
+                android:id="@+id/msg_custom_widget_frame_top"
+                style="@style/CustomWidgetFrame.Right"
+                android:visibility="gone"/>
+
+            <!--<RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">-->
+
+            <TextView
+                android:id="@+id/msg_text_message"
+                style="@style/TextViewTextMsg.Right"
+                tools:text="message message message messagemessage message message messagemessage message message messagemessage message message messagemessage message message messagemessage message message messagemessage message message messagemessage message message message"
+                android:paddingLeft="@dimen/_8sdp"
+                android:fontFamily="@font/roboto_regular"
+                android:textColor="@color/black"
+                android:letterSpacing="0.08"
+                android:textSize="@dimen/_16sdp" />
+
+            <TextView
+                android:id="@+id/msg_text_time_message"
+                style="@style/TextViewTimeMsg.Right"
+                tools:text="current time August"
+                android:layout_gravity="end"
+                android:paddingLeft="@dimen/_8sdp"
+                android:gravity="end"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/msg_text_message"
+                android:fontFamily="@font/roboto_regular"
+                android:textColor="@color/gray_text_color1"
+                android:letterSpacing="0.08"
+                android:textSize="@dimen/_12sdp"/>
+<!--            </RelativeLayout>-->
+            <LinearLayout
+                android:id="@+id/msg_link_preview"
+                style="@style/LinkPreviewFrame.Right"
+                android:visibility="gone"/>
+
+            <!--LinearLayout should place its actual message widget here.-->
+            <LinearLayout
+                android:id="@+id/msg_custom_widget_frame_bottom"
+                style="@style/CustomWidgetFrame.Right"
+                android:visibility="gone"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/msg_image_avatar"
+        style="@style/AvatarImageViewStyle.Right"
+        android:visibility="gone" />
+
+
+</LinearLayout>

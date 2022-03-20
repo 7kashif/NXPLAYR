@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:id="@+id/ll_mainReportReason"
+    android:background="@drawable/fsl_semi_transparent_dark_appbg_480px"
+    android:orientation="vertical"
+    android:overScrollMode="never">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include layout="@layout/toolbar" />
+
+        <TextView
+            style="@style/Font.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="center"
+            android:text="@string/why_are_you_reposting_this"
+            android:textSize="@dimen/_28ssp" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/repostingInflateLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:orientation="vertical" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:hint="@string/explain_what_s_wrong_with_this_post"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:textColorHint="@color/colorPrimary"
+            android:theme="@style/MyEditTextTheme">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_text_wrongwihPost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:imeOptions="actionNext"
+                android:inputType="textCapSentences"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_16ssp"
+                android:theme="@style/MyEditTextTheme" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_submit_repostReason"
+            style="@style/Widget.Fusion.Button.Yellow"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:layout_marginStart="@dimen/_25sdp"
+            android:layout_marginEnd="@dimen/_25sdp"
+            android:padding="@dimen/_5sdp"
+            android:text="@string/submit"
+            android:textSize="@dimen/_20ssp"
+            android:fontFamily="@font/brandon_reg"
+            android:textColor="@color/black"
+            android:textAllCaps="false" />
+
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.core.widget.NestedScrollView>

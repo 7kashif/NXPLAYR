@@ -1,0 +1,128 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/black_gray"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:orientation="horizontal">
+
+        <NumberPicker
+            android:id="@+id/picker_month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:descendantFocusability="blocksDescendants"
+            android:theme="@style/AppTheme.Picker">
+
+        </NumberPicker>
+
+        <NumberPicker
+            android:id="@+id/picker_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/black_gray"
+            android:descendantFocusability="blocksDescendants"
+            android:theme="@style/AppTheme.Picker">
+
+        </NumberPicker>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:background="@color/white" />
+
+    <LinearLayout
+        android:id="@+id/yesNoButtonsLL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/calenderOkButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:fontFamily="@font/roboto_regular"
+            android:gravity="center"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            android:text="Ok"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary"
+            android:textColorLink="@color/colorPrimary"
+            android:textSize="@dimen/_14ssp" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="@dimen/_40sdp"
+            android:background="@color/white">
+
+        </View>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/calenderCancelButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:fontFamily="@font/roboto_regular"
+            android:gravity="center"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            android:text="Cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_14ssp">
+
+        </com.google.android.material.button.MaterialButton>
+
+    </LinearLayout>
+
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_margin="@dimen/_20sdp"-->
+    <!--        android:gravity="center">-->
+
+    <!--        <com.google.android.material.button.MaterialButton-->
+    <!--            android:id="@+id/calenderOkButton"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            style="@style/Widget.MaterialComponents.Button.TextButton"-->
+    <!--            android:text="OK"-->
+    <!--            android:textAllCaps="false"-->
+    <!--            android:textColor="@color/colorPrimary">-->
+
+    <!--        </com.google.android.material.button.MaterialButton>-->
+
+    <!--        <com.google.android.material.button.MaterialButton-->
+    <!--            android:id="@+id/calenderCancelButton"-->
+    <!--            style="@style/Widget.MaterialComponents.Button.TextButton"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginStart="@dimen/_10sdp"-->
+    <!--            android:text="CANCEL"-->
+    <!--            android:textAllCaps="false"-->
+    <!--            android:textColor="@color/colorPrimary">-->
+
+    <!--        </com.google.android.material.button.MaterialButton>-->
+
+    <!--    </LinearLayout>-->
+
+</LinearLayout>

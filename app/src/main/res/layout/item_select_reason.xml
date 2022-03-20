@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_itemView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatRadioButton
+        android:id="@+id/reason_select_item"
+        style="@style/Font.SubTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:button="@null"
+        android:buttonTint="@color/colorPrimary"
+        android:drawableLeft="@drawable/custom_event_select"
+        android:drawablePadding="@dimen/_8sdp"
+        android:fontFamily="@font/brandon_reg"
+        android:textSize="@dimen/_16ssp" />
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

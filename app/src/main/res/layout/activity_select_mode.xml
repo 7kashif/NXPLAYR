@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_mainSelectMode"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/appbg"
+    android:orientation="vertical"
+    tools:context=".ui.activity.onboarding.view.SelectModeActivity">
+
+    <include layout="@layout/toolbar" />
+
+    <!--  <androidx.core.widget.NestedScrollView
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:fillViewport="true"
+          android:overScrollMode="never">-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+
+            <TextView
+                android:id="@+id/tv_you_are"
+                style="@style/Font.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/select_modes"
+                android:textSize="@dimen/_25ssp" />
+
+            <TextView
+                android:id="@+id/tv_selectModetext"
+                style="@style/Font.SubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:gravity="center"
+                android:paddingStart="@dimen/_20sdp"
+                android:paddingEnd="@dimen/_20sdp"
+                android:text="@string/select_mode_dummy_text"
+                android:textAlignment="center"
+                android:textSize="@dimen/_18ssp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <include layout="@layout/common_recyclerview" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:orientation="vertical">
+
+
+            <com.chand.progressbutton.ProgressButton
+                android:id="@+id/btnNextSelectMode"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_50sdp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginRight="@dimen/_30sdp"
+                android:layout_marginBottom="@dimen/_20sdp"
+                app:p_arrowVisible="false"
+                app:p_backgroundTint="@android:color/transparent"
+                app:p_cornerRadius="@dimen/_3sdp"
+                app:p_fontFamily="brandon_reg"
+                app:p_progressColor="@color/colorPrimary"
+                app:p_strokeColor="@color/grayborder"
+                app:p_strokeWidth="@dimen/_1sdp"
+                app:p_style="progressBar"
+                app:p_text="@string/next"
+                app:p_textColor="@color/colorPrimary"
+                app:p_textSize="@dimen/_18ssp"
+
+                />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <!--    </androidx.core.widget.NestedScrollView>-->
+</LinearLayout>
+
+

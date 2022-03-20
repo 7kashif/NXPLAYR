@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_basic_detail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_25sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginRight="@dimen/_25sdp"
+                android:orientation="vertical">
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:hint="@string/first_name"
+                    android:textColorHint="@color/colorPrimary"
+                    android:theme="@style/MyEditTextTheme">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edit_first_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapSentences"
+                        android:singleLine="true"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_16ssp"
+                        android:theme="@style/MyEditTextTheme" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:hint="@string/last_name"
+                    android:textColorHint="@color/colorPrimary"
+                    android:theme="@style/MyEditTextTheme">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edit_last_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapSentences"
+                        android:singleLine="true"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_16ssp"
+                        android:theme="@style/MyEditTextTheme" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!--  <com.google.android.material.textfield.TextInputLayout
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_gravity="center"
+                          android:hint="@string/family_name"
+                          android:textColorHint="@color/colorPrimary"
+                          android:theme="@style/MyEditTextTheme">
+
+                          <com.google.android.material.textfield.TextInputEditText
+                              android:id="@+id/edit_family_name"
+                              android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:background="@android:color/transparent"
+                              android:imeOptions="actionNext"
+                              android:inputType="textCapSentences"
+                              android:singleLine="true"
+                              android:textColor="@color/white"
+                              android:textSize="@dimen/_16ssp"
+                              android:theme="@style/MyEditTextTheme" />
+                      </com.google.android.material.textfield.TextInputLayout>-->
+
+                <TextView
+                    style="@style/Font.SubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:paddingLeft="@dimen/_5sdp"
+                    android:text="@string/gender"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/_16ssp" />
+
+                <RadioGroup
+                    android:id="@+id/rgGenderSelection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <RadioButton
+                        android:id="@+id/img_select_male"
+                        style="@style/Font.SubTitle"
+                        android:layout_width="@dimen/_120sdp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_weight="1"
+                        android:button="@null"
+                        android:drawableLeft="@drawable/male_icon_unselected"
+                        android:drawablePadding="@dimen/_5sdp"
+                        android:padding="@dimen/_5sdp"
+                        android:text="@string/Male"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_16ssp" />
+
+
+                    <RadioButton
+                        android:id="@+id/img_select_female"
+                        style="@style/Font.SubTitle"
+                        android:layout_width="@dimen/_120sdp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_weight="1"
+                        android:button="@null"
+                        android:drawableLeft="@drawable/female_icon_unselected"
+                        android:drawablePadding="@dimen/_5sdp"
+                        android:padding="@dimen/_5sdp"
+                        android:text="@string/Female"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_16ssp" />
+
+                </RadioGroup>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:hint="@string/date_of_birth"
+                    android:textColorHint="@color/colorPrimary"
+                    android:theme="@style/MyEditTextTheme">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edit_dateofbirth"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:imeOptions="actionDone"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_16ssp"
+                        android:theme="@style/MyEditTextTheme" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:hint="@string/place_of_birth"
+                    android:textColorHint="@color/colorPrimary"
+                    android:theme="@style/MyEditTextTheme">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edit_place_of_birth"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapSentences"
+                        android:singleLine="true"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_16ssp"
+                        android:theme="@style/MyEditTextTheme" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="@dimen/_110sdp"
+                android:gravity="bottom">
+
+                <com.chand.progressbutton.ProgressButton
+                    android:id="@+id/btnUpdateBasicDetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_50sdp"
+                    android:layout_gravity="center|bottom"
+                    android:layout_marginStart="@dimen/_25sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginEnd="@dimen/_25sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:visibility="gone"
+                    app:p_arrowVisible="false"
+                    app:p_backgroundTint="@android:color/transparent"
+                    app:p_cornerRadius="@dimen/_3sdp"
+                    app:p_fontFamily="brandon_reg"
+                    app:p_progressColor="@color/colorPrimary"
+                    app:p_strokeColor="@color/grayborder1"
+                    app:p_strokeWidth="@dimen/_1sdp"
+                    app:p_style="progressBar"
+                    app:p_text="@string/update"
+                    app:p_textColor="@color/colorPrimary"
+                    app:p_textSize="@dimen/_18ssp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/_5sdp"
+        android:paddingBottom="@dimen/_5sdp"
+        android:paddingLeft="@dimen/_10sdp"
+        android:paddingRight="@dimen/_10sdp">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/imv_user_dp_comment"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            app:roundingBorderColor="@color/colorPrimary"
+            app:roundingBorderWidth="1dp"
+            app:placeholderImage="@drawable/placeholder_profile_blue"
+            app:actualImageResource="@drawable/placeholder_profile_blue"
+            app:placeholderImageScaleType="fitXY"
+            app:roundAsCircle="true"
+            app:actualImageScaleType="fitXY"
+            app:roundBottomEnd="true"
+            app:roundBottomLeft="true"
+            app:roundBottomStart="true"
+            app:roundBottomRight="true"
+            app:roundTopEnd="true"
+            app:roundTopLeft="true"
+            app:roundTopStart="true"
+            app:roundTopRight="true"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_10sdp">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvCommentuserName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:text="Vaikunj Gandhi"
+                    android:textAllCaps="false"
+                    android:fontFamily="@font/brandon_reg"
+                    android:textColor="@color/blue_text_color"
+                    android:textSize="@dimen/_12ssp"
+                    />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivlogoWaterMark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:layout_gravity="center"
+                    android:padding="@dimen/_5sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:src="@drawable/more_icon" />
+
+            </LinearLayout>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvCommentTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="30 Minutes Ago"
+                android:textAllCaps="false"
+                android:fontFamily="@font/brandon_reg"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10ssp"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvCommentuser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="How are you!"
+                android:textAllCaps="false"
+                android:fontFamily="@font/brandon_reg"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_12ssp"
+                android:singleLine="true"
+                />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                >
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:id="@+id/img_like"
+                    android:src="@drawable/comment_like_icon_unselected"
+                    android:paddingTop="@dimen/_5sdp"
+                    android:paddingBottom="@dimen/_5sdp"
+                    android:paddingRight="@dimen/_5sdp"
+
+                    />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="200"
+                    android:layout_gravity="center"
+                    android:visibility="visible"
+                    android:textAllCaps="false"
+                    android:fontFamily="@font/brandon_reg"
+                    android:textColor="@color/blue_text_color"
+                    android:id="@+id/tv_like_count"
+                    android:textSize="@dimen/_10ssp" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:id="@+id/commentLikeImg"
+                    android:layout_marginLeft="@dimen/_15sdp"
+                    android:src="@drawable/comment_replies_icon_unselected"
+                    android:paddingTop="@dimen/_5sdp"
+                    android:paddingBottom="@dimen/_5sdp"
+                    android:paddingRight="@dimen/_5sdp"
+
+
+                    />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Reply"
+                    android:textAllCaps="false"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/brandon_reg"
+                    android:textColor="@color/blue_text_color"
+                    android:id="@+id/tv_reply_comment"
+                    android:textSize="@dimen/_10ssp" />
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

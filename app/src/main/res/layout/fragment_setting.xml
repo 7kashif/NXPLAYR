@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.fragments.setting.SettingFragment">
+
+    <TextView
+        android:id="@+id/tv_setting"
+        style="@style/Font.SubTitle_blue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_text2"
+        android:padding="@dimen/_5sdp"
+        android:paddingStart="@dimen/_15sdp"
+        android:text="@string/settings" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_myaccount"
+                style="@style/Font.SubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:backgroundTint="#445F68"
+                android:drawableEnd="@drawable/left_arrow_contact"
+                android:drawableTint="@color/white"
+                android:padding="@dimen/_10sdp"
+                android:paddingStart="@dimen/_10sdp"
+                android:text="@string/my_account"
+                android:textSize="@dimen/_16ssp" />
+
+            <TextView
+                android:id="@+id/tv_privacy"
+                style="@style/Font.SubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:backgroundTint="#445F68"
+                android:drawableEnd="@drawable/left_arrow_contact"
+                android:drawableTint="@color/white"
+                android:padding="@dimen/_10sdp"
+                android:paddingStart="@dimen/_10sdp"
+                android:text="@string/privacy"
+                android:textSize="@dimen/_16ssp" />
+
+            <TextView
+                android:id="@+id/tv_notification_setting"
+                style="@style/Font.SubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:backgroundTint="#445F68"
+                android:drawableEnd="@drawable/left_arrow_contact"
+                android:drawableTint="@color/white"
+                android:padding="@dimen/_10sdp"
+                android:paddingStart="@dimen/_10sdp"
+                android:text="@string/notification"
+                android:textSize="@dimen/_16ssp" />
+
+            <TextView
+                android:id="@+id/tv_saved_posts"
+                style="@style/Font.SubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:backgroundTint="#445F68"
+                android:drawableEnd="@drawable/left_arrow_contact"
+                android:drawableTint="@color/white"
+                android:padding="@dimen/_10sdp"
+                android:paddingStart="@dimen/_10sdp"
+                android:text="@string/saved_posts"
+                android:textSize="@dimen/_16ssp" />
+
+            <TextView
+                android:id="@+id/tv_hidden_posts"
+                style="@style/Font.SubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:backgroundTint="#445F68"
+                android:drawableEnd="@drawable/left_arrow_contact"
+                android:drawableTint="@color/white"
+                android:padding="@dimen/_10sdp"
+                android:paddingStart="@dimen/_10sdp"
+                android:text="@string/hidden_posts"
+                android:textSize="@dimen/_16ssp" />
+
+            <TextView
+                android:id="@+id/tv_block_users"
+                style="@style/Font.SubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:backgroundTint="#445F68"
+                android:drawableEnd="@drawable/left_arrow_contact"
+                android:drawableTint="@color/white"
+                android:padding="@dimen/_10sdp"
+                android:paddingStart="@dimen/_10sdp"
+                android:text="@string/blocked_users"
+                android:textSize="@dimen/_16ssp" />
+
+            <TextView
+                android:id="@+id/tv_language"
+                style="@style/Font.SubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:backgroundTint="#445F68"
+                android:drawableEnd="@drawable/left_arrow_contact"
+                android:drawableTint="@color/white"
+                android:padding="@dimen/_10sdp"
+                android:text="@string/language"
+                android:textSize="@dimen/_16ssp" />
+
+            <TextView
+                android:id="@+id/tv_change_password"
+                style="@style/Font.SubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:backgroundTint="#445F68"
+                android:drawableEnd="@drawable/left_arrow_contact"
+                android:drawableTint="@color/white"
+                android:padding="@dimen/_10sdp"
+                android:text="@string/change_password"
+                android:textSize="@dimen/_16ssp" />
+
+
+            <TextView
+                android:id="@+id/tv_req_verification"
+                style="@style/Font.SubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:backgroundTint="#445F68"
+                android:drawableEnd="@drawable/arrow_left"
+                android:drawableTint="@color/white"
+                android:padding="@dimen/_10sdp"
+                android:text="Request Verification"
+                android:textSize="@dimen/_16ssp" />
+
+            <TextView
+                android:id="@+id/tv_rate_app"
+                style="@style/Font.SubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:backgroundTint="#445F68"
+                android:drawableEnd="@drawable/arrow_left"
+                android:drawableTint="@color/white"
+                android:padding="@dimen/_10sdp"
+                android:text="@string/rate_the_app"
+                android:textSize="@dimen/_16ssp" />
+            <TextView
+                android:id="@+id/tv_send_feedback"
+                style="@style/Font.SubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:backgroundTint="#445F68"
+                android:drawableEnd="@drawable/arrow_left"
+                android:drawableTint="@color/white"
+                android:padding="@dimen/_10sdp"
+                android:text="@string/send_feedback"
+                android:textSize="@dimen/_16ssp" />
+            <TextView
+                android:id="@+id/tv_suggested_feature"
+                style="@style/Font.SubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:backgroundTint="#445F68"
+                android:drawableEnd="@drawable/arrow_left"
+                android:drawableTint="@color/white"
+                android:padding="@dimen/_10sdp"
+                android:text="@string/suggested_feature"
+                android:textSize="@dimen/_16ssp" />
+            <TextView
+                android:id="@+id/tv_content_language"
+                style="@style/Font.SubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:backgroundTint="#445F68"
+                android:drawableEnd="@drawable/arrow_left"
+                android:drawableTint="@color/white"
+                android:padding="@dimen/_10sdp"
+                android:text="@string/content_language"
+                android:textSize="@dimen/_16ssp" />
+
+            <TextView
+                android:id="@+id/tv_delete_account"
+                style="@style/Font.SubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:padding="@dimen/_10sdp"
+                android:text="@string/delete_account"
+                android:textSize="@dimen/_16ssp" />
+
+            <com.google.android.material.internal.BaselineLayout
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/baseLineGray" />
+
+            <com.google.android.material.internal.BaselineLayout
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/baseLineGray" />
+
+            <com.google.android.material.internal.BaselineLayout
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/baseLineGray" />
+
+            <com.google.android.material.internal.BaselineLayout
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/baseLineGray" />
+
+            <com.google.android.material.internal.BaselineLayout
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/baseLineGray" />
+
+            <com.google.android.material.internal.BaselineLayout
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/baseLineGray" />
+
+            <com.google.android.material.internal.BaselineLayout
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/baseLineGray" />
+
+            <com.google.android.material.internal.BaselineLayout
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/baseLineGray" />
+
+            <com.google.android.material.internal.BaselineLayout
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/baseLineGray" />
+
+            <com.google.android.material.internal.BaselineLayout
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/baseLineGray" />
+
+            <com.google.android.material.internal.BaselineLayout
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/baseLineGray" />
+
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

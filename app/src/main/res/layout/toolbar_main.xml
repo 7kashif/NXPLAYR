@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toolbar"
+    style="@style/Widget.Fusion.Toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:elevation="@dimen/_1sdp"
+    android:gravity="center"
+    app:contentInsetLeft="0dp"
+    app:contentInsetStart="0dp"
+    app:contentInsetStartWithNavigation="0dp"
+    app:titleMarginStart="@dimen/_5sdp"
+    app:titleTextColor="@color/white">
+
+    <TextView
+        android:id="@+id/tvToolbarTitle2"
+        style="@style/Font.SubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="@dimen/_18ssp"
+        android:visibility="visible"
+        tools:text="Header"
+        tools:visibility="visible" />
+
+    <!-- <TextView
+         style="@style/Font.Title"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="right"
+         android:gravity="right"
+         android:textSize="@dimen/_16ssp"
+         android:visibility="gone"
+         android:textColor="@color/colorSecondary"
+         android:layout_marginRight="@dimen/_10sdp"
+         tools:text="@string/send" />-->
+
+
+</androidx.appcompat.widget.Toolbar>

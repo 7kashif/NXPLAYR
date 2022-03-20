@@ -1,0 +1,19 @@
+package com.nxplayr.fsl.ui.activity.chat.utils.qb.callback
+
+import com.quickblox.messages.services.QBPushManager
+
+
+open class QBPushSubscribeListenerImpl : QBPushManager.QBSubscribeListener {
+
+    override fun onSubscriptionCreated() {
+
+    }
+
+    override fun onSubscriptionError(e: Exception, i: Int) {
+
+    }
+
+    override fun onSubscriptionDeleted(b: Boolean) {
+
+    }
+}

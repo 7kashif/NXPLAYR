@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_root"
+    style="@style/MatchParent"
+    tools:ignore="RtlHardcoded,RtlSymmetry">
+
+    <com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout
+        android:id="@+id/swipy_refresh_layout"
+        style="@style/MatchParent"
+        app:srl_direction="top">
+
+        <ListView
+            android:id="@+id/list_dialogs_chats"
+            style="@style/ListViewWithoutDividerStyle" />
+    </com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_chat_empty"
+        style="@style/MatchWidth"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            style="@style/WrapContent"
+            android:text="@string/chat_empty_you_are_alone_here"
+            android:textColor="@color/text_color_dark_grey"
+            android:textSize="20sp"
+            android:fontFamily="@font/roboto_regular" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/pb_dialogs"
+        style="@style/CenterProgressBarStyle"
+        android:visibility="visible"
+        tools:visibility="visible"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/floating_btn_connection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:clickable="true"
+        android:layout_gravity="bottom"
+        android:src="@drawable/floting_icon"
+        app:layout_anchorGravity="bottom|center">
+
+    </androidx.appcompat.widget.AppCompatImageView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

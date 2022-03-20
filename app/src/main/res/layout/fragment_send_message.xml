@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_mainSmsList"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+
+
+        <include layout="@layout/common_recyclerview" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/floating_btn_connection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:clickable="true"
+            android:layout_gravity="bottom"
+            android:src="@drawable/floting_icon"
+            app:layout_anchorGravity="bottom|center">
+
+        </androidx.appcompat.widget.AppCompatImageView>
+</RelativeLayout>

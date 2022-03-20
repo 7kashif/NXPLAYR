@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/popup"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_centerInParent="true"
+    android:layout_gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:layout_marginRight="@dimen/_30sdp"
+        android:layout_marginLeft="@dimen/_30sdp"
+        android:background="@drawable/background_curve_gray"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_album"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="Enter Album Name "
+            android:textColor="@color/black"
+            android:textSize="@dimen/_16ssp" />
+
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edtAlbumName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_30sdp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="@dimen/_30sdp"
+            android:background="@drawable/background_curve_gray"
+            android:hint="Album Name"
+            android:textCursorDrawable="@null"
+            android:textColor="@color/black"
+            android:padding="@dimen/_5sdp"
+            android:textSize="@dimen/_14ssp" />
+
+        <com.google.android.material.internal.BaselineLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:background="@color/transparentlayer_dark" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/txt_cancel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Cancel"
+                android:textStyle="bold"
+                android:textColor="@color/blue_water"
+                android:textSize="@dimen/_14ssp"/>
+
+            <View
+                android:id="@+id/lineBR"
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="wrap_content"
+                android:background="@color/transparentlayer_dark" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/txt_okay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Okay"
+                android:textColor="@color/blue_water"
+                android:textStyle="bold"
+                android:textSize="@dimen/_14ssp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <include
+        layout="@layout/progressbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+
+</RelativeLayout>
