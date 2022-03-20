@@ -120,6 +120,7 @@ class MyApplication : Application() {
     /** Returns a [HttpDataSource.Factory].  */
     fun buildHttpDataSourceFactory(): HttpDataSource.Factory? {
         return DefaultHttpDataSourceFactory(userAgent)
+
     }
 
     private fun buildReadOnlyCacheDataSource(
