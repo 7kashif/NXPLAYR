@@ -102,7 +102,7 @@ class MyApplication : Application() {
     private fun initCredentials() {
         QBSettings.getInstance().init(applicationContext, APPLICATION_ID, AUTH_KEY, AUTH_SECRET)
         QBSettings.getInstance().accountKey = ACCOUNT_KEY
-
+//
         // Uncomment and put your Api and Chat servers endpoints if you want to point the sample
         // against your own server.
         //

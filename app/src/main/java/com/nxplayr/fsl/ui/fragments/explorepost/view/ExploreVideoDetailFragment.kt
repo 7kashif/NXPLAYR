@@ -61,22 +61,26 @@ class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
     var list_bottomsheet: ArrayList<ThreedotsBottomPojo>? = ArrayList()
     var linearLayoutManager: LinearLayoutManager? = null
     var exoPlayer: SimpleExoPlayer? = null
-    private  var mViewPagerAdapter: ExploreVideoDetailAdapter?=null
+    private var mViewPagerAdapter: ExploreVideoDetailAdapter? = null
     private var isMuteing = false
     var explore_video_list: java.util.ArrayList<CreatePostData?>? = java.util.ArrayList()
-    var pos=0
-    var postType=""
+    var pos = 0
+    var postType = ""
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         try {
-            if(v==null){
+            if (v == null) {
                 v = inflater.inflate(R.layout.fragment_explore_view_pager, container, false)
 
             }
         } catch (e: InflateException) {
         }
-       // v = inflater.inflate(R.layout.fragment_explore_view_pager, container, false)
+        // v = inflater.inflate(R.layout.fragment_explore_view_pager, container, false)
         return v
     }
 
@@ -88,149 +92,201 @@ class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        sessionManager = SessionManager(this.activity!!)
+        sessionManager = SessionManager(this.requireActivity())
 
         if (sessionManager?.get_Authenticate_User() != null) {
             userData = sessionManager?.get_Authenticate_User()
         }
         if (arguments != null) {
-            pos=arguments?.getInt("pos", 0)!!
-            postType=arguments?.getString("postType")!!
-            explore_video_list = arguments?.getSerializable("explore_video_list") as java.util.ArrayList<CreatePostData?>?
+            pos = arguments?.getInt("pos", 0)!!
+            postType = arguments?.getString("postType")!!
+            explore_video_list =
+                arguments?.getSerializable("explore_video_list") as java.util.ArrayList<CreatePostData?>?
         }
 
-        getPostList(explore_video_list?.get(pos)?.postID!!, explore_video_list?.get(pos)?.userID!!, "", postType)
+        getPostList(
+            explore_video_list?.get(pos)?.postID!!,
+            explore_video_list?.get(pos)?.userID!!,
+            "",
+            postType
+        )
 
         img_back.setOnClickListener(this)
 
-        mViewPagerAdapter = ExploreVideoDetailAdapter(mActivity!!, object : ExploreVideoDetailAdapter.OnItemClick {
+        mViewPagerAdapter =
+            ExploreVideoDetailAdapter(mActivity!!, object : ExploreVideoDetailAdapter.OnItemClick {
 
-            override fun onClicklisneter(pos: Int) {
-                val likeFragment = PostViewLikeListFragment()
-                Bundle().apply {
-                    putString("postId", explore_video_list?.get(pos)?.postID)
-                    putString("from", "Like")
-                    likeFragment.arguments = this
+                override fun onClicklisneter(pos: Int) {
+                    val likeFragment = PostViewLikeListFragment()
+                    Bundle().apply {
+                        putString("postId", explore_video_list?.get(pos)?.postID)
+                        putString("from", "Like")
+                        likeFragment.arguments = this
+                    }
+                    (activity as MainActivity).navigateTo(
+                        likeFragment,
+                        likeFragment::class.java.name,
+                        true
+                    )
                 }
-                (activity as MainActivity).navigateTo(likeFragment, likeFragment::class.java.name, true)
-            }
 
-            override fun onClickCommnetlisneter(pos: Int) {
+                override fun onClickCommnetlisneter(pos: Int) {
 
-                val commnetFragment = PostCommentListFragment()
-                Bundle().apply {
-                    putString("postId", explore_video_list?.get(pos)?.postID)
-                    putString("postUserID", userData?.userID)
-                    commnetFragment.arguments = this
+                    val commnetFragment = PostCommentListFragment()
+                    Bundle().apply {
+                        putString("postId", explore_video_list?.get(pos)?.postID)
+                        putString("postUserID", userData?.userID)
+                        commnetFragment.arguments = this
+                    }
+                    (activity as MainActivity).navigateTo(
+                        commnetFragment,
+                        commnetFragment::class.java.name,
+                        true
+                    )
+
                 }
-                (activity as MainActivity).navigateTo(commnetFragment, commnetFragment::class.java.name, true)
 
-            }
+                override fun onClickViewlisneter(pos: Int) {
 
-            override fun onClickViewlisneter(pos: Int) {
-
-                val viewFragment = PostViewLikeListFragment()
-                Bundle().apply {
-                    putString("postId", explore_video_list?.get(pos)?.postID)
-                    putString("from", "View")
-                    viewFragment.arguments = this
+                    val viewFragment = PostViewLikeListFragment()
+                    Bundle().apply {
+                        putString("postId", explore_video_list?.get(pos)?.postID)
+                        putString("from", "View")
+                        viewFragment.arguments = this
+                    }
+                    (activity as MainActivity).navigateTo(
+                        viewFragment,
+                        viewFragment::class.java.name,
+                        true
+                    )
                 }
-                (activity as MainActivity).navigateTo(viewFragment, viewFragment::class.java.name, true)
-            }
 
-            override fun onClickSharelisneter(pos: Int) {
-                val shareIntent = Intent()
-                shareIntent.action = Intent.ACTION_SEND
-                shareIntent.type = "text/plain"
-                shareIntent.putExtra(
+                override fun onClickSharelisneter(pos: Int) {
+                    val shareIntent = Intent()
+                    shareIntent.action = Intent.ACTION_SEND
+                    shareIntent.type = "text/plain"
+                    shareIntent.putExtra(
                         Intent.EXTRA_TEXT,
                         "Hey check out post on FSL" + "\n\nhttps://play.google.com/store/apps/details?id=${mActivity!!.packageName}"
-                )
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "FSL")
-                startActivity(Intent.createChooser(shareIntent, "Share post via"))
+                    )
+                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "FSL")
+                    startActivity(Intent.createChooser(shareIntent, "Share post via"))
 
-                //  openBottomSheetForShare(pos)
-            }
-
-            override fun onClickMorelisneter(pos: Int) {
-
-                val bottomSheet = BottomSheetExplore()
-                Bundle().apply {
-                    putString("postId", explore_video_list?.get(pos)?.postID)
-                    if (explore_video_list!!.get(pos)?.postAlbum.isNullOrEmpty()) {
-                        putString("collection", "Add")
-                        putString("postType", explore_video_list!!.get(pos)?.postType)
-                        putSerializable("explore_video_list", explore_video_list)
-
-                    } else {
-                        putString("collection", "Remove")
-                        putString("albumID", explore_video_list!!.get(pos)?.postAlbum!![0].exalbumID)
-                        putString("subAlbumAId", explore_video_list!!.get(pos)?.postAlbum!![0].exsubalbumID)
-                        putString("postType", explore_video_list!!.get(pos)?.postType)
-                        putSerializable("explore_video_list", explore_video_list)
-                    }
-                    putString("user_ID", explore_video_list?.get(pos)?.userID)
-                    bottomSheet.arguments = this
+                    //  openBottomSheetForShare(pos)
                 }
-                bottomSheet.show(mActivity?.supportFragmentManager!!, "BottomSheetExplore")
-                bottomSheet.setOnclickLisner(object : BottomSheetExplore.BottomSheetListener {
-                    override fun onOptionClick(text: String) {
-                        when (text) {
-                            "RemoveAPi" -> {
-                                explore_video_list!!.get(pos)?.postAlbum?.clear()
-                                MyUtils.CollecationData = ""
-                            }
-                            "MoveTo"->{
-                                bottomSheet.dismiss()
-                                editPost(pos)
-                            }
-                            "EditPost"->{
-                                bottomSheet.dismiss()
 
-                                Intent(mActivity!!, CreatePostActivityTwo::class.java).apply {
-                                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    putExtra("postData", explore_video_list?.get(pos))
-                                    putExtra("fromType", "editPost")
-                                    putExtra("type1", "MyExploreVideo")
-                                    startActivity(this)
+                override fun onClickMorelisneter(pos: Int) {
+
+                    val bottomSheet = BottomSheetExplore()
+                    Bundle().apply {
+                        putString("postId", explore_video_list?.get(pos)?.postID)
+                        if (explore_video_list!!.get(pos)?.postAlbum.isNullOrEmpty()) {
+                            putString("collection", "Add")
+                            putString("postType", explore_video_list!!.get(pos)?.postType)
+                            putSerializable("explore_video_list", explore_video_list)
+
+                        } else {
+                            putString("collection", "Remove")
+                            putString(
+                                "albumID",
+                                explore_video_list!!.get(pos)?.postAlbum!![0].exalbumID
+                            )
+                            putString(
+                                "subAlbumAId",
+                                explore_video_list!!.get(pos)?.postAlbum!![0].exsubalbumID
+                            )
+                            putString("postType", explore_video_list!!.get(pos)?.postType)
+                            putSerializable("explore_video_list", explore_video_list)
+                        }
+                        putString("user_ID", explore_video_list?.get(pos)?.userID)
+                        bottomSheet.arguments = this
+                    }
+                    bottomSheet.show(mActivity?.supportFragmentManager!!, "BottomSheetExplore")
+                    bottomSheet.setOnclickLisner(object : BottomSheetExplore.BottomSheetListener {
+                        override fun onOptionClick(text: String) {
+                            when (text) {
+                                "RemoveAPi" -> {
+                                    explore_video_list!!.get(pos)?.postAlbum?.clear()
+                                    MyUtils.CollecationData = ""
+                                }
+                                "MoveTo" -> {
+                                    bottomSheet.dismiss()
+                                    editPost(pos)
+                                }
+                                "EditPost" -> {
+                                    bottomSheet.dismiss()
+
+                                    Intent(mActivity!!, CreatePostActivityTwo::class.java).apply {
+                                        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        putExtra("postData", explore_video_list?.get(pos))
+                                        putExtra("fromType", "editPost")
+                                        putExtra("type1", "MyExploreVideo")
+                                        startActivity(this)
+                                    }
                                 }
                             }
                         }
-                    }
 
-                })
-            }
+                    })
+                }
 
-            override fun onClickUnselectlisneter(pos: Int) {
+                override fun onClickUnselectlisneter(pos: Int) {
 
-                getListPost(explore_video_list?.get(pos)?.postID, userData?.userID, "Add", RestClient.apiType, RestClient.apiVersion)
-                val intLike: Int? = explore_video_list?.get(pos)?.postLike!!.toInt()
-                explore_video_list?.get(pos)?.postLike = (intLike!! + 1).toString()
-                txt_like.text = explore_video_list?.get(pos)?.postLike
-            }
+                    getListPost(
+                        explore_video_list?.get(pos)?.postID,
+                        userData?.userID,
+                        "Add",
+                        RestClient.apiType,
+                        RestClient.apiVersion
+                    )
+                    val intLike: Int? = explore_video_list?.get(pos)?.postLike!!.toInt()
+                    explore_video_list?.get(pos)?.postLike = (intLike!! + 1).toString()
+                    txt_like.text = explore_video_list?.get(pos)?.postLike
+                }
 
-            override fun onClickSelectlisneter(pos: Int) {
+                override fun onClickSelectlisneter(pos: Int) {
 
-                getUnLikePost(explore_video_list?.get(pos)?.postID, userData?.userID, "Remove", RestClient.apiType, RestClient.apiVersion)
-                var subLike = (explore_video_list?.get(pos)?.postLike?.toInt()!!) - 1
-                explore_video_list?.get(pos)?.postLike = subLike.toString()
-                txt_like.text = explore_video_list?.get(pos)?.postLike.toString()
-            }
+                    getUnLikePost(
+                        explore_video_list?.get(pos)?.postID,
+                        userData?.userID,
+                        "Remove",
+                        RestClient.apiType,
+                        RestClient.apiVersion
+                    )
+                    var subLike = (explore_video_list?.get(pos)?.postLike?.toInt()!!) - 1
+                    explore_video_list?.get(pos)?.postLike = subLike.toString()
+                    txt_like.text = explore_video_list?.get(pos)?.postLike.toString()
+                }
 
-            override fun onClickPlaylisneter(pos: Int, videofile: String) {
-            }
+                override fun onClickPlaylisneter(pos: Int, videofile: String) {
+                }
 
-            override fun onComment(pos: Int, from: String, editText: EditText, commentcomment: String) {
-                MyUtils.hideKeyboard1(mActivity!!)
-                sendPostComment(explore_video_list!![pos]!!.postID, explore_video_list!![pos]!!.postMediaType, commentcomment, pos, editText)
+                override fun onComment(
+                    pos: Int,
+                    from: String,
+                    editText: EditText,
+                    commentcomment: String
+                ) {
+                    MyUtils.hideKeyboard1(mActivity!!)
+                    sendPostComment(
+                        explore_video_list!![pos]!!.postID,
+                        explore_video_list!![pos]!!.postMediaType,
+                        commentcomment,
+                        pos,
+                        editText
+                    )
 
-            }
+                }
 
-        }, explore_video_list!!, false)
-        viewPager.adapter=mViewPagerAdapter
+            }, explore_video_list!!, false)
+        viewPager.adapter = mViewPagerAdapter
         viewPager.setCurrentItem(pos, true)
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
                 if (mViewPagerAdapter != null) {
                     mViewPagerAdapter?.stopPlayer()
                     mViewPagerAdapter?.pausePlayer()
@@ -264,11 +320,17 @@ class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
 
             jsonObject.put("loginuserID", userData?.userID)
             jsonObject.put("languageID", userData?.languageID)
-            jsonObject.put("postDescription",explore_video_list?.get(positionPost)?.postDescription)
-            jsonObject.put("postLanguage","en")
+            jsonObject.put(
+                "postDescription",
+                explore_video_list?.get(positionPost)?.postDescription
+            )
+            jsonObject.put("postLanguage", "en")
             jsonObject.put("postID", explore_video_list?.get(positionPost)?.postID)
             jsonObject.put("postCategory", "")
-            jsonObject.put("postPrivacyType",explore_video_list?.get(positionPost)?.postPrivacyType)
+            jsonObject.put(
+                "postPrivacyType",
+                explore_video_list?.get(positionPost)?.postPrivacyType
+            )
             jsonObject.put("postUploadDate", formattedDate)
             jsonObject.put("connectiontypeIDs", "")
             jsonObject.put("apiType", RestClient.apiType)
@@ -276,11 +338,14 @@ class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        when ( explore_video_list?.get(positionPost)?.postMediaType) {
+        when (explore_video_list?.get(positionPost)?.postMediaType) {
 
             "Video" -> {
-                if (! explore_video_list?.get(positionPost)?.postLocation.isNullOrEmpty()) {
-                    jsonObject.put("postLocation",  explore_video_list?.get(positionPost)?.postLocation)
+                if (!explore_video_list?.get(positionPost)?.postLocation.isNullOrEmpty()) {
+                    jsonObject.put(
+                        "postLocation",
+                        explore_video_list?.get(positionPost)?.postLocation
+                    )
 
                 } else {
                     // jsonObject.put("postLocation", MyUtils.currentLocation.toString())
@@ -288,26 +353,31 @@ class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
 
                 }
                 if (!explore_video_list?.get(positionPost)?.postLatitude.isNullOrEmpty()) {
-                    jsonObject.put("postLatitude", explore_video_list?.get(positionPost)?.postLatitude)
+                    jsonObject.put(
+                        "postLatitude",
+                        explore_video_list?.get(positionPost)?.postLatitude
+                    )
 
                 } else {
                     jsonObject.put("postLatitude", MyUtils.currentLattitude.toString())
 
                 }
                 if (!explore_video_list?.get(positionPost)?.postLongitude.isNullOrEmpty()) {
-                    jsonObject.put("postLongitude", explore_video_list?.get(positionPost)?.postLongitude)
+                    jsonObject.put(
+                        "postLongitude",
+                        explore_video_list?.get(positionPost)?.postLongitude
+                    )
 
                 } else {
                     jsonObject.put("postLongitude", MyUtils.currentLongtiude.toString())
 
                 }
-                when( explore_video_list?.get(positionPost)?.postType)
-                {
-                    "ExploreVideos"->{
+                when (explore_video_list?.get(positionPost)?.postType) {
+                    "ExploreVideos" -> {
                         jsonObject.put("postType", "ExploreTricks")
 
                     }
-                    "ExploreTricks"->{
+                    "ExploreTricks" -> {
                         jsonObject.put("postType", "ExploreVideos")
 
                     }
@@ -321,10 +391,19 @@ class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
                         for (i in explore_video_list?.get(positionPost)?.postSerializedData!![0].albummedia.indices) {
                             val jsonObjectAlbummedia = JSONObject()
                             try {
-                                jsonObjectAlbummedia.put("albummediaFile", explore_video_list?.get(positionPost)?.postSerializedData!![0].albummedia[i].albummediaFile)
-                                jsonObjectAlbummedia.put("albummediaThumbnail", explore_video_list?.get(positionPost)?.postSerializedData!![0].albummedia[i].albummediaThumbnail)
+                                jsonObjectAlbummedia.put(
+                                    "albummediaFile",
+                                    explore_video_list?.get(positionPost)?.postSerializedData!![0].albummedia[i].albummediaFile
+                                )
+                                jsonObjectAlbummedia.put(
+                                    "albummediaThumbnail",
+                                    explore_video_list?.get(positionPost)?.postSerializedData!![0].albummedia[i].albummediaThumbnail
+                                )
                                 jsonObjectAlbummedia.put("albummediaFileType", "Video")
-                                jsonObjectAlbummedia.put("albummediaFileSize", explore_video_list?.get(positionPost)?.postSerializedData!![0].albummedia[i].albummediaFileSize)
+                                jsonObjectAlbummedia.put(
+                                    "albummediaFileSize",
+                                    explore_video_list?.get(positionPost)?.postSerializedData!![0].albummedia[i].albummediaFileSize
+                                )
                                 jsonArrayAlbummedia.put(i, jsonObjectAlbummedia)
                             } catch (e: Exception) {
                                 e.printStackTrace()
@@ -345,61 +424,69 @@ class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
 
 
         val createPostModel = ViewModelProviders.of(this@ExploreVideoDetailFragment).get(
-            CreatePostModel::class.java)
+            CreatePostModel::class.java
+        )
         createPostModel.apiFunction(mActivity!!, jsonArray.toString(), "editPost")
-                .observe(this@ExploreVideoDetailFragment,
-                        androidx.lifecycle.Observer { response ->
-                            if (!response.isNullOrEmpty()) {
-                                MyUtils.dismissProgressDialog()
-                                if (response[0].status.equals("true", true)) {
-                                    MyUtils.hideKeyboard1(mActivity!!)
+            .observe(this@ExploreVideoDetailFragment,
+                androidx.lifecycle.Observer { response ->
+                    if (!response.isNullOrEmpty()) {
+                        MyUtils.dismissProgressDialog()
+                        if (response[0].status.equals("true", true)) {
+                            MyUtils.hideKeyboard1(mActivity!!)
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                response[0].message,
+                                ll_video_details
+                            )
+                            (activity as MainActivity).onBackPressed()
+
+
+                        } else {
+                            //No data and no internet
+                            if (MyUtils.isInternetAvailable(mActivity!!)) {
+                                if (!response[0].message.isNullOrEmpty()) {
                                     MyUtils.showSnackbar(
-                                            mActivity!!,
-                                            response[0].message,
-                                            ll_video_details
+                                        mActivity!!,
+                                        response[0].message,
+                                        ll_video_details
                                     )
-                                    (activity as MainActivity).onBackPressed()
-
-
-                                } else {
-                                    //No data and no internet
-                                    if (MyUtils.isInternetAvailable(mActivity!!)) {
-                                        if (!response[0].message.isNullOrEmpty()) {
-                                            MyUtils.showSnackbar(
-                                                    mActivity!!,
-                                                    response[0].message,
-                                                    ll_video_details
-                                            )
-                                        }
-
-                                    } else {
-                                        MyUtils.showSnackbar(
-                                                mActivity!!,
-                                                resources.getString(R.string.error_common_network),
-                                                ll_video_details
-                                        )
-                                    }
                                 }
 
                             } else {
-                                MyUtils.dismissProgressDialog()
-                                if (MyUtils.isInternetAvailable(mActivity!!)) {
-                                    MyUtils.showSnackbar(
-                                            mActivity!!,
-                                            resources.getString(R.string.error_crash_error_message), ll_video_details
-                                    )
-                                } else {
-                                    MyUtils.showSnackbar(
-                                            mActivity!!,
-                                            resources.getString(R.string.error_common_network), ll_video_details
-                                    )
-                                }
+                                MyUtils.showSnackbar(
+                                    mActivity!!,
+                                    resources.getString(R.string.error_common_network),
+                                    ll_video_details
+                                )
                             }
-                        })
+                        }
+
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        if (MyUtils.isInternetAvailable(mActivity!!)) {
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                resources.getString(R.string.error_crash_error_message),
+                                ll_video_details
+                            )
+                        } else {
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                resources.getString(R.string.error_common_network), ll_video_details
+                            )
+                        }
+                    }
+                })
     }
 
 
-    private fun sendPostComment(postID: String, postMediaType: String, commentComment: String, position: Int, view1: EditText) {
+    private fun sendPostComment(
+        postID: String,
+        postMediaType: String,
+        commentComment: String,
+        position: Int,
+        view1: EditText
+    ) {
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
         try {
@@ -407,12 +494,9 @@ class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
             jsonObject.put("languageID", userData?.languageID)
             jsonObject.put("postID", postID)
             jsonObject.put("action", "Add")
-            if(postMediaType.equals("Photo"))
-            {
+            if (postMediaType.equals("Photo")) {
                 jsonObject.put("commentMediaType", "Image")
-            }
-            else
-            {
+            } else {
                 jsonObject.put("commentMediaType", postMediaType)
             }
 
@@ -425,46 +509,51 @@ class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-        val apiCall = ViewModelProviders.of(this@ExploreVideoDetailFragment!!).get(CommentModel::class.java)
+        val apiCall =
+            ViewModelProviders.of(this@ExploreVideoDetailFragment!!).get(CommentModel::class.java)
         apiCall?.apiFunction(mActivity!!, true, jsonArray.toString(), 1)
-                ?.observe(this@ExploreVideoDetailFragment,
-                        Observer<List<CommentPojo>?>
-                        { response ->
+            ?.observe(this@ExploreVideoDetailFragment,
+                Observer<List<CommentPojo>?>
+                { response ->
 
-                            if (!response.isNullOrEmpty()) {
-                                if (response[0].status.equals("true")) {
-                                    if (!response[0].data.isNullOrEmpty()) {
-                                        explore_video_list!![position]!!.postCommentList?.add(0, response[0].data[0])
-                                        explore_video_list!![position]!!.postComment = (explore_video_list!![position]!!.postComment.toInt() + 1).toString()
-                                    }
-                                    mViewPagerAdapter?.notifyDataSetChanged()
-                                    view1?.text.clear()
-                                } else {
-                                    //data not find
-                                    MyUtils.showSnackbar(
-                                            mActivity!!,
-                                            response[0].message,
-                                            viewPager!!
-                                    )
-                                }
-                            } else {
-                                if (!MyUtils.isInternetAvailable(mActivity!!)) {
-                                    MyUtils.showSnackbar(
-                                            mActivity!!,
-                                            resources.getString(R.string.error_common_network),
-                                            viewPager!!
-
-                                    )
-                                } else {
-                                    MyUtils.showSnackbar(
-                                            mActivity!!,
-                                            resources.getString(R.string.error_crash_error_message),
-                                            viewPager!!
-
-                                    )
-                                }
+                    if (!response.isNullOrEmpty()) {
+                        if (response[0].status.equals("true")) {
+                            if (!response[0].data.isNullOrEmpty()) {
+                                explore_video_list!![position]!!.postCommentList?.add(
+                                    0,
+                                    response[0].data[0]
+                                )
+                                explore_video_list!![position]!!.postComment =
+                                    (explore_video_list!![position]!!.postComment.toInt() + 1).toString()
                             }
-                        })
+                            mViewPagerAdapter?.notifyDataSetChanged()
+                            view1?.text.clear()
+                        } else {
+                            //data not find
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                response[0].message,
+                                viewPager!!
+                            )
+                        }
+                    } else {
+                        if (!MyUtils.isInternetAvailable(mActivity!!)) {
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                resources.getString(R.string.error_common_network),
+                                viewPager!!
+
+                            )
+                        } else {
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                resources.getString(R.string.error_crash_error_message),
+                                viewPager!!
+
+                            )
+                        }
+                    }
+                })
     }
 
     override fun onClick(v: View?) {
@@ -478,49 +567,13 @@ class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun getUnLikePost(postID: String?, userID: String?, action: String, apiType: String, apiVersion: String) {
-
-        val jsonObject = JSONObject()
-        val jsonArray = JSONArray()
-
-        try {
-
-            jsonObject.put("postID", postID)
-            jsonObject.put("loginuserID", userID)
-            jsonObject.put("action", action)
-            jsonObject.put("apiType", apiType)
-            jsonObject.put("apiVersion", apiVersion)
-            jsonArray.put(jsonObject)
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        } catch (e: JsonParseException) {
-            e.printStackTrace()
-        }
-        Log.d("LIKE_OBJECT", jsonObject.toString())
-        var postLikeModel = ViewModelProviders.of(this@ExploreVideoDetailFragment).get(LikePostModel::class.java)
-        postLikeModel.getPostLikeApi(mActivity!!, false, jsonArray.toString())
-                .observe(this@ExploreVideoDetailFragment,
-                        Observer { postLikepojo ->
-
-                            if (postLikepojo != null && postLikepojo.isNotEmpty()) {
-
-                                if (postLikepojo[0].status.equals("true", true)) {
-
-                                    img_unselected.visibility = View.VISIBLE
-                                    img_selected.visibility = View.GONE
-                                } else {
-
-                                }
-
-                            } else {
-
-                            }
-
-                        })
-    }
-
-    private fun getListPost(postID: String?, userID: String?, action: String, apiType: String, apiVersion: String) {
+    private fun getUnLikePost(
+        postID: String?,
+        userID: String?,
+        action: String,
+        apiType: String,
+        apiVersion: String
+    ) {
 
         val jsonObject = JSONObject()
         val jsonArray = JSONArray()
@@ -541,33 +594,92 @@ class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
         }
         Log.d("LIKE_OBJECT", jsonObject.toString())
         var postLikeModel =
-                ViewModelProviders.of(this@ExploreVideoDetailFragment).get(LikePostModel::class.java)
+            ViewModelProviders.of(this@ExploreVideoDetailFragment).get(LikePostModel::class.java)
         postLikeModel.getPostLikeApi(mActivity!!, false, jsonArray.toString())
-                .observe(this@ExploreVideoDetailFragment,
-                        Observer { postLikepojo ->
+            .observe(this@ExploreVideoDetailFragment,
+                Observer { postLikepojo ->
 
-                            if (postLikepojo != null && postLikepojo.isNotEmpty()) {
+                    if (postLikepojo != null && postLikepojo.isNotEmpty()) {
 
-                                if (postLikepojo[0].status.equals("true", true)) {
+                        if (postLikepojo[0].status.equals("true", true)) {
 
-                                    img_unselected.visibility = View.GONE
-                                    img_selected.visibility = View.VISIBLE
-                                } else {
+                            img_unselected.visibility = View.VISIBLE
+                            img_selected.visibility = View.GONE
+                        } else {
 
-                                }
+                        }
 
-                            } else {
+                    } else {
 
-                            }
+                    }
 
-                        })
+                })
+    }
+
+    private fun getListPost(
+        postID: String?,
+        userID: String?,
+        action: String,
+        apiType: String,
+        apiVersion: String
+    ) {
+
+        val jsonObject = JSONObject()
+        val jsonArray = JSONArray()
+
+        try {
+
+            jsonObject.put("postID", postID)
+            jsonObject.put("loginuserID", userID)
+            jsonObject.put("action", action)
+            jsonObject.put("apiType", apiType)
+            jsonObject.put("apiVersion", apiVersion)
+            jsonArray.put(jsonObject)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } catch (e: JsonParseException) {
+            e.printStackTrace()
+        }
+        Log.d("LIKE_OBJECT", jsonObject.toString())
+        var postLikeModel =
+            ViewModelProviders.of(this@ExploreVideoDetailFragment).get(LikePostModel::class.java)
+        postLikeModel.getPostLikeApi(mActivity!!, false, jsonArray.toString())
+            .observe(this@ExploreVideoDetailFragment,
+                Observer { postLikepojo ->
+
+                    if (postLikepojo != null && postLikepojo.isNotEmpty()) {
+
+                        if (postLikepojo[0].status.equals("true", true)) {
+
+                            img_unselected.visibility = View.GONE
+                            img_selected.visibility = View.VISIBLE
+                        } else {
+
+                        }
+
+                    } else {
+
+                    }
+
+                })
     }
 
     private fun openBottomSheetForShare(pos: Int) {
         list_bottomsheet = ArrayList()
         list_bottomsheet!!.clear()
-        list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_share_in_post_icon, resources.getString(R.string.share_in_a_post)))
-        list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_send_messages_icon, resources.getString(R.string.send_in_a_private_message)))
+        list_bottomsheet!!.add(
+            ThreedotsBottomPojo(
+                R.drawable.popup_share_in_post_icon,
+                resources.getString(R.string.share_in_a_post)
+            )
+        )
+        list_bottomsheet!!.add(
+            ThreedotsBottomPojo(
+                R.drawable.popup_send_messages_icon,
+                resources.getString(R.string.send_in_a_private_message)
+            )
+        )
 
         val bottomSheet = ThreeDotsBottomSheetFragment()
         val bundle = Bundle()
@@ -589,8 +701,8 @@ class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
                         shareIntent.action = Intent.ACTION_SEND
                         shareIntent.type = "text/plain"
                         shareIntent.putExtra(
-                                Intent.EXTRA_TEXT,
-                                "Hey check out post on FSL" + "\n\nhttps://play.google.com/store/apps/details?id=${mActivity!!.packageName}"
+                            Intent.EXTRA_TEXT,
+                            "Hey check out post on FSL" + "\n\nhttps://play.google.com/store/apps/details?id=${mActivity!!.packageName}"
                         )
                         shareIntent.putExtra(Intent.EXTRA_SUBJECT, "FSL")
                         startActivity(Intent.createChooser(shareIntent, "Share post via"))
@@ -635,60 +747,60 @@ class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
         }
         jsonArray.put(jsonObject)
         var getEmployementModel =
-                ViewModelProviders.of(this@ExploreVideoDetailFragment).get(ExploreVideoModel::class.java)
+            ViewModelProviders.of(this@ExploreVideoDetailFragment)
+                .get(ExploreVideoModel::class.java)
         getEmployementModel.getExploreVList(mActivity!!, false, jsonArray.toString())
-                .observe(viewLifecycleOwner,
-                        Observer { exploreVidelistpojo ->
+            .observe(viewLifecycleOwner,
+                Observer { exploreVidelistpojo ->
 
-                            MyUtils.dismissProgressDialog()
+                    MyUtils.dismissProgressDialog()
 
-                            if (exploreVidelistpojo != null && exploreVidelistpojo.isNotEmpty()) {
+                    if (exploreVidelistpojo != null && exploreVidelistpojo.isNotEmpty()) {
 
-                                if (exploreVidelistpojo[0].status.equals("true", true)) {
-                                    for (i in 0 until explore_video_list?.size!!) {
-                                        if (explore_video_list?.get(i)?.postID.equals(postId, false)) {
-                                            explore_video_list?.add(i, exploreVidelistpojo?.get(0)?.data?.get(0))
-                                            break
-                                        }
-                                    }
-                                    if (mViewPagerAdapter != null) {
-                                        mViewPagerAdapter?.notifyDataSetChanged()
-                                    }
-                                } else {
-                                    (activity as MainActivity).showSnackBar(exploreVidelistpojo!![0]!!.message!!)
-                                }
-
-                            } else {
-                                MyUtils.dismissProgressDialog()
-                                try {
-                                    if (!MyUtils.isInternetAvailable(MyApplication.instance)) {
-                                        (activity as MainActivity).showSnackBar(resources.getString(R.string.error_common_network))
-                                    } else {
-                                        (activity as MainActivity).showSnackBar(resources.getString(R.string.error_crash_error_message))
-                                    }
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
+                        if (exploreVidelistpojo[0].status.equals("true", true)) {
+                            for (i in 0 until explore_video_list?.size!!) {
+                                if (explore_video_list?.get(i)?.postID.equals(postId, false)) {
+                                    explore_video_list?.add(
+                                        i,
+                                        exploreVidelistpojo?.get(0)?.data?.get(0)
+                                    )
+                                    break
                                 }
                             }
+                            if (mViewPagerAdapter != null) {
+                                mViewPagerAdapter?.notifyDataSetChanged()
+                            }
+                        } else {
+                            (activity as MainActivity).showSnackBar(exploreVidelistpojo!![0]!!.message!!)
+                        }
 
-                        })
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        try {
+                            if (!MyUtils.isInternetAvailable(MyApplication.instance)) {
+                                (activity as MainActivity).showSnackBar(resources.getString(R.string.error_common_network))
+                            } else {
+                                (activity as MainActivity).showSnackBar(resources.getString(R.string.error_crash_error_message))
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+
+                })
     }
 
     override fun onStop() {
         super.onStop()
-        if(mViewPagerAdapter!=null)
-        {
+        if (mViewPagerAdapter != null) {
             mViewPagerAdapter?.stopPlayer()
             mViewPagerAdapter?.pausePlayer()
         }
-
-
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if(mViewPagerAdapter!=null)
-        {
+        if (mViewPagerAdapter != null) {
             mViewPagerAdapter?.stopPlayer()
             mViewPagerAdapter?.pausePlayer()
         }

@@ -46,7 +46,7 @@ class FullScreenVideo : AppCompatActivity() {
         }
         val controlView = findViewById<PlayerControlView>(R.id.exo_controller)
         ivFullscreen = controlView.findViewById<View>(R.id.exo_fullscreen_icon) as ImageButton
-        progressBar = controlView.findViewById<View>(R.id.progressBar) as ProgressBar
+        progressBar = findViewById<View>(R.id.progressBar) as ProgressBar
         ivFullscreen!!.visibility = View.GONE
         ivFullscreen1 = controlView.findViewById<View>(R.id.exo_fullscreen_icon1) as ImageButton
         ivFullscreen1!!.visibility = View.VISIBLE

@@ -58,11 +58,11 @@ class ExploreVideoDetailAdapter(
     var exoPlayer: SimpleExoPlayer? = null
     var videoPlayPosition = -1
     var cache: SimpleCache? = null
-    var sessionManager:SessionManager?=null
+    var sessionManager: SessionManager? = null
 
     init {
         inflater = LayoutInflater.from(context)
-        sessionManager= SessionManager(context)
+        sessionManager = SessionManager(context)
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
@@ -81,7 +81,8 @@ class ExploreVideoDetailAdapter(
 
     override fun instantiateItem(view: ViewGroup, position: Int): Any {
 
-        val imageLayout = inflater.inflate(R.layout.explore_video_detail_page_activity, view, false)!!
+        val imageLayout =
+            inflater.inflate(R.layout.explore_video_detail_page_activity, view, false)!!
 
 
         val txt_userName = imageLayout.findViewById(R.id.txt_userName) as TextView
@@ -103,7 +104,8 @@ class ExploreVideoDetailAdapter(
         val img_selected = imageLayout.findViewById(R.id.img_selected) as ImageView
         val img_play = imageLayout.findViewById(R.id.img_play) as ImageView
         val playerView = imageLayout.findViewById(R.id.playerView) as PlayerView
-        val exo_player_progress_bar = imageLayout.findViewById(R.id.exo_player_progress_bar) as ProgressBar
+        val exo_player_progress_bar =
+            imageLayout.findViewById(R.id.exo_player_progress_bar) as ProgressBar
         val rcCommentList = imageLayout.findViewById(R.id.rcCommentList) as RecyclerView
         val txt_write_comment = imageLayout.findViewById(R.id.txt_write_comment) as EditText
         val img_send_arrow = imageLayout.findViewById(R.id.img_send_arrow) as ImageView
@@ -121,46 +123,41 @@ class ExploreVideoDetailAdapter(
             imageLayout.img_selected.visibility = View.VISIBLE
         }
 
-        txt_userName.text = exploreList.get(position)!!.userFirstName+" "+exploreList.get(position)!!.userLastName
+        txt_userName.text =
+            exploreList.get(position)!!.userFirstName + " " + exploreList.get(position)!!.userLastName
         txt_like.text = exploreList.get(position)!!.postLike
         txt_views.text = exploreList.get(position)!!.postViews
         txt_comments.text = exploreList.get(position)!!.postComment
-        if(exploreList[position]!!.userProfilePicture.isNullOrEmpty())
-        {
+        if (exploreList[position]!!.userProfilePicture.isNullOrEmpty()) {
             img_userProfile.setImageResource(R.drawable.profile_pic_placeholder)
             img_cUserProfile.setImageResource(R.drawable.profile_pic_placeholder)
 
-        }
-        else
-        {
-           img_userProfile.setImageURI(RestClient.image_base_url_users+exploreList.get(position)!!.userProfilePicture)
-            img_cUserProfile.setImageURI(RestClient.image_base_url_users+sessionManager?.get_Authenticate_User()?.userProfilePicture)
+        } else {
+            img_userProfile.setImageURI(RestClient.image_base_url_users + exploreList.get(position)!!.userProfilePicture)
+            img_cUserProfile.setImageURI(RestClient.image_base_url_users + sessionManager?.get_Authenticate_User()?.userProfilePicture)
 
         }
         img_thumbnail.visibility = View.GONE
         if (exploreList[position]!!.postSerializedData.size > 0) {
-            if(!exploreList[position]!!.postSerializedData[0].albummedia.isNullOrEmpty())
-            {
+            if (!exploreList[position]!!.postSerializedData[0].albummedia.isNullOrEmpty()) {
                 img_thumbnail.visibility = View.VISIBLE
 
-                if(exploreList.get(position)!!.postSerializedData[0].albummedia[0].albummediaThumbnail.isNullOrEmpty())
-                {
-                    var FileName = RestClient.image_base_url_posts + exploreList.get(position)!!.postSerializedData[0].albummedia[0].albummediaFile
+                if (exploreList.get(position)!!.postSerializedData[0].albummedia[0].albummediaThumbnail.isNullOrEmpty()) {
+                    var FileName =
+                        RestClient.image_base_url_posts + exploreList.get(position)!!.postSerializedData[0].albummedia[0].albummediaFile
                     FileName = FileName.substring(0, FileName.lastIndexOf("."))
                     Picasso.get().load(FileName + "_thumb.jpg").into(img_thumbnail)
-                }
-                else
-                {
-                    var FileName = RestClient.image_base_url_posts + exploreList.get(position)!!.postSerializedData[0].albummedia[0].albummediaThumbnail
+                } else {
+                    var FileName =
+                        RestClient.image_base_url_posts + exploreList.get(position)!!.postSerializedData[0].albummedia[0].albummediaThumbnail
                     Picasso.get().load(FileName).into(img_thumbnail)
                 }
 
             }
-            if (!exploreList[position]!!.postSerializedData[0].albummedia.isNullOrEmpty()&& exploreList[position]!!.postSerializedData[0].albummedia[0].isPlaying) {
-                if(!exploreList[position]!!.postSerializedData[0].albummedia.isNullOrEmpty()&& !exploreList[position]?.postSerializedData!![0].albummedia[0].albummediaThumbnail.isNullOrEmpty())
-                {
+            if (!exploreList[position]!!.postSerializedData[0].albummedia.isNullOrEmpty() && exploreList[position]!!.postSerializedData[0].albummedia[0].isPlaying) {
+                if (!exploreList[position]!!.postSerializedData[0].albummedia.isNullOrEmpty() && !exploreList[position]?.postSerializedData!![0].albummedia[0].albummediaThumbnail.isNullOrEmpty()) {
                     img_thumbnail.visibility = View.VISIBLE
-                }else{
+                } else {
                     img_thumbnail.visibility = View.GONE
                 }
                 img_play.visibility = View.GONE
@@ -170,17 +167,21 @@ class ExploreVideoDetailAdapter(
             }
             playerView.setShutterBackgroundColor(Color.TRANSPARENT)
             if (isMuteing) {
-                playerView.playerView.exo_volume_icon.background = context.resources.getDrawable(R.drawable.ic_volume_off_black_24dp)
+                playerView.playerView.exo_volume_icon.background =
+                    context.resources.getDrawable(R.drawable.ic_volume_off_black_24dp)
             } else {
-                playerView.playerView.exo_volume_icon.background = context.resources.getDrawable(R.drawable.ic_volume_up_black_24dp)
+                playerView.playerView.exo_volume_icon.background =
+                    context.resources.getDrawable(R.drawable.ic_volume_up_black_24dp)
             }
             playerView.playerView.exo_volume_icon?.setOnClickListener {
                 if (isMuteing) {
 //                      muteing = false
-                    playerView.playerView.exo_volume_icon?.background = context.resources.getDrawable(R.drawable.ic_volume_up_black_24dp)
+                    playerView.playerView.exo_volume_icon?.background =
+                        context.resources.getDrawable(R.drawable.ic_volume_up_black_24dp)
                 } else {
 //                        muteing = true
-                    playerView.playerView.exo_volume_icon.background = context.resources.getDrawable(R.drawable.ic_volume_off_black_24dp)
+                    playerView.playerView.exo_volume_icon.background =
+                        context.resources.getDrawable(R.drawable.ic_volume_off_black_24dp)
                 }
                 setMuteing(isMuteing)
             }
@@ -193,16 +194,20 @@ class ExploreVideoDetailAdapter(
         } else {
 
             txt_hashtag.text = Constant.decode(exploreList[position]!!.postDescription)
-            txt_hashtag.doResizeTextView(txt_hashtag,3, "...See More", true)
-            txt_hashtag.setHashClickListener(object : PostDesTextView.OnHashEventListener{
+            txt_hashtag.doResizeTextView(txt_hashtag, 3, "...See More", true)
+            txt_hashtag.setHashClickListener(object : PostDesTextView.OnHashEventListener {
                 override fun onHashTagClick(friendsId: String?) {
-                    var hashTagPostListFragment= HashTagPostListFragment()
+                    var hashTagPostListFragment = HashTagPostListFragment()
                     Bundle().apply {
-                        putString("hashTag",friendsId)
-                        putString("postType",exploreList[position]!!.postType)
-                        hashTagPostListFragment.arguments=this
+                        putString("hashTag", friendsId)
+                        putString("postType", exploreList[position]!!.postType)
+                        hashTagPostListFragment.arguments = this
                     }
-                    (context as MainActivity).navigateTo(hashTagPostListFragment,hashTagPostListFragment::class.java.name,true)
+                    (context as MainActivity).navigateTo(
+                        hashTagPostListFragment,
+                        hashTagPostListFragment::class.java.name,
+                        true
+                    )
                 }
 
             })
@@ -230,18 +235,39 @@ class ExploreVideoDetailAdapter(
             onItemClick.onClickSelectlisneter(position)
         }
         imageLayout.img_play.setOnClickListener {
-            playAvailableVideos(position,playerView,img_thumbnail, playerView.exo_volume_icon,exo_player_progress_bar,img_play,exploreList)
+            playAvailableVideos(
+                position,
+                playerView,
+                img_thumbnail,
+                playerView.exo_volume_icon,
+                exo_player_progress_bar,
+                img_play,
+                exploreList
+            )
             // onItemClick.onClickPlaylisneter(position,exploreList?.get(position)?.postSerializedData?.get(0)?.albummedia?.get(0)?.albummediaFile!!)
         }
 
         playerView.exo_fullscreen_icon.setOnClickListener {
             val i = Intent(context, FullScreenVideo::class.java)
-            i.putExtra("videouri", RestClient.image_base_url_posts + exploreList.get(position)?.postSerializedData!![0].albummedia[0].albummediaFile)
+            i.putExtra(
+                "videouri",
+                RestClient.image_base_url_posts + exploreList.get(position)?.postSerializedData!![0].albummedia[0].albummediaFile
+            )
             context.startActivity(i)
             context.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+
+            playerView.exo_volume_icon.visibility = View.GONE
+            playerView.setShutterBackgroundColor(Color.TRANSPARENT)
+            img_thumbnail.visibility = View.VISIBLE
+            img_play.visibility = View.VISIBLE
         }
         img_send_arrow.setOnClickListener {
-            onItemClick.onComment(position,"sendComment",txt_write_comment,txt_write_comment.text.toString().trim())
+            onItemClick.onComment(
+                position,
+                "sendComment",
+                txt_write_comment,
+                txt_write_comment.text.toString().trim()
+            )
         }
         tvCommenViewAll.setOnClickListener {
             var postCommentListFragment = PostCommentListFragment()
@@ -251,75 +277,93 @@ class ExploreVideoDetailAdapter(
                 putSerializable("feedData", exploreList.get(position)!!)
                 postCommentListFragment.arguments = this
             }
-            (context as MainActivity).navigateTo(postCommentListFragment, postCommentListFragment::class.simpleName!!, true)
+            (context as MainActivity).navigateTo(
+                postCommentListFragment,
+                postCommentListFragment::class.simpleName!!,
+                true
+            )
         }
-        if(!exploreList.get(position)?.postCommentList.isNullOrEmpty())
-        {
-            if (exploreList.get(position)?.postCommentList!!.size>=2)
-            {
+        if (!exploreList.get(position)?.postCommentList.isNullOrEmpty()) {
+            if (exploreList.get(position)?.postCommentList!!.size >= 2) {
 
-                tvCommenViewAll.visibility =View.VISIBLE
-            }else
-            {
+                tvCommenViewAll.visibility = View.VISIBLE
+            } else {
 
-                tvCommenViewAll.visibility =View.GONE
+                tvCommenViewAll.visibility = View.GONE
             }
-        }
-        else {
-            tvCommenViewAll.visibility =View.GONE
+        } else {
+            tvCommenViewAll.visibility = View.GONE
         }
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rcCommentList.layoutManager = linearLayoutManager
 
-        val postCommetnAdapter =  CommentAdapter(
-                context, exploreList.get(position)?.postCommentList!!,
-                object : CommentAdapter.OnItemClick {
-                    override fun onClicklisneter(
-                        pos: Int,
-                        actionType: Int,
-                        comentObj: CommentData, v1: View, commentId: String, comment: String, replyPos: Int
-                    ) {
-                        var postCommentListFragment = PostCommentListFragment()
-                        Bundle().apply {
-                            putString("postId", exploreList.get(position)!!.postID)
-                            putString("postUserID", exploreList.get(position)!!.userID)
-                            putSerializable("feedData", exploreList.get(position)!!)
-                            postCommentListFragment.arguments = this
-                        }
-                        (context as MainActivity).navigateTo(postCommentListFragment, postCommentListFragment::class.simpleName!!, true)
-
+        val postCommetnAdapter = CommentAdapter(
+            context, exploreList.get(position)?.postCommentList!!,
+            object : CommentAdapter.OnItemClick {
+                override fun onClicklisneter(
+                    pos: Int,
+                    actionType: Int,
+                    comentObj: CommentData,
+                    v1: View,
+                    commentId: String,
+                    comment: String,
+                    replyPos: Int
+                ) {
+                    var postCommentListFragment = PostCommentListFragment()
+                    Bundle().apply {
+                        putString("postId", exploreList.get(position)!!.postID)
+                        putString("postUserID", exploreList.get(position)!!.userID)
+                        putSerializable("feedData", exploreList.get(position)!!)
+                        postCommentListFragment.arguments = this
                     }
+                    (context as MainActivity).navigateTo(
+                        postCommentListFragment,
+                        postCommentListFragment::class.simpleName!!,
+                        true
+                    )
 
-                    override fun onClickListner(position: Int, from: String, data: CommentData) {
-                        var postCommentListFragment = PostCommentListFragment()
-                        Bundle().apply {
-                            putString("postId", exploreList.get(position)!!.postID)
-                            putString("postUserID", exploreList.get(position)!!.userID)
-                            putSerializable("feedData", exploreList.get(position)!!)
-                            postCommentListFragment.arguments = this
-                        }
-                        (context as MainActivity).navigateTo(postCommentListFragment, postCommentListFragment::class.simpleName!!, true)
+                }
 
-
+                override fun onClickListner(position: Int, from: String, data: CommentData) {
+                    var postCommentListFragment = PostCommentListFragment()
+                    Bundle().apply {
+                        putString("postId", exploreList.get(position)!!.postID)
+                        putString("postUserID", exploreList.get(position)!!.userID)
+                        putSerializable("feedData", exploreList.get(position)!!)
+                        postCommentListFragment.arguments = this
                     }
+                    (context as MainActivity).navigateTo(
+                        postCommentListFragment,
+                        postCommentListFragment::class.simpleName!!,
+                        true
+                    )
 
-                }, ""
+
+                }
+
+            }, ""
         )
         rcCommentList.setHasFixedSize(true)
         rcCommentList.adapter = postCommetnAdapter
 
-        view.addView(imageLayout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        view.addView(
+            imageLayout,
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
 
         return imageLayout
     }
 
-    fun playAvailableVideos(position: Int,
-                            playerView: PlayerView,
-                            thumnail: ImageView,
-                            volume: View?,
-                            progressBar: ProgressBar,
-                            playIcon: ImageView,
-                            feedList: ArrayList<CreatePostData?>?) {
+    fun playAvailableVideos(
+        position: Int,
+        playerView: PlayerView,
+        thumnail: ImageView,
+        volume: View?,
+        progressBar: ProgressBar,
+        playIcon: ImageView,
+        feedList: ArrayList<CreatePostData?>?
+    ) {
         try {
             pausePlayer(position)
             if (!exploreList!![position]!!.postSerializedData[0].albummedia[0].isPlaying) {
@@ -327,13 +371,13 @@ class ExploreVideoDetailAdapter(
                 pausePlayer()
                 exploreList[position]!!.postSerializedData[0].albummedia[0].isPlaying = true
                 playVideo(
-                        position,
-                        playerView,
-                        thumnail,
-                        volume,
-                        progressBar,
-                        playIcon,
-                        feedList
+                    position,
+                    playerView,
+                    thumnail,
+                    volume,
+                    progressBar,
+                    playIcon,
+                    feedList
                 )
             }
 
@@ -353,13 +397,13 @@ class ExploreVideoDetailAdapter(
     }
 
     fun playVideo(
-            videoPlayPosition: Int,
-            playerView: PlayerView,
-            thumnail: ImageView,
-            volume: View?,
-            progressBar: ProgressBar,
-            playIcon: ImageView,
-            feedlist: ArrayList<CreatePostData?>?
+        videoPlayPosition: Int,
+        playerView: PlayerView,
+        thumnail: ImageView,
+        volume: View?,
+        progressBar: ProgressBar,
+        playIcon: ImageView,
+        feedlist: ArrayList<CreatePostData?>?
     ) {
 
         context.runOnUiThread {
@@ -369,9 +413,9 @@ class ExploreVideoDetailAdapter(
                     var videoURI: Uri? = null
 
                     videoURI = Uri.parse(
-                            RestClient.image_base_url_posts + feedlist?.get(videoPlayPosition)!!.postSerializedData?.get(
-                                    0
-                            ).albummedia[0].albummediaFile
+                        RestClient.image_base_url_posts + feedlist?.get(videoPlayPosition)!!.postSerializedData?.get(
+                            0
+                        ).albummedia[0].albummediaFile
                     )
                     val trackSelectionFactory: TrackSelection.Factory
                     trackSelectionFactory = AdaptiveTrackSelection.Factory()
@@ -383,7 +427,7 @@ class ExploreVideoDetailAdapter(
                     val cacheDataSourceFactory = CacheDataSourceFactory1(context, 5 * 1024 * 1024)
 
                     val mediaSource = ProgressiveMediaSource.Factory(cacheDataSourceFactory)
-                            .createMediaSource(videoURI)
+                        .createMediaSource(videoURI)
 
                     stopPlayer()
                     exoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector)
@@ -423,9 +467,9 @@ class ExploreVideoDetailAdapter(
                     muteVideo(isMuteing())
 
                     (exoPlayer as SimpleExoPlayer).seekTo(
-                            feedlist.get(videoPlayPosition)?.postSerializedData?.get(0)!!.albummedia?.get(
-                                    0
-                            ).duration
+                        feedlist.get(videoPlayPosition)?.postSerializedData?.get(0)!!.albummedia?.get(
+                            0
+                        ).duration
                     )
 
                     exoPlayer?.playWhenReady = true
@@ -444,8 +488,8 @@ class ExploreVideoDetailAdapter(
                         }
 
                         override fun onPlayerStateChanged(
-                                playWhenReady: Boolean,
-                                playbackState: Int
+                            playWhenReady: Boolean,
+                            playbackState: Int
                         ) {
 
                             when (playbackState) {
@@ -501,6 +545,7 @@ class ExploreVideoDetailAdapter(
 
 
     }
+
     fun stopPlayer() {
         /* for(i in 0 until feedList.size)
                            {
@@ -526,8 +571,8 @@ class ExploreVideoDetailAdapter(
                 videoPlayPosition = -1
                 for (i in exploreList!!.indices) {
                     if (exploreList.get(i) != null && !exploreList.get(i)?.postSerializedData.isNullOrEmpty() && !exploreList.get(
-                                    i
-                            )?.postSerializedData?.get(0)?.albummedia.isNullOrEmpty()
+                            i
+                        )?.postSerializedData?.get(0)?.albummedia.isNullOrEmpty()
                     )
                         if (exploreList[i]!!.postSerializedData[0].albummedia[0].isPlaying) {
                             videoPlayPosition = i
@@ -538,9 +583,9 @@ class ExploreVideoDetailAdapter(
                 if (videoPlayPosition > -1) {
                     if (exoPlayer != null)
                         exploreList[videoPlayPosition]!!.postSerializedData[0].albummedia[0].duration =
-                                (exoPlayer?.currentPosition!!)
+                            (exoPlayer?.currentPosition!!)
                     exploreList[videoPlayPosition]!!.postSerializedData[0].albummedia[0].isPlaying =
-                            false
+                        false
                     notifyDataSetChanged()
                     videoPlayPosition = -1
 
@@ -567,8 +612,8 @@ class ExploreVideoDetailAdapter(
                     videoPlayPosition = -1
                     for (i in exploreList!!.indices) {
                         if (exploreList.get(i) != null && exploreList.get(i)!!.postSerializedData[0].albummedia != null && exploreList?.get(
-                                        i
-                                )!!.postSerializedData!![0].albummedia.isNotEmpty()
+                                i
+                            )!!.postSerializedData!![0].albummedia.isNotEmpty()
                         )
                             if (exploreList[i]!!.postSerializedData[0].albummedia[0].isPlaying && positionNot != i) {
                                 videoPlayPosition = i
@@ -579,11 +624,11 @@ class ExploreVideoDetailAdapter(
                     if (videoPlayPosition > -1) {
                         if (exoPlayer != null)
                             exploreList.get(videoPlayPosition)!!.postSerializedData[0].albummedia[0].duration =
-                                    (
-                                            exoPlayer?.currentPosition!!
-                                            )
+                                (
+                                        exoPlayer?.currentPosition!!
+                                        )
                         exploreList.get(videoPlayPosition)!!.postSerializedData[0].albummedia[0].isPlaying =
-                                (false)
+                            (false)
                         notifyDataSetChanged()
                         videoPlayPosition = -1
                         if (exoPlayer != null) {
@@ -628,7 +673,7 @@ class ExploreVideoDetailAdapter(
         fun onClickUnselectlisneter(pos: Int)
         fun onClickSelectlisneter(pos: Int)
         fun onClickPlaylisneter(pos: Int, videofile: String)
-        fun onComment(pos: Int, from: String,editText: EditText,commentcomment:String)
+        fun onComment(pos: Int, from: String, editText: EditText, commentcomment: String)
     }
 }
 

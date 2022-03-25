@@ -33,12 +33,13 @@
                         fresco:resize_mode="fit"
                         fresco:controller_layout_id="@layout/exo_playback_control_view"
                         />
+
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/img_thumbnail"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@color/black"
                         android:layout_centerInParent="true"
+                        android:background="@color/black"
                         android:scaleType="fitXY" />
                     <ImageView
                         android:id="@+id/img_play"
