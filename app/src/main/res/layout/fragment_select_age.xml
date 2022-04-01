@@ -32,6 +32,7 @@
                 android:textSize="@dimen/_25ssp" />
 
             <TextView
+                android:id="@+id/select_your_age_group"
                 style="@style/Font.SubTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

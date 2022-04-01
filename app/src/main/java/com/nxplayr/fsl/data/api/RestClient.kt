@@ -22,8 +22,11 @@ class RestClient {
         /*var base = "http://betaapplication.com/fsl/"
         var url = "http://betaapplication.com/fsl/backend/web/index.php/v1/"*/
 
-        var base = "http://13.235.206.122/fsl/"
-        var url = "http://13.235.206.122/fsl/backend/web/index.php/v1/"
+//        var base = "http://13.235.206.122/fsl/"
+//        var url = "http://13.235.206.122/fsl/backend/web/index.php/v1/"
+
+        var base = "https://apis.nxplayr.com/"
+        var url = "https://apis.nxplayr.com/backend/web/index.php/v1/"
 
         var image_base_url_users = base + "backend/web/uploads/users/"
         var image_base_url_banners = base + "backend/web/uploads/banners/"

@@ -7,25 +7,27 @@ import com.nxplayr.fsl.data.model.SignupData
 
 import com.google.gson.Gson
 import com.nxplayr.fsl.data.model.LanguageLabelPojo
+import com.nxplayr.fsl.data.model.LanguageList
+import com.nxplayr.fsl.data.model.LanguageListData
 import com.quickblox.core.helper.StringifyArrayList
 import com.quickblox.users.model.QBUser
 
 class SessionManager {
     companion object {
-        val PREF_NAME:String="LoginSession"
-        val KEY_IS_LOGGEDIN:String="isLoggedIn"
-        val KEY_USER_OBJ:String="AuthenticateUser"
-        val KEY_USER_SETTINGS:String="DefaultSettings"
-        val KEY_USER_EMAIL:String="UserEmail"
-        val KEY_USER_PASSWORD:String="Location"
+        val PREF_NAME: String = "LoginSession"
+        val KEY_IS_LOGGEDIN: String = "isLoggedIn"
+        val KEY_USER_OBJ: String = "AuthenticateUser"
+        val KEY_USER_SETTINGS: String = "DefaultSettings"
+        val KEY_USER_EMAIL: String = "UserEmail"
+        val KEY_USER_PASSWORD: String = "Location"
         val KEY_RECENT_SEARH: String = ""
         val KEY_DynamicString: String = ""
-        val KEY_IsVerify:String = "isVerify"
-        val Key_Email:String= "isEmailLogin"
-        val KEY_SelectedLanguage:String= ""
-        val KEY_SelectedLanguageId:String= ""
+        val KEY_IsVerify: String = "isVerify"
+        val Key_Email: String = "isEmailLogin"
+        val KEY_SelectedLanguage: String = "language"
+        val KEY_SelectedLanguageId: String = "languageId"
 
-        val Key_PushCounter:String = "pushCounter"//fireBase
+        val Key_PushCounter: String = "pushCounter"//fireBase
         val TAG = SessionManager::class.java.simpleName
 
         val KEY_IS_QBUser: String = "isqbUser"
@@ -41,31 +43,39 @@ class SessionManager {
     var _context: Context
     var PRIVATE_MODE = 0
 
-    public constructor(context: Context){
+    public constructor(context: Context) {
         this._context = context
         pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE)
         editor = pref.edit()
     }
-    public fun create_login_session(AuthenticateUser:String,email:String,password:String, isVerify:Boolean,isEmail:Boolean,isUpdate: Boolean=false){
-        if(false)
+
+    public fun create_login_session(
+        AuthenticateUser: String,
+        email: String,
+        password: String,
+        isVerify: Boolean,
+        isEmail: Boolean,
+        isUpdate: Boolean = false
+    ) {
+        if (false)
             clear_login_session()
-        editor.putBoolean(KEY_IS_LOGGEDIN,true)
+        editor.putBoolean(KEY_IS_LOGGEDIN, true)
 
-        editor.putString(Key_Email,email)
-        editor.putString(KEY_USER_PASSWORD,password)
-        editor.putBoolean(KEY_IsVerify,isVerify)
-        editor.putBoolean(Key_Email,isEmail)
+        editor.putString(Key_Email, email)
+        editor.putString(KEY_USER_PASSWORD, password)
+        editor.putBoolean(KEY_IsVerify, isVerify)
+        editor.putBoolean(Key_Email, isEmail)
 
-        editor.putString(KEY_USER_OBJ,AuthenticateUser)
+        editor.putString(KEY_USER_OBJ, AuthenticateUser)
         editor.commit()
         Log.d(TAG, "User login session modified!")
 
 
     }
 
-    public fun login_pass(password:String){
-        editor.putBoolean(KEY_IS_LOGGEDIN,true)
-        editor.putString(KEY_USER_PASSWORD,password)
+    public fun login_pass(password: String) {
+        editor.putBoolean(KEY_IS_LOGGEDIN, true)
+        editor.putString(KEY_USER_PASSWORD, password)
         editor.commit()
 
     }
@@ -121,10 +131,6 @@ class SessionManager {
         }
 
 
-
-
-
-
     /*fun get_UserSettings(): UsersettingPojo.Datum {
 
         val gson = Gson()
@@ -169,6 +175,18 @@ class SessionManager {
         Log.d(TAG, "User login session modified!")
     }
 
+    public fun getSelectedLanguage(): LanguageListData? {
+        return Gson().fromJson<LanguageListData>(
+            pref.getString(KEY_SelectedLanguage, ""),
+            LanguageListData::class.java
+        )
+    }
+
+    public fun setSelectedLanguage(language: LanguageListData?) {
+        editor.putString(KEY_SelectedLanguage, Gson().toJson(language))
+        editor.commit()
+    }
+
     public fun clear_login_session() {
         editor.clear()
         editor.commit()
@@ -190,12 +208,12 @@ class SessionManager {
             editor.commit()
         }
 
-    fun isQBUser(yesno : Boolean){
+    fun isQBUser(yesno: Boolean) {
         editor.putBoolean(KEY_IS_QBUser, yesno)
         editor.commit()
     }
 
-    public fun getYesNoQBUser() : Boolean{
+    public fun getYesNoQBUser(): Boolean {
         return pref.getBoolean(KEY_IS_QBUser, false)
     }
 
@@ -211,7 +229,10 @@ class SessionManager {
 
             if (tagsInString != null) {
                 tags = StringifyArrayList()
-                tags.add(*tagsInString!!.split(",".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray())
+                tags.add(
+                    *tagsInString!!.split(",".toRegex()).dropLastWhile({ it.isEmpty() })
+                        .toTypedArray()
+                )
             }
 
             val user = QBUser(login, password)

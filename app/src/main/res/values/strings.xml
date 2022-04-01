@@ -86,7 +86,7 @@
     <string name="let_s_build_your_profile">Let\'s Build Your Profile</string>
     <string name="building_real_connections_between_real_people_please_add_one_photo_of_yourself">Building real connections between real people. Please add one photo of yourself</string>
     <string name="introduce_yourself">Introduce Yourself</string>
-    <string name="introduce_your_parents">Introduce Your Parents</string>
+    <string name="introduce_your_parents">Parent / Guardian Permission</string>
     <string name="fill_out_the_rest_of_your_details_so_people_know_a_little_more_about_you">Fill out the rest of your details so people know a little more about you</string>
     <string name="first_name">First Name</string>
     <string name="family_name">Family Name</string>
@@ -346,7 +346,7 @@
     <string name="feed_has_been_removed_you_can_not_longer_see_this">Feed has been removed\nYou cannot longer see this.</string>
     <string name="hobbies_ex_Football">Hobbies ex:Football</string>
     <string name="hobbies_added">Hobbies Added</string>
-    <string name="select_modes">Select Mode</string>
+    <string name="select_modes">Select A Module</string>
     <string name="lorem_ipsum_is_simply_dummy_text_of_the_printing">Lorem Ipsum is simply dummy\n text of the printing</string>
     <string name="marketplace">Marketplace</string>
     <string name="business_networking">Business\nNetworking</string>
@@ -459,7 +459,8 @@
     <string name="new_password_should_not_same">New Password should not be same as Current Password</string>
     <string name="new_password_retypepass_not_match"><![CDATA[New Password & Confirm New Password did not matched]]></string>
     <string name="enter_confirm_new_pass">Enter Confirm New Password</string>
-    <string name="by_creating_your_account_you_agree_with_our">By creating your account, you agree with our</string>
+    <string name="by_creating_your_account_you_agree_with_our">By creating your account, you agree to the NXPLAY.R</string>
+    <string name="terms_of_use">Terms of Use</string>
     <string name="terms_conditions"><![CDATA[Terms & Conditions.]]></string>
     <string name="terms_condition"><![CDATA[Terms & Conditions]]></string>
     <string name="give_permission_ro_read_contacts">Please give permission to read contacts.</string>
@@ -501,7 +502,7 @@
     <string name="explain_what_s_wrong_with_this_post">Explain what\'s wrong with this post?</string>
     <string name="unhide_this_post">Unhide this Post</string>
     <string name="send_to">Send To</string>
-    <string name="select_mode_dummy_text">Choose the one that matches your\n current needs (you can easily switch\n anytime between the modes)</string>
+    <string name="select_mode_dummy_text">Choose a module that fits what you are looking for. You can switch anytime.</string>
     <string name="post_link">Post Link</string>
 
     <string name="action_sign_in">Sign in or register</string>
@@ -758,6 +759,11 @@
     <string name="send_feedback">Send a Feedback</string>
     <string name="apply">Apply</string>
     <string name="unsave">Unsave</string>
+    <string name="parent_legal">Parent / Legal Guardian Alert</string>
+    <string name="as_per_your_selection">As per your selection of the age group, you have to fill Parent / Legal Guardian information at the end of the registration process.</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+    <string name="parent_details">Enter your Parent / Guardian information to continue</string>
 
     <string-array name="animals">
         <item>Abyssinian</item>

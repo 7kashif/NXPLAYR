@@ -88,9 +88,9 @@ class MyUtils {
         var currentLongitude = 0.00
         var locationCityName: String = ""
 
-        var currentLattitudeFix : Double = 0.0
-        var currentLongitudeFix : Double = 0.0
-        var locationCityNameFix : String = ""
+        var currentLattitudeFix: Double = 0.0
+        var currentLongitudeFix: Double = 0.0
+        var locationCityNameFix: String = ""
 
         val Per_REQUEST_WRITE_EXTERNAL_STORAGE_1 = 201
         val Per_REQUEST_READ_EXTERNAL_STORAGE_1 = 202
@@ -126,6 +126,7 @@ class MyUtils {
             userDialog = builder.create()
             userDialog.show()
         }
+
         fun getStringSizeLengthFile(size: Long): String? {
             val df = DecimalFormat("0.00")
             val sizeKb = 1024.0f
@@ -162,7 +163,13 @@ class MyUtils {
                     val initialRadius = Math.hypot(cx.toDouble(), cy.toDouble()).toFloat()
 
 
-                    val anim = ViewAnimationUtils.createCircularReveal(dialog.window!!.decorView, cx, cy, initialRadius, 0f)
+                    val anim = ViewAnimationUtils.createCircularReveal(
+                        dialog.window!!.decorView,
+                        cx,
+                        cy,
+                        initialRadius,
+                        0f
+                    )
 
 
                     anim.addListener(object : AnimatorListenerAdapter() {
@@ -191,36 +198,61 @@ class MyUtils {
 
             }*/
 
-        fun setSelectedModeTypeViewColor(context: Context, vtext: ArrayList<View>? = null, colorId: Int) {
+        fun setSelectedModeTypeViewColor(
+            context: Context,
+            vtext: ArrayList<View>? = null,
+            colorId: Int
+        ) {
 
             for (i in 0 until vtext!!.size) {
                 when {
 
                     (vtext[i] is TextInputEditText) -> {
                         (vtext[i] as TextInputEditText).backgroundTintList =
-                                ContextCompat.getColorStateList(context, colorId)
+                            ContextCompat.getColorStateList(context, colorId)
                         (vtext[i] as TextInputEditText).highlightColor =
-                                ContextCompat.getColor(context, colorId)
+                            ContextCompat.getColor(context, colorId)
                     }
-                    (vtext[i] is EditText) -> DrawableCompat.setTint((vtext[i] as EditText).getBackground(), ContextCompat.getColor(context, colorId))
+                    (vtext[i] is EditText) -> DrawableCompat.setTint(
+                        (vtext[i] as EditText).getBackground(),
+                        ContextCompat.getColor(context, colorId)
+                    )
 
                     vtext[i] is TextInputLayout -> {
-                        (vtext[i] as TextInputLayout).defaultHintTextColor = ContextCompat.getColorStateList(context, colorId)
-                        (vtext[i] as TextInputLayout).backgroundTintList = ContextCompat.getColorStateList(context, colorId)
+                        (vtext[i] as TextInputLayout).defaultHintTextColor =
+                            ContextCompat.getColorStateList(context, colorId)
+                        (vtext[i] as TextInputLayout).backgroundTintList =
+                            ContextCompat.getColorStateList(context, colorId)
 
                     }
 
-                    vtext[i] is TextView -> (vtext[i] as TextView).setTextColor(ContextCompat.getColor(context, colorId))
+                    vtext[i] is TextView -> (vtext[i] as TextView).setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            colorId
+                        )
+                    )
 
-                    vtext[i] is ImageView -> (vtext[i] as ImageView).setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(context, colorId)))
+                    vtext[i] is ImageView -> (vtext[i] as ImageView).setImageTintList(
+                        ColorStateList.valueOf(
+                            ContextCompat.getColor(context, colorId)
+                        )
+                    )
 
 
                     (vtext[i] is MaterialButton) -> {
-                        (vtext[i] as MaterialButton).setBackgroundTintList(ContextCompat.getColorStateList(context, colorId))
+                        (vtext[i] as MaterialButton).setBackgroundTintList(
+                            ContextCompat.getColorStateList(
+                                context,
+                                colorId
+                            )
+                        )
                     }
 
 
-                    vtext[i] is SimpleDraweeView -> (vtext[i] as SimpleDraweeView).setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(context, colorId)))
+                    vtext[i] is SimpleDraweeView -> (vtext[i] as SimpleDraweeView).setImageTintList(
+                        ColorStateList.valueOf(ContextCompat.getColor(context, colorId))
+                    )
 
 
                 }
@@ -334,7 +366,8 @@ class MyUtils {
                 }
             }
 
-            a.duration = (targtetHeight / v.context.resources.displayMetrics.density).toInt().toLong()
+            a.duration =
+                (targtetHeight / v.context.resources.displayMetrics.density).toInt().toLong()
             v.startAnimation(a)
         }
 
@@ -350,7 +383,10 @@ class MyUtils {
                 v.requestFocus()
                 Handler().postDelayed({
                     val imm = a.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_NOT_ALWAYS)
+                    imm.toggleSoftInput(
+                        InputMethodManager.SHOW_FORCED,
+                        InputMethodManager.HIDE_NOT_ALWAYS
+                    )
                 }, 50)
                 // a.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
@@ -421,7 +457,7 @@ class MyUtils {
                 val i1 = r.nextInt(max - min + 1) + min
 
                 if (type.equals("Video", ignoreCase = true)) {
-                 //   filename = "VIDEO_" + s + i1.toString() + ".mp4"
+                    //   filename = "VIDEO_" + s + i1.toString() + ".mp4"
                     filename = s + i1.toString() + "post" + ".mp4"
 
                 } else if (type.equals("Audio", ignoreCase = true)) {
@@ -439,7 +475,12 @@ class MyUtils {
             return filename
         }
 
-        fun createFileName(today: Date, type: String = "", imageHeight: Int, imageWidth: Int): String? {
+        fun createFileName(
+            today: Date,
+            type: String = "",
+            imageHeight: Int,
+            imageWidth: Int
+        ): String? {
             var filename: String? = null
             try {
                 val dateFormatter = SimpleDateFormat("ddMMyyyyhhmmss")
@@ -453,11 +494,13 @@ class MyUtils {
                 val i1 = r.nextInt(max - min + 1) + min
 
                 if (type.equals("Video", ignoreCase = true)) {
-                    filename = s + i1.toString() + "post" + "_" + imageHeight.toString() + "X" + imageWidth.toString() + ".mp4"
+                    filename =
+                        s + i1.toString() + "post" + "_" + imageHeight.toString() + "X" + imageWidth.toString() + ".mp4"
                 } else if (type.equals("Audio", ignoreCase = true)) {
                     filename = "Audio" + s + i1.toString() + ".mp3"
                 } else {
-                    filename = s + i1.toString() + "post" + "_" + imageHeight.toString() + "X" + imageWidth.toString() + ".jpg"
+                    filename =
+                        s + i1.toString() + "post" + "_" + imageHeight.toString() + "X" + imageWidth.toString() + ".jpg"
                 }
 
                 //filename = "IMG_"+s+String.valueOf(i1)+".JPEG";
@@ -468,7 +511,13 @@ class MyUtils {
 
             return filename
         }
-        fun createFileNameUser(today: Date, type: String = "", imageHeight: Int, imageWidth: Int): String? {
+
+        fun createFileNameUser(
+            today: Date,
+            type: String = "",
+            imageHeight: Int,
+            imageWidth: Int
+        ): String? {
             var filename: String? = null
             try {
                 val dateFormatter = SimpleDateFormat("ddMMyyyyhhmmss")
@@ -482,11 +531,13 @@ class MyUtils {
                 val i1 = r.nextInt(max - min + 1) + min
 
                 if (type.equals("Video", ignoreCase = true)) {
-                    filename = s + i1.toString() + "post" + "_" + imageHeight.toString() + "X" + imageWidth.toString() + ".mp4"
+                    filename =
+                        s + i1.toString() + "post" + "_" + imageHeight.toString() + "X" + imageWidth.toString() + ".mp4"
                 } else if (type.equals("Audio", ignoreCase = true)) {
                     filename = "Audio" + s + i1.toString() + ".mp3"
                 } else {
-                    filename = s + i1.toString() + "user" + "_" + imageHeight.toString() + "X" + imageWidth.toString() + ".jpg"
+                    filename =
+                        s + i1.toString() + "user" + "_" + imageHeight.toString() + "X" + imageWidth.toString() + ".jpg"
                 }
 
                 //filename = "IMG_"+s+String.valueOf(i1)+".JPEG";
@@ -506,7 +557,8 @@ class MyUtils {
                     if (interpolatedTime == 1f) {
                         v.visibility = View.GONE
                     } else {
-                        v.layoutParams.height = initialHeight - (initialHeight * interpolatedTime).toInt()
+                        v.layoutParams.height =
+                            initialHeight - (initialHeight * interpolatedTime).toInt()
                         v.requestLayout()
                     }
                 }
@@ -516,7 +568,8 @@ class MyUtils {
                 }
             }
 
-            a.duration = (initialHeight / v.context.resources.displayMetrics.density).toInt().toLong()
+            a.duration =
+                (initialHeight / v.context.resources.displayMetrics.density).toInt().toLong()
             v.startAnimation(a)
         }
 
@@ -527,7 +580,8 @@ class MyUtils {
 
 
         fun isValidEmail(email: String): Boolean {
-            val emailPattern = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
+            val emailPattern =
+                "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
             val matcher: Matcher?
             val pattern = Pattern.compile(emailPattern)
 
@@ -537,7 +591,8 @@ class MyUtils {
         }
 
         fun isValidURL(webUrl: String): Boolean {
-            val WebUrl = "^((ftp|http|https):\\/\\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\\.[a-zA-Z]+)+((\\/)[\\w#]+)*(\\/\\w+\\?[a-zA-Z0-9_]+=\\w+(&[a-zA-Z0-9_]+=\\w+)*)?$"
+            val WebUrl =
+                "^((ftp|http|https):\\/\\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\\.[a-zA-Z]+)+((\\/)[\\w#]+)*(\\/\\w+\\?[a-zA-Z0-9_]+=\\w+(&[a-zA-Z0-9_]+=\\w+)*)?$"
             val matcher: Matcher?
             val pattern = Pattern.compile(WebUrl)
 
@@ -572,7 +627,8 @@ class MyUtils {
 //            val pattern = Pattern.compile("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@\$%^&*-]).{6,15}\$")
 
 //            val pattern = Pattern.compile("^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@\$%^&*-]).{6,15}\$")
-            val pattern = Pattern.compile("""^(?=.*[A-Za-z])(?=.*\d)(?=.*[@${'$'}!%*#?&])[A-Za-z\d@${'$'}!%*#?&]{6,15}${'$'}""")
+            val pattern =
+                Pattern.compile("""^(?=.*[A-Za-z])(?=.*\d)(?=.*[@${'$'}!%*#?&])[A-Za-z\d@${'$'}!%*#?&]{6,15}${'$'}""")
 
 //            val pattern = Pattern.compile(  "^(?=.*[A-Za-z])(?=.*)(?=.*[@$!%*#?&])[A-Za-z@$!%*#?&]{6,15}$")
             val matcher = pattern.matcher(pwd)
@@ -592,8 +648,12 @@ class MyUtils {
          */
         fun hideSoftKeyBoardOnTabClicked(context: Context?, v: View?) {
             if (v != null && context != null) {
-                val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(v.applicationWindowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+                val imm =
+                    context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(
+                    v.applicationWindowToken,
+                    InputMethodManager.HIDE_NOT_ALWAYS
+                )
             }
         }
 
@@ -606,7 +666,10 @@ class MyUtils {
             val dialog = Dialog(context)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.setContentView(layoutid)
-            dialog.window!!.setLayout(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT)
+            dialog.window!!.setLayout(
+                ViewGroup.LayoutParams.FILL_PARENT,
+                ViewGroup.LayoutParams.FILL_PARENT
+            )
             dialog.window!!.setBackgroundDrawable(ColorDrawable(context.resources.getColor(android.R.color.transparent)))
             return dialog
         }
@@ -730,21 +793,43 @@ class MyUtils {
             return false
         }
 
-        fun startActivity(oneActivity: Context, secondActivity: Class<*>, finishCurrentActivity: Boolean) {
+        fun startActivity(
+            oneActivity: Context,
+            secondActivity: Class<*>,
+            finishCurrentActivity: Boolean
+        ) {
             val i = Intent(oneActivity, secondActivity)
             oneActivity.startActivity(i)
-            if (finishCurrentActivity)
-                (oneActivity as Activity).finish()
+            if (finishCurrentActivity) (oneActivity as Activity).finish()
+            (oneActivity as Activity).overridePendingTransition(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left
+            )
+        }
 
-            (oneActivity as Activity).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-
+        fun startActivity(
+            mode: String,
+            title: String,
+            oneActivity: Context,
+            secondActivity: Class<*>,
+            finishCurrentActivity: Boolean
+        ) {
+            val i = Intent(oneActivity, secondActivity)
+            i.putExtra("mode", mode)
+            i.putExtra("title", title)
+            oneActivity.startActivity(i)
+            if (finishCurrentActivity) (oneActivity as Activity).finish()
+            (oneActivity as Activity).overridePendingTransition(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left
+            )
         }
 
         fun getResourseId(
-                context: Context,
-                pVariableName: String,
-                pResourseName: String,
-                pPackageName: String
+            context: Context,
+            pVariableName: String,
+            pResourseName: String,
+            pPackageName: String
         ): Int {
 
             try {
@@ -770,7 +855,8 @@ class MyUtils {
             try {
                 dismissProgressDialog()
 
-                progressDialog = ProgressHUD(activity, R.style.CustomBottomSheetDialogTheme, message)
+                progressDialog =
+                    ProgressHUD(activity, R.style.CustomBottomSheetDialogTheme, message)
 
                 progressDialog?.setMessage(message)
 
@@ -785,11 +871,11 @@ class MyUtils {
         }
 
         fun showMessageYesNoListener(
-                context: Context,
-                message: String,
-                title: String = "",
-                okListener: DialogInterface.OnClickListener,
-                NoListener: DialogInterface.OnClickListener
+            context: Context,
+            message: String,
+            title: String = "",
+            okListener: DialogInterface.OnClickListener,
+            NoListener: DialogInterface.OnClickListener
         ): Dialog {
             val builder = MaterialAlertDialogBuilder(context)
             builder.setMessage(message)
@@ -802,9 +888,9 @@ class MyUtils {
             val alert = builder.create()
             alert.setOnShowListener {
                 alert.getButton(AlertDialog.BUTTON_POSITIVE)
-                        .setTextColor(context.resources.getColor(R.color.colorSecondary))
+                    .setTextColor(context.resources.getColor(R.color.colorSecondary))
                 alert.getButton(AlertDialog.BUTTON_NEGATIVE)
-                        .setTextColor(context.resources.getColor(R.color.colorSecondary))
+                    .setTextColor(context.resources.getColor(R.color.colorSecondary))
             }
             alert.show()
 
@@ -813,11 +899,11 @@ class MyUtils {
 
 
         fun versionUpdateDialog(
-                context: Context,
-                message: String,
-                title: String = "",
-                okListener: DialogInterface.OnClickListener,
-                cancleListener: DialogInterface.OnClickListener
+            context: Context,
+            message: String,
+            title: String = "",
+            okListener: DialogInterface.OnClickListener,
+            cancleListener: DialogInterface.OnClickListener
 
         ): MaterialAlertDialogBuilder {
             val builder = MaterialAlertDialogBuilder(context)
@@ -831,17 +917,17 @@ class MyUtils {
         }
 
 
-     /*   fun dismissProgressDialog() {
-            try {
-                if (progressDialog != null && progressDialog!!.isShowing)
-                    dismissDialog(progressDialog as Dialog)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }*/
+        /*   fun dismissProgressDialog() {
+               try {
+                   if (progressDialog != null && progressDialog!!.isShowing)
+                       dismissDialog(progressDialog as Dialog)
+               } catch (e: Exception) {
+                   e.printStackTrace()
+               }
+           }*/
         fun dismissProgressDialog() {
             try {
-                if (progressDialog != null )
+                if (progressDialog != null)
                     progressDialog?.dismiss()
             } catch (e: Exception) {
             }
@@ -858,7 +944,13 @@ class MyUtils {
 
 
                     val anim =
-                            ViewAnimationUtils.createCircularReveal(dialog.window!!.decorView, cx, cy, initialRadius, 0f)
+                        ViewAnimationUtils.createCircularReveal(
+                            dialog.window!!.decorView,
+                            cx,
+                            cy,
+                            initialRadius,
+                            0f
+                        )
 
 
                     anim.addListener(object : AnimatorListenerAdapter() {
@@ -878,10 +970,10 @@ class MyUtils {
 
 
         fun startActivity(
-                oneActivity: Context,
-                secondActivity: Class<*>,
-                finishCurrentActivity: Boolean,
-                lefttorightanimation: Boolean
+            oneActivity: Context,
+            secondActivity: Class<*>,
+            finishCurrentActivity: Boolean,
+            lefttorightanimation: Boolean
         ) {
             val i = Intent(oneActivity, secondActivity)
             oneActivity.startActivity(i)
@@ -889,9 +981,15 @@ class MyUtils {
                 (oneActivity as Activity).finish()
 
             if (lefttorightanimation)
-                (oneActivity as Activity).overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                (oneActivity as Activity).overridePendingTransition(
+                    R.anim.slide_in_left,
+                    R.anim.slide_out_right
+                )
             else
-                (oneActivity as Activity).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                (oneActivity as Activity).overridePendingTransition(
+                    R.anim.slide_in_right,
+                    R.anim.slide_out_left
+                )
 
         }
 
@@ -956,7 +1054,7 @@ return json;
 
             // "RECREATE" THE NEW BITMAP
             val resizedBitmap = Bitmap.createBitmap(
-                    bm, 0, 0, width, height, matrix, false
+                bm, 0, 0, width, height, matrix, false
             )
             bm.recycle()
             return resizedBitmap
@@ -973,7 +1071,8 @@ return json;
                     val initialRadius = Math.hypot(cx.toDouble(), cy.toDouble()).toFloat()
 
 
-                    val anim = ViewAnimationUtils.createCircularReveal(view, cx, cy, initialRadius, 0f)
+                    val anim =
+                        ViewAnimationUtils.createCircularReveal(view, cx, cy, initialRadius, 0f)
 
 
                     anim.addListener(object : AnimatorListenerAdapter() {
@@ -1158,8 +1257,8 @@ return json;
             try {
                 val sdf = SimpleDateFormat("EEE,dd MMM HH:mm")
                 return TimeUnit.DAYS.convert(
-                        sdf.parse(endDate).time - sdf.parse(startDate).time,
-                        TimeUnit.MILLISECONDS
+                    sdf.parse(endDate).time - sdf.parse(startDate).time,
+                    TimeUnit.MILLISECONDS
                 ).toInt()
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
@@ -1235,59 +1334,59 @@ return json;
 
 
             if (seconds < 0) {
-                return  " - "+"not yet"
+                return " - " + "not yet"
             } else if (seconds == 0L) {
-                return  " - "+"Just now"
+                return " - " + "Just now"
             } else if (seconds == 1L) {
-                return  " - "+"Just now"
+                return " - " + "Just now"
             } else if (seconds < 60 && seconds > 2) {
                 return if (!isRemaining)
-                    " - "+seconds.toString() + " sec"
+                    " - " + seconds.toString() + " sec"
                 else
-                    " - "+ seconds.toString() + " sec"
+                    " - " + seconds.toString() + " sec"
             } else if (seconds < 120) {
                 return if (!isRemaining)
-                    " - "+"a min ago"
+                    " - " + "a min ago"
                 else
-                    " - "+ "a min remaining"
+                    " - " + "a min remaining"
             } else if (seconds < 2700)
             // 45 * 60
             {
                 return if (!isRemaining)
-                    " - "+minutes.toString() + " min"
+                    " - " + minutes.toString() + " min"
                 else
-                    " - "+ minutes.toString() + " min"
+                    " - " + minutes.toString() + " min"
             } else if (seconds < 5400)
             // 90 * 60
             {
                 return if (!isRemaining)
-                    " - "+"h"
+                    " - " + "h"
                 else
-                    " - "+ "h"
+                    " - " + "h"
             } else if (seconds < 86400)
             // 24  60  60
             {
                 return if (!isRemaining)
-                    " - "+hours.toString() + "h"
+                    " - " + hours.toString() + "h"
                 else
-                    " - "+ hours.toString() + "h"
+                    " - " + hours.toString() + "h"
             } else if (days >= 1 && days <= 6) {
                 return if (!isRemaining) {
                     if (days == 1L)
-                        " - "+ "1d "
+                        " - " + "1d "
                     else
-                        " - "+days.toString() + "d"
+                        " - " + days.toString() + "d"
                 } else {
                     if (days == 1L)
-                        " - "+"1d "
+                        " - " + "1d "
                     else
-                        " - "+ days.toString() + "d"
+                        " - " + days.toString() + "d"
                 }
             } else if (week >= 1) {
                 return if (week == 1L)
-                    " - "+week.toString() + "w"
+                    " - " + week.toString() + "w"
                 else
-                    " - "+ week.toString() + "w"
+                    " - " + week.toString() + "w"
             }/* else if (seconds < 172800) // 48  60  60
                 if(!isRemaining)
                 return "yesterday";
@@ -1348,6 +1447,7 @@ return json;
 */
             return minute.toString() + " ago"
         }
+
         fun getDisplayableTimeComment(minute: Long): String {
             var minute = minute
 
@@ -1375,7 +1475,7 @@ return json;
                 return "Just now"
             } else if (seconds < 60 && seconds > 2) {
                 return if (!isRemaining)
-                   seconds.toString() + " sec"
+                    seconds.toString() + " sec"
                 else
                     seconds.toString() + " sec"
             } else if (seconds < 120) {
@@ -1387,21 +1487,21 @@ return json;
             // 45 * 60
             {
                 return if (!isRemaining)
-                   minutes.toString() + " min"
+                    minutes.toString() + " min"
                 else
                     minutes.toString() + " min"
             } else if (seconds < 5400)
             // 90 * 60
             {
                 return if (!isRemaining)
-                   "h"
+                    "h"
                 else
                     "h"
             } else if (seconds < 86400)
             // 24  60  60
             {
                 return if (!isRemaining)
-                   hours.toString() + "h"
+                    hours.toString() + "h"
                 else
                     hours.toString() + "h"
             } else if (days >= 1 && days <= 6) {
@@ -1412,7 +1512,7 @@ return json;
                         days.toString() + "d"
                 } else {
                     if (days == 1L)
-                       "1d "
+                        "1d "
                     else
                         days.toString() + "d"
                 }
@@ -1484,10 +1584,10 @@ return json;
 
 
         fun showMessageOKCancel(
-                context: Context,
-                message: String,
-                title: String = "",
-                okListener: DialogInterface.OnClickListener
+            context: Context,
+            message: String,
+            title: String = "",
+            okListener: DialogInterface.OnClickListener
         ): MaterialAlertDialogBuilder {
             val builder = MaterialAlertDialogBuilder(context)
             builder.setMessage(message)
@@ -1501,12 +1601,12 @@ return json;
         }
 
         fun showMessageYesNoRound(
-                context: Context,
-                message: String,
-                messagePositive: String,
-                messageNagative: String,
-                onYesClickListener: View.OnClickListener,
-                isOKOnly: Boolean = false, title: String = ""
+            context: Context,
+            message: String,
+            messagePositive: String,
+            messageNagative: String,
+            onYesClickListener: View.OnClickListener,
+            isOKOnly: Boolean = false, title: String = ""
         ): Dialog {
 
             val builder = Dialog(context, R.style.CustomRoundAlertDailogStyle)
@@ -1544,10 +1644,10 @@ return json;
 
 
         fun showMessageYesNo(
-                context: Context,
-                message: String,
-                title: String = "",
-                okListener: DialogInterface.OnClickListener
+            context: Context,
+            message: String,
+            title: String = "",
+            okListener: DialogInterface.OnClickListener
         ): Dialog {
             val builder = MaterialAlertDialogBuilder(context)
             builder.setMessage(message)
@@ -1562,7 +1662,11 @@ return json;
             return alert
         }
 
-        fun showMessageOK(context: Context, message: String, okListener: DialogInterface.OnClickListener): Dialog {
+        fun showMessageOK(
+            context: Context,
+            message: String,
+            okListener: DialogInterface.OnClickListener
+        ): Dialog {
             val builder = MaterialAlertDialogBuilder(context)
             builder.setMessage(message)
             builder.setCancelable(false)
@@ -1588,7 +1692,7 @@ return json;
             val pattern: Pattern
             val matcher: Matcher
             val EMAIL_PATTERN =
-                    "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
+                "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
             pattern = Pattern.compile(EMAIL_PATTERN)
             matcher = pattern.matcher(email)
             return matcher.matches()
@@ -1596,7 +1700,7 @@ return json;
 
         fun hideKeyboard1(ctx: Context) {
             val inputManager = ctx
-                    .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
             // check if no view has focus:
             val v = (ctx as Activity).currentFocus ?: return
@@ -1606,7 +1710,8 @@ return json;
 
         fun commaToArray(text: String): List<String> {
 
-            return Arrays.asList(*text.split("\\s*,\\s*".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
+            return Arrays.asList(*text.split("\\s*,\\s*".toRegex()).dropLastWhile { it.isEmpty() }
+                .toTypedArray())
         }
 
         /**
@@ -1753,7 +1858,7 @@ return json;
 
         @JvmStatic
         val EMAIL_REGEX =
-                "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
+            "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
 
         fun isEmailValid(email: String): Boolean {
             return EMAIL_REGEX.toRegex().matches(email)
@@ -1798,6 +1903,7 @@ return json;
 
             return filename
         }
+
         @JvmStatic
         fun covertTimeToText(dataDate: String): String {
             var convTime: String = ""
@@ -1859,12 +1965,28 @@ return json;
         }
 
 
-        fun findTimeDifference(startDateTime : String, endDate : String, initDateFormat : String) : String{
+        fun findTimeDifference(
+            startDateTime: String,
+            endDate: String,
+            initDateFormat: String
+        ): String {
 
 //        val currentTime = SimpleDateFormat("HH:mm:ss dd/MM/yyyy").format(Date())
             val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
-            val date1 = format.parse(MyUtils.formatDateNew(startDateTime, initDateFormat, "dd/MM/yyyy HH:mm:ss a"))
-            val date2 = format.parse(MyUtils.formatDateNew(endDate, "HH:mm:ss dd/MM/yyyy", "dd/MM/yyyy HH:mm:ss a"))
+            val date1 = format.parse(
+                MyUtils.formatDateNew(
+                    startDateTime,
+                    initDateFormat,
+                    "dd/MM/yyyy HH:mm:ss a"
+                )
+            )
+            val date2 = format.parse(
+                MyUtils.formatDateNew(
+                    endDate,
+                    "HH:mm:ss dd/MM/yyyy",
+                    "dd/MM/yyyy HH:mm:ss a"
+                )
+            )
 
             val different = date2.getTime() - date1.getTime();
 
@@ -1873,26 +1995,26 @@ return json;
             val hoursInMilli = (different / (1000 * 60 * 60)).toInt()
             val daysInMilli = (hoursInMilli / 24).toInt()
 
-            if (daysInMilli == 1){
+            if (daysInMilli == 1) {
                 return "$daysInMilli day ago"
 //            return "$daysInMilli day ago"
-            }else if (daysInMilli > 1){
+            } else if (daysInMilli > 1) {
                 return formatDate(startDateTime, "HH:mm:ss dd/MM/yyyy", "dd/MM/yyyy")
-            }else if (hoursInMilli == 1){
+            } else if (hoursInMilli == 1) {
                 return "$hoursInMilli hr ago"
-            }else if (hoursInMilli > 1){
+            } else if (hoursInMilli > 1) {
                 return "$hoursInMilli hrs ago"
-            }else if (minutesInMilli == 1){
+            } else if (minutesInMilli == 1) {
                 return "$minutesInMilli min ago"
-            }else if (minutesInMilli > 1){
+            } else if (minutesInMilli > 1) {
                 return "$minutesInMilli mins ago"
-            }else if (minutesInMilli < 1){
+            } else if (minutesInMilli < 1) {
                 return "Just now"
-            }else return ""
+            } else return ""
         }
 
 
-        fun formatDateNew(date: String, initDateFormat: String,endDateFormat: String): String {
+        fun formatDateNew(date: String, initDateFormat: String, endDateFormat: String): String {
             val initDate = SimpleDateFormat(initDateFormat).parse(date.trim { it <= ' ' })
             val formatter = SimpleDateFormat(endDateFormat)
 
@@ -1912,7 +2034,7 @@ return json;
         }
 
         fun decodePushText(text1: String, context: Context): SpannableStringBuilder {
-            var  text = text1
+            var text = text1
 // create the pattern matcher
             val m1 = Pattern.compile("###(.+?)###").matcher(text1)
 
@@ -1931,18 +2053,19 @@ return json;
             while (m.find()) {
 // get the match
 // clear the string buffer
-                var start = m.start () - (matchesSoFar * 6)
-                var end = m.end () - (matchesSoFar * 6)
-                ssb.setSpan(ForegroundColorSpan (context.resources.getColor(R.color.colorPrimary)),
-                        start + 3,
-                        end - 3,
-                        SPAN_EXCLUSIVE_EXCLUSIVE
+                var start = m.start() - (matchesSoFar * 6)
+                var end = m.end() - (matchesSoFar * 6)
+                ssb.setSpan(
+                    ForegroundColorSpan(context.resources.getColor(R.color.colorPrimary)),
+                    start + 3,
+                    end - 3,
+                    SPAN_EXCLUSIVE_EXCLUSIVE
                 )
                 ssb.setSpan(
-                        StyleSpan (Typeface.BOLD),
-                        start + 3,
-                        end - 3,
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    StyleSpan(Typeface.BOLD),
+                    start + 3,
+                    end - 3,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
 
 
@@ -1955,8 +2078,8 @@ return json;
 
 
         fun decodeShareText(
-                text: String,
-                context: Context
+            text: String,
+            context: Context
         ): String? {
             var text = text
             Log.d("hashText", text)
@@ -1971,28 +2094,28 @@ return json;
                 Log.d("match", mat.group())
                 if (mat.group(1) != null && mat.group(1).length >= 1) {
                     ssb.setSpan(
-                            null,
-                            mat.start(),
-                            mat.start() + mat.group().length,
-                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                        null,
+                        mat.start(),
+                        mat.start() + mat.group().length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
                     ssb.setSpan(
-                            ForegroundColorSpan(context.resources.getColor(R.color.colorPrimary)),
-                            mat.start(),
-                            mat.start() + mat.group().length,
-                            0
+                        ForegroundColorSpan(context.resources.getColor(R.color.colorPrimary)),
+                        mat.start(),
+                        mat.start() + mat.group().length,
+                        0
                     )
                     ssb.setSpan(
-                            StyleSpan(Typeface.BOLD),
-                            mat.start(),
-                            mat.start() + mat.group().length,
-                            0
+                        StyleSpan(Typeface.BOLD),
+                        mat.start(),
+                        mat.start() + mat.group().length,
+                        0
                     )
                 }
             }
             // create the pattern matcher
             val m =
-                    Pattern.compile("<SatRate>(.+?)<CatRate>").matcher(text)
+                Pattern.compile("<SatRate>(.+?)<CatRate>").matcher(text)
             var matchesSoFar = 0
             // iterate through all matches
             while (m.find()) { // get the match

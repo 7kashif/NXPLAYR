@@ -36,7 +36,7 @@ class UserRoleListAdapter(
 
         } else if (holder is ViewHolder) {
 //            holder.img_selectMode.setImageURI(listData!![position].apputypeImage)
-            holder.bind(listData!!.get(position), holder.adapterPosition, onItemClick)
+            holder.bind(listData!![position], holder.adapterPosition, onItemClick)
         }
     }
 
@@ -63,7 +63,6 @@ class UserRoleListAdapter(
                 with(itemView) {
 
                     tv_football_type.text = selectTypeList.apputypeName
-//
                     if (selectTypeList.checked!!) {
 
                         when (position) {

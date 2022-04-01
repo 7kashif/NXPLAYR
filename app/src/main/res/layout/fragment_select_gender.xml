@@ -18,7 +18,7 @@
         android:textSize="@dimen/_25ssp" />
 
     <TextView
-        android:id="@+id/tv_select_gender"
+        android:id="@+id/tv_set_gender"
         style="@style/Font.SubTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
 
 
     <com.chand.progressbutton.ProgressButton
-        android:id="@+id/btnSelectGender"
+        android:id="@+id/btnSetGender"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_50sdp"
         android:layout_gravity="center"

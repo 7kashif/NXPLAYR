@@ -2,6 +2,7 @@ package com.nxplayr.fsl.ui.activity.onboarding.view
 
 import android.os.Bundle
 import android.view.View
+import android.webkit.WebSettings
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,10 +18,11 @@ import kotlinx.android.synthetic.main.progressbar.*
 import kotlinx.android.synthetic.main.toolbar.*
 
 
-class TermsActivity : AppCompatActivity(),View.OnClickListener {
+class TermsActivity : AppCompatActivity(), View.OnClickListener {
 
-    private lateinit var  cmsModel: CmsPageModel
-
+    private lateinit var cmsModel: CmsPageModel
+    var mode : String = ""
+    var title : String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_cms)
@@ -29,16 +31,16 @@ class TermsActivity : AppCompatActivity(),View.OnClickListener {
     }
 
     private fun setupViewModel() {
-         cmsModel = ViewModelProvider(this).get(CmsPageModel::class.java)
+        cmsModel = ViewModelProvider(this).get(CmsPageModel::class.java)
     }
-
 
     private fun setupUI() {
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
-        tvToolbarTitle.text = resources.getString(R.string.terms_condition)
-
+        mode = intent.getStringExtra("mode").toString()
+        title = intent.getStringExtra("title").toString()
+        tvToolbarTitle.text = title
         btnRetry.setOnClickListener(this)
         getCmsContent()
     }
@@ -50,59 +52,66 @@ class TermsActivity : AppCompatActivity(),View.OnClickListener {
         webView.visibility = View.GONE
         relativeprogressBar.visibility = View.VISIBLE
 
+        var webpage = ""
+        when (mode) {
+            "1" -> {
+                webpage = "Terms and Conditions"
+            }
+            "2" -> {
+                webpage = "Privacy Policy"
+            }
+            "3" -> {
+                webpage = "Community Guidelines"
+            }
+        }
 
-        cmsModel?.getCmsPage(this!!, "0", "Terms and Conditions" +
-                " ")
-                ?.observe(this, {
+        cmsModel.getCmsPage(this, "0", webpage + " ")
+            .observe(this) {
+                if (it != null && it.isNotEmpty() && it[0].status == "true") {
 
-                    if (it != null && it.isNotEmpty() && it[0].status.equals("true")) {
+                    ll_no_data_found.visibility = View.GONE
+                    nointernetMainRelativelayout.visibility = View.GONE
+                    relativeprogressBar.visibility = View.GONE
 
-                        ll_no_data_found.visibility = View.GONE
-                        nointernetMainRelativelayout.visibility = View.GONE
-                        relativeprogressBar.visibility = View.GONE
+                    webView.visibility = View.VISIBLE
+                    webView.settings.layoutAlgorithm = WebSettings.LayoutAlgorithm.SINGLE_COLUMN;
 
-                        webView.visibility = View.VISIBLE
+                    var text = ("<html><head>"
+                            + "<style type=\"text/css\">body{color: #FFFFFF}"
+                            + "</style></head>"
+                            + "<body>"
+                            + it[0].data[0].cmspageContents
+                            + "</body></html>")
+                    text = "<font color='white'>$text</font>"
+                    webView.loadDataWithBaseURL(null, text, "text/html", "UTF-8", null)
+                    webView.setBackgroundColor(0)
+                } else {
 
-                        var text = ("<html><head>"
-                                + "<style type=\"text/css\">body{color: #FFFFFF}"
-                                + "</style></head>"
-                                + "<body>"
-                                + it[0].data!![0]!!.cmspageContents
-                                + "</body></html>")
-                        text = "<font color='white'>" + text + "</font>";
-                        webView.loadDataWithBaseURL(null, text, "text/html", "UTF-8", null);
-                        webView.setBackgroundColor(0)
-                    } else {
+                    relativeprogressBar.visibility = View.GONE
 
+                    try {
+                        nointernetMainRelativelayout.visibility = View.VISIBLE
+                        if (MyUtils.isInternetAvailable(this)) {
+                            nointernetImageview.setImageDrawable(this.getDrawable(R.drawable.ic_warning_black_24dp))
+                            nointernettextview.text =
+                                (this.getString(R.string.error_crash_error_message))
+                        } else {
+                            nointernetImageview.setImageDrawable(this.getDrawable(R.drawable.ic_signal_wifi_off_black_24dp))
 
-                        if (this != null) {
-                            relativeprogressBar.visibility = View.GONE
-
-                            try {
-                                nointernetMainRelativelayout.visibility = View.VISIBLE
-                                if (MyUtils.isInternetAvailable(this!!)) {
-                                    nointernetImageview.setImageDrawable(this!!.getDrawable(R.drawable.ic_warning_black_24dp))
-                                    nointernettextview.text = (this!!.getString(R.string.error_crash_error_message))
-                                } else {
-                                    nointernetImageview.setImageDrawable(this!!.getDrawable(R.drawable.ic_signal_wifi_off_black_24dp))
-
-                                    nointernettextview.text =
-                                            (this!!.getString(R.string.error_common_network))
-                                }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-
+                            nointernettextview.text =
+                                (this.getString(R.string.error_common_network))
                         }
-
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-                })
 
+                }
+            }
     }
 
     override fun onClick(v: View?) {
-        when(v?.id){
-            R.id.btnRetry->{
+        when (v?.id) {
+            R.id.btnRetry -> {
 
                 getCmsContent()
             }

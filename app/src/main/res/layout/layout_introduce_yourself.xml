@@ -29,7 +29,7 @@
                 android:textSize="@dimen/_25ssp" />
 
             <TextView
-                android:id="@+id/tv_select_gender"
+                android:id="@+id/tv_introduce_yourSelf_details"
                 style="@style/Font.SubTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

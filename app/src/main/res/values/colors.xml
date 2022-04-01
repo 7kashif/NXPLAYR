@@ -128,5 +128,6 @@
     <color name="textcolor02">#8A8A8A</color>
     <color name="btn_purchase">#6D7376</color>
     <color name="notification_setting">#363D44</color>
+    <color name="blackTrans">#4D000000</color>
 
 </resources>

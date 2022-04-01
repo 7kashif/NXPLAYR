@@ -34,20 +34,19 @@ import java.util.*
 class SplashActivity : AppCompatActivity() {
 
     var sessionManager: SessionManager? = null
-    private lateinit var  languageLabelModel: LanguageLabelModel
+    private lateinit var languageLabelModel: LanguageLabelModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
         setContentView(R.layout.activity_splash)
         sessionManager = SessionManager(this@SplashActivity)
         setupViewModel()
         setupUI()
-
-
     }
 
     private fun setupUI() {
@@ -55,42 +54,38 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-         languageLabelModel = ViewModelProvider(this@SplashActivity).get(LanguageLabelModel::class.java)
-
+        languageLabelModel =
+            ViewModelProvider(this@SplashActivity).get(LanguageLabelModel::class.java)
     }
 
     private fun runSplash() {
-      //  Handler().postDelayed({
-            if (sessionManager?.isLoggedIn()!!) {
-                if (sessionManager?.get_Authenticate_User()?.userOVerified.equals("Yes", false))
-                {
-                    startHomeActivity()
-                }
-                else
-                {
-                    var i = Intent(this@SplashActivity, OtpVerificationActivity::class.java)
-                    i.putExtra("from", "LoginByOtpVerification")
-                    startActivity(i)
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-                    finish()
-                }
-
-
+        //  Handler().postDelayed({
+        if (sessionManager?.isLoggedIn()!!) {
+            if (sessionManager?.get_Authenticate_User()?.userOVerified.equals("Yes", false)) {
+                startHomeActivity()
             } else {
-                val sp = getSharedPreferences("Tutorial", Context.MODE_PRIVATE)
-                if (!sp.getBoolean("first", false)) {
-                    val editor = sp.edit()
-                    editor.putBoolean("first", true)
-                    editor.commit()
-                    val intent = Intent(this@SplashActivity, IntroScreenActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                } else {
-                    MyUtils.startActivity(this@SplashActivity, SignInActivity::class.java, true)
-                }
-
+                var i = Intent(this@SplashActivity, OtpVerificationActivity::class.java)
+                i.putExtra("from", "LoginByOtpVerification")
+                startActivity(i)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                finish()
             }
-       // }, 300)
+
+        } else {
+            val sp = getSharedPreferences("Tutorial", Context.MODE_PRIVATE)
+            if (!sp.getBoolean("first", false)) {
+                val editor = sp.edit()
+                editor.putBoolean("first", true)
+                editor.commit()
+                val intent = Intent(this@SplashActivity, IntroScreenActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                MyUtils.startActivity(this@SplashActivity, SignInActivity::class.java, true)
+            }
+
+        }
+        // }, 300)
     }
 
     private fun startHomeActivity() {
@@ -103,9 +98,11 @@ class SplashActivity : AppCompatActivity() {
         val jsonObject = JSONObject()
         try {
             jsonObject.put("loginuserID", "0")
-            jsonObject.put("languageID",  if (sessionManager?.getsetSelectedLanguage()
-                    .isNullOrEmpty()
-            ) "1" else sessionManager?.getsetSelectedLanguage())
+            jsonObject.put(
+                "languageID", if (sessionManager?.getsetSelectedLanguage()
+                        .isNullOrEmpty()
+                ) "1" else sessionManager?.getsetSelectedLanguage()
+            )
             jsonObject.put("langLabelStatus", "")
             jsonObject.put("apiType", RestClient.apiType)
             jsonObject.put("apiVersion", RestClient.apiVersion)
@@ -115,27 +112,29 @@ class SplashActivity : AppCompatActivity() {
         }
         jsonArray.put(jsonObject)
         languageLabelModel.getLanguageList(this@SplashActivity!!, false, jsonArray.toString())
-            .observe(this@SplashActivity,
-                {languageLabelPojo ->
-                    progressBar.visibility = View.GONE
-                    if (languageLabelPojo != null && languageLabelPojo.isNotEmpty()) {
-                        if (languageLabelPojo[0].status == true && !languageLabelPojo[0].data.isNullOrEmpty()) {
+            .observe(
+                this@SplashActivity
+            ) { languageLabelPojo ->
+                progressBar.visibility = View.GONE
+                if (languageLabelPojo != null && languageLabelPojo.isNotEmpty()) {
+                    if (languageLabelPojo[0].status == true && !languageLabelPojo[0].data.isNullOrEmpty()) {
 
-                            sessionManager?.LanguageLabel = languageLabelPojo[0].data?.get(0)
-                            runSplash()
+                        sessionManager?.LanguageLabel = languageLabelPojo[0].data?.get(0)
+                        runSplash()
 
-
-                        } else {
-
-                            showSnackBar(languageLabelPojo[0]!!.info!!)
-                        }
 
                     } else {
-                        errorMethod()
 
+                        showSnackBar(languageLabelPojo[0]!!.info!!)
                     }
-                })
+
+                } else {
+                    errorMethod()
+
+                }
+            }
     }
+
     fun errorMethod() {
         try {
 
@@ -157,7 +156,7 @@ class SplashActivity : AppCompatActivity() {
             btnRetry.visibility = View.VISIBLE
             btnRetry.setOnClickListener {
 
-                    getLanguageLabelList()
+                getLanguageLabelList()
             }
 
 
@@ -173,9 +172,12 @@ class SplashActivity : AppCompatActivity() {
 
     }
 
-    fun printHasyKeyFb(){
+    fun printHasyKeyFb() {
         try {
-            val info = packageManager.getPackageInfo( BuildConfig.APPLICATION_ID, PackageManager.GET_SIGNATURES)
+            val info = packageManager.getPackageInfo(
+                BuildConfig.APPLICATION_ID,
+                PackageManager.GET_SIGNATURES
+            )
             for (signature in info.signatures) {
                 val md = MessageDigest.getInstance("SHA")
                 md.update(signature.toByteArray())

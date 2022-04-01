@@ -10,7 +10,7 @@ data class InteraceLanguageListPojo(
     @SerializedName("message")
         var message: String,
     @SerializedName("status")
-        var status: String
+        var status:  Boolean?=false
 ) : Serializable
 
 data class LanguageListData(

@@ -17,6 +17,7 @@ import com.nxplayr.fsl.data.model.CountryListData
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.PopupMenu
+import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.activity_forgot_password.*
 import kotlinx.android.synthetic.main.activity_signin.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -32,6 +33,7 @@ class ForgotPasswordActivity : AppCompatActivity(),View.OnClickListener {
     var countrylist: ArrayList<String>? = ArrayList()
     private lateinit var  countryListModel: CountryListModel
     private lateinit var  signup: SignupModel
+    var sessionManager: SessionManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +41,7 @@ class ForgotPasswordActivity : AppCompatActivity(),View.OnClickListener {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowCustomEnabled(false)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+        sessionManager = SessionManager(this@ForgotPasswordActivity)
 
         setupViewModel()
         setupUI()
@@ -47,6 +50,23 @@ class ForgotPasswordActivity : AppCompatActivity(),View.OnClickListener {
     }
 
     private fun setupUI() {
+        if (sessionManager?.LanguageLabel != null) {
+            // static data from preference
+            val langLabel = sessionManager?.LanguageLabel
+
+            if (!langLabel?.lngForgotPassword.isNullOrEmpty()) {
+                forgotPasswordTitle.text = langLabel?.lngForgotPassword
+            }
+            if (!langLabel?.lngForgotDetail.isNullOrEmpty()) {
+                forgotPasswordDetails.text = langLabel?.lngForgotDetail
+            }
+            if (!langLabel?.lngEmailMobile.isNullOrEmpty()) {
+                textInput_mobile_textInputLayout.hint = langLabel?.lngEmailMobile
+            }
+            if (!langLabel?.lngContinue.isNullOrEmpty()) {
+                forgotContinueButton.progressText = langLabel?.lngContinue
+            }
+        }
         edit_mobile_text.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
             }

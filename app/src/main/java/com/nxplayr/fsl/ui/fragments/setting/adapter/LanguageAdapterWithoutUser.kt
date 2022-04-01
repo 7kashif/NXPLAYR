@@ -4,17 +4,16 @@ import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.LanguageListData
-import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.item_language_select.view.*
 
 
-class LanguageAdapter(
+class LanguageAdapterWithoutUser(
     val context: Activity, val list_language: ArrayList<LanguageListData>?,
     val onItemClick: OnItemClick,
     var languageId: String
@@ -22,7 +21,7 @@ class LanguageAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val v = LayoutInflater.from(parent.context)
-            .inflate(com.nxplayr.fsl.R.layout.item_language_select, parent, false)
+            .inflate(com.nxplayr.fsl.R.layout.item_language_select_dialog, parent, false)
         return LanguageHolder(v, context)
     }
 
@@ -34,10 +33,10 @@ class LanguageAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is LanguageHolder) {
             var holder1 = holder as LanguageHolder
-            holder.bind(list_language!![position], holder.adapterPosition, onItemClick, languageId)
+            holder.bind(list_language!![position], position, onItemClick, languageId)
 
-            holder1.radiobtn_language.setOnClickListener {
-                onItemClick.onClicled(holder1.adapterPosition, "")
+            holder1.languageMain.setOnClickListener {
+                onItemClick.onClicled(position, "")
                 languageId = list_language[position].languageID
                 notifyDataSetChanged()
             }
@@ -46,12 +45,10 @@ class LanguageAdapter(
 
     class LanguageHolder(itemView: View, context: Activity) : RecyclerView.ViewHolder(itemView) {
         var sessionManager: SessionManager? = null
-        var userData: SignupData? = null
-        var radiobtn_language = itemView.findViewById(R.id.radiobtn_language) as ImageView
+        var languageMain = itemView.findViewById(R.id.languageMain) as LinearLayout
 
         init {
             sessionManager = SessionManager(context)
-            userData = sessionManager?.get_Authenticate_User()
         }
 
         fun bind(
@@ -65,23 +62,15 @@ class LanguageAdapter(
             language_listImageview.setImageURI(RestClient.image_base_url_flag + list_language.languageFlag)
 
             if ((list_language.status)) {
-                radiobtn_language.setImageDrawable(resources.getDrawable(R.drawable.radio_btn_selected))
+                radiobtn_language.setImageResource(R.drawable.radio_btn_selected)
             } else {
-                radiobtn_language.setImageDrawable(resources.getDrawable(R.drawable.radio_btn_unselected))
+                radiobtn_language.setImageResource(R.drawable.radio_btn_unselected)
             }
 
-            if ((userData?.languageID.equals(list_language.languageID, false))) {
-
-                if (languageId.equals(list_language.languageID, false)) {
-                    radiobtn_language.setImageDrawable(resources.getDrawable(R.drawable.radio_btn_selected))
-                } else {
-                    radiobtn_language.setImageDrawable(resources.getDrawable(R.drawable.radio_btn_unselected))
-                }
-            }
-
-
-            radiobtn_language.setOnClickListener {
-                onItemClick.onClicled(adapterPosition, "")
+            if (languageId.equals(list_language.languageID, false)) {
+                radiobtn_language.setImageResource(R.drawable.radio_btn_selected)
+            } else {
+                radiobtn_language.setImageResource(R.drawable.radio_btn_unselected)
             }
 
         }

@@ -30,15 +30,22 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.CountryListModel
 import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
-import com.nxplayr.fsl.data.model.CountryListData
-import com.nxplayr.fsl.data.model.SignupData
-import com.nxplayr.fsl.data.model.SignupPojo
 import com.nxplayr.fsl.util.*
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import com.nxplayr.fsl.R
+import com.nxplayr.fsl.data.model.*
 import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.fragments.dialogs.LanguageDialog
+import com.nxplayr.fsl.ui.fragments.setting.viewmodel.LanguageIntefaceListModel
+import com.nxplayr.fsl.ui.fragments.setting.viewmodel.LanguageLabelModel
+import com.nxplayr.fsl.util.interfaces.LanguageSelection
 import kotlinx.android.synthetic.main.activity_signin.*
+import kotlinx.android.synthetic.main.activity_signin.buttonFacebookLoginScreen
+import kotlinx.android.synthetic.main.activity_signin.flag
+import kotlinx.android.synthetic.main.activity_signin.language
+import kotlinx.android.synthetic.main.activity_signin.language_name
+import kotlinx.android.synthetic.main.activity_signup.*
 import kotlinx.android.synthetic.main.fragment_change_password.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.json.JSONArray
@@ -46,7 +53,7 @@ import org.json.JSONException
 import org.json.JSONObject
 
 
-class SignInActivity : AppCompatActivity(),View.OnClickListener {
+class SignInActivity : AppCompatActivity(), View.OnClickListener {
 
     var sessionManager: SessionManager? = null
     var mobile = false
@@ -56,11 +63,17 @@ class SignInActivity : AppCompatActivity(),View.OnClickListener {
     var last_Name = ""
     var user_Email = ""
     var fbID = ""
-
+    var languageList: ArrayList<LanguageListData>? = ArrayList()
     private lateinit var callbackManager: CallbackManager
-    private lateinit var  countryListModel: CountryListModel
-    private lateinit var  signup: SignupModel
+    private lateinit var countryListModel: CountryListModel
+    private lateinit var signup: SignupModel
+    private lateinit var languageModel: LanguageIntefaceListModel
+    private lateinit var languageLabelModel: LanguageLabelModel
 
+    override fun onResume() {
+        super.onResume()
+        updateLanguage()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,18 +84,64 @@ class SignInActivity : AppCompatActivity(),View.OnClickListener {
         setupViewModel()
         setupUI()
 
-
     }
 
     private fun setupViewModel() {
-         countryListModel = ViewModelProvider(this@SignInActivity).get(CountryListModel::class.java)
-         signup = ViewModelProvider(this@SignInActivity).get(SignupModel::class.java)
+        countryListModel = ViewModelProvider(this@SignInActivity).get(CountryListModel::class.java)
+        signup = ViewModelProvider(this@SignInActivity).get(SignupModel::class.java)
+        languageModel =
+            ViewModelProvider(this@SignInActivity).get(LanguageIntefaceListModel::class.java)
+        languageLabelModel =
+            ViewModelProvider(this@SignInActivity).get(LanguageLabelModel::class.java)
+        languagesApi()
+    }
 
+    private fun updateLanguage() {
+        if (sessionManager != null && sessionManager?.getSelectedLanguage() != null) {
+            language.visibility = View.VISIBLE
+            flag.setImageURI(RestClient.image_base_url_flag + sessionManager?.getSelectedLanguage()!!.languageFlag)
+            language_name.text = sessionManager?.getSelectedLanguage()!!.languageName
+        } else {
+            language.visibility = View.INVISIBLE
+        }
     }
 
     private fun setupUI() {
         initView()
         getCounrtyList()
+        updateContent()
+    }
+
+    private fun updateContent() {
+        if (sessionManager?.LanguageLabel != null) {
+            // static data from preference
+            val langLabel = sessionManager?.LanguageLabel
+
+            if (!langLabel?.lngSignin.isNullOrEmpty()) {
+                titleSignIn.text = langLabel?.lngSignin
+            }
+            if (!langLabel?.lngWelcomeBack.isNullOrEmpty()) {
+                welcomeBack.text = langLabel?.lngWelcomeBack
+            }
+            if (!langLabel?.lngEmailMobile.isNullOrEmpty()) {
+                email_textInputLayout.hint = langLabel?.lngEmailMobile
+            }
+            if (!langLabel?.lngPassword.isNullOrEmpty()) {
+                password_textInput.hint = langLabel?.lngPassword
+            }
+            if (!langLabel?.lngForgotPassword.isNullOrEmpty()) {
+                forgotPasswordtv.text = langLabel?.lngForgotPassword
+            }
+            if (!langLabel?.lngSignin.isNullOrEmpty()) {
+                btn_signIn.progressText = langLabel?.lngSignin
+            }
+            if (!langLabel?.lngNewUser.isNullOrEmpty()) {
+                newUser.text = langLabel?.lngNewUser
+            }
+            if (!langLabel?.lngCreateAc.isNullOrEmpty()) {
+                createAccountText.text = langLabel?.lngCreateAc
+            }
+        }
     }
 
     private fun initView() {
@@ -93,50 +152,56 @@ class SignInActivity : AppCompatActivity(),View.OnClickListener {
         forgotPasswordtv.setOnClickListener(this)
         fbImage.setOnClickListener(this)
         imgLinkedIn.setOnClickListener(this)
+        language.setOnClickListener(this)
 
         buttonFacebookLoginScreen?.setReadPermissions("public_profile", "email")
         buttonFacebookLoginScreen?.registerCallback(callbackManager, object :
-                FacebookCallback<LoginResult> {
+            FacebookCallback<LoginResult> {
             override fun onSuccess(loginResult: LoginResult) {
                 LoginManager.getInstance().logOut()
 
                 val request =
-                        GraphRequest.newMeRequest(loginResult.accessToken) { jsonObj, response ->
-                            try {
-                                //here is the data that you want
-                                user_Email = jsonObj.opt("email").toString()
-                                fbID = jsonObj.opt("id").toString()
-                                user_Name = jsonObj.opt("name").toString()
-                                MyUtils.showSnackbar(this@SignInActivity, "" + user_Name, ll_main_login!!)
-                                if (!fbID.isNullOrEmpty() && !user_Email.isNullOrEmpty()) {
-                                    checkForDuplication(
-                                            user_Email,
-                                            fbID,
-                                            user_Name, "", "")
+                    GraphRequest.newMeRequest(loginResult.accessToken) { jsonObj, response ->
+                        try {
+                            //here is the data that you want
+                            user_Email = jsonObj.opt("email").toString()
+                            fbID = jsonObj.opt("id").toString()
+                            user_Name = jsonObj.opt("name").toString()
+                            MyUtils.showSnackbar(
+                                this@SignInActivity,
+                                "" + user_Name,
+                                ll_main_login!!
+                            )
+                            if (!fbID.isNullOrEmpty() && !user_Email.isNullOrEmpty()) {
+                                checkForDuplication(
+                                    user_Email,
+                                    fbID,
+                                    user_Name, "", ""
+                                )
 
-                                } else {
-                                    MyUtils.showMessageOK(
-                                            this@SignInActivity,
-                                            "your privacy setting in facebook is not allowing us to acccess your data, please try another account or change your privacy settings for CamFire.",
-                                            object : DialogInterface.OnClickListener {
-                                                override fun onClick(dialog: DialogInterface?, which: Int) {
-                                                    dialog?.dismiss()
-                                                }
-                                            })
+                            } else {
+                                MyUtils.showMessageOK(
+                                    this@SignInActivity,
+                                    "your privacy setting in facebook is not allowing us to acccess your data, please try another account or change your privacy settings for CamFire.",
+                                    object : DialogInterface.OnClickListener {
+                                        override fun onClick(dialog: DialogInterface?, which: Int) {
+                                            dialog?.dismiss()
+                                        }
+                                    })
 
-                                }
-                                Log.d("FBLOGIN_JSON_RES", jsonObj.toString())
-                                if (jsonObj.has("id")) {
-//                            handleSignInResultFacebook(jsonObj)
-                                    Log.e("FBLOGIN_Success", jsonObj.toString())
-                                } else {
-                                    Log.e("FBLOGIN_FAILD", jsonObj.toString())
-                                }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-//                        dismissDialogLogin()
                             }
+                            Log.d("FBLOGIN_JSON_RES", jsonObj.toString())
+                            if (jsonObj.has("id")) {
+//                            handleSignInResultFacebook(jsonObj)
+                                Log.e("FBLOGIN_Success", jsonObj.toString())
+                            } else {
+                                Log.e("FBLOGIN_FAILD", jsonObj.toString())
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+//                        dismissDialogLogin()
                         }
+                    }
 
                 val parameters = Bundle()
                 parameters.putString("fields", "name,email,id,picture.type(large)")
@@ -146,15 +211,15 @@ class SignInActivity : AppCompatActivity(),View.OnClickListener {
 
             override fun onCancel() {
                 Toast.makeText(
-                        baseContext, "facebook:onCancel.",
-                        Toast.LENGTH_SHORT
+                    baseContext, "facebook:onCancel.",
+                    Toast.LENGTH_SHORT
                 ).show()
             }
 
             override fun onError(error: FacebookException) {
                 Toast.makeText(
-                        baseContext, "facebook:onError.",
-                        Toast.LENGTH_SHORT
+                    baseContext, "facebook:onError.",
+                    Toast.LENGTH_SHORT
                 ).show()
             }
         })
@@ -170,15 +235,15 @@ class SignInActivity : AppCompatActivity(),View.OnClickListener {
                 var loginType = TextUtils.isDigitsOnly(emailId_edit_text?.text.toString())
                 if (loginType) {
                     tv_countryCode.visibility = View.VISIBLE
-                    setPaddingTextview(tv_countryCode,"Show")
-                    setPaddingEditText(emailId_edit_text,"Show")
+                    setPaddingTextview(tv_countryCode, "Show")
+                    setPaddingEditText(emailId_edit_text, "Show")
                 } else {
                     tv_countryCode.visibility = View.GONE
-                    setPaddingEditText(emailId_edit_text,"hide")
+                    setPaddingEditText(emailId_edit_text, "hide")
                 }
                 if (p0!!.isEmpty()) {
                     tv_countryCode.visibility = View.GONE
-                    setPaddingEditText(emailId_edit_text,"hide")
+                    setPaddingEditText(emailId_edit_text, "hide")
                 }
                 nextButtonEnable()
             }
@@ -253,9 +318,19 @@ class SignInActivity : AppCompatActivity(),View.OnClickListener {
             (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
 
         if (this.tag as Boolean) {
-            password_edit_text.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.hide_icon_login, 0)
+            password_edit_text.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                R.drawable.hide_icon_login,
+                0
+            )
         } else {
-            password_edit_text.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.show_icon_login, 0)
+            password_edit_text.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                R.drawable.show_icon_login,
+                0
+            )
         }
 
         this.setSelection(this.length())
@@ -268,44 +343,42 @@ class SignInActivity : AppCompatActivity(),View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-            R.id.btn_signIn->{
+        when (v?.id) {
+            R.id.btn_signIn -> {
                 chekValidation()
-
             }
-            R.id.tv_countryCode->{
+            R.id.tv_countryCode -> {
                 PopupMenu(this@SignInActivity, v, countrylist!!).showPopUp(object :
-                        PopupMenu.OnMenuSelectItemClickListener {
+                    PopupMenu.OnMenuSelectItemClickListener {
                     override fun onItemClick(item: String, pos: Int) {
                         tv_countryCode.text = item.toString()
                     }
                 })
             }
-            R.id.loginBackButtonIv->{
+            R.id.loginBackButtonIv -> {
                 onBackPressed()
             }
-            R.id.signupWithLL->{
+            R.id.signupWithLL -> {
                 val i = Intent(this, SignupActivity::class.java)
                 startActivity(i)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
-            R.id.forgotPasswordtv->{
+            R.id.forgotPasswordtv -> {
                 val i = Intent(this, ForgotPasswordActivity::class.java)
                 startActivity(i)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
-            R.id.fbImage->{
+            R.id.fbImage -> {
                 MyUtils.hideKeyboardFrom(this@SignInActivity, ll_main_login!!)
                 buttonFacebookLoginScreen?.performClick()
             }
-            R.id.imgLinkedIn->{
+            R.id.imgLinkedIn -> {
                 LinkedinActivity(this, object : LinkedinActivity.LinkedinData {
                     override fun LinkedinSuccess(
-                            email: String?,
-                            first_name: String?,
-                            last_name: String?,
-                            id: String?
+                        email: String?,
+                        first_name: String?,
+                        last_name: String?,
+                        id: String?
                     ) {
                         var menLinkedInId = id.toString()
                         user_Name = first_name!!
@@ -313,9 +386,10 @@ class SignInActivity : AppCompatActivity(),View.OnClickListener {
                         user_Email = email!!
                         if (!menLinkedInId.isNullOrEmpty() && !user_Email.isNullOrEmpty()) {
                             checkForDuplication(
-                                    user_Email,
-                                    "",
-                                    user_Name, menLinkedInId, "")
+                                user_Email,
+                                "",
+                                user_Name, menLinkedInId, ""
+                            )
 
                         }
                         /*FirebaseInstanceId.getInstance().instanceId
@@ -333,6 +407,15 @@ class SignInActivity : AppCompatActivity(),View.OnClickListener {
                     }
                 }).showLinkedin()
             }
+            R.id.language -> {
+                val dialog = LanguageDialog(this@SignInActivity, languageList, object : LanguageSelection {
+                    override fun onLanguageSelect(data: LanguageListData) {
+                        updateLanguage()
+                        getLanguageLabelList(data.languageID)
+                    }
+                })
+                dialog.show()
+            }
         }
     }
 
@@ -344,26 +427,50 @@ class SignInActivity : AppCompatActivity(),View.OnClickListener {
 
         when {
             emailId_edit_text!!.text.toString().isEmpty() -> {
-                MyUtils.showSnackbar(this@SignInActivity, getString(R.string.enter_email_mobile_msg), ll_main_login)
+                MyUtils.showSnackbar(
+                    this@SignInActivity,
+                    getString(R.string.enter_email_mobile_msg),
+                    ll_main_login
+                )
                 checkFlag = false
             }
             (loginType && (emailId_edit_text.text.toString().length < 8 || emailId_edit_text.text.toString().length > 16)) -> {
-                MyUtils.showSnackbar(this@SignInActivity, getString(R.string.valid_mobile), ll_main_login)
+                MyUtils.showSnackbar(
+                    this@SignInActivity,
+                    getString(R.string.valid_mobile),
+                    ll_main_login
+                )
                 checkFlag = false
             }
             (loginType && tv_countryCode.text.toString().isEmpty()) -> {
-                MyUtils.showSnackbar(this@SignInActivity, getString(R.string.please_enter_country_code), ll_main_login)
+                MyUtils.showSnackbar(
+                    this@SignInActivity,
+                    getString(R.string.please_enter_country_code),
+                    ll_main_login
+                )
                 checkFlag = false
             }
             (!loginType && !MyUtils.isValidEmail(emailId_edit_text.text.toString())) -> {
-                MyUtils.showSnackbar(this@SignInActivity, getString(R.string.valid_email), ll_main_login)
+                MyUtils.showSnackbar(
+                    this@SignInActivity,
+                    getString(R.string.valid_email),
+                    ll_main_login
+                )
                 checkFlag = false
             }
             password_edit_text!!.text.toString().isEmpty() -> {
-                MyUtils.showSnackbar(this@SignInActivity, getString(R.string.please_enter_password), ll_main_login)
+                MyUtils.showSnackbar(
+                    this@SignInActivity,
+                    getString(R.string.please_enter_password),
+                    ll_main_login
+                )
             }
             password_edit_text!!.text.toString().trim().length < 6 -> {
-                MyUtils.showSnackbar(this@SignInActivity, getString(R.string.please_enter_valid_password), ll_main_login)
+                MyUtils.showSnackbar(
+                    this@SignInActivity,
+                    getString(R.string.please_enter_valid_password),
+                    ll_main_login
+                )
             }
             else -> {
                 if (TextUtils.isDigitsOnly(emailId_edit_text.text.toString()))
@@ -380,7 +487,7 @@ class SignInActivity : AppCompatActivity(),View.OnClickListener {
         val jsonObject = JSONObject()
         try {
             jsonObject.put("loginuserID", "0")
-            jsonObject.put("blankCountryCode","No")
+            jsonObject.put("blankCountryCode", "No")
             jsonObject.put("apiType", RestClient.apiType)
             jsonObject.put("apiVersion", RestClient.apiVersion)
         } catch (e: JSONException) {
@@ -388,121 +495,139 @@ class SignInActivity : AppCompatActivity(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
         countryListModel.getCountryList(this, false, jsonArray.toString())
-                .observe(this@SignInActivity,
-                        androidx.lifecycle.Observer { countryListPojo ->
-                            if (countryListPojo != null) {
-                                if (countryListPojo.get(0).status.equals("true", false)) {
-                                    countryListData?.addAll(countryListPojo.get(0).data)
-                                    countrylist = java.util.ArrayList()
-                                    countrylist!!.clear()
-                                    for (i in 0 until countryListData!!.size) {
-                                        countrylist!!.add(countryListData!![i].countryDialCode)
-                                    }
-                                }
+            .observe(this@SignInActivity,
+                androidx.lifecycle.Observer { countryListPojo ->
+                    if (countryListPojo != null) {
+                        if (countryListPojo.get(0).status.equals("true", false)) {
+                            countryListData?.addAll(countryListPojo.get(0).data)
+                            countrylist = java.util.ArrayList()
+                            countrylist!!.clear()
+                            for (i in 0 until countryListData!!.size) {
+                                countrylist!!.add(countryListData!![i].countryDialCode)
                             }
-                        })
+                        }
+                    }
+                })
     }
 
-    private fun checkForDuplication(userEmail: String, fbID: String, userName: String, userLinkedinID: String, userInstaID: String) {
+    private fun checkForDuplication(
+        userEmail: String,
+        fbID: String,
+        userName: String,
+        userLinkedinID: String,
+        userInstaID: String
+    ) {
         btn_signIn.startAnimation()
         MyUtils.setViewAndChildrenEnabled(ll_main_login, false)
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-                    if (!task.isSuccessful) {
-                        btn_signIn.endAnimation()
-                        MyUtils.setViewAndChildrenEnabled(ll_main_login, true)
-                        ErrorUtil.errorMethod(ll_main_login)
-                        return@OnCompleteListener
-                    }
-                    val token = task.result
+            if (!task.isSuccessful) {
+                btn_signIn.endAnimation()
+                MyUtils.setViewAndChildrenEnabled(ll_main_login, true)
+                ErrorUtil.errorMethod(ll_main_login)
+                return@OnCompleteListener
+            }
+            val token = task.result
 
-                    val jsonObject = JSONObject()
-                    val jsonArray = JSONArray()
+            val jsonObject = JSONObject()
+            val jsonArray = JSONArray()
 
-                    try {
-                        jsonObject.put("languageID", "1")
-                        jsonObject.put("userFirstName", userName)
-                        jsonObject.put("userLastName", "")
-                        jsonObject.put("userCountryCode", "")
-                        jsonObject.put("userEmail", userEmail)
-                        jsonObject.put("userMobile", "")
-                        jsonObject.put("userDeviceType", RestClient.apiType)
-                        jsonObject.put("userFBID", fbID)
-                        jsonObject.put("userInstaID", userInstaID)
-                        jsonObject.put("userLinkedinID", userLinkedinID)
-                        jsonObject.put("userDeviceID", token)
-                        jsonObject.put("apiType", RestClient.apiType)
-                        jsonObject.put("apiVersion", RestClient.apiVersion)
-                        jsonArray.put(jsonObject)
+            try {
+                jsonObject.put("languageID", "1")
+                jsonObject.put("userFirstName", userName)
+                jsonObject.put("userLastName", "")
+                jsonObject.put("userCountryCode", "")
+                jsonObject.put("userEmail", userEmail)
+                jsonObject.put("userMobile", "")
+                jsonObject.put("userDeviceType", RestClient.apiType)
+                jsonObject.put("userFBID", fbID)
+                jsonObject.put("userInstaID", userInstaID)
+                jsonObject.put("userLinkedinID", userLinkedinID)
+                jsonObject.put("userDeviceID", token)
+                jsonObject.put("apiType", RestClient.apiType)
+                jsonObject.put("apiVersion", RestClient.apiVersion)
+                jsonArray.put(jsonObject)
 
-                    }
-                    catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                    catch (e: JsonParseException)
-                    {
-                        e.printStackTrace()
-                    }
-             signup.userRegistration(this@SignInActivity, false, jsonArray.toString(), "socialLogin")
-                            .observe(this@SignInActivity,
-                                    Observer<List<SignupPojo?>?> { response ->
-                                        if (!response.isNullOrEmpty()) {
-                                            btn_signIn.endAnimation()
-                                            MyUtils.setViewAndChildrenEnabled(ll_main_login, true)
-                                            MyUtils.fbID = fbID
-                                            MyUtils.user_Name = userName
-                                            MyUtils.user_Email = userEmail
-                                            if (response[0]?.status.equals("true", true))
-                                            {
-                                                try {
-                                                    sessionManager?.clear_login_session()
-                                                    storeSessionManager(response.get(0)?.data?.get(0))
-                                                    Handler().postDelayed({
-                                                        if (response[0]?.data!![0].userOVerified.equals("Yes", true)) {
-                                                          MyUtils.startActivity(this@SignInActivity, MainActivity::class.java, true)
-                                                            finishAffinity()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } catch (e: JsonParseException) {
+                e.printStackTrace()
+            }
+            signup.userRegistration(this@SignInActivity, false, jsonArray.toString(), "socialLogin")
+                .observe(this@SignInActivity,
+                    Observer<List<SignupPojo?>?> { response ->
+                        if (!response.isNullOrEmpty()) {
+                            btn_signIn.endAnimation()
+                            MyUtils.setViewAndChildrenEnabled(ll_main_login, true)
+                            MyUtils.fbID = fbID
+                            MyUtils.user_Name = userName
+                            MyUtils.user_Email = userEmail
+                            if (response[0]?.status.equals("true", true)) {
+                                try {
+                                    sessionManager?.clear_login_session()
+                                    storeSessionManager(response.get(0)?.data?.get(0))
+                                    Handler().postDelayed({
+                                        if (response[0]?.data!![0].userOVerified.equals(
+                                                "Yes",
+                                                true
+                                            )
+                                        ) {
+                                            MyUtils.startActivity(
+                                                this@SignInActivity,
+                                                MainActivity::class.java,
+                                                true
+                                            )
+                                            finishAffinity()
 
-                                                        } else {
-                                                            var i = Intent(this@SignInActivity, OtpVerificationActivity::class.java)
-                                                            i.putExtra("from", "LoginByOtpVerification")
-                                                            startActivity(i)
-                                                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                                                        }
-                                                    }, 1000)
-
-
-                                                } catch (e: Exception) {
-                                                    e.printStackTrace()
-                                                }
-
-                                            }
-                                            else {
-                                                //No data and no internet
-                                                MyUtils.showSnackbar(
-                                                        this@SignInActivity, response.get(0)?.message!!,
-                                                        ll_main_login
-                                                )
-                                            }
                                         } else {
-                                            btn_signIn.endAnimation()
-                                            MyUtils.setViewAndChildrenEnabled(ll_main_login, true)                                            //No internet and somting went rong
-                                            if (MyUtils.isInternetAvailable(this@SignInActivity)) {
-                                                MyUtils.showSnackbar(
-                                                        this@SignInActivity,
-                                                        resources.getString(R.string.error_crash_error_message),
-                                                        ll_main_login
-                                                )
-                                            } else {
-                                                MyUtils.showSnackbar(
-                                                        this@SignInActivity,
-                                                        resources.getString(R.string.error_common_network),
-                                                        ll_main_login
-                                                )
-                                            }
+                                            var i = Intent(
+                                                this@SignInActivity,
+                                                OtpVerificationActivity::class.java
+                                            )
+                                            i.putExtra("from", "LoginByOtpVerification")
+                                            startActivity(i)
+                                            overridePendingTransition(
+                                                R.anim.slide_in_right,
+                                                R.anim.slide_out_left
+                                            )
                                         }
-                                    })
+                                    }, 1000)
 
 
-                })
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+
+                            } else {
+                                //No data and no internet
+                                MyUtils.showSnackbar(
+                                    this@SignInActivity, response.get(0)?.message!!,
+                                    ll_main_login
+                                )
+                            }
+                        } else {
+                            btn_signIn.endAnimation()
+                            MyUtils.setViewAndChildrenEnabled(
+                                ll_main_login,
+                                true
+                            )                                            //No internet and somting went rong
+                            if (MyUtils.isInternetAvailable(this@SignInActivity)) {
+                                MyUtils.showSnackbar(
+                                    this@SignInActivity,
+                                    resources.getString(R.string.error_crash_error_message),
+                                    ll_main_login
+                                )
+                            } else {
+                                MyUtils.showSnackbar(
+                                    this@SignInActivity,
+                                    resources.getString(R.string.error_common_network),
+                                    ll_main_login
+                                )
+                            }
+                        }
+                    })
+
+
+        })
     }
 
     private fun signIn() {
@@ -535,44 +660,58 @@ class SignInActivity : AppCompatActivity(),View.OnClickListener {
             var jsonArray = JSONArray()
             jsonArray.put(jsonObject)
             signup.userRegistration(this, false, jsonArray.toString(), "login")
-                    .observe(this@SignInActivity,
-                            { loginPojo ->
-                                if (loginPojo != null) {
-                                    btn_signIn.endAnimation()
-                                    MyUtils.setViewAndChildrenEnabled(ll_main_login, true)
+                .observe(this@SignInActivity,
+                    { loginPojo ->
+                        if (loginPojo != null) {
+                            btn_signIn.endAnimation()
+                            MyUtils.setViewAndChildrenEnabled(ll_main_login, true)
 
-                                    if (loginPojo.get(0).status.equals("true", false)) {
-                                        try {
-                                            sessionManager?.login_pass(password_edit_text.text.toString().trim())
-                                            storeSessionManager(loginPojo.get(0).data.get(0))
-                                            Handler(Looper.getMainLooper()).postDelayed({
+                            if (loginPojo.get(0).status.equals("true", false)) {
+                                try {
+                                    sessionManager?.login_pass(
+                                        password_edit_text.text.toString().trim()
+                                    )
+                                    storeSessionManager(loginPojo.get(0).data.get(0))
+                                    Handler(Looper.getMainLooper()).postDelayed({
 
-                                                if (loginPojo[0].data[0].userOVerified.equals("Yes", true)) {
-                                                   MyUtils.startActivity(this@SignInActivity, MainActivity::class.java, true)
-                                                    finishAffinity()
-                                                }
-                                                else
-                                                {
-                                                    var i = Intent(this@SignInActivity, OtpVerificationActivity::class.java)
-                                                    i.putExtra("from", "LoginByOtpVerification")
-                                                    startActivity(i)
-                                                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                                                }
-                                            }, 1000)
-                                        } catch (e: Exception) {
-                                            e.printStackTrace()
+                                        if (loginPojo[0].data[0].userOVerified.equals(
+                                                "Yes",
+                                                true
+                                            )
+                                        ) {
+                                            MyUtils.startActivity(
+                                                this@SignInActivity,
+                                                MainActivity::class.java,
+                                                true
+                                            )
+                                            finishAffinity()
+                                        } else {
+                                            var i = Intent(
+                                                this@SignInActivity,
+                                                OtpVerificationActivity::class.java
+                                            )
+                                            i.putExtra("from", "LoginByOtpVerification")
+                                            startActivity(i)
+                                            overridePendingTransition(
+                                                R.anim.slide_in_right,
+                                                R.anim.slide_out_left
+                                            )
                                         }
-
-                                    } else {
-                                        MyUtils.showSnackbar(this, loginPojo.get(0).message, ll_main_login)
-                                    }
-
-                                } else {
-                                    btn_signIn.endAnimation()
-                                    MyUtils.setViewAndChildrenEnabled(ll_main_login, true)
-                                    ErrorUtil.errorMethod(ll_main_login)
+                                    }, 1000)
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
                                 }
-                            })
+
+                            } else {
+                                MyUtils.showSnackbar(this, loginPojo.get(0).message, ll_main_login)
+                            }
+
+                        } else {
+                            btn_signIn.endAnimation()
+                            MyUtils.setViewAndChildrenEnabled(ll_main_login, true)
+                            ErrorUtil.errorMethod(ll_main_login)
+                        }
+                    })
 
         })
 
@@ -584,40 +723,113 @@ class SignInActivity : AppCompatActivity(),View.OnClickListener {
 
         val json = gson.toJson(uesedata)
         sessionManager?.create_login_session(
-                json,
-                uesedata!!.userMobile,
-                "",
-                true,
-                sessionManager!!.isEmailLogin()
+            json,
+            uesedata!!.userMobile,
+            "",
+            true,
+            sessionManager!!.isEmailLogin()
         )
 
     }
 
-    private  fun setPaddingTextview(tv_countryCode: TextView,from:String)
-    {
-        when(from)
-        {
-            "Show"->{
-                tv_countryCode.setPadding(resources.getDimensionPixelOffset(R.dimen._10sdp), resources.getDimensionPixelOffset(R.dimen._25sdp), resources.getDimensionPixelOffset(R.dimen._80sdp), resources.getDimensionPixelOffset(R.dimen._10sdp))
-            }else->{
-            tv_countryCode.visibility=View.GONE
+    private fun setPaddingTextview(tv_countryCode: TextView, from: String) {
+        when (from) {
+            "Show" -> {
+                tv_countryCode.setPadding(
+                    resources.getDimensionPixelOffset(R.dimen._10sdp),
+                    resources.getDimensionPixelOffset(R.dimen._25sdp),
+                    resources.getDimensionPixelOffset(R.dimen._80sdp),
+                    resources.getDimensionPixelOffset(R.dimen._10sdp)
+                )
+            }
+            else -> {
+                tv_countryCode.visibility = View.GONE
             }
         }
 
     }
 
-    private  fun setPaddingEditText(emailId_edit_text: TextInputEditText,from:String)
-    {
-        when(from)
-        {
-            "Show"->{
-                emailId_edit_text.setPadding(resources.getDimensionPixelOffset(R.dimen._60sdp), resources.getDimensionPixelOffset(R.dimen._25sdp), resources.getDimensionPixelOffset(R.dimen._1sdp), resources.getDimensionPixelOffset(R.dimen._10sdp))
+    private fun setPaddingEditText(emailId_edit_text: TextInputEditText, from: String) {
+        when (from) {
+            "Show" -> {
+                emailId_edit_text.setPadding(
+                    resources.getDimensionPixelOffset(R.dimen._60sdp),
+                    resources.getDimensionPixelOffset(R.dimen._25sdp),
+                    resources.getDimensionPixelOffset(R.dimen._1sdp),
+                    resources.getDimensionPixelOffset(R.dimen._10sdp)
+                )
             }
-            "hide"->{
-            emailId_edit_text.setPadding(resources.getDimensionPixelOffset(R.dimen._10sdp), resources.getDimensionPixelOffset(R.dimen._25sdp), resources.getDimensionPixelOffset(R.dimen._1sdp), resources.getDimensionPixelOffset(R.dimen._10sdp))
+            "hide" -> {
+                emailId_edit_text.setPadding(
+                    resources.getDimensionPixelOffset(R.dimen._10sdp),
+                    resources.getDimensionPixelOffset(R.dimen._25sdp),
+                    resources.getDimensionPixelOffset(R.dimen._1sdp),
+                    resources.getDimensionPixelOffset(R.dimen._10sdp)
+                )
+            }
+        }
+    }
 
+    private fun getLanguageLabelList(languageId: String) {
+        MyUtils.showProgressDialog(this@SignInActivity, "Please wait...")
+        val jsonArray = JSONArray()
+        val jsonObject = JSONObject()
+        try {
+            jsonObject.put("loginuserID", "0")
+            jsonObject.put("languageID", languageId)
+            jsonObject.put("langLabelStatus", "")
+            jsonObject.put("apiType", RestClient.apiType)
+            jsonObject.put("apiVersion", RestClient.apiVersion)
+
+        } catch (e: JSONException) {
+            e.printStackTrace()
         }
+        jsonArray.put(jsonObject)
+        languageLabelModel.getLanguageList(this@SignInActivity, false, jsonArray.toString())
+            .observe(
+                this@SignInActivity
+            ) { languageLabelPojo: List<LanguageLabelPojo>? ->
+                if (!languageLabelPojo.isNullOrEmpty()) {
+                    if (languageLabelPojo[0].status == true && !languageLabelPojo[0].data.isNullOrEmpty()) {
+                        MyUtils.dismissProgressDialog()
+                        sessionManager?.LanguageLabel = languageLabelPojo[0].data?.get(0)!!
+                        updateContent()
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                    }
+
+                } else {
+                    MyUtils.dismissProgressDialog()
+                }
+            }
+    }
+
+    private fun languagesApi() {
+
+        val jsonArray = JSONArray()
+        val jsonObject = JSONObject()
+
+        try {
+            jsonObject.put("loginuserID", "0")
+            jsonObject.put("apiType", RestClient.apiType)
+            jsonObject.put("apiVersion", RestClient.apiVersion)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+        jsonArray.put(jsonObject)
+
+        languageModel.getLanguageList(this@SignInActivity, false, jsonArray.toString())
+            .observe(this@SignInActivity) { languageListPojo ->
+                if (languageListPojo != null && languageListPojo.isNotEmpty()) {
+                    if (languageListPojo[0].status == true) {
+                        languageList?.clear()
+                        languageList?.addAll(languageListPojo[0].data)
+                    }
+                } else {
+//                    ErrorUtil.errorView(this@SignupActivity, nointernetMainRelativelayout)
+                }
+            }
 
     }
+
 }

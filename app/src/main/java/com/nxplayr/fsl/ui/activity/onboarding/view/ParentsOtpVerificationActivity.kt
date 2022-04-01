@@ -72,7 +72,18 @@ class ParentsOtpVerificationActivity : AppCompatActivity(),View.OnClickListener 
     }
 
     private fun setupUI() {
-        tv_verificationCode.text="Parents Verification Code"
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngVerificationTitle.isNullOrEmpty())
+                tv_verificationCode.text = sessionManager?.LanguageLabel?.lngVerificationTitle
+            if (!sessionManager?.LanguageLabel?.lngVerificationDetail.isNullOrEmpty())
+                tv_verificationCode_Details.text = sessionManager?.LanguageLabel?.lngVerificationDetail
+            if (!sessionManager?.LanguageLabel?.lngContinue.isNullOrEmpty())
+                btn_otpVerified.progressText = sessionManager?.LanguageLabel?.lngContinue
+            if (!sessionManager?.LanguageLabel?.lngDontReceiveCode.isNullOrEmpty())
+                tvVerificationDetails.text = sessionManager?.LanguageLabel?.lngDontReceiveCode
+            if (!sessionManager?.LanguageLabel?.lngSendCodeAgain.isNullOrEmpty())
+                tv_sendCodeAgain.text = sessionManager?.LanguageLabel?.lngSendCodeAgain
+        }
 
         toolbar.setNavigationOnClickListener {
             onBackPressed()

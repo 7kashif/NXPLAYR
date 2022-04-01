@@ -30,8 +30,6 @@
             style="@style/Font.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/successRegisteredimagview"
-            android:layout_centerHorizontal="true"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/_10sdp"
             android:padding="@dimen/_2sdp"
@@ -39,11 +37,10 @@
             android:textSize="@dimen/_25ssp" />
 
         <TextView
+            android:id="@+id/successRegisteredTvDetail"
             style="@style/Font.SubTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/successRegisteredTv"
-            android:layout_centerHorizontal="true"
             android:layout_gravity="center|top"
             android:layout_marginLeft="@dimen/_25sdp"
             android:layout_marginRight="@dimen/_25sdp"

@@ -38,9 +38,7 @@ import org.json.JSONException
 import org.json.JSONObject
 
 
-
-
-class   LanguageFragment : Fragment(),View.OnClickListener {
+class LanguageFragment : Fragment(), View.OnClickListener {
 
     private var v: View? = null
     var language_list: ArrayList<LanguageListPojo>? = ArrayList()
@@ -52,13 +50,15 @@ class   LanguageFragment : Fragment(),View.OnClickListener {
     var userData: SignupData? = null
     var sessionManager: SessionManager? = null
     var languageId = ""
-    private lateinit var  lannguageModel: LanguageIntefaceListModel
-    private lateinit var  loginModel: SignupModel
-    private lateinit var  languageLabelModel: LanguageLabelModel
+    private lateinit var lannguageModel: LanguageIntefaceListModel
+    private lateinit var loginModel: SignupModel
+    private lateinit var languageLabelModel: LanguageLabelModel
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         if (v == null) {
             v = inflater.inflate(R.layout.fragment_language, container, false)
         }
@@ -94,19 +94,20 @@ class   LanguageFragment : Fragment(),View.OnClickListener {
         }
         linearLayoutManager = LinearLayoutManager(mActivity!!)
 
-        languageAdapter = LanguageAdapter(mActivity!!, languageList, object : LanguageAdapter.OnItemClick {
+        languageAdapter =
+            LanguageAdapter(mActivity!!, languageList, object : LanguageAdapter.OnItemClick {
 
-            override fun onClicled(position: Int, from: String) {
-                if (sessionManager!!.isLoggedIn()) {
+                override fun onClicled(position: Int, from: String) {
+                    if (sessionManager!!.isLoggedIn()) {
 
-                    for (i in 0 until languageList!!.size) {
-                        languageList!![i].status = i == position
+                        for (i in 0 until languageList!!.size) {
+                            languageList!![i].status = i == position
+                        }
+                        languageId = languageList!![position].languageID
+                        languageAdapter?.notifyDataSetChanged()
                     }
-                    languageId = languageList!![position].languageID
-                    languageAdapter?.notifyDataSetChanged()
                 }
-            }
-        }, languageId)
+            }, languageId)
 
         recyclerview.layoutManager = linearLayoutManager
         recyclerview.adapter = languageAdapter
@@ -129,9 +130,9 @@ class   LanguageFragment : Fragment(),View.OnClickListener {
     }
 
     private fun setupViewModel() {
-         lannguageModel = ViewModelProvider(this@LanguageFragment).get(LanguageIntefaceListModel::class.java)
-         loginModel = ViewModelProvider(this@LanguageFragment).get(SignupModel::class.java)
-         languageLabelModel = ViewModelProvider(this@LanguageFragment).get(LanguageLabelModel::class.java)
+        lannguageModel = ViewModelProvider(this@LanguageFragment).get(LanguageIntefaceListModel::class.java)
+        loginModel = ViewModelProvider(this@LanguageFragment).get(SignupModel::class.java)
+        languageLabelModel = ViewModelProvider(this@LanguageFragment).get(LanguageLabelModel::class.java)
     }
 
     private fun languagesApi() {
@@ -152,39 +153,42 @@ class   LanguageFragment : Fragment(),View.OnClickListener {
         jsonArray.put(jsonObject)
 
         lannguageModel.getLanguageList(mActivity!!, false, jsonArray.toString())
-                .observe(viewLifecycleOwner, { languageListPojo ->
+            .observe(viewLifecycleOwner) { languageListPojo ->
 
-                    relativeprogressBar.visibility = View.GONE
-                    recyclerview.visibility = View.VISIBLE
+                relativeprogressBar.visibility = View.GONE
+                recyclerview.visibility = View.VISIBLE
 
-                    if (languageListPojo != null && languageListPojo.isNotEmpty()) {
-                        if (languageListPojo[0].status.equals("true", true)) {
-                            languageList?.clear()
-                            languageList?.addAll(languageListPojo[0].data)
-                            languageAdapter?.notifyDataSetChanged()
-                        } else {
-
-                            if (languageList!!.size == 0) {
-                                ll_no_data_found.visibility = View.VISIBLE
-                                recyclerview.visibility = View.GONE
-
-                            } else {
-                                ll_no_data_found.visibility = View.GONE
-                                recyclerview.visibility = View.VISIBLE
-                            }
-                        }
+                if (languageListPojo != null && languageListPojo.isNotEmpty()) {
+                    if (languageListPojo[0].status == true) {
+                        languageList?.clear()
+                        languageList?.addAll(languageListPojo[0].data)
+                        languageAdapter?.notifyDataSetChanged()
                     } else {
-                        btn_update_language.strokeColor = (resources.getColor(R.color.grayborder))
-                        btn_update_language.backgroundTint = (resources.getColor(R.color.transperent1))
-                        btn_update_language.textColor = resources.getColor(R.color.colorPrimary)
 
-                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                        if (languageList!!.size == 0) {
+                            ll_no_data_found.visibility = View.VISIBLE
+                            recyclerview.visibility = View.GONE
+
+                        } else {
+                            ll_no_data_found.visibility = View.GONE
+                            recyclerview.visibility = View.VISIBLE
+                        }
                     }
-                })
+                } else {
+                    btn_update_language.strokeColor = (resources.getColor(R.color.grayborder))
+                    btn_update_language.backgroundTint = (resources.getColor(R.color.transperent1))
+                    btn_update_language.textColor = resources.getColor(R.color.colorPrimary)
+
+                    ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                }
+            }
 
     }
 
-    private fun changeLanguage(languageId: String, languageLabel: LanguageLabelPojo.LanguageLabelData) {
+    private fun changeLanguage(
+        languageId: String,
+        languageLabel: LanguageLabelPojo.LanguageLabelData
+    ) {
 
         btn_update_language.startAnimation()
 
@@ -194,7 +198,7 @@ class   LanguageFragment : Fragment(),View.OnClickListener {
         try {
 
             jsonObject.put("loginuserID", userData?.userID)
-            jsonObject.put("languageID",languageId)
+            jsonObject.put("languageID", languageId)
             jsonObject.put("apiType", RestClient.apiType)
             jsonObject.put("apiVersion", RestClient.apiVersion)
 
@@ -203,43 +207,50 @@ class   LanguageFragment : Fragment(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
         loginModel.userRegistration(mActivity!!, false, jsonArray.toString(), "changeLanguage")
-                .observe(viewLifecycleOwner,
-                    { loginPojo ->
-                        btn_update_language.endAnimation()
-                        if (loginPojo != null) {
-                            if (loginPojo.get(0).status.equals("true", true)) {
-                                try {
+            .observe(
+                viewLifecycleOwner
+            ) { loginPojo ->
+                btn_update_language.endAnimation()
+                if (loginPojo != null) {
+                    if (loginPojo.get(0).status.equals("true", true)) {
+                        try {
 
 
-                                    sessionManager?.LanguageLabel = languageLabel
-                                    loginPojo[0].data[0].languageID = this.languageId
-                                    sessionManager?.setSelectedLanguage(this.languageId)
-                                    StoreSessionManager(loginPojo[0].data[0])
-                                    //setLocalLanguage()
+                            sessionManager?.LanguageLabel = languageLabel
+                            loginPojo[0].data[0].languageID = this.languageId
+                            sessionManager?.setSelectedLanguage(this.languageId)
+                            StoreSessionManager(loginPojo[0].data[0])
+                            //setLocalLanguage()
 
-                                    languageAdapter?.notifyDataSetChanged()
-                                    Handler().postDelayed({
-                                        (activity as MainActivity).onBackPressed()
-                                    }, 1000)
-                                    MyUtils.showSnackbar(mActivity!!, loginPojo.get(0).message, ll_mainLanguageList)
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                }
-                            } else {
-                                MyUtils.showSnackbar(mActivity!!,
-                                    loginPojo.get(0).message, ll_mainLanguageList)
-                            }
-
-                        } else {
-                            btn_update_language.endAnimation()
-                            ErrorUtil.errorMethod(ll_mainLanguageList)
+                            languageAdapter?.notifyDataSetChanged()
+                            Handler().postDelayed({
+                                (activity as MainActivity).onBackPressed()
+                            }, 1000)
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                loginPojo.get(0).message,
+                                ll_mainLanguageList
+                            )
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
-                    })
+                    } else {
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            loginPojo.get(0).message, ll_mainLanguageList
+                        )
+                    }
+
+                } else {
+                    btn_update_language.endAnimation()
+                    ErrorUtil.errorMethod(ll_mainLanguageList)
+                }
+            }
 
     }
 
     private fun getLanguageLabelList(languageId: String) {
-        MyUtils.showProgressDialog(activity!!,"Please wait...")
+        MyUtils.showProgressDialog(activity!!, "Please wait...")
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
         try {
@@ -254,22 +265,22 @@ class   LanguageFragment : Fragment(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
         languageLabelModel.getLanguageList(activity!!, false, jsonArray.toString())
-            .observe(viewLifecycleOwner,
-                { languageLabelPojo ->
-                    if (!languageLabelPojo.isNullOrEmpty()) {
-                        if (languageLabelPojo[0].status == true && !languageLabelPojo[0].data.isNullOrEmpty()) {
-                            MyUtils.dismissProgressDialog()
-                            changeLanguage(languageId,languageLabelPojo[0].data?.get(0)!!)
-                        } else {
-                            MyUtils.dismissProgressDialog()
-                            (activity as MainActivity).showSnackBar(languageLabelPojo[0].info.toString())
-                        }
-
+            .observe(viewLifecycleOwner
+            ) { languageLabelPojo ->
+                if (!languageLabelPojo.isNullOrEmpty()) {
+                    if (languageLabelPojo[0].status == true && !languageLabelPojo[0].data.isNullOrEmpty()) {
+                        MyUtils.dismissProgressDialog()
+                        changeLanguage(languageId, languageLabelPojo[0].data?.get(0)!!)
                     } else {
                         MyUtils.dismissProgressDialog()
-                        (activity as MainActivity).errorMethod()
+                        (activity as MainActivity).showSnackBar(languageLabelPojo[0].info.toString())
                     }
-                })
+
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    (activity as MainActivity).errorMethod()
+                }
+            }
     }
 
     private fun setLocalLanguage() {
@@ -284,17 +295,17 @@ class   LanguageFragment : Fragment(),View.OnClickListener {
 
     }
 
-    private fun StoreSessionManager(uesedata: SignupData?) {
+    private fun StoreSessionManager(userdata: SignupData?) {
 
         val gson = Gson()
 
-        val json = gson.toJson(uesedata)
+        val json = gson.toJson(userdata)
         sessionManager?.create_login_session(
-                json,
-                uesedata!!.userMobile,
-                "",
-                true,
-                sessionManager!!.isEmailLogin()
+            json,
+            userdata!!.userMobile,
+            "",
+            true,
+            sessionManager!!.isEmailLogin()
         )
         languageAdapter?.notifyDataSetChanged()
 
@@ -311,18 +322,21 @@ class   LanguageFragment : Fragment(),View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-            R.id.btn_update_language->{
+        when (v?.id) {
+            R.id.btn_update_language -> {
                 if (!languageId.isEmpty()) {
                     // changeLanguage()
                     getLanguageLabelList(languageId)
                 } else {
-                    MyUtils.showSnackbar(mActivity!!, getString(R.string.please_select_language), ll_mainLanguageList)
+                    MyUtils.showSnackbar(
+                        mActivity!!,
+                        getString(R.string.please_select_language),
+                        ll_mainLanguageList
+                    )
                 }
 
             }
-            R.id.btnRetry->{
+            R.id.btnRetry -> {
                 languagesApi()
 
                 if (!languageId.isNullOrEmpty()) {

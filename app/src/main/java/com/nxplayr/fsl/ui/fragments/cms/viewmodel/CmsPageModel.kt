@@ -17,31 +17,21 @@ class CmsPageModel : ViewModel() {
 
     lateinit var response: LiveData<List<CmsPojo>?>
     lateinit var mContext: Context
-
     var isShowing: Boolean = false
-
     var userID: String = ""
     var cmspageConstantCode: String = ""
-
     var searchkeyword: String = ""
 
-    fun getCmsPage(
-            context: Context, userID: String, cmspageConstantCode: String): LiveData<List<CmsPojo>?> {
+    fun getCmsPage(context: Context, userID: String, cmspageConstantCode: String): LiveData<List<CmsPojo>?> {
         this.userID = userID
         this.cmspageConstantCode = cmspageConstantCode
-
         this.mContext = context
-
-
         response = getApiResponse()
-
         return response
-
     }
 
     private fun getApiResponse(): LiveData<List<CmsPojo>?> {
         val data = MutableLiveData<List<CmsPojo>>()
-
 
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
@@ -58,8 +48,6 @@ class CmsPageModel : ViewModel() {
         jsonArray.put(jsonObject)
 
         var call = RestClient.get()!!.cmsPageContent(jsonArray.toString())
-
-
         call.enqueue(object : RestCallback<List<CmsPojo>?>(mContext) {
             override fun Success(response: Response<List<CmsPojo>?>) {
                 data.value = response.body()
@@ -70,11 +58,6 @@ class CmsPageModel : ViewModel() {
             }
 
         })
-
-
-
-
-
         return data
     }
 

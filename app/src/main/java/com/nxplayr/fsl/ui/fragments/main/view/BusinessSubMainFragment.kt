@@ -165,7 +165,7 @@ class BusinessSubMainFragment : Fragment(), View.OnClickListener {
 
     private fun setLanguageLable() {
         if (!sessionManager?.LanguageLabel?.lngSearch.isNullOrEmpty())
-            tv_search_skills.setHint(sessionManager?.LanguageLabel?.lngSearch)
+            tv_search_skills.hint = sessionManager?.LanguageLabel?.lngSearch
         else
             tv_search_skills.setHint(R.string.search)
 

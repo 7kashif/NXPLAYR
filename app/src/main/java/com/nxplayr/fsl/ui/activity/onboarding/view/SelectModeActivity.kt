@@ -28,7 +28,7 @@ import java.util.ArrayList
 
 
 @Suppress("DEPRECATION")
-class SelectModeActivity : AppCompatActivity(),View.OnClickListener {
+class SelectModeActivity : AppCompatActivity(), View.OnClickListener {
 
     var selectModeType: Int = 0
     var userRoleListData: ArrayList<UserRoleListData>? = ArrayList()
@@ -40,7 +40,7 @@ class SelectModeActivity : AppCompatActivity(),View.OnClickListener {
     var userName = ""
     var userEmail = ""
     var socialID = ""
-    private lateinit var  userRoleListModel: UserRoleListModel
+    private lateinit var userRoleListModel: UserRoleListModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,53 +63,64 @@ class SelectModeActivity : AppCompatActivity(),View.OnClickListener {
         setupViewModel()
         setupUI()
 
-
-
     }
 
     private fun setupUI() {
+        sessionManager = SessionManager(this@SelectModeActivity)
         tvToolbarTitle.visibility = View.GONE
 
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
 
-
-        tv_selectModetext.text = getString(R.string.select_mode_dummy_text)
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngSelectModeQue.isNullOrEmpty())
+                tv_you_are.text = sessionManager?.LanguageLabel?.lngSelectModeQue
+            if (!sessionManager?.LanguageLabel?.lngSelectModeQueDetail.isNullOrEmpty())
+                tv_selectModetext.text = sessionManager?.LanguageLabel?.lngSelectModeQueDetail
+            if (!sessionManager?.LanguageLabel?.lngNext.isNullOrEmpty())
+                btnNextSelectMode.progressText = sessionManager?.LanguageLabel?.lngNext
+        }
 
         userRoleListAdapter = UserRoleListAdapter(
-                this,
-                object : UserRoleListAdapter.OnItemClick {
-                    @SuppressLint("ResourceType")
-                    override fun onClicklisneter(pos: Int, name: String) {
+            this,
+            object : UserRoleListAdapter.OnItemClick {
+                @SuppressLint("ResourceType")
+                override fun onClicklisneter(pos: Int, name: String) {
 
-                        selectModeType = intent.getIntExtra("selectModeType", pos)
-                        apputypeID = userRoleListData!![pos].apputypeID!!
+                    selectModeType = intent.getIntExtra("selectModeType", pos)
+                    apputypeID = userRoleListData!![pos].apputypeID
 
-                        for (i in 0 until userRoleListData!!.size) {
-                            userRoleListData!![i].checked = i == pos
-                            when (pos) {
-                                0 -> {
-                                    btnNextSelectMode.backgroundTint = (resources.getColor(R.color.colorPrimary))
-                                    btnNextSelectMode.textColor = (resources.getColor(R.color.black))
-                                    btnNextSelectMode.strokeColor = (resources.getColor(R.color.colorPrimary))
-                                }
-                                1 -> {
-                                    btnNextSelectMode.backgroundTint = (resources.getColor(R.color.yellow_modes))
-                                    btnNextSelectMode.textColor = (resources.getColor(R.color.black))
-                                    btnNextSelectMode.strokeColor = (resources.getColor(R.color.yellow_modes))
-                                }
-                                2 -> {
-                                    btnNextSelectMode.backgroundTint = (resources.getColor(R.color.colorAccent))
-                                    btnNextSelectMode.textColor = (resources.getColor(R.color.black))
-                                    btnNextSelectMode.strokeColor = (resources.getColor(R.color.colorAccent))
-                                }
+                    for (i in 0 until userRoleListData!!.size) {
+                        userRoleListData!![i].checked = i == pos
+                        when (pos) {
+                            0 -> {
+                                btnNextSelectMode.backgroundTint =
+                                    (resources.getColor(R.color.colorPrimary))
+                                btnNextSelectMode.textColor = (resources.getColor(R.color.black))
+                                btnNextSelectMode.strokeColor =
+                                    (resources.getColor(R.color.colorPrimary))
+                            }
+                            1 -> {
+                                btnNextSelectMode.backgroundTint =
+                                    (resources.getColor(R.color.yellow_modes))
+                                btnNextSelectMode.textColor = (resources.getColor(R.color.black))
+                                btnNextSelectMode.strokeColor =
+                                    (resources.getColor(R.color.yellow_modes))
+                            }
+                            2 -> {
+                                btnNextSelectMode.backgroundTint =
+                                    (resources.getColor(R.color.colorAccent))
+                                btnNextSelectMode.textColor = (resources.getColor(R.color.black))
+                                btnNextSelectMode.strokeColor =
+                                    (resources.getColor(R.color.colorAccent))
                             }
                         }
-                        userRoleListAdapter?.notifyDataSetChanged()
                     }
-                }, userRoleListData
-            )
+                    userRoleListAdapter?.notifyDataSetChanged()
+                }
+            }, userRoleListData
+        )
         recyclerview.setHasFixedSize(true)
         gridLayoutManager = GridLayoutManager(this, 2).also {
             it.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -131,17 +142,19 @@ class SelectModeActivity : AppCompatActivity(),View.OnClickListener {
 
         btnNextSelectMode.setOnClickListener(this)
 
-        btnRetry.setOnClickListener (this)
+        btnRetry.setOnClickListener(this)
     }
 
     private fun setupViewModel() {
-         userRoleListModel = ViewModelProvider(this@SelectModeActivity).get(UserRoleListModel::class.java)
+        userRoleListModel =
+            ViewModelProvider(this@SelectModeActivity).get(UserRoleListModel::class.java)
 
     }
 
     fun Validation() {
         if (selectModeType == 0 && apputypeID.toInt() != 0) {
-            var intent = Intent(this@SelectModeActivity, SignupSelectFootballTypeActivity::class.java)
+            var intent =
+                Intent(this@SelectModeActivity, SignupSelectFootballTypeActivity::class.java)
             intent.putExtra("selectModeType", selectModeType)
             intent.putExtra("apputypeID", apputypeID.toInt())
             intent.putExtra("userName", userName)
@@ -169,7 +182,11 @@ class SelectModeActivity : AppCompatActivity(),View.OnClickListener {
             startActivity(intent)
 
         } else {
-            MyUtils.showSnackbar(applicationContext, getString(R.string.please_select_mode), ll_mainSelectMode)
+            MyUtils.showSnackbar(
+                applicationContext,
+                getString(R.string.please_select_mode),
+                ll_mainSelectMode
+            )
         }
     }
 
@@ -189,36 +206,31 @@ class SelectModeActivity : AppCompatActivity(),View.OnClickListener {
         var jsonArray = JSONArray()
         jsonArray.put(jsonObject)
 
-        userRoleListModel.getUserRoleList(this!!, false, jsonArray.toString())
-                .observe(this@SelectModeActivity!!,
-                    { userRolePojo ->
+        userRoleListModel.getUserRoleList(this, false, jsonArray.toString())
+            .observe(
+                this@SelectModeActivity
+            ) { userRolePojo ->
 
-                        relativeprogressBar.visibility = View.GONE
-                        recyclerview.visibility = View.VISIBLE
-                        if (userRolePojo != null) {
-
-                            if (userRolePojo.get(0).status.equals("true", false)) {
-
-                                userRoleListData?.clear()
-                                userRoleListData?.addAll(userRolePojo.get(0).data.sortedBy { it.apputypeID })
-                                userRoleListAdapter?.notifyDataSetChanged()
-                            } else {
-
-                                if (userRoleListData!!.size == 0) {
-                                    ll_no_data_found.visibility = View.VISIBLE
-                                    recyclerview.visibility = View.GONE
-
-                                } else {
-                                    ll_no_data_found.visibility = View.GONE
-                                    recyclerview.visibility = View.VISIBLE
-
-                                }
-                            }
-
+                relativeprogressBar.visibility = View.GONE
+                recyclerview.visibility = View.VISIBLE
+                if (userRolePojo != null) {
+                    if (userRolePojo[0].status.equals("true", false)) {
+                        userRoleListData?.clear()
+                        userRoleListData?.addAll(userRolePojo[0].data.sortedBy { it.apputypeID })
+                        userRoleListAdapter?.notifyDataSetChanged()
+                    } else {
+                        if (userRoleListData!!.size == 0) {
+                            ll_no_data_found.visibility = View.VISIBLE
+                            recyclerview.visibility = View.GONE
                         } else {
-                            errorMethod()
+                            ll_no_data_found.visibility = View.GONE
+                            recyclerview.visibility = View.VISIBLE
                         }
-                    })
+                    }
+                } else {
+                    errorMethod()
+                }
+            }
     }
 
     private fun errorMethod() {
@@ -239,11 +251,11 @@ class SelectModeActivity : AppCompatActivity(),View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v?.id){
-            R.id.btnNextSelectMode->{
+        when (v?.id) {
+            R.id.btnNextSelectMode -> {
                 Validation()
             }
-            R.id.btnRetry->{
+            R.id.btnRetry -> {
                 getuserRoleList()
             }
 

@@ -25,13 +25,14 @@ import com.google.gson.Gson
 import com.nxplayr.fsl.R
 import kotlinx.android.synthetic.main.activity_otp_verification.*
 import kotlinx.android.synthetic.main.activity_signin.*
+import kotlinx.android.synthetic.main.fragment_select_gender.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
 
-class OtpVerificationActivity : AppCompatActivity(),View.OnClickListener {
+class OtpVerificationActivity : AppCompatActivity(), View.OnClickListener {
 
     var selectModeType: Int = 0
     var colorId: Int? = null
@@ -40,8 +41,8 @@ class OtpVerificationActivity : AppCompatActivity(),View.OnClickListener {
     var usersId = ""
     var userMobile = ""
     var inte: Intent? = null
-    private lateinit var  signup: SignupModel
-    private lateinit var  commonStatusModel: CommonStatusModel
+    private lateinit var signup: SignupModel
+    private lateinit var commonStatusModel: CommonStatusModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +83,31 @@ class OtpVerificationActivity : AppCompatActivity(),View.OnClickListener {
             2 -> colorId = R.color.colorAccent
         }
 
-        MyUtils.setSelectedModeTypeViewColor(this, arrayListOf(tv_verificationCode, et1, et2, et3, et4, tv_sendCodeAgain) as ArrayList<View>, colorId!!)
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngVerificationTitle.isNullOrEmpty())
+                tv_verificationCode.text = sessionManager?.LanguageLabel?.lngVerificationTitle
+            if (!sessionManager?.LanguageLabel?.lngVerificationDetail.isNullOrEmpty())
+                tv_verificationCode_Details.text = sessionManager?.LanguageLabel?.lngVerificationDetail
+            if (!sessionManager?.LanguageLabel?.lngContinue.isNullOrEmpty())
+                btn_otpVerified.progressText = sessionManager?.LanguageLabel?.lngContinue
+            if (!sessionManager?.LanguageLabel?.lngDontReceiveCode.isNullOrEmpty())
+                tvVerificationDetails.text = sessionManager?.LanguageLabel?.lngDontReceiveCode
+            if (!sessionManager?.LanguageLabel?.lngSendCodeAgain.isNullOrEmpty())
+                tv_sendCodeAgain.text = sessionManager?.LanguageLabel?.lngSendCodeAgain
+        }
+
+        MyUtils.setSelectedModeTypeViewColor(
+            this,
+            arrayListOf(
+                tv_verificationCode,
+                et1,
+                et2,
+                et3,
+                et4,
+                tv_sendCodeAgain
+            ) as ArrayList<View>,
+            colorId!!
+        )
 
         et1.backgroundTintList = ContextCompat.getColorStateList(this, colorId!!)
         et2.backgroundTintList = ContextCompat.getColorStateList(this, colorId!!)
@@ -165,18 +190,20 @@ class OtpVerificationActivity : AppCompatActivity(),View.OnClickListener {
             }
         })
 
-        btn_otpVerified.setOnClickListener (this)
-        tv_sendCodeAgain.setOnClickListener (this)
+        btn_otpVerified.setOnClickListener(this)
+        tv_sendCodeAgain.setOnClickListener(this)
     }
 
     private fun setupViewModel() {
-         signup = ViewModelProvider(this@OtpVerificationActivity).get(SignupModel::class.java)
-         commonStatusModel = ViewModelProvider(this@OtpVerificationActivity).get(CommonStatusModel::class.java)
+        signup = ViewModelProvider(this@OtpVerificationActivity).get(SignupModel::class.java)
+        commonStatusModel =
+            ViewModelProvider(this@OtpVerificationActivity).get(CommonStatusModel::class.java)
 
     }
 
     fun otpValidation() {
-        var otp = et1.text.toString().trim() + et2.text.toString().trim() + et3.text.toString().trim() + et4.text.toString().trim()
+        var otp = et1.text.toString().trim() + et2.text.toString().trim() + et3.text.toString()
+            .trim() + et4.text.toString().trim()
         if (otp.isEmpty() || otp.length != 4)
             MyUtils.showSnackbar(this, "Please add otp number", ll_main_otpVerification)
         else
@@ -192,80 +219,93 @@ class OtpVerificationActivity : AppCompatActivity(),View.OnClickListener {
             usersId = userData!!.userID
         }
         FirebaseMessaging.getInstance().token
-                .addOnCompleteListener(OnCompleteListener { task ->
+            .addOnCompleteListener(OnCompleteListener { task ->
 
-                    if (!task.isSuccessful) {
-                        Log.w("TokenError", "getInstanceId failed", task.exception)
-                        btn_otpVerified.endAnimation()
-                        MyUtils.setViewAndChildrenEnabled(ll_main_otpVerification, true)
-                        ErrorUtil.errorMethod(ll_main_otpVerification)
-                        return@OnCompleteListener
-                    }
-                    // Get new Instance ID token
-                    val token = task.result
+                if (!task.isSuccessful) {
+                    Log.w("TokenError", "getInstanceId failed", task.exception)
+                    btn_otpVerified.endAnimation()
+                    MyUtils.setViewAndChildrenEnabled(ll_main_otpVerification, true)
+                    ErrorUtil.errorMethod(ll_main_otpVerification)
+                    return@OnCompleteListener
+                }
+                // Get new Instance ID token
+                val token = task.result
 
-                    val jsonObject = JSONObject()
+                val jsonObject = JSONObject()
 
-                    try {
-                        jsonObject.put("languageID", "1")
-                        jsonObject.put("loginuserID", usersId)
-                        jsonObject.put("userOTP", otp)
-                        jsonObject.put("userDeviceID", token)
-                        jsonObject.put("apiType", RestClient.apiType)
-                        jsonObject.put("apiVersion", RestClient.apiVersion)
-
-
-                    } catch (e: JSONException) {
-                        e.printStackTrace()
-                    }
-                    val jsonArray = JSONArray()
-                    jsonArray.put(jsonObject)
-                    signup.userRegistration(this!!, false, jsonArray.toString(), "otp_verify")
-                            .observe(this@OtpVerificationActivity!!,
-                                { loginPojo ->
-                                    if (loginPojo != null) {
-                                        btn_otpVerified.endAnimation()
-                                        MyUtils.setViewAndChildrenEnabled(ll_main_otpVerification, true)
-                                        if (loginPojo.get(0).status.equals("true", false)) {
-
-                                            if (from.equals("ForgotPassword", false)) {
-                                                val intent = Intent(this, ResetPassActivity::class.java)
-                                                intent.putExtra("selectModeType", selectModeType)
-                                                intent.putExtra("userID", usersId)
-                                                startActivity(intent)
-                                                finish()
-                                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                                            } else {
-
-                                                StoreSessionManager(loginPojo[0].data[0])
-                                                try {
-                                                    Handler().postDelayed({
-                                                        var intent = Intent(this@OtpVerificationActivity, SuccessfullyRegisteredActivity::class.java)
-                                                        intent.putExtra("selectModeType", selectModeType)
-                                                        startActivity(intent)
-                                                        finishAffinity()
-                                                    }, 500)
-                                                    MyUtils.showSnackbar(this, loginPojo.get(0).message!!, ll_main_otpVerification)
-
-                                                } catch (e: Exception) {
-                                                    e.printStackTrace()
-                                                }
-                                            }
+                try {
+                    jsonObject.put("languageID", "1")
+                    jsonObject.put("loginuserID", usersId)
+                    jsonObject.put("userOTP", otp)
+                    jsonObject.put("userDeviceID", token)
+                    jsonObject.put("apiType", RestClient.apiType)
+                    jsonObject.put("apiVersion", RestClient.apiVersion)
 
 
-                                        }
-                                        else {
-                                            MyUtils.showSnackbar(this, loginPojo.get(0).message!!, ll_main_otpVerification)
-                                        }
-                                    } else {
-                                        MyUtils.setViewAndChildrenEnabled(ll_main_otpVerification, true)
-                                        btn_otpVerified.endAnimation()
-                                        ErrorUtil.errorMethod(ll_main_otpVerification)
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+                val jsonArray = JSONArray()
+                jsonArray.put(jsonObject)
+                signup.userRegistration(this!!, false, jsonArray.toString(), "otp_verify")
+                    .observe(this@OtpVerificationActivity!!
+                    ) { loginPojo ->
+                        if (loginPojo != null) {
+                            btn_otpVerified.endAnimation()
+                            MyUtils.setViewAndChildrenEnabled(ll_main_otpVerification, true)
+                            if (loginPojo.get(0).status.equals("true", false)) {
+
+                                if (from.equals("ForgotPassword", false)) {
+                                    val intent = Intent(this, ResetPassActivity::class.java)
+                                    intent.putExtra("selectModeType", selectModeType)
+                                    intent.putExtra("userID", usersId)
+                                    startActivity(intent)
+                                    finish()
+                                    overridePendingTransition(
+                                        R.anim.slide_in_right,
+                                        R.anim.slide_out_left
+                                    )
+                                } else {
+
+                                    StoreSessionManager(loginPojo[0].data[0])
+                                    try {
+                                        Handler().postDelayed({
+                                            var intent = Intent(
+                                                this@OtpVerificationActivity,
+                                                SuccessfullyRegisteredActivity::class.java
+                                            )
+                                            intent.putExtra("selectModeType", selectModeType)
+                                            startActivity(intent)
+                                            finishAffinity()
+                                        }, 500)
+                                        MyUtils.showSnackbar(
+                                            this,
+                                            loginPojo.get(0).message!!,
+                                            ll_main_otpVerification
+                                        )
+
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
                                     }
-                                })
+                                }
 
 
-                })
+                            } else {
+                                MyUtils.showSnackbar(
+                                    this,
+                                    loginPojo.get(0).message!!,
+                                    ll_main_otpVerification
+                                )
+                            }
+                        } else {
+                            MyUtils.setViewAndChildrenEnabled(ll_main_otpVerification, true)
+                            btn_otpVerified.endAnimation()
+                            ErrorUtil.errorMethod(ll_main_otpVerification)
+                        }
+                    }
+
+
+            })
 
     }
 
@@ -292,45 +332,53 @@ class OtpVerificationActivity : AppCompatActivity(),View.OnClickListener {
         val jsonArray = JSONArray()
         jsonArray.put(jsonObject)
         commonStatusModel.getCommonStatus(this!!, false, jsonArray.toString(), "resend_otp")
-                .observe(this@OtpVerificationActivity!!,
-                    { loginPojo ->
-                        if (loginPojo != null) {
+            .observe(this@OtpVerificationActivity!!,
+                { loginPojo ->
+                    if (loginPojo != null) {
 
-                            if (loginPojo.get(0).status.equals("true")) {
+                        if (loginPojo.get(0).status.equals("true")) {
 
-                                MyUtils.showSnackbar(this, loginPojo.get(0).message!!, ll_main_otpVerification)
+                            MyUtils.showSnackbar(
+                                this,
+                                loginPojo.get(0).message!!,
+                                ll_main_otpVerification
+                            )
 
-
-                            } else {
-                                MyUtils.showSnackbar(this, loginPojo.get(0).message!!, ll_main_otpVerification)
-                            }
 
                         } else {
-
-                            ErrorUtil.errorMethod(ll_main_otpVerification)
+                            MyUtils.showSnackbar(
+                                this,
+                                loginPojo.get(0).message!!,
+                                ll_main_otpVerification
+                            )
                         }
-                    })
+
+                    } else {
+
+                        ErrorUtil.errorMethod(ll_main_otpVerification)
+                    }
+                })
     }
 
 
     override fun onBackPressed() {
 
         MyUtils.showMessageOKCancel(this@OtpVerificationActivity,
-                "Are you sure want to exit ?",
-                "Verification Code",
-                DialogInterface.OnClickListener { dialogInterface, i ->
-                    if (sessionManager != null && sessionManager!!.isLoggedIn() && !sessionManager!!.get_Authenticate_User().userOVerified.equals(
-                                    "Yes",
-                                    true
-                            )
+            "Are you sure want to exit ?",
+            "Verification Code",
+            DialogInterface.OnClickListener { dialogInterface, i ->
+                if (sessionManager != null && sessionManager!!.isLoggedIn() && !sessionManager!!.get_Authenticate_User().userOVerified.equals(
+                        "Yes",
+                        true
                     )
-                        sessionManager!!.clear_login_session()
-                    MyUtils.finishActivity(
-                            this@OtpVerificationActivity,
-                            true
-                    )
+                )
+                    sessionManager!!.clear_login_session()
+                MyUtils.finishActivity(
+                    this@OtpVerificationActivity,
+                    true
+                )
 
-                })
+            })
 
     }
 
@@ -341,21 +389,21 @@ class OtpVerificationActivity : AppCompatActivity(),View.OnClickListener {
 
         val json = gson.toJson(uesedata)
         sessionManager?.create_login_session(
-                json,
-                uesedata!!.userMobile!!,
-                "",
-                true,
-                sessionManager!!.isEmailLogin()
+            json,
+            uesedata!!.userMobile!!,
+            "",
+            true,
+            sessionManager!!.isEmailLogin()
         )
 
     }
 
     override fun onClick(v: View?) {
-        when(v?.id){
-            R.id.btn_otpVerified->{
+        when (v?.id) {
+            R.id.btn_otpVerified -> {
                 otpValidation()
             }
-            R.id.tv_sendCodeAgain->{
+            R.id.tv_sendCodeAgain -> {
                 et1.text = Editable.Factory.getInstance().newEditable("")
                 et2.text = Editable.Factory.getInstance().newEditable("")
                 et3.text = Editable.Factory.getInstance().newEditable("")

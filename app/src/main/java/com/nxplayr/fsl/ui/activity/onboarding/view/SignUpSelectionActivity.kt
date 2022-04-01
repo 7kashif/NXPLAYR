@@ -50,7 +50,9 @@ import com.nxplayr.fsl.ui.activity.onboarding.adapter.CommonPagerAdapter
 import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.CountryListModel
 import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.FootballAgeGroupModel
 import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
+import com.nxplayr.fsl.ui.fragments.dialogs.ParentGuardianDialog
 import com.nxplayr.fsl.util.*
+import com.nxplayr.fsl.util.interfaces.DialogListener
 import com.nxplayr.fsl.viewmodel.*
 import kotlinx.android.synthetic.main.activity_parent_info.*
 import kotlinx.android.synthetic.main.activity_signin.*
@@ -278,6 +280,61 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
             colorId!!
         )
 
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngGenderQue.isNullOrEmpty())
+                tv_you_are.text = sessionManager?.LanguageLabel?.lngGenderQue
+            if (!sessionManager?.LanguageLabel?.lngGenderQueDetail.isNullOrEmpty())
+                tv_set_gender.text = sessionManager?.LanguageLabel?.lngGenderQueDetail
+            if (!sessionManager?.LanguageLabel?.lngMale.isNullOrEmpty())
+                tv_male.text = sessionManager?.LanguageLabel?.lngMale
+            if (!sessionManager?.LanguageLabel?.lngFemale.isNullOrEmpty())
+                tv_female.text = sessionManager?.LanguageLabel?.lngFemale
+            if (!sessionManager?.LanguageLabel?.lngNext.isNullOrEmpty()) {
+                btnSetGender.progressText = sessionManager?.LanguageLabel?.lngNext
+                btnSelectAgeAgroup.progressText = sessionManager?.LanguageLabel?.lngNext
+                btnNextUserProfile.progressText = sessionManager?.LanguageLabel?.lngNext
+            }
+
+            if (!sessionManager?.LanguageLabel?.lngAgeGroupeQue.isNullOrEmpty())
+                tv_your_age_group.text = sessionManager?.LanguageLabel?.lngAgeGroupeQue
+            if (!sessionManager?.LanguageLabel?.lngAgeGroupeDetail.isNullOrEmpty())
+                select_your_age_group.text = sessionManager?.LanguageLabel?.lngAgeGroupeDetail
+
+            if (!sessionManager?.LanguageLabel?.lngProfileQue.isNullOrEmpty())
+                tv_profile.text = sessionManager?.LanguageLabel?.lngProfileQue
+            if (!sessionManager?.LanguageLabel?.lngProfileDetail.isNullOrEmpty())
+                tv_profile_details.text = sessionManager?.LanguageLabel?.lngProfileDetail
+
+            if (!sessionManager?.LanguageLabel?.lngCamera.isNullOrEmpty())
+                tv_camera.text = sessionManager?.LanguageLabel?.lngCamera
+            if (!sessionManager?.LanguageLabel?.lngGallery.isNullOrEmpty())
+                tv_gallery.text = sessionManager?.LanguageLabel?.lngGallery
+            if (!sessionManager?.LanguageLabel?.lngClose.isNullOrEmpty())
+                btnCloseProfileSelection.progressText = sessionManager?.LanguageLabel?.lngClose
+
+            if (!sessionManager?.LanguageLabel?.lngCreateProfileQue.isNullOrEmpty())
+                tv_introduce_yourSelf.text = sessionManager?.LanguageLabel?.lngCreateProfileQue
+            if (!sessionManager?.LanguageLabel?.lngCreateProfileDetail.isNullOrEmpty())
+                tv_introduce_yourSelf_details.text =
+                    sessionManager?.LanguageLabel?.lngCreateProfileDetail
+            if (!sessionManager?.LanguageLabel?.lngFirstName.isNullOrEmpty())
+                firstName_textInputLayout.hint = sessionManager?.LanguageLabel?.lngFirstName
+            if (!sessionManager?.LanguageLabel?.lngFamilyName.isNullOrEmpty())
+                lastName_textInputLayout.hint = sessionManager?.LanguageLabel?.lngFamilyName
+            if (!sessionManager?.LanguageLabel?.lngMobileNo.isNullOrEmpty())
+                mobileNumber_textInput.hint = sessionManager?.LanguageLabel?.lngMobileNo
+            if (!sessionManager?.LanguageLabel?.lngEmailAddress.isNullOrEmpty())
+                emailAddress_textInput.hint = sessionManager?.LanguageLabel?.lngEmailAddress
+            if (!sessionManager?.LanguageLabel?.lngPassword.isNullOrEmpty())
+                password_textInput.hint = sessionManager?.LanguageLabel?.lngPassword
+            if (!sessionManager?.LanguageLabel?.lngRetypePassword.isNullOrEmpty())
+                confirmPassword_textInput.hint = sessionManager?.LanguageLabel?.lngRetypePassword
+            if (!sessionManager?.LanguageLabel?.lngReferralCode.isNullOrEmpty())
+                userSignedRefKey_textInput.hint = sessionManager?.LanguageLabel?.lngReferralCode
+            if (!sessionManager?.LanguageLabel?.lngSubmit.isNullOrEmpty())
+                btnSubmit.progressText = sessionManager?.LanguageLabel?.lngSubmit
+        }
+
         btnNextUserProfile.textColor = (resources.getColor(colorId!!))
         img_select_male.setColorFilter(
             ContextCompat.getColor(this, colorId!!),
@@ -288,7 +345,7 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
             PorterDuff.Mode.SRC_IN
         )
         btnSelectAgeAgroup.textColor = (resources.getColor(colorId!!))
-        btnSelectGender.textColor = (resources.getColor(colorId!!))
+        btnSetGender.textColor = (resources.getColor(colorId!!))
         btnCloseProfileSelection.textColor = (resources.getColor(colorId!!))
 
         img_select_gallery.imageTintList =
@@ -314,7 +371,7 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setonClick() {
-        btnSelectGender.setOnClickListener(this)
+        btnSetGender.setOnClickListener(this)
         btnSelectAgeAgroup.setOnClickListener(this)
         img_user_profile.setOnClickListener(this)
         img_select_camera.setOnClickListener(this)
@@ -387,8 +444,8 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.btnSelectGender -> {
-                btnSelectGender.strokeColor = resources.getColor(colorId!!)
+            R.id.btnSetGender -> {
+                btnSetGender.strokeColor = resources.getColor(colorId!!)
                 if (isSelect)
                     typeSelectionViewpager.currentItem = 1
                 else
@@ -401,9 +458,19 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
             R.id.btnSelectAgeAgroup -> {
                 btnSelectAgeAgroup.strokeColor = resources.getColor(colorId!!)
 
-                if (agegroupID != 0)
-                    typeSelectionViewpager.currentItem = 2
-                else
+                if (agegroupID != 0) {
+                    if (agegroupFrom <= 15) {
+                        val dialog = ParentGuardianDialog(this@SignUpSelectionActivity,
+                            object : DialogListener {
+                                override fun onOK() {
+                                    typeSelectionViewpager.currentItem = 2
+                                }
+                            })
+                        dialog.show()
+                    } else {
+                        typeSelectionViewpager.currentItem = 2
+                    }
+                } else
                     MyUtils.showSnackbar(
                         applicationContext,
                         "Please select AgeGroup",
@@ -539,9 +606,9 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
                         img_select_female.setImageDrawable(resources.getDrawable(R.drawable.gender_icon_unselected_female))
                         img_select_male.setColorFilter(resources.getColor(R.color.transperent))
                         img_select_male.setImageDrawable(resources.getDrawable(R.drawable.gender_icon_selected_male))
-                        btnSelectGender.backgroundTint = (resources.getColor(colorPrimary))
-                        btnSelectGender.textColor = (resources.getColor(R.color.black))
-                        btnSelectGender.strokeColor = (resources.getColor(R.color.colorPrimary))
+                        btnSetGender.backgroundTint = (resources.getColor(colorPrimary))
+                        btnSetGender.textColor = (resources.getColor(R.color.black))
+                        btnSetGender.strokeColor = (resources.getColor(R.color.colorPrimary))
                         isSelect = true
                     }
                     1 -> {
@@ -550,9 +617,9 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
                         img_select_male.background = resources.getDrawable(R.drawable.black_circle)
                         tv_male.setTextColor(resources.getColor(R.color.white))
                         tv_female.setTextColor(resources.getColor(R.color.white))
-                        btnSelectGender.backgroundTint = (resources.getColor(R.color.yellow))
-                        btnSelectGender.textColor = (resources.getColor(R.color.black))
-                        btnSelectGender.strokeColor = (resources.getColor(R.color.yellow))
+                        btnSetGender.backgroundTint = (resources.getColor(R.color.yellow))
+                        btnSetGender.textColor = (resources.getColor(R.color.black))
+                        btnSetGender.strokeColor = (resources.getColor(R.color.yellow))
                         isSelect = true
 
                     }
@@ -562,9 +629,9 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
                         img_select_male.background = resources.getDrawable(R.drawable.black_circle)
                         tv_male.setTextColor(resources.getColor(R.color.colorAccent))
                         tv_female.setTextColor(resources.getColor(R.color.white))
-                        btnSelectGender.backgroundTint = (resources.getColor(R.color.colorAccent))
-                        btnSelectGender.textColor = (resources.getColor(R.color.black))
-                        btnSelectGender.strokeColor = (resources.getColor(R.color.colorAccent))
+                        btnSetGender.backgroundTint = (resources.getColor(R.color.colorAccent))
+                        btnSetGender.textColor = (resources.getColor(R.color.black))
+                        btnSetGender.strokeColor = (resources.getColor(R.color.colorAccent))
                         isSelect = true
                     }
                 }
@@ -576,9 +643,9 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
                         img_select_female.setImageDrawable(resources.getDrawable(R.drawable.gender_icon_selected_female))
                         img_select_female.setColorFilter(resources.getColor(R.color.transperent))
                         img_select_male.setImageDrawable(resources.getDrawable(R.drawable.gender_icon_unselected_male))
-                        btnSelectGender.backgroundTint = (resources.getColor(colorPrimary))
-                        btnSelectGender.textColor = (resources.getColor(R.color.black))
-                        btnSelectGender.strokeColor = (resources.getColor(R.color.colorPrimary))
+                        btnSetGender.backgroundTint = (resources.getColor(colorPrimary))
+                        btnSetGender.textColor = (resources.getColor(R.color.black))
+                        btnSetGender.strokeColor = (resources.getColor(R.color.colorPrimary))
                         isSelect = true
                     }
                     1 -> {
@@ -589,9 +656,9 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
                             resources.getDrawable(R.drawable.transparent_circle)
                         tv_female.setTextColor(resources.getColor(R.color.white))
                         tv_male.setTextColor(resources.getColor(R.color.white))
-                        btnSelectGender.backgroundTint = (resources.getColor(R.color.yellow))
-                        btnSelectGender.textColor = (resources.getColor(R.color.black))
-                        btnSelectGender.strokeColor = (resources.getColor(R.color.yellow))
+                        btnSetGender.backgroundTint = (resources.getColor(R.color.yellow))
+                        btnSetGender.textColor = (resources.getColor(R.color.black))
+                        btnSetGender.strokeColor = (resources.getColor(R.color.yellow))
                         isSelect = true
                     }
                     2 -> {
@@ -602,9 +669,9 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
                             resources.getDrawable(R.drawable.transparent_circle)
                         tv_female.setTextColor(resources.getColor(R.color.colorAccent))
                         tv_male.setTextColor(resources.getColor(R.color.white))
-                        btnSelectGender.backgroundTint = (resources.getColor(R.color.colorAccent))
-                        btnSelectGender.textColor = (resources.getColor(R.color.black))
-                        btnSelectGender.strokeColor = (resources.getColor(R.color.colorAccent))
+                        btnSetGender.backgroundTint = (resources.getColor(R.color.colorAccent))
+                        btnSetGender.textColor = (resources.getColor(R.color.black))
+                        btnSetGender.strokeColor = (resources.getColor(R.color.colorAccent))
                         isSelect = true
                     }
                 }

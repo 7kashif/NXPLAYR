@@ -16,6 +16,7 @@ import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.activity_forgot_password.*
+import kotlinx.android.synthetic.main.activity_otp_verification.*
 import kotlinx.android.synthetic.main.activity_reset_pass.*
 import kotlinx.android.synthetic.main.activity_signin.*
 import kotlinx.android.synthetic.main.activity_signup_selection.*
@@ -46,6 +47,17 @@ class ResetPassActivity : AppCompatActivity(),View.OnClickListener {
     }
 
     private fun setupUI() {
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngResetPassword.isNullOrEmpty())
+                resetPassword.text = sessionManager?.LanguageLabel?.lngResetPassword
+            if (!sessionManager?.LanguageLabel?.lngNewPassword.isNullOrEmpty())
+                new_password_textInput.hint = sessionManager?.LanguageLabel?.lngNewPassword
+            if (!sessionManager?.LanguageLabel?.lngConfirmPassword.isNullOrEmpty())
+                retypenew_password_textInput.hint = sessionManager?.LanguageLabel?.lngConfirmPassword
+            if (!sessionManager?.LanguageLabel?.lngResetPassword.isNullOrEmpty())
+                btn_resetPass.progressText = sessionManager?.LanguageLabel?.lngResetPassword
+        }
+
         btn_resetPass.setOnClickListener (this)
 
         new_password_textInput.isHintAnimationEnabled = false

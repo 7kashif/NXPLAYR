@@ -5,10 +5,11 @@
     android:id="@+id/ll_main_parents"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusable="false"
     android:background="@drawable/appbg"
+    android:focusable="false"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
+
     <TextView
         android:id="@+id/introduce_your_parents"
         style="@style/Font.Title"
@@ -17,15 +18,31 @@
         android:gravity="center"
         android:text="@string/introduce_your_parents"
         android:textSize="@dimen/_25ssp" />
-    <com.google.android.material.textfield.TextInputLayout
+
+    <TextView
+        android:id="@+id/introduce_your_parents_details"
+        style="@style/Font.SubTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:gravity="center"
+        android:paddingStart="@dimen/_20sdp"
+        android:paddingEnd="@dimen/_20sdp"
+        android:text="@string/parent_details"
+        android:textAlignment="center"
+        android:textSize="@dimen/_18ssp" />
+
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textinput_parent_info_email"
-        android:hint="@string/email_address"
-        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginEnd="@dimen/_10sdp"
+        android:hint="@string/email_address"
         android:textColorHint="@color/colorPrimary"
         android:theme="@style/MyEditTextTheme">
 
@@ -46,8 +63,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginEnd="@dimen/_10sdp"
         android:orientation="horizontal">
 
@@ -113,10 +130,10 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_50sdp"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:layout_marginBottom="@dimen/_10sdp"
         android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
         app:p_arrowVisible="false"
         app:p_backgroundTint="@android:color/transparent"
         app:p_cornerRadius="@dimen/_3sdp"

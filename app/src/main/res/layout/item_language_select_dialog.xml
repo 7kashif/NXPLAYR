@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/languageMain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/_5sdp">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/language_listImageview"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_gravity="center"
+            fresco:actualImageScaleType="fitXY"
+            fresco:placeholderImage="@drawable/profile_icon_connection"
+            fresco:placeholderImageScaleType="fitXY"
+            fresco:roundAsCircle="true" />
+
+        <TextView
+            android:id="@+id/tv_language"
+            style="@style/Font.SubTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_weight="1"
+            android:text="@string/english"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16ssp" />
+
+        <ImageView
+            android:id="@+id/radiobtn_language"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_gravity="center"
+            android:padding="@dimen/_5sdp"
+            android:scaleType="fitXY"
+            android:src="@drawable/radio_btn_unselected" />
+
+    </LinearLayout>
+
+    <com.google.android.material.internal.BaselineLayout
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/baseLineGray" />
+
+</LinearLayout>

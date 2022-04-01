@@ -1681,5 +1681,17 @@ class LanguageLabelPojo : Serializable{
         @SerializedName("lngletGetStart")
         @Expose
         val lngletGetStart: String?=""
+        @SerializedName("lngReferralCode")
+        @Expose
+        val lngReferralCode: String?=""
+        @SerializedName("lngParentAlertTitle")
+        @Expose
+        val lngParentAlertTitle: String?=""
+        @SerializedName("lngParentAlertSubTitle")
+        @Expose
+        val lngParentAlertSubTitle: String?=""
+        @SerializedName("lngOK")
+        @Expose
+        val lngOK: String?=""
     }
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ll_main_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -29,7 +29,50 @@
                 android:layout_marginStart="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:padding="@dimen/_5sdp"
-                android:src="@drawable/close_icon_white_signup" />
+                android:src="@drawable/close_icon_white_signup"
+                android:visibility="gone" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/language"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_gravity="end"
+                android:layout_marginVertical="@dimen/_14sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
+                android:background="@drawable/background_stroke_rounded_corners"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="3dp">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/flag"
+                    android:layout_width="@dimen/_22sdp"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    fresco:actualImageScaleType="fitXY"
+                    fresco:placeholderImage="@drawable/profile_icon_connection"
+                    fresco:placeholderImageScaleType="fitXY"
+                    fresco:roundAsCircle="true" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/language_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginHorizontal="@dimen/_5sdp"
+                    android:fontFamily="@font/roboto_medium"
+                    android:padding="0dp"
+                    android:text="English"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/primary_text"
+                    android:textSize="@dimen/_12sdp" />
+
+                <View
+                    android:layout_width="@dimen/_5sdp"
+                    android:layout_height="@dimen/_5sdp"/>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -39,6 +82,7 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
+                    android:id="@+id/titleSignIn"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/title"
@@ -48,6 +92,7 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     style="@style/Font.SubTitle"
+                    android:id="@+id/welcomeBack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|top"
@@ -133,10 +178,10 @@
                     android:layout_marginTop="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_25sdp"
                     android:hint="@string/password"
-                    app:hintAnimationEnabled="false"
                     android:textColorHint="@color/colorPrimary"
                     android:theme="@style/MyEditTextTheme"
-                    app:errorEnabled="false">
+                    app:errorEnabled="false"
+                    app:hintAnimationEnabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/password_edit_text"
@@ -209,7 +254,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/_5sdp"
                         android:background="@drawable/rounded_edittext"
-                        android:padding="@dimen/_5sdp"
+                        android:padding="6dp"
                         android:src="@drawable/signup_linkedin_icon" />
 
                     <RelativeLayout
@@ -230,7 +275,8 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/_5sdp"
                             android:background="@drawable/rounded_edittext"
-                            android:padding="@dimen/_5sdp"
+                            android:paddingVertical="5dp"
+                            android:paddingHorizontal="6dp"
                             android:src="@drawable/signup_facebook_icon" />
 
                     </RelativeLayout>
@@ -240,7 +286,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/_5sdp"
                         android:background="@drawable/rounded_edittext"
-                        android:padding="@dimen/_5sdp"
+                        android:padding="6dp"
                         android:src="@drawable/signup_instagram_icon" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -253,6 +299,7 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     style="@style/Font.SubTitle"
+                    android:id="@+id/newUser"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -271,13 +318,13 @@
                     android:layout_marginEnd="@dimen/_25sdp"
                     android:layout_marginBottom="@dimen/_20sdp"
                     android:background="@drawable/rounded_edittext"
-                    android:backgroundTint="@color/colorPrimary"
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:padding="@dimen/_5sdp">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Font.SubTitle"
+                        android:id="@+id/createAccountText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"

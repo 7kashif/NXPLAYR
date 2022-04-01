@@ -3,16 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@drawable/appbg"
+    android:orientation="vertical"
     tools:context=".ui.fragments.cms.view.CmsFragment">
 
     <include layout="@layout/toolbar" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-      >
+        android:layout_height="match_parent">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/llMain"
@@ -20,23 +19,20 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-
             <WebView
                 android:id="@+id/webView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
-                android:layout_weight="1"
-              ></WebView>
-
+                android:scrollbars="vertical" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <include layout="@layout/nointernetconnection"></include>
+        <include layout="@layout/nointernetconnection" />
 
-        <include layout="@layout/nodafound"></include>
+        <include layout="@layout/nodafound" />
 
-        <include layout="@layout/progressbar"></include>
+        <include layout="@layout/progressbar" />
+
     </RelativeLayout>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

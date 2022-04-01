@@ -29,6 +29,7 @@
         android:textSize="@dimen/_22ssp" />
 
     <TextView
+        android:id="@+id/tv_verificationCode_Details"
         style="@style/Font.SubTitle_blue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -154,6 +155,7 @@
         />
 
     <TextView
+        android:id="@+id/tvVerificationDetails"
         style="@style/Font.SubTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
