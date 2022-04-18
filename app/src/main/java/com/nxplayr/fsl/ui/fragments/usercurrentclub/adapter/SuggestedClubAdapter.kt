@@ -13,7 +13,7 @@ import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.item_current_club_adapter.view.*
 
-class CurrentClubAdapter(
+class SuggestedClubAdapter(
     val context: Activity,
     val listData: ArrayList<ClubListData>?, val onItemClick: OnItemClick,
     var userId: String
@@ -61,13 +61,13 @@ class CurrentClubAdapter(
             tv_club_name.text = listData.clubName.trim()
             if (userId == userData?.userID) {
                 if (listData.selected) {
-                    item_club_main.visibility = View.VISIBLE
+//                    item_club_main.visibility = View.GONE
                     icon_Addclub.visibility = View.GONE
                     icon_close.visibility = View.VISIBLE
                 } else {
+//                    item_club_main.visibility = View.VISIBLE
                     icon_Addclub.visibility = View.VISIBLE
                     icon_close.visibility = View.GONE
-                    item_club_main.visibility = View.GONE
                 }
             } else {
                 icon_Addclub.visibility = View.GONE

@@ -18,43 +18,35 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
-import com.nxplayr.fsl.R
-import com.nxplayr.fsl.ui.fragments.adapter.*
-import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.viewmodel.*
-import com.nxplayr.fsl.util.ErrorUtil
-import com.nxplayr.fsl.util.MyUtils
-import com.nxplayr.fsl.util.SessionManager
 import com.google.gson.Gson
+import com.nxplayr.fsl.R
+import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.AgecategoryList
 import com.nxplayr.fsl.data.model.FootballLevelData
 import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.data.model.UserLanguageList
-import com.nxplayr.fsl.ui.fragments.userprofile.adapter.FootballAgeSelectAdapter
-import com.nxplayr.fsl.ui.fragments.userfootballleague.adapter.FootballLanguageListAdapter
-import com.nxplayr.fsl.ui.fragments.userprofile.adapter.FootballLevelListAdapter
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.FootballLevelListModel
 import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
+import com.nxplayr.fsl.ui.fragments.userfootballleague.adapter.FootballLanguageListAdapter
+import com.nxplayr.fsl.ui.fragments.userprofile.adapter.FootballAgeSelectAdapter
+import com.nxplayr.fsl.ui.fragments.userprofile.adapter.FootballLevelListAdapter
 import com.nxplayr.fsl.ui.fragments.userprofile.viewmodel.FootballAgeListModel
-import kotlinx.android.synthetic.main.activity_signin.*
+import com.nxplayr.fsl.util.ErrorUtil
+import com.nxplayr.fsl.util.MyUtils
+import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.activity_user_profile_details.*
 import kotlinx.android.synthetic.main.common_recyclerview.*
 import kotlinx.android.synthetic.main.fragment_basic_detail.*
 import kotlinx.android.synthetic.main.fragment_best_foot_print.*
-import kotlinx.android.synthetic.main.fragment_explore_main.*
 import kotlinx.android.synthetic.main.fragment_football_age_catogary.*
-import kotlinx.android.synthetic.main.fragment_football_language.*
 import kotlinx.android.synthetic.main.fragment_football_level.*
 import kotlinx.android.synthetic.main.fragment_height_weight.*
-import kotlinx.android.synthetic.main.fragment_height_weight.ll_main_login
 import kotlinx.android.synthetic.main.fragment_name_bio.*
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
-import kotlinx.android.synthetic.main.sub_album_activity.*
 import kotlinx.android.synthetic.main.toolbar.*
-import kotlinx.android.synthetic.main.toolbar.tvToolbarTitle
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -97,12 +89,14 @@ class UpdateUserProfileFragment : Fragment() {
     var selectfoot = ""
     val c = Calendar.getInstance()
     var otherUserData: SignupData? = null
-    var fromProfile=""
-    private lateinit var  footballLevelListModel: FootballLevelListModel
-    private lateinit var  loginModel: SignupModel
+    var fromProfile = ""
+    private lateinit var footballLevelListModel: FootballLevelListModel
+    private lateinit var loginModel: SignupModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         if (v == null) {
             v = inflater.inflate(R.layout.fragment_update_user_profile, container, false)
@@ -121,13 +115,11 @@ class UpdateUserProfileFragment : Fragment() {
         sessionManager = SessionManager(mActivity!!)
         if (sessionManager?.get_Authenticate_User() != null) {
             userData = sessionManager?.get_Authenticate_User()
-
         }
         if (arguments != null) {
             type = arguments!!.getString("type")!!
-            userId=arguments!!.getString("userId","")
-            if(!userId.equals(userData?.userID,false))
-            {
+            userId = arguments!!.getString("userId", "")
+            if (!userId.equals(userData?.userID, false)) {
                 otherUserData = arguments!!.getSerializable("otherUserData") as SignupData?
             }
         }
@@ -146,17 +138,12 @@ class UpdateUserProfileFragment : Fragment() {
         }
 
 
-        if(userId.equals(userData?.userID,false))
-        {
-            if (userData != null)
-            {
+        if (userId.equals(userData?.userID, false)) {
+            if (userData != null) {
                 setUserData(userData!!)
             }
-        }
-        else
-        {
-            if (otherUserData != null)
-            {
+        } else {
+            if (otherUserData != null) {
                 setUserData(otherUserData!!)
             }
         }
@@ -198,66 +185,74 @@ class UpdateUserProfileFragment : Fragment() {
 
     private fun setupViewModel() {
         footballLevelListModel = ViewModelProvider(this@UpdateUserProfileFragment).get(
-            FootballLevelListModel::class.java)
+            FootballLevelListModel::class.java
+        )
         loginModel = ViewModelProvider(this@UpdateUserProfileFragment).get(SignupModel::class.java)
 
     }
 
     @JvmName("setUserData1")
-     fun setUserData(userData: SignupData) {
+    fun setUserData(userData: SignupData) {
         if (userData != null) {
 
-            edit_first_name.isEnabled = false
-            edit_last_name.isEnabled = false
-//            edit_family_name.isEnabled = false
-            edit_dateofbirth.isEnabled = false
-
-            img_select_male.isEnabled = false
-            img_select_female.isEnabled = false
+//            edit_first_name.isEnabled = false
+//            edit_last_name.isEnabled = false
+////            edit_family_name.isEnabled = false
+//            edit_dateofbirth.isEnabled = false
+//
+//            img_select_male.isEnabled = false
+//            img_select_female.isEnabled = false
 
             edit_first_name.setText(userData!!.userFirstName)
             edit_last_name.setText(userData!!.userLastName)
             edit_userFirstname.setText(userData!!.userFirstName)
             edit_userLastname.setText(userData!!.userLastName)
+            tv_userRole.text = userData!!.appuroleName
 
-            if (!userData!!.userDOB.isNullOrEmpty()&&!userData!!.userDOB.equals("0000-00-00"))
-            {
-                var dateOfBirth = ((convertStringToDate(userData!!.userDOB)))
-                var userage = (calculateAge(dateOfBirth))
+            if (!userData!!.userDOB.isNullOrEmpty() && !userData!!.userDOB.equals("0000-00-00")) {
+//                var dateOfBirth = ((convertStringToDate(userData!!.userDOB)))
+                var userage = (getAge(userData!!.userDOB))
 
                 try {
-                    edit_dateofbirth.setText(MyUtils.formatDate(userData!!.userDOB, "yyyy-MM-dd", "dd MMM yyyy") + ", " + userage + " " + "Years")
+                    edit_dateofbirth.setText(
+                        MyUtils.formatDate(
+                            userData!!.userDOB,
+                            "yyyy-MM-dd",
+                            "dd MMM yyyy"
+                        ) + ", " + userage + " " + "Years"
+                    )
                 } catch (e: Exception) {
 
                 }
             }
 //            }
             selectGender = userData!!.userGender
-            if (!userData!!.userHeight.isNullOrEmpty() && !userData!!.userWeight.isNullOrEmpty() && !userData?.userHeight.equals("0")&& !userData?.userWeight.equals("0"))
-            {
+            if (!userData!!.userHeight.isNullOrEmpty() && !userData!!.userWeight.isNullOrEmpty() && !userData?.userHeight.equals(
+                    "0"
+                ) && !userData?.userWeight.equals("0")
+            ) {
                 edittext_height.setText(userData!!.userHeight)
                 edittext_weight.setText(userData!!.userWeight)
             }
-            if(!userData!!.footballagecatID.isNullOrEmpty())
+            if (!userData!!.footballagecatID.isNullOrEmpty())
                 footballagecatId = userData!!.footballagecatID
 
-            if(!userData!!.footballagecatName.isNullOrEmpty())
-                   footballagecatName = userData!!.footballagecatName
+            if (!userData!!.footballagecatName.isNullOrEmpty())
+                footballagecatName = userData!!.footballagecatName
 
-              if(!userData!!.userBio.isNullOrEmpty())
-             {
-                 edit_write_about_yourself.setText(userData!!.userBio)
+            if (!userData!!.userBio.isNullOrEmpty()) {
+                edit_write_about_yourself.setText(userData!!.userBio)
 
-             }
+            }
 
-            if(!userData!!.userBestFoot.isNullOrEmpty())
-              selectfoot = userData!!.userBestFoot
+            if (!userData!!.userBestFoot.isNullOrEmpty())
+                selectfoot = userData!!.userBestFoot
 
-            if(!userData!!.footbllevelID.isNullOrEmpty())
-            footballLevelId = userData!!.footbllevelID
+            if (!userData!!.footbllevelID.isNullOrEmpty())
+                footballLevelId = userData!!.footbllevelID
 
-            if(!userData!!.footbllevelName.isNullOrEmpty())
-            footballLevelName = userData!!.footbllevelName
+            if (!userData!!.footbllevelName.isNullOrEmpty())
+                footballLevelName = userData!!.footbllevelName
 
         }
 
@@ -266,22 +261,22 @@ class UpdateUserProfileFragment : Fragment() {
     fun basicDetails() {
 
 //        btnUpdateBasicDetail.visibility = View.VISIBLE
-        selectGender=userData?.userGender!!
+        selectGender = userData?.userGender!!
         edit_first_name.setText(userData?.userFirstName)
         edit_last_name.setText(userData?.userLastName)
 
         try {
-          var  date = MyUtils.formatDate(userData?.userDOB!!, "yyyy-MM-dd", "dd MMM yyyy")
+            var date = MyUtils.formatDate(userData?.userDOB!!, "yyyy-MM-dd", "dd MMM yyyy")
+            age1 = (getAge(userData!!.userDOB))
 
-          var  dateAge = date + ", " + age1 + " Years"
+            var dateAge = date + ", " + age1 + " Years"
 
             edit_dateofbirth.setText(dateAge)
 
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        if(!userData?.userPlaceofBirth.isNullOrEmpty())
-        {
+        if (!userData?.userPlaceofBirth.isNullOrEmpty()) {
             edit_place_of_birth.setText(userData?.userPlaceofBirth!!)
 
         }
@@ -292,10 +287,10 @@ class UpdateUserProfileFragment : Fragment() {
 
             edit_first_name.isEnabled = true
             edit_last_name.isEnabled = true
-//            edit_family_name.isEnabled = true
             edit_dateofbirth.isEnabled = true
             img_select_male.isEnabled = true
             img_select_female.isEnabled = true
+            edit_place_of_birth.isEnabled = true
 
         }
 
@@ -320,14 +315,34 @@ class UpdateUserProfileFragment : Fragment() {
                 R.id.img_select_male -> {
                     selectGender = img_select_male.text.toString().capitalize()
                     img_select_male.isChecked = true
-                    img_select_male.setCompoundDrawablesWithIntrinsicBounds(R.drawable.male_icon_selected, 0, 0, 0)
-                    img_select_female.setCompoundDrawablesWithIntrinsicBounds(R.drawable.female_icon_unselected, 0, 0, 0)
+                    img_select_male.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.male_icon_selected,
+                        0,
+                        0,
+                        0
+                    )
+                    img_select_female.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.female_icon_unselected,
+                        0,
+                        0,
+                        0
+                    )
                 }
                 R.id.img_select_female -> {
                     selectGender = img_select_female.text.toString().capitalize()
                     img_select_female.isChecked = true
-                    img_select_female.setCompoundDrawablesWithIntrinsicBounds(R.drawable.female_icon_selected, 0, 0, 0)
-                    img_select_male.setCompoundDrawablesWithIntrinsicBounds(R.drawable.male_icon_unselected, 0, 0, 0)
+                    img_select_female.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.female_icon_selected,
+                        0,
+                        0,
+                        0
+                    )
+                    img_select_male.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.male_icon_unselected,
+                        0,
+                        0,
+                        0
+                    )
 
                 }
 
@@ -335,11 +350,21 @@ class UpdateUserProfileFragment : Fragment() {
         }
         if (selectGender.equals("male") || selectGender.equals("Male")) {
             img_select_male.isChecked = true
-            img_select_male.setCompoundDrawablesWithIntrinsicBounds(R.drawable.male_icon_selected, 0, 0, 0)
+            img_select_male.setCompoundDrawablesWithIntrinsicBounds(
+                R.drawable.male_icon_selected,
+                0,
+                0,
+                0
+            )
 
         } else if (selectGender.equals("female") || selectGender.equals("Female")) {
             img_select_female.isChecked = true
-            img_select_female.setCompoundDrawablesWithIntrinsicBounds(R.drawable.female_icon_selected, 0, 0, 0)
+            img_select_female.setCompoundDrawablesWithIntrinsicBounds(
+                R.drawable.female_icon_selected,
+                0,
+                0,
+                0
+            )
 
         }
 
@@ -360,40 +385,64 @@ class UpdateUserProfileFragment : Fragment() {
         mincalendar.set(mYear, mMonth, mDay)
 
         val dpd = android.app.DatePickerDialog(
-                mActivity!!,
-                android.app.DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                    var monthOfYear = monthOfYear
-                    Log.d("year", year.toString() + "")
-                    c.set(Calendar.YEAR, year)
-                    c.set(Calendar.MONTH, monthOfYear)
-                    c.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            mActivity!!,
+            android.app.DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                var monthOfYear = monthOfYear
+                Log.d("year", year.toString() + "")
+                c.set(Calendar.YEAR, year)
+                c.set(Calendar.MONTH, monthOfYear)
+                c.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 //                    dateSpecified = c.time
-                    monthOfYear = monthOfYear + 1
-                    val minAdultAge = GregorianCalendar()
-                    minAdultAge.add(Calendar.YEAR, 0)
+                monthOfYear = monthOfYear + 1
+                val minAdultAge = GregorianCalendar()
+                minAdultAge.add(Calendar.YEAR, 0)
 
 
 
-                    age1 = (calculateAge(c.time))
+                age1 = (calculateAge(c.time))
 
-                    dob = year.toString() + "-" + (if (monthOfYear < 10) "0$monthOfYear" else monthOfYear) + "-" + if (dayOfMonth < 10) "0$dayOfMonth" else dayOfMonth
-                    try {
-                        date = MyUtils.formatDate(dob, "yyyy-MM-dd", "dd MMM yyyy")
+                dob =
+                    year.toString() + "-" + (if (monthOfYear < 10) "0$monthOfYear" else monthOfYear) + "-" + if (dayOfMonth < 10) "0$dayOfMonth" else dayOfMonth
+                try {
+                    date = MyUtils.formatDate(dob, "yyyy-MM-dd", "dd MMM yyyy")
 
-                        dateAge = date + ", " + age1 + " Years"
+                    dateAge = date + ", " + age1 + " Years"
 
-                        edit_dateofbirth.setText(dateAge)
+                    edit_dateofbirth.setText(dateAge)
 
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
 
 
-                }, mYear, mMonth, mDay
+            }, mYear, mMonth, mDay
         )
 
         dpd.datePicker.maxDate = mincalendar.timeInMillis
         dpd.show()
+    }
+
+    private fun getAge(dobString: String): Int {
+        var date: Date? = null
+        val sdf = SimpleDateFormat("yyyy-MM-dd")
+        try {
+            date = sdf.parse(dobString)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        if (date == null) return 0
+        val dob = Calendar.getInstance()
+        val today = Calendar.getInstance()
+        dob.time = date
+        val year = dob[Calendar.YEAR]
+        val month = dob[Calendar.MONTH]
+        val day = dob[Calendar.DAY_OF_MONTH]
+        dob[year, month + 1] = day
+        var age = today[Calendar.YEAR] - dob[Calendar.YEAR]
+        if (today[Calendar.DAY_OF_YEAR] < dob[Calendar.DAY_OF_YEAR]) {
+            age--
+        }
+        return age
     }
 
     fun calculateAge(date: Date): Int {
@@ -425,20 +474,36 @@ class UpdateUserProfileFragment : Fragment() {
         if (TextUtils.isEmpty(edit_first_name.text.toString().trim())) {
             MyUtils.showSnackbar(mActivity!!, "Please Enter First Name", ll_mainUpdateprofile)
             edit_first_name.requestFocus()
-        } else if(edit_first_name.length() < 3){
-            MyUtils.showSnackbar(mActivity!!, "Please Enter minimum 3 charecters", ll_mainUpdateprofile)
+        } else if (edit_first_name.length() < 3) {
+            MyUtils.showSnackbar(
+                mActivity!!,
+                "Please Enter minimum 3 charecters",
+                ll_mainUpdateprofile
+            )
             edit_first_name.requestFocus()
-        } else if(edit_first_name.length() > 100){
-            MyUtils.showSnackbar(mActivity!!, "Please Enter maximum 100 charecters", ll_mainUpdateprofile)
+        } else if (edit_first_name.length() > 100) {
+            MyUtils.showSnackbar(
+                mActivity!!,
+                "Please Enter maximum 100 charecters",
+                ll_mainUpdateprofile
+            )
             edit_first_name.requestFocus()
         } else if (TextUtils.isEmpty(edit_last_name.text.toString().trim())) {
             MyUtils.showSnackbar(mActivity!!, "Please Enter Last Name", ll_mainUpdateprofile)
             edit_last_name.requestFocus()
-        } else if(edit_last_name.length() < 3){
-            MyUtils.showSnackbar(mActivity!!, "Please Enter minimum 3 charecters", ll_mainUpdateprofile)
+        } else if (edit_last_name.length() < 3) {
+            MyUtils.showSnackbar(
+                mActivity!!,
+                "Please Enter minimum 3 charecters",
+                ll_mainUpdateprofile
+            )
             edit_first_name.requestFocus()
-        } else if(edit_last_name.length() > 100){
-            MyUtils.showSnackbar(mActivity!!, "Please Enter maximum 100 charecters", ll_mainUpdateprofile)
+        } else if (edit_last_name.length() > 100) {
+            MyUtils.showSnackbar(
+                mActivity!!,
+                "Please Enter maximum 100 charecters",
+                ll_mainUpdateprofile
+            )
             edit_first_name.requestFocus()
         } /*else if (TextUtils.isEmpty(edit_family_name.text.toString().trim())) {
             MyUtils.showSnackbar(mActivity!!, "Please Enter Family Name", ll_mainUpdateprofile)
@@ -457,36 +522,40 @@ class UpdateUserProfileFragment : Fragment() {
     }
 
     private fun ageCategory() {
-        if(userId.equals(userData?.userID,false))
-        {
-            btn_save_age.visibility=View.VISIBLE
-        }
-        else
-        {
-            btn_save_age.visibility=View.GONE
+        if (userId.equals(userData?.userID, false)) {
+            btn_save_age.visibility = View.VISIBLE
+        } else {
+            btn_save_age.visibility = View.GONE
 
         }
         gridLayoutManager = GridLayoutManager(mActivity, 2)
-        footballAgeSelectAdapter = FootballAgeSelectAdapter(mActivity!!, footballAgeList, object : FootballAgeSelectAdapter.OnItemClick {
-                    override fun onClicled(position: Int, from: String) {
-                       if(userId.equals(userData?.userID)){
-                           for (i in 0 until footballAgeList!!.size) {
-                               footballAgeList!![i].isSelect = i == position
-                           }
-                           footballagecatId = footballAgeList!![position].footballagecatID
-                           footballagecatName = footballAgeList!![position].footballagecatName
+        footballAgeSelectAdapter = FootballAgeSelectAdapter(
+            mActivity!!,
+            footballAgeList,
+            object : FootballAgeSelectAdapter.OnItemClick {
+                override fun onClicled(position: Int, from: String) {
+                    if (userId.equals(userData?.userID)) {
+                        for (i in 0 until footballAgeList!!.size) {
+                            footballAgeList!![i].isSelect = i == position
+                        }
+                        footballagecatId = footballAgeList!![position].footballagecatID
+                        footballagecatName = footballAgeList!![position].footballagecatName
 
-                           btn_save_age.backgroundTint = (resources.getColor(R.color.colorPrimary))
-                           btn_save_age.textColor = resources.getColor(R.color.black)
-                           btn_save_age.strokeColor = (resources.getColor(R.color.colorPrimary))
+                        btn_save_age.backgroundTint = (resources.getColor(R.color.colorPrimary))
+                        btn_save_age.textColor = resources.getColor(R.color.black)
+                        btn_save_age.strokeColor = (resources.getColor(R.color.colorPrimary))
 
-                           footballAgeSelectAdapter?.notifyDataSetChanged()
-                       }
-
-
+                        footballAgeSelectAdapter?.notifyDataSetChanged()
                     }
 
-                }, footballagecatId,userId,userData?.userID!!)
+
+                }
+
+            },
+            footballagecatId,
+            userId,
+            userData?.userID!!
+        )
 
 
         recyclerview.layoutManager = gridLayoutManager
@@ -497,7 +566,10 @@ class UpdateUserProfileFragment : Fragment() {
         btnRetry.setOnClickListener {
             footballAgeCatList()
 
-            if (!userData!!.footballagecatID.isNullOrEmpty() && (!userData!!.footballagecatID.equals("0"))) {
+            if (!userData!!.footballagecatID.isNullOrEmpty() && (!userData!!.footballagecatID.equals(
+                    "0"
+                ))
+            ) {
                 btn_save_age.backgroundTint = (resources.getColor(R.color.colorPrimary))
                 btn_save_age.textColor = resources.getColor(R.color.black)
                 btn_save_age.strokeColor = (resources.getColor(R.color.colorPrimary))
@@ -523,7 +595,11 @@ class UpdateUserProfileFragment : Fragment() {
             if (!footballagecatId.isNullOrEmpty()) {
                 updateUserProfile()
             } else {
-                MyUtils.showSnackbar(mActivity!!, getString(R.string.please_select_ageCategory), ll_mainUpdateprofile)
+                MyUtils.showSnackbar(
+                    mActivity!!,
+                    getString(R.string.please_select_ageCategory),
+                    ll_mainUpdateprofile
+                )
             }
         }
     }
@@ -550,49 +626,50 @@ class UpdateUserProfileFragment : Fragment() {
         jsonArray.put(jsonObject)
 
         var footballAgeListModel =
-                ViewModelProviders.of(this@UpdateUserProfileFragment).get(FootballAgeListModel::class.java)
+            ViewModelProviders.of(this@UpdateUserProfileFragment)
+                .get(FootballAgeListModel::class.java)
         footballAgeListModel.getFootballAgeList(mActivity!!, false, jsonArray.toString())
-                .observe(viewLifecycleOwner,
-                        androidx.lifecycle.Observer { footballAgeListPojo ->
+            .observe(viewLifecycleOwner,
+                androidx.lifecycle.Observer { footballAgeListPojo ->
 
-                            relativeprogressBar.visibility = View.GONE
-                            recyclerview.visibility = View.VISIBLE
+                    relativeprogressBar.visibility = View.GONE
+                    recyclerview.visibility = View.VISIBLE
 
-                            if (footballAgeListPojo != null) {
+                    if (footballAgeListPojo != null) {
 
-                                if (footballAgeListPojo.get(0).status.equals("true", false)) {
-                                    footballAgeList?.clear()
-                                    footballAgeList?.addAll(footballAgeListPojo.get(0).data)
-                                    footballAgeSelectAdapter?.notifyDataSetChanged()
-                                } else {
+                        if (footballAgeListPojo.get(0).status.equals("true", false)) {
+                            footballAgeList?.clear()
+                            footballAgeList?.addAll(footballAgeListPojo.get(0).data)
+                            footballAgeSelectAdapter?.notifyDataSetChanged()
+                        } else {
 
-                                    if (footballAgeList!!.size == 0) {
-                                        ll_no_data_found.visibility = View.VISIBLE
-                                        recyclerview.visibility = View.GONE
-
-                                    } else {
-                                        ll_no_data_found.visibility = View.GONE
-                                        recyclerview.visibility = View.VISIBLE
-
-                                    }
-                                }
+                            if (footballAgeList!!.size == 0) {
+                                ll_no_data_found.visibility = View.VISIBLE
+                                recyclerview.visibility = View.GONE
 
                             } else {
-                                btn_save_age.backgroundTint = (resources.getColor(R.color.transperent1))
-                                btn_save_age.textColor = resources.getColor(R.color.colorPrimary)
-                                btn_save_age.strokeColor = (resources.getColor(R.color.grayborder))
-                                errorMethod()
+                                ll_no_data_found.visibility = View.GONE
+                                recyclerview.visibility = View.VISIBLE
+
                             }
-                        })
+                        }
+
+                    } else {
+                        btn_save_age.backgroundTint = (resources.getColor(R.color.transperent1))
+                        btn_save_age.textColor = resources.getColor(R.color.colorPrimary)
+                        btn_save_age.strokeColor = (resources.getColor(R.color.grayborder))
+                        errorMethod()
+                    }
+                })
 
     }
 
     fun setHeightWeight() {
-        if (!userData?.userHeight.isNullOrEmpty() || !userData?.userWeight.isNullOrEmpty()){
+        if (!userData?.userHeight.isNullOrEmpty() || !userData?.userWeight.isNullOrEmpty()) {
 
             edittext_height.setText(userData?.userHeight)
             edittext_weight.setText(userData?.userWeight)
-        } else{
+        } else {
             edittext_height.setText("")
             edittext_weight.setText("")
         }
@@ -624,7 +701,8 @@ class UpdateUserProfileFragment : Fragment() {
                 btn_save_heightWeight.strokeColor = resources.getColor(R.color.colorPrimary)
                 if (p0!!.isNullOrEmpty()) {
                     btn_save_heightWeight.strokeColor = (resources.getColor(R.color.grayborder))
-                    btn_save_heightWeight.backgroundTint = (resources.getColor(R.color.transperent1))
+                    btn_save_heightWeight.backgroundTint =
+                        (resources.getColor(R.color.transperent1))
                     btn_save_heightWeight.textColor = resources.getColor(R.color.colorPrimary)
                 }
             }
@@ -642,13 +720,17 @@ class UpdateUserProfileFragment : Fragment() {
                 btn_save_heightWeight.strokeColor = resources.getColor(R.color.colorPrimary)
                 if (p0!!.isEmpty()) {
                     btn_save_heightWeight.strokeColor = (resources.getColor(R.color.grayborder))
-                    btn_save_heightWeight.backgroundTint = (resources.getColor(R.color.transperent1))
+                    btn_save_heightWeight.backgroundTint =
+                        (resources.getColor(R.color.transperent1))
                     btn_save_heightWeight.textColor = resources.getColor(R.color.colorPrimary)
                 }
             }
         })
 
-        if ((!userData!!.userHeight.isNullOrEmpty() && !userData!!.userHeight.equals("0")) || (!userData!!.userWeight.isNullOrEmpty()&&!userData!!.userWeight.equals("0"))) {
+        if ((!userData!!.userHeight.isNullOrEmpty() && !userData!!.userHeight.equals("0")) || (!userData!!.userWeight.isNullOrEmpty() && !userData!!.userWeight.equals(
+                "0"
+            ))
+        ) {
             btn_save_heightWeight.backgroundTint = (resources.getColor(R.color.colorPrimary))
             btn_save_heightWeight.strokeColor = (resources.getColor(R.color.colorPrimary))
             btn_save_heightWeight.textColor = resources.getColor(R.color.black)
@@ -660,16 +742,17 @@ class UpdateUserProfileFragment : Fragment() {
     }
 
     fun footballLevel() {
-        if(!userId.equals(userData?.userID,false))
-        {
-            btn_save_footballLevel.visibility=View.GONE
-        }
-        else{
-            btn_save_footballLevel.visibility=View.VISIBLE
+        if (!userId.equals(userData?.userID, false)) {
+            btn_save_footballLevel.visibility = View.GONE
+        } else {
+            btn_save_footballLevel.visibility = View.VISIBLE
         }
         linearLayoutManager = LinearLayoutManager(mActivity!!)
         footballLevelListAdapter =
-                FootballLevelListAdapter(mActivity!!, football_level_list!!, object : FootballLevelListAdapter.OnItemClick {
+            FootballLevelListAdapter(
+                mActivity!!,
+                football_level_list!!,
+                object : FootballLevelListAdapter.OnItemClick {
                     override fun onClicled(position: Int, from: String) {
 
                         for (i in 0 until football_level_list!!.size) {
@@ -679,15 +762,21 @@ class UpdateUserProfileFragment : Fragment() {
                         footballLevelId = football_level_list!![position].footbllevelID
                         footballLevelName = football_level_list!![position].footbllevelName
 
-                        btn_save_footballLevel.backgroundTint = (resources.getColor(R.color.colorPrimary))
+                        btn_save_footballLevel.backgroundTint =
+                            (resources.getColor(R.color.colorPrimary))
                         btn_save_footballLevel.textColor = resources.getColor(R.color.black)
-                        btn_save_footballLevel.strokeColor = (resources.getColor(R.color.colorPrimary))
+                        btn_save_footballLevel.strokeColor =
+                            (resources.getColor(R.color.colorPrimary))
 
                         footballLevelListAdapter?.notifyDataSetChanged()
 
                     }
 
-                }, footballLevelId,userId,userData?.userID)
+                },
+                footballLevelId,
+                userId,
+                userData?.userID
+            )
 
         RV_footballLevel.layoutManager = LinearLayoutManager(mActivity!!)
         RV_footballLevel.adapter = footballLevelListAdapter
@@ -709,7 +798,11 @@ class UpdateUserProfileFragment : Fragment() {
             if (!footballLevelId.isNullOrEmpty()) {
                 updateUserProfile()
             } else {
-                MyUtils.showSnackbar(mActivity!!, getString(R.string.please_select_footballLevel), ll_mainUpdateprofile)
+                MyUtils.showSnackbar(
+                    mActivity!!,
+                    getString(R.string.please_select_footballLevel),
+                    ll_mainUpdateprofile
+                )
             }
         }
 
@@ -750,56 +843,55 @@ class UpdateUserProfileFragment : Fragment() {
 
         jsonArray.put(jsonObject)
         footballLevelListModel.getFootballLevelList(mActivity!!, false, jsonArray.toString())
-                .observe(mActivity!!,
-                        androidx.lifecycle.Observer { footballLevelListPojo ->
-                            progress.visibility = View.GONE
-                            relativeprogressBar.visibility = View.GONE
-                            RV_footballLevel.visibility = View.VISIBLE
+            .observe(mActivity!!,
+                androidx.lifecycle.Observer { footballLevelListPojo ->
+                    progress.visibility = View.GONE
+                    relativeprogressBar.visibility = View.GONE
+                    RV_footballLevel.visibility = View.VISIBLE
 
-                            if (footballLevelListPojo != null) {
+                    if (footballLevelListPojo != null) {
 
-                                if (footballLevelListPojo.get(0).status.equals("true", false)) {
-                                    football_level_list?.clear()
-                                    football_level_list?.addAll(footballLevelListPojo.get(0).data)
-                                    footballLevelListAdapter?.notifyDataSetChanged()
+                        if (footballLevelListPojo.get(0).status.equals("true", false)) {
+                            football_level_list?.clear()
+                            football_level_list?.addAll(footballLevelListPojo.get(0).data)
+                            footballLevelListAdapter?.notifyDataSetChanged()
 
-                                } else {
+                        } else {
 
-                                    if (football_level_list!!.size == 0) {
-                                        nodata.visibility = View.VISIBLE
-                                        ll_no_data_found.visibility = View.VISIBLE
-                                        RV_footballLevel.visibility = View.GONE
-
-                                    } else {
-                                        nodata.visibility = View.GONE
-                                        ll_no_data_found.visibility = View.GONE
-                                        RV_footballLevel.visibility = View.VISIBLE
-
-                                    }
-                                }
+                            if (football_level_list!!.size == 0) {
+                                nodata.visibility = View.VISIBLE
+                                ll_no_data_found.visibility = View.VISIBLE
+                                RV_footballLevel.visibility = View.GONE
 
                             } else {
-                                btn_save_footballLevel.backgroundTint = (resources.getColor(R.color.transperent1))
-                                btn_save_footballLevel.textColor = resources.getColor(R.color.colorPrimary)
-                                btn_save_footballLevel.strokeColor = (resources.getColor(R.color.grayborder))
-                                errorMethod()
+                                nodata.visibility = View.GONE
+                                ll_no_data_found.visibility = View.GONE
+                                RV_footballLevel.visibility = View.VISIBLE
+
                             }
-                        })
+                        }
+
+                    } else {
+                        btn_save_footballLevel.backgroundTint =
+                            (resources.getColor(R.color.transperent1))
+                        btn_save_footballLevel.textColor = resources.getColor(R.color.colorPrimary)
+                        btn_save_footballLevel.strokeColor =
+                            (resources.getColor(R.color.grayborder))
+                        errorMethod()
+                    }
+                })
 
     }
 
     fun bestFootFeet() {
-        if(!userId.equals(userData?.userID,false))
-        {
-            btn_save_footprint.visibility=View.GONE
-        }
-        else
-        {
-            btn_save_footprint.visibility=View.VISIBLE
+        if (!userId.equals(userData?.userID, false)) {
+            btn_save_footprint.visibility = View.GONE
+        } else {
+            btn_save_footprint.visibility = View.VISIBLE
 
         }
         tv_foot_print_left.setOnClickListener {
-            if(userId.equals(userData?.userID,false)) {
+            if (userId.equals(userData?.userID, false)) {
                 isSelect = true
                 selectfoot = tv_leftFeet.text.toString()
                 tv_foot_print_left.setBackgroundResource(R.drawable.feet_left_selected)
@@ -812,7 +904,7 @@ class UpdateUserProfileFragment : Fragment() {
         }
 
         tv_foot_print_right.setOnClickListener {
-            if(userId.equals(userData?.userID,false)) {
+            if (userId.equals(userData?.userID, false)) {
                 isSelect = true
                 selectfoot = selectRightFeet.text.toString()
                 tv_foot_print_right.setBackgroundResource(R.drawable.feet_right_selected)
@@ -825,7 +917,7 @@ class UpdateUserProfileFragment : Fragment() {
         }
 
         tv_foot_print_rightleft.setOnClickListener {
-            if(userId.equals(userData?.userID,false)) {
+            if (userId.equals(userData?.userID, false)) {
                 isSelect = true
                 selectfoot = tv_rightLeft.text.toString()
                 tv_foot_print_rightleft.setBackgroundResource(R.drawable.feet_left_right_selected)
@@ -858,7 +950,11 @@ class UpdateUserProfileFragment : Fragment() {
         btn_save_footprint.setOnClickListener {
             if (selectGender.equals(" ")) {
 
-                MyUtils.showSnackbar(mActivity!!, getString(R.string.please_select_foot), ll_mainUpdateprofile)
+                MyUtils.showSnackbar(
+                    mActivity!!,
+                    getString(R.string.please_select_foot),
+                    ll_mainUpdateprofile
+                )
             } else {
 
                 updateUserProfile()
@@ -927,10 +1023,18 @@ class UpdateUserProfileFragment : Fragment() {
                 MyUtils.showSnackbar(mActivity!!, "Please Enter Last Name", ll_mainUpdateprofile)
                 edit_userLastname.requestFocus()
             } else if (TextUtils.isEmpty(edit_write_about_yourself.text.toString().trim())) {
-                MyUtils.showSnackbar(mActivity!!, "Please Enter about YourSelf", ll_mainUpdateprofile)
+                MyUtils.showSnackbar(
+                    mActivity!!,
+                    "Please Enter about YourSelf",
+                    ll_mainUpdateprofile
+                )
                 edit_write_about_yourself.requestFocus()
-            } else if (edit_write_about_yourself.text.toString().length >= 150) {
-                MyUtils.showSnackbar(mActivity!!, "Maximun lenght should be 150 in Bio", ll_mainUpdateprofile)
+            } else if (edit_write_about_yourself.text.toString().length > 150) {
+                MyUtils.showSnackbar(
+                    mActivity!!,
+                    "Maximum length should be 150 in Bio",
+                    ll_mainUpdateprofile
+                )
                 edit_write_about_yourself.requestFocus()
             } else {
                 updateUserProfile()
@@ -978,162 +1082,179 @@ class UpdateUserProfileFragment : Fragment() {
                 return@OnCompleteListener
             }
             val token = task.result
-        val jsonArray = JSONArray()
-        val jsonObject = JSONObject()
-        try {
-            jsonObject.put("loginuserID", userData?.userID)
-            jsonObject.put("apiType", RestClient.apiType)
-            jsonObject.put("apiVersion", RestClient.apiVersion)
-            jsonObject.put("languageID", "1")
-            jsonObject.put("userDeviceID",token)
-            jsonObject.put("userDeviceType", RestClient.apiType)
-            jsonObject.put("userEmail", userData?.userEmail)
-            if (type.equals("NameAndBio")) {
-                jsonObject.put(
-                    "userFirstName",
-                    edit_userFirstname.text.toString().trim().capitalize()
-                )
-                jsonObject.put(
-                    "userLastName",
-                    edit_userLastname.text.toString().trim().capitalize()
-                )
-            } else if (type.equals("BasicDetails")) {
-                jsonObject.put("userFirstName", edit_first_name.text.toString().trim().capitalize())
-                jsonObject.put("userLastName", edit_last_name.text.toString().trim().capitalize())
-            } else {
-                jsonObject.put("userFirstName", userData!!.userFirstName)
-                jsonObject.put("userLastName", userData!!.userLastName)
-            }
-            jsonObject.put("userGender", selectGender)
-            jsonObject.put("userMobile", userData!!.userMobile)
-            jsonObject.put("userPassword", userData!!.userPassword)
-            jsonObject.put("userCountryCode", userData!!.userCountryCode)
-            jsonObject.put("userProfilePicture", userData!!.userProfilePicture)
-            jsonObject.put("userReferKey", "")
-            if (!userData?.apputypeID.isNullOrEmpty()) {
-                jsonObject.put("apputypeID", userData?.apputypeID)
-            } else {
-                jsonObject.put("apputypeID", "0")
-
-            }
-            if (!userData?.footbltypeID.isNullOrEmpty()) {
-                jsonObject.put("footbltypeID", userData?.footbltypeID)
-            } else {
-                jsonObject.put("footbltypeID", "0")
-
-            }
-            if (!userData?.agegroupID.isNullOrEmpty()) {
-                jsonObject.put("agegroupID", userData?.agegroupID)
-            } else {
-                jsonObject.put("agegroupID", "0")
-
-            }
-            if (!userData?.appuroleID.isNullOrEmpty()) {
-                jsonObject.put("appuroleID", userData?.appuroleID)
-            } else {
-                jsonObject.put("appuroleID", "0")
-
-            }
-            if (!userData?.appuroleID.isNullOrEmpty()) {
-                jsonObject.put("appuroleID", userData?.appuroleID)
-            } else {
-                jsonObject.put("appuroleID", "0")
-
-            }
-            if (!userData?.specialityID.isNullOrEmpty()) {
-                jsonObject.put("specialityID", userData?.specialityID)
-            } else {
-                jsonObject.put("specialityID", "0")
-
-            }
-            jsonObject.put("specialityID", "0")
-            jsonObject.put("userBestFoot", selectfoot)
-            if (edit_dateofbirth.text.toString().isNotEmpty()) {
-                jsonObject.put(
-                    "userDOB", MyUtils.formatDate(
-                        edit_dateofbirth.text.toString().trim(),
-                        "dd MMM yyyyy", "yyyy-MM-dd"
+            val jsonArray = JSONArray()
+            val jsonObject = JSONObject()
+            try {
+                jsonObject.put("loginuserID", userData?.userID)
+                jsonObject.put("apiType", RestClient.apiType)
+                jsonObject.put("apiVersion", RestClient.apiVersion)
+                jsonObject.put("languageID", "1")
+                jsonObject.put("userDeviceID", token)
+                jsonObject.put("userDeviceType", RestClient.apiType)
+                jsonObject.put("userEmail", userData?.userEmail)
+                if (type.equals("NameAndBio")) {
+                    jsonObject.put(
+                        "userFirstName",
+                        edit_userFirstname.text.toString().trim().capitalize()
                     )
-                )
-            } else {
-                jsonObject.put("userDOB", userData?.userDOB)
-            }
-            if (!footballagecatId.isNullOrEmpty()) {
-                jsonObject.put("footballagecatID", footballagecatId)
-            }
-            jsonObject.put("userFullname", userData?.userFullname)
-            jsonObject.put("userPlaceofBirth", edit_place_of_birth?.text.toString().trim())
-            if (!edit_write_about_yourself.text.toString().trim().isNullOrEmpty()) {
-                jsonObject.put("userBio", edit_write_about_yourself.text.toString().trim())
-            } else {
-                jsonObject.put("userBio", userData?.userBio)
+                    jsonObject.put(
+                        "userLastName",
+                        edit_userLastname.text.toString().trim().capitalize()
+                    )
+                } else if (type.equals("BasicDetails")) {
+                    jsonObject.put(
+                        "userFirstName",
+                        edit_first_name.text.toString().trim().capitalize()
+                    )
+                    jsonObject.put(
+                        "userLastName",
+                        edit_last_name.text.toString().trim().capitalize()
+                    )
+                } else {
+                    jsonObject.put("userFirstName", userData!!.userFirstName)
+                    jsonObject.put("userLastName", userData!!.userLastName)
+                }
+                jsonObject.put("userGender", selectGender)
+                jsonObject.put("userMobile", userData!!.userMobile)
+                jsonObject.put("userPassword", userData!!.userPassword)
+                jsonObject.put("userCountryCode", userData!!.userCountryCode)
+                jsonObject.put("userProfilePicture", userData!!.userProfilePicture)
+                jsonObject.put("userReferKey", "")
+                if (!userData?.apputypeID.isNullOrEmpty()) {
+                    jsonObject.put("apputypeID", userData?.apputypeID)
+                } else {
+                    jsonObject.put("apputypeID", "0")
 
-            }
-            if (!edittext_height.text.toString().trim().isNullOrEmpty()) {
-                jsonObject.put("userHeight", edittext_height.text.toString().trim())
-            } else {
-                jsonObject.put("userHeight", userData?.userHeight)
+                }
+                if (!userData?.footbltypeID.isNullOrEmpty()) {
+                    jsonObject.put("footbltypeID", userData?.footbltypeID)
+                } else {
+                    jsonObject.put("footbltypeID", "0")
 
-            }
-            if (!edittext_weight.text.toString().trim().isNullOrEmpty()) {
-                jsonObject.put("userWeight", edittext_weight.text.toString().trim())
-            } else {
-                jsonObject.put("userWeight", userData?.userWeight)
+                }
+                if (!userData?.agegroupID.isNullOrEmpty()) {
+                    jsonObject.put("agegroupID", userData?.agegroupID)
+                } else {
+                    jsonObject.put("agegroupID", "0")
 
-            }
-            jsonObject.put("userCoverPhoto", userData!!.userCoverPhoto)
-            jsonObject.put("userAlternateMobile", userData!!.userAlternateMobile)
-            jsonObject.put("userWebsite", userData?.userWebsite)
-            jsonObject.put("userAlternateEmail", userData?.userAlternateEmail)
-            jsonObject.put("userNickname", userData?.userNickname)
-            jsonObject.put("clubID", userData?.clubID)
-            if (!footballLevelId.isNullOrEmpty()) {
-                jsonObject.put("footbllevelID", footballLevelId)
-            }
-            jsonObject.put("userHomeCountryID", userData?.userHomeCountryID)
-            jsonObject.put("userHomeCountryName", userData?.userHomeCountryName)
-            jsonObject.put("userHomeCityName", userData?.userHomeCityName)
-            jsonObject.put("userHomeCityID", userData?.userHomeCityID)
+                }
+                if (!userData?.appuroleID.isNullOrEmpty()) {
+                    jsonObject.put("appuroleID", userData?.appuroleID)
+                } else {
+                    jsonObject.put("appuroleID", "0")
 
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-        jsonArray.put(jsonObject)
-        loginModel.userRegistration(mActivity!!, false, jsonArray.toString(), "update_userProfile")
-            .observe(mActivity!!,
-                androidx.lifecycle.Observer { loginPojo ->
-                    if (loginPojo != null) {
-                        if (loginPojo.get(0).status.equals("true", true)) {
-                            MyUtils.dismissProgressDialog()
-                            try {
+                }
+                if (!userData?.appuroleID.isNullOrEmpty()) {
+                    jsonObject.put("appuroleID", userData?.appuroleID)
+                } else {
+                    jsonObject.put("appuroleID", "0")
+
+                }
+                if (!userData?.specialityID.isNullOrEmpty()) {
+                    jsonObject.put("specialityID", userData?.specialityID)
+                } else {
+                    jsonObject.put("specialityID", "0")
+
+                }
+                jsonObject.put("specialityID", "0")
+                if (selectfoot.isNullOrEmpty())
+                    jsonObject.put("userBestFoot", userData?.userBestFoot)
+                else
+                    jsonObject.put("userBestFoot", selectfoot)
+                if (edit_dateofbirth.text.toString().isNotEmpty()) {
+                    jsonObject.put(
+                        "userDOB", MyUtils.formatDate(
+                            edit_dateofbirth.text.toString().trim(),
+                            "dd MMM yyyyy", "yyyy-MM-dd"
+                        )
+                    )
+                } else {
+                    jsonObject.put("userDOB", userData?.userDOB)
+                }
+                if (!footballagecatId.isNullOrEmpty()) {
+                    jsonObject.put("footballagecatID", footballagecatId)
+                } else
+                    jsonObject.put("footballagecatID", userData?.footballagecatID)
+
+                jsonObject.put("userFullname", userData?.userFullname)
+                jsonObject.put("userPlaceofBirth", edit_place_of_birth?.text.toString().trim())
+                if (!edit_write_about_yourself.text.toString().trim().isNullOrEmpty()) {
+                    jsonObject.put("userBio", edit_write_about_yourself.text.toString().trim())
+                } else {
+                    jsonObject.put("userBio", userData?.userBio)
+
+                }
+                if (!edittext_height.text.toString().trim().isNullOrEmpty()) {
+                    jsonObject.put("userHeight", edittext_height.text.toString().trim())
+                } else {
+                    jsonObject.put("userHeight", userData?.userHeight)
+
+                }
+                if (!edittext_weight.text.toString().trim().isNullOrEmpty()) {
+                    jsonObject.put("userWeight", edittext_weight.text.toString().trim())
+                } else {
+                    jsonObject.put("userWeight", userData?.userWeight)
+
+                }
+                jsonObject.put("userCoverPhoto", userData!!.userCoverPhoto)
+                jsonObject.put("userAlternateMobile", userData!!.userAlternateMobile)
+                jsonObject.put("userWebsite", userData?.userWebsite)
+                jsonObject.put("userAlternateEmail", userData?.userAlternateEmail)
+                jsonObject.put("userNickname", userData?.userNickname)
+                jsonObject.put("clubID", userData?.clubID)
+                if (!footballLevelId.isNullOrEmpty()) {
+                    jsonObject.put("footbllevelID", footballLevelId)
+                } else
+                    jsonObject.put("footbllevelID", userData?.footbllevelID)
+                jsonObject.put("userHomeCountryID", userData?.userHomeCountryID)
+                jsonObject.put("userHomeCountryName", userData?.userHomeCountryName)
+                jsonObject.put("userHomeCityName", userData?.userHomeCityName)
+                jsonObject.put("userHomeCityID", userData?.userHomeCityID)
+
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
+            jsonArray.put(jsonObject)
+            loginModel.userRegistration(
+                mActivity!!,
+                false,
+                jsonArray.toString(),
+                "update_userProfile"
+            )
+                .observe(mActivity!!,
+                    androidx.lifecycle.Observer { loginPojo ->
+                        if (loginPojo != null) {
+                            if (loginPojo.get(0).status.equals("true", true)) {
+                                MyUtils.dismissProgressDialog()
+                                try {
+                                    MyUtils.showSnackbar(
+                                        mActivity!!,
+                                        loginPojo.get(0).message!!,
+                                        ll_mainUpdateprofile
+                                    )
+                                    StoreSessionManager(loginPojo[0].data[0])
+                                    Handler().postDelayed({
+                                        (activity as MainActivity).onBackPressed()
+                                    }, 1000)
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+                            } else {
+                                MyUtils.dismissProgressDialog()
                                 MyUtils.showSnackbar(
                                     mActivity!!,
                                     loginPojo.get(0).message!!,
                                     ll_mainUpdateprofile
                                 )
-                                StoreSessionManager(loginPojo[0].data[0])
-                                Handler().postDelayed({
-                                    (activity as MainActivity).onBackPressed()
-                                }, 1000)
-                            } catch (e: Exception) {
-                                e.printStackTrace()
                             }
+
                         } else {
                             MyUtils.dismissProgressDialog()
-                            MyUtils.showSnackbar(
-                                mActivity!!,
-                                loginPojo.get(0).message!!,
-                                ll_mainUpdateprofile
-                            )
+                            ErrorUtil.errorMethod(ll_mainUpdateprofile)
                         }
+                    })
 
-                    } else {
-                        MyUtils.dismissProgressDialog()
-                        ErrorUtil.errorMethod(ll_mainUpdateprofile)
-                    }
-                })
-
-    })
+        })
     }
 
 
@@ -1143,11 +1264,11 @@ class UpdateUserProfileFragment : Fragment() {
 
         val json = gson.toJson(uesedata)
         sessionManager?.create_login_session(
-                json,
-                uesedata!!.userMobile,
-                "",
-                true,
-                sessionManager!!.isEmailLogin()
+            json,
+            uesedata!!.userMobile,
+            "",
+            true,
+            sessionManager!!.isEmailLogin()
         )
 
     }

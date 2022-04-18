@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.nxplayr.fsl.ui.activity.addstaticwebsite.view.AddStaticWebsiteActivity
 import com.nxplayr.fsl.R
@@ -16,6 +17,8 @@ import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.ui.fragments.userwebsite.viewmodel.DeleteWebsiteModel
 import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.data.model.SiteList
+import com.nxplayr.fsl.ui.activity.addstaticwebsite.viewmodel.AddWebSiteModel
+import com.nxplayr.fsl.ui.activity.addstaticwebsite.viewmodel.EditWebsiteModel
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
@@ -77,6 +80,12 @@ class WebsiteBottomSheet : BottomSheetDialogFragment(), View.OnClickListener {
             URL_NAME = arguments?.getString("urlTitle")!!
             URL_LINK = arguments?.getString("urlLink")!!
         }
+
+        setupViewModel()
+    }
+
+    private fun setupViewModel() {
+        getLanguageModel = ViewModelProvider(this@WebsiteBottomSheet).get(DeleteWebsiteModel::class.java)
     }
 
     override fun onClick(p0: View?) {

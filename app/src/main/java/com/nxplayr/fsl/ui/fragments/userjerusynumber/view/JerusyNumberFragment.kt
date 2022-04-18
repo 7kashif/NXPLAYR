@@ -20,6 +20,9 @@ import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_jerusy_number.*
+import kotlinx.android.synthetic.main.fragment_jerusy_number.btnUpdateBasicDetail
+import kotlinx.android.synthetic.main.fragment_jerusy_number.ll_nationteam
+import kotlinx.android.synthetic.main.fragment_trophy_honors.*
 import kotlinx.android.synthetic.main.toolbar2.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -86,53 +89,118 @@ class JerusyNumberFragment : Fragment(),View.OnClickListener {
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
         try {
-            jsonObject.put("contractsituationID",  "0")
-            jsonObject.put("geomobilityID", "1")
-            jsonObject.put("userJersyNumber", userJersyNumber)
-            jsonObject.put("apiVersion", RestClient.apiVersion)
-            jsonObject.put("userNationalCap", "")
-            jsonObject.put("usertrophies", "")
-            jsonObject.put("userPreviousClubID", "FSL")
-            jsonObject.put("userNationalCountryID","0")
-            jsonObject.put("useNationalGoals","0")
-            jsonObject.put("leagueID", "0")
-            jsonObject.put("languageID", "1")
             jsonObject.put("loginuserID", userData?.userID)
+            if (userData?.contractsituationID.isNullOrEmpty()) {
+                jsonObject.put("contractsituationID", "")
+            } else {
+                jsonObject.put("contractsituationID", userData?.contractsituationID)
+            }
+
+            if (userData?.leagueID.isNullOrEmpty()) {
+                jsonObject.put("leagueID", "")
+            } else {
+                jsonObject.put("leagueID", userData?.leagueID)
+            }
+
+            if (userData?.userContractExpiryDate.isNullOrEmpty()) {
+                jsonObject.put("userContractExpiryDate", "")
+            } else {
+                jsonObject.put("userContractExpiryDate", userData?.userContractExpiryDate)
+            }
+            if (userData?.userPreviousClubID.isNullOrEmpty()) {
+                jsonObject.put("userPreviousClubID", "")
+            } else {
+                jsonObject.put("userPreviousClubID", userData?.userPreviousClubID)
+            }
+            if (userData?.usertrophies.isNullOrEmpty()) {
+                jsonObject.put("usertrophies", "")
+            } else {
+                jsonObject.put("usertrophies", userData?.usertrophies)
+            }
+            jsonObject.put("userJersyNumber", userJersyNumber)
+            if (userData?.geomobilityID.isNullOrEmpty()) {
+                jsonObject.put("geomobilityID", "")
+            } else {
+                jsonObject.put("geomobilityID", userData?.geomobilityID)
+            }
+            if (userData?.userNationalCountryID.isNullOrEmpty()) {
+                jsonObject.put("userNationalCountryID", "")
+            } else {
+                jsonObject.put("userNationalCountryID", userData?.userNationalCountryID)
+            }
+            if (userData?.userNationalCap.isNullOrEmpty()) {
+                jsonObject.put("userNationalCap", "")
+            } else {
+                jsonObject.put("userNationalCap", userData?.userNationalCap)
+            }
+            if (userData?.useNationalGoals.isNullOrEmpty()) {
+                jsonObject.put("useNationalGoals", "")
+            } else {
+                jsonObject.put("useNationalGoals", userData?.useNationalGoals)
+            }
+            if (userData?.userPreviousClubID.isNullOrEmpty()) {
+                jsonObject.put("userPreviousClubID", "")
+            } else {
+                jsonObject.put("userPreviousClubID", userData?.userPreviousClubID)
+            }
+            if (userData?.previousclubName.isNullOrEmpty()) {
+                jsonObject.put("previousclubName", "")
+            } else {
+                jsonObject.put("previousclubName", userData?.previousclubName)
+            }
+            if (userData?.userAgentName.isNullOrEmpty()) {
+                jsonObject.put("userAgentName", "")
+            } else {
+                jsonObject.put("userAgentName", userData?.userAgentName)
+            }
+            if (userData?.outfitterIDs.isNullOrEmpty()) {
+                jsonObject.put("outfitterIDs", "")
+            } else {
+                jsonObject.put("outfitterIDs", userData?.outfitterIDs)
+            }
             jsonObject.put("apiType", RestClient.apiType)
-            jsonObject.put("userContractExpiryDate", "")
-            jsonObject.put("outfitterIDs", "")
-
-
+            jsonObject.put("apiVersion", RestClient.apiVersion)
         } catch (e: JSONException) {
             e.printStackTrace()
         }
+
         jsonArray.put(jsonObject)
         Log.e("JERSY_NUMBER",jsonArray.toString())
         passportNationalityModel.getUpdateResume(mActivity!!, s, jsonArray?.toString())
-                .observe(this@JerusyNumberFragment!!,
-                    { countryListPojo ->
-                        if (countryListPojo != null) {
-                            btnUpdateBasicDetail.endAnimation()
-                            if (countryListPojo.get(0).status.equals("true", false)) {
-                                try {
-                                    StoreSessionManager(countryListPojo.get(0).data[0])
-                                    Handler().postDelayed({
-                                        (activity as MainActivity).onBackPressed()
-                                    }, 1000)
-                                    MyUtils.showSnackbar(mActivity!!, countryListPojo.get(0).message, ll_nationteam)
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                }
+                .observe(this@JerusyNumberFragment!!
+                ) { countryListPojo ->
+                    if (countryListPojo != null) {
+                        btnUpdateBasicDetail.endAnimation()
+                        if (countryListPojo.get(0).status.equals("true", false)) {
+                            try {
+                                StoreSessionManager(countryListPojo.get(0).data[0])
+                                MyUtils.hideKeyboard1(mActivity!!)
 
-                            } else {
-                                MyUtils.showSnackbar(mActivity!!, countryListPojo.get(0).message, ll_nationteam)
+                                Handler().postDelayed({
+                                    (activity as MainActivity).onBackPressed()
+                                }, 1000)
+                                MyUtils.showSnackbar(
+                                    mActivity!!,
+                                    countryListPojo.get(0).message,
+                                    ll_nationteam
+                                )
+                            } catch (e: Exception) {
+                                e.printStackTrace()
                             }
 
                         } else {
-                            btnUpdateBasicDetail.endAnimation()
-                            ErrorUtil.errorMethod(ll_nationteam)
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                countryListPojo.get(0).message,
+                                ll_nationteam
+                            )
                         }
-                    })
+
+                    } else {
+                        btnUpdateBasicDetail.endAnimation()
+                        ErrorUtil.errorMethod(ll_nationteam)
+                    }
+                }
     }
 
     private fun StoreSessionManager(uesedata: SignupData?) {

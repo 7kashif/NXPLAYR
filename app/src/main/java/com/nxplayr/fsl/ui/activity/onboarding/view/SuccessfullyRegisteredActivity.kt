@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.util.MyUtils
@@ -43,15 +44,17 @@ class SuccessfullyRegisteredActivity : AppCompatActivity(), View.OnClickListener
 
         if (selectModeType1 == 0) {
             colorId = R.color.colorPrimary
-            successRegisteredimagview.setImageDrawable(resources.getDrawable(R.drawable.tick_mark_registered))
+            successRegisteredimagview.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.tick_mark_registered))
         } else if (selectModeType1 == 1) {
             colorId = R.color.yellow
+            successRegisteredimagview.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.tick_mark_registered))
         } else if (selectModeType1 == 2) {
             colorId = R.color.colorAccent
-            successRegisteredimagview.setImageDrawable(resources.getDrawable(R.drawable.sucucess_icon))
+            successRegisteredimagview.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.sucucess_icon))
         }
 
         btnSuccesfullyRegister.backgroundTint = (resources.getColor(colorId!!))
+        btnSuccesfullyRegister.strokeColor = (resources.getColor(colorId!!))
         btnSuccesfullyRegister.textColor = resources.getColor(R.color.black)
         MyUtils.setSelectedModeTypeViewColor(this, arrayListOf(successRegisteredTv), colorId!!)
 

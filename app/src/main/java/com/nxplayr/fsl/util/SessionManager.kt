@@ -26,6 +26,7 @@ class SessionManager {
         val Key_Email: String = "isEmailLogin"
         val KEY_SelectedLanguage: String = "language"
         val KEY_SelectedLanguageId: String = "languageId"
+        val KEY_USER_WEBS: String = "KEY_USER_WEBS"
 
         val Key_PushCounter: String = "pushCounter"//fireBase
         val TAG = SessionManager::class.java.simpleName
@@ -122,6 +123,15 @@ class SessionManager {
             editor.commit()
         }
 
+    fun getWebLinks(): String? {
+        return pref.getString(KEY_USER_WEBS, "")
+    }
+
+    fun setWebLinks(webs: String?) {
+        editor.putString(KEY_USER_WEBS, webs)
+        editor.commit()
+    }
+
 
     var NotificationRead: Boolean
         get() = pref.getBoolean("NotificationRead", true)
@@ -164,16 +174,16 @@ class SessionManager {
         Log.d(TAG, "User login session modified!")
     }
 
-    public fun getsetSelectedLanguage(): String? {
-        return pref.getString(KEY_SelectedLanguageId, "")
-    }
-
-    public fun setSelectedLanguage(languageID: String?) {
-        editor.putString(KEY_SelectedLanguageId, languageID!!)
-        // commit changes
-        editor.commit()
-        Log.d(TAG, "User login session modified!")
-    }
+//    public fun getsetSelectedLanguage(): String? {
+//        return pref.getString(KEY_SelectedLanguageId, "")
+//    }
+//
+//    public fun setSelectedLanguage(languageID: String?) {
+//        editor.putString(KEY_SelectedLanguageId, languageID!!)
+//        // commit changes
+//        editor.commit()
+//        Log.d(TAG, "User login session modified!")
+//    }
 
     public fun getSelectedLanguage(): LanguageListData? {
         return Gson().fromJson<LanguageListData>(

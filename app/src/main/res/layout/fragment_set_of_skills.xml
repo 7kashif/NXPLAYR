@@ -21,12 +21,36 @@
             android:layout_height="wrap_content"
 
             android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/baseLineGray" />
+
+            <EditText
+                android:id="@+id/edit_searchClub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_17sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginRight="@dimen/_17sdp"
+                android:background="@drawable/round_search_box_bg"
+                android:drawableRight="@drawable/search_icon"
+                android:fontFamily="@font/brandon_reg"
+                android:hint="@string/search"
+                android:imeOptions="actionDone"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:paddingVertical="@dimen/_6sdp"
+                android:singleLine="true"
+                android:textColor="@color/gray_text_color"
+                android:textColorHint="@color/gray_text_color" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/Font.SubTitle_blue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@drawable/rounded_text2"
                 android:paddingStart="@dimen/_17sdp"
                 android:text="@string/selected_skill" />
 
@@ -58,7 +82,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/ll_mainAddClub"
+                    android:id="@+id/ll_mainAddClubSetSkill"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_8sdp"
@@ -108,26 +132,6 @@
                 android:paddingLeft="@dimen/_10sdp"
                 android:textColor="@color/gray_text_color"
                 android:textColorHint="@color/gray_text_color" />-->
-
-
-            <EditText
-                android:id="@+id/edit_searchClub"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_17sdp"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:layout_marginRight="@dimen/_17sdp"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:background="@drawable/round_search_box_bg"
-                android:drawableRight="@drawable/search_icon"
-                android:fontFamily="@font/brandon_reg"
-                android:hint="@string/search_skill"
-                android:imeOptions="actionDone"
-                android:padding="@dimen/_6sdp"
-                android:singleLine="true"
-                android:textColor="@color/gray_text_color"
-                android:textColorHint="@color/gray_text_color" />
-
 
             <LinearLayout
                 android:layout_width="match_parent"

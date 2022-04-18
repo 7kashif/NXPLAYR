@@ -1,6 +1,7 @@
 package com.nxplayr.fsl.ui.activity.onboarding.view
 
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -9,14 +10,11 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
-import com.nxplayr.fsl.util.ErrorUtil
-import com.nxplayr.fsl.util.MyUtils
-import com.nxplayr.fsl.util.PopupMenu
-import com.nxplayr.fsl.util.SessionManager
 import com.google.gson.Gson
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
@@ -24,7 +22,10 @@ import com.nxplayr.fsl.data.model.CountryListData
 import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.CountryListModel
 import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
-import kotlinx.android.synthetic.main.activity_otp_verification.*
+import com.nxplayr.fsl.util.ErrorUtil
+import com.nxplayr.fsl.util.MyUtils
+import com.nxplayr.fsl.util.PopupMenu
+import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.activity_parent_info.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -64,22 +65,12 @@ class ParentInfoActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setupUI() {
-        tv_countryCode.text = countryCode
+        p_countrylist_edit_text.setText(countryCode)
         setUI()
-        MyUtils.setSelectedModeTypeViewColor(
-            this,
-            arrayListOf(
-                introduce_your_parents,
-                textinput_parent_info_email,
-                emailAddress_edit_text,
-                mobile_textInputLayout,
-                mobile_edit_text
-            ) as ArrayList<View>,
-            colorId!!
-        )
 
         getCounrtyList()
-        tv_countryCode.setOnClickListener(this)
+        p_countrylist_edit_text.setOnClickListener(this)
+
         mobile_edit_text.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
             }
@@ -90,43 +81,62 @@ class ParentInfoActivity : AppCompatActivity(), View.OnClickListener {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 var loginType = TextUtils.isDigitsOnly(mobile_edit_text?.text.toString())
                 if (loginType) {
-                    tv_countryCode.visibility = View.VISIBLE
-                    mobile_edit_text.setPadding(
-                        resources.getDimensionPixelOffset(R.dimen._60sdp),
-                        resources.getDimensionPixelOffset(R.dimen._25sdp),
-                        resources.getDimensionPixelOffset(R.dimen._1sdp),
-                        resources.getDimensionPixelOffset(R.dimen._10sdp)
-                    )
-                    tv_countryCode.setPadding(
-                        resources.getDimensionPixelOffset(R.dimen._10sdp),
-                        resources.getDimensionPixelOffset(R.dimen._25sdp),
-                        resources.getDimensionPixelOffset(R.dimen._80sdp),
-                        resources.getDimensionPixelOffset(R.dimen._10sdp)
-                    )
-                    tv_countryCode.requestFocus()
+                    p_ll_dropdown.visibility = View.VISIBLE
                 } else {
-                    tv_countryCode.visibility = View.GONE
-                    mobile_edit_text.setPadding(
-                        resources.getDimensionPixelOffset(R.dimen._10sdp),
-                        resources.getDimensionPixelOffset(R.dimen._25sdp),
-                        resources.getDimensionPixelOffset(R.dimen._1sdp),
-                        resources.getDimensionPixelOffset(R.dimen._10sdp)
-                    )
+                    p_ll_dropdown.visibility = View.GONE
                     mobile_edit_text.requestFocus()
                 }
                 if (p0!!.isEmpty()) {
-                    tv_countryCode.visibility = View.GONE
-                    mobile_edit_text.setPadding(
-                        resources.getDimensionPixelOffset(R.dimen._10sdp),
-                        resources.getDimensionPixelOffset(R.dimen._25sdp),
-                        resources.getDimensionPixelOffset(R.dimen._1sdp),
-                        resources.getDimensionPixelOffset(R.dimen._10sdp)
-                    )
+                    p_ll_dropdown.visibility = View.GONE
+
                 }
                 nextButtonEnable()
             }
         })
+
+        emailAddress_edit_text.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                nextButtonEnable()
+            }
+        })
+
+        firstName_edit_text.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                nextButtonEnable()
+            }
+        })
+
+        lastName_edit_text.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                nextButtonEnable()
+            }
+        })
+
         btnSubmit.setOnClickListener(this)
+        see_more.setOnClickListener(this)
+        see_less.setOnClickListener(this)
+
+        check.setOnCheckedChangeListener { buttonView, isChecked ->
+            nextButtonEnable()
+        }
     }
 
     private fun setupViewModel() {
@@ -141,39 +151,59 @@ class ParentInfoActivity : AppCompatActivity(), View.OnClickListener {
         if (validateSignInInput()) {
             when (selectModeType) {
                 0 -> {
-                    btnSubmit.backgroundTint = (resources.getColor(R.color.colorPrimary))
-                    btnSubmit.textColor = resources.getColor(R.color.black)
+                    btnSubmit.backgroundTint = (ContextCompat.getColor(this, R.color.colorPrimary))
+                    btnSubmit.textColor = ContextCompat.getColor(this, R.color.black)
                 }
                 1 -> {
-                    btnSubmit.backgroundTint = (resources.getColor(R.color.yellow))
-                    btnSubmit.textColor = resources.getColor(R.color.black)
+                    btnSubmit.backgroundTint = (ContextCompat.getColor(this, R.color.yellow))
+                    btnSubmit.textColor = ContextCompat.getColor(this, R.color.black)
+                }
+                2 -> {
+                    btnSubmit.backgroundTint = (ContextCompat.getColor(this, R.color.colorAccent))
+                    btnSubmit.textColor = ContextCompat.getColor(this, R.color.black)
                 }
             }
 
         } else {
             when (selectModeType) {
                 0 -> {
-                    btnSubmit.strokeColor = (resources.getColor(R.color.colorPrimary))
-                    btnSubmit.backgroundTint = (resources.getColor(R.color.transperent1))
-                    btnSubmit.textColor = resources.getColor(R.color.colorPrimary)
+                    btnSubmit.strokeColor = (ContextCompat.getColor(this, R.color.colorPrimary))
+                    btnSubmit.backgroundTint = (ContextCompat.getColor(this, R.color.transperent1))
+                    btnSubmit.textColor = ContextCompat.getColor(this, R.color.colorPrimary)
                 }
                 1 -> {
-                    btnSubmit.strokeColor = (resources.getColor(R.color.yellow))
-                    btnSubmit.backgroundTint = (resources.getColor(R.color.transperent1))
-                    btnSubmit.textColor = resources.getColor(R.color.yellow)
+                    btnSubmit.strokeColor = (ContextCompat.getColor(this, R.color.yellow))
+                    btnSubmit.backgroundTint = (ContextCompat.getColor(this, R.color.transperent1))
+                    btnSubmit.textColor = ContextCompat.getColor(this, R.color.yellow)
+                }
+                2 -> {
+                    btnSubmit.strokeColor = (ContextCompat.getColor(this, R.color.colorAccent))
+                    btnSubmit.backgroundTint = (ContextCompat.getColor(this, R.color.transperent1))
+                    btnSubmit.textColor = ContextCompat.getColor(this, R.color.colorAccent)
                 }
             }
-
         }
     }
 
     fun validateSignInInput(): Boolean {
         var valid: Boolean = false
         when {
+            firstName_edit_text.text.toString().trim().isEmpty() -> {
+                return valid
+            }
+            lastName_edit_text.text.toString().trim().isEmpty() -> {
+                return valid
+            }
             mobile_edit_text.text.toString().trim().isEmpty() -> {
                 return valid
             }
             emailAddress_edit_text.text.toString().trim().isEmpty() -> {
+                return valid
+            }
+            !MyUtils.isValidEmail(emailAddress_edit_text.text.toString().trim()) -> {
+                return valid
+            }
+            !check.isChecked -> {
                 return valid
             }
             else -> {
@@ -200,26 +230,27 @@ class ParentInfoActivity : AppCompatActivity(), View.OnClickListener {
         jsonArray.put(jsonObject)
         countryListModel.getCountryList(this, false, jsonArray.toString())
             .observe(
-                this@ParentInfoActivity,
-                { countryListPojo ->
-                    if (countryListPojo != null) {
-                        if (countryListPojo.get(0).status.equals("true", false)) {
-                            countryListData?.addAll(countryListPojo.get(0).data)
-                            countrylist = java.util.ArrayList()
-                            countrylist!!.clear()
-                            for (i in 0 until countryListData!!.size) {
-                                countrylist!!.add(countryListData!![i].countryDialCode)
-                            }
-                            // popupMenu()
-                        } else {
-                            MyUtils.showSnackbar(this@ParentInfoActivity, "", ll_main_parents)
+                this@ParentInfoActivity
+            ) { countryListPojo ->
+                if (countryListPojo != null) {
+                    if (countryListPojo.get(0).status.equals("true", false)) {
+                        countryListData?.addAll(countryListPojo.get(0).data)
+                        countrylist = java.util.ArrayList()
+                        countrylist!!.clear()
+                        for (i in 0 until countryListData!!.size) {
+                            countrylist!!.add(countryListData!![i].countryDialCode)
                         }
-
+                        p_countrylist_edit_text.setText(countryListData!![0].countryDialCode)
+                        // popupMenu()
                     } else {
-                        ErrorUtil.errorMethod(ll_main_parents)
-
+                        MyUtils.showSnackbar(this@ParentInfoActivity, "", ll_main_parents)
                     }
-                })
+
+                } else {
+                    ErrorUtil.errorMethod(ll_main_parents)
+
+                }
+            }
     }
 
     private fun StoreSessionManager(uesedata: SignupData?) {
@@ -238,23 +269,22 @@ class ParentInfoActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     fun popupMenu() {
-        PopupMenu(this@ParentInfoActivity, tv_countryCode, countrylist!!).showPopUp(object :
+        PopupMenu(this@ParentInfoActivity, p_countrylist_edit_text, countrylist!!).showPopUp(object :
             PopupMenu.OnMenuSelectItemClickListener {
             override fun onItemClick(item: String, pos: Int) {
-                tv_countryCode.text = item.toString()
+                p_countrylist_edit_text.setText(item)
             }
         })
     }
 
     override fun onClick(v: View?) {
-
         when (v?.id) {
             R.id.btnSubmit -> {
-                btnSubmit.textColor = (resources.getColor(R.color.black))
-                btnSubmit.backgroundTint = (resources.getColor(colorId!!))
+                btnSubmit.textColor = (ContextCompat.getColor(this, R.color.black))
+                btnSubmit.backgroundTint = (ContextCompat.getColor(this, colorId!!))
                 chekValidation()
             }
-            R.id.tv_countryCode -> {
+            R.id.p_countrylist_edit_text -> {
                 if (countrylist.isNullOrEmpty()) {
                     getCounrtyList()
                 } else {
@@ -265,15 +295,37 @@ class ParentInfoActivity : AppCompatActivity(), View.OnClickListener {
                     }
                     popupMenu()
                 }
-
+            }
+            R.id.see_more -> {
+                see_more.visibility = View.GONE
+                see_less.visibility = View.VISIBLE
+                agreement_details.maxLines = Integer.MAX_VALUE
+            }
+            R.id.see_less -> {
+                see_more.visibility = View.VISIBLE
+                see_less.visibility = View.GONE
+                agreement_details.maxLines = 2
             }
         }
-
     }
 
     private fun chekValidation() {
         MyUtils.hideKeyboard1(this@ParentInfoActivity)
         when {
+            firstName_edit_text!!.text.toString().trim().isEmpty() -> {
+                MyUtils.showSnackbar(
+                    this@ParentInfoActivity,
+                    getString(R.string.please_enter_first_name),
+                    ll_main_parents
+                )
+            }
+            lastName_edit_text!!.text.toString().trim().isEmpty() -> {
+                MyUtils.showSnackbar(
+                    this@ParentInfoActivity,
+                    getString(R.string.please_enter_last_name),
+                    ll_main_parents
+                )
+            }
             mobile_edit_text!!.text.toString().trim().isEmpty() -> {
 
                 MyUtils.showSnackbar(
@@ -305,6 +357,13 @@ class ParentInfoActivity : AppCompatActivity(), View.OnClickListener {
                     ll_main_parents
                 )
             }
+            !check.isChecked -> {
+                MyUtils.showSnackbar(
+                    this@ParentInfoActivity,
+                    getString(R.string.accept_agreement),
+                    ll_main_parents
+                )
+            }
             else -> {
                 signUp()
             }
@@ -329,6 +388,8 @@ class ParentInfoActivity : AppCompatActivity(), View.OnClickListener {
                 jsonObject.put("apiVersion", RestClient.apiVersion)
                 jsonObject.put("userDeviceType", RestClient.apiType)
                 jsonObject.put("userDeviceID", token)
+                jsonObject.put("userParentFirstName", firstName_edit_text.text.toString())
+                jsonObject.put("userParentLastName", lastName_edit_text.text.toString())
                 jsonObject.put("userParentEmail", emailAddress_edit_text.text.toString())
                 jsonObject.put("userParentMobile", mobile_edit_text.text.toString())
                 jsonObject.put("loginuserID", loginuserID)
@@ -385,11 +446,24 @@ class ParentInfoActivity : AppCompatActivity(), View.OnClickListener {
             if (!sessionManager?.LanguageLabel?.lngVerificationTitle.isNullOrEmpty())
                 introduce_your_parents.text = sessionManager?.LanguageLabel?.lngVerificationTitle
             if (!sessionManager?.LanguageLabel?.lngVerificationTitle.isNullOrEmpty())
-                introduce_your_parents_details.text = sessionManager?.LanguageLabel?.lngParentPermissionDetail
+                introduce_your_parents_details.text =
+                    sessionManager?.LanguageLabel?.lngParentPermissionDetail
+            if (!sessionManager?.LanguageLabel?.lngFirstName.isNullOrEmpty())
+                firstName_textInputLayout.hint = sessionManager?.LanguageLabel?.lngFirstName
+            if (!sessionManager?.LanguageLabel?.lngLastName.isNullOrEmpty())
+                lastName_textInputLayout.hint = sessionManager?.LanguageLabel?.lngLastName
             if (!sessionManager?.LanguageLabel?.lngEmailAddress.isNullOrEmpty())
                 textinput_parent_info_email.hint = sessionManager?.LanguageLabel?.lngEmailAddress
             if (!sessionManager?.LanguageLabel?.lngMobileNo.isNullOrEmpty())
                 mobile_textInputLayout.hint = sessionManager?.LanguageLabel?.lngMobileNo
+            if (!sessionManager?.LanguageLabel?.lngParentAggreementDetail.isNullOrEmpty())
+                agreement_details.text = sessionManager?.LanguageLabel?.lngParentAggreementDetail
+            if (!sessionManager?.LanguageLabel?.lngDeclaration.isNullOrEmpty())
+                declare.text = sessionManager?.LanguageLabel?.lngDeclaration
+            if (!sessionManager?.LanguageLabel?.lngSeeMore.isNullOrEmpty())
+                see_more.text = sessionManager?.LanguageLabel?.lngSeeMore
+            if (!sessionManager?.LanguageLabel?.lngSeeLess.isNullOrEmpty())
+                see_less.text = sessionManager?.LanguageLabel?.lngSeeLess
             if (!sessionManager?.LanguageLabel?.lngSubmit.isNullOrEmpty())
                 btnSubmit.progressText = sessionManager?.LanguageLabel?.lngSubmit
         }
@@ -404,8 +478,40 @@ class ParentInfoActivity : AppCompatActivity(), View.OnClickListener {
             2 -> {
                 colorId = R.color.colorAccent
             }
-
         }
+
+        MyUtils.setSelectedModeTypeViewColor(
+            this,
+            arrayListOf(
+                introduce_your_parents,
+                firstName_textInputLayout,
+                firstName_edit_text,
+                lastName_textInputLayout,
+                lastName_edit_text,
+                mobile_textInputLayout,
+                mobile_edit_text,
+                textinput_parent_info_email,
+                emailAddress_edit_text,
+                p_country_textInput,
+                p_countrylist_edit_text,
+                see_more,
+                see_less,
+                ) as java.util.ArrayList<View>,
+            colorId!!
+        )
+
+        var mDrawable = ContextCompat.getDrawable(this, R.drawable.dropdown_icon)
+        mDrawable?.setColorFilter(ContextCompat.getColor(this, colorId!!), PorterDuff.Mode.SRC_IN)
+        p_countrylist_edit_text.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            null,
+            null,
+            mDrawable,
+            null
+        )
+        check.buttonTintList = (ContextCompat.getColorStateList(this, colorId!!))
+        btnSubmit.strokeColor = (ContextCompat.getColor(this, colorId!!))
+        btnSubmit.backgroundTint = (ContextCompat.getColor(this, R.color.transperent1))
+        btnSubmit.textColor = ContextCompat.getColor(this, colorId!!)
     }
 }
 

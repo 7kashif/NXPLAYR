@@ -188,7 +188,7 @@ data class SignupData(
     @SerializedName("appuroleID")
         var appuroleID: String,
     @SerializedName("appuroleName")
-        var appuroleName: Any,
+        var appuroleName: String,
     @SerializedName("apputypeID")
         var apputypeID: String,
     @SerializedName("apputypeName")
@@ -198,7 +198,7 @@ data class SignupData(
     @SerializedName("clubName")
         var clubName: String,
     @SerializedName("clubs")
-        var clubs: ArrayList<ClubData> = ArrayList(),
+        var clubs: ArrayList<ClubListData> = ArrayList(),
     @SerializedName("education")
         var education: ArrayList<EducationData> = ArrayList(),
     @SerializedName("employement")
@@ -582,7 +582,7 @@ data class Location(
     val userlocationPincode: String?,
     @SerializedName("userlocationType")
     val userlocationType: String?
-)
+):Serializable
 
 
 data class PushNotification(

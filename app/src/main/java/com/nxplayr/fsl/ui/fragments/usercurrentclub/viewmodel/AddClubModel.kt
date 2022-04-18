@@ -7,12 +7,13 @@ import androidx.lifecycle.ViewModel
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.AddClubPojo
+import com.nxplayr.fsl.data.model.ClubListPojo
 import retrofit2.Call
 import retrofit2.Response
 
 class AddClubModel : ViewModel() {
 
-    lateinit var languageresponse: LiveData<List<AddClubPojo>>
+    lateinit var languageresponse: LiveData<List<ClubListPojo>>
     lateinit var mContext: Context
     var json: String ?= null
     var from:String=""
@@ -21,7 +22,7 @@ class AddClubModel : ViewModel() {
             context: Context,
             isShowing: Boolean,
             json: String,from:String
-    ): LiveData<List<AddClubPojo>> {
+    ): LiveData<List<ClubListPojo>> {
         this.json = json
 
         this.mContext = context
@@ -32,10 +33,10 @@ class AddClubModel : ViewModel() {
         return languageresponse
     }
 
-    private fun getClubListApi(): LiveData<List<AddClubPojo>> {
-        val data = MutableLiveData<List<AddClubPojo>>()
+    private fun getClubListApi(): LiveData<List<ClubListPojo>> {
+        val data = MutableLiveData<List<ClubListPojo>>()
 
-        var call : Call<List<AddClubPojo>>?=null
+        var call : Call<List<ClubListPojo>>?=null
        when(from)
        {
            "Add"->{
@@ -56,8 +57,8 @@ class AddClubModel : ViewModel() {
            }
        }
 
-        call?.enqueue(object : RestCallback<List<AddClubPojo>>(mContext) {
-            override fun Success(response: Response<List<AddClubPojo>>) {
+        call?.enqueue(object : RestCallback<List<ClubListPojo>>(mContext) {
+            override fun Success(response: Response<List<ClubListPojo>>) {
                 data.value = response.body()
             }
 

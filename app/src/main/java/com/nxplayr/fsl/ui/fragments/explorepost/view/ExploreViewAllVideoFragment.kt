@@ -18,7 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.ui.activity.filterfeed.view.FilterActivity
-import com.nxplayr.fsl.ui.fragments.explorepost.adapter.ExploreVideoAdapater
+import com.nxplayr.fsl.ui.fragments.explorepost.adapter.OldExploreVideoAdapater
 import com.nxplayr.fsl.ui.fragments.explorepost.adapter.ExploreVideoListAdapater
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.ui.fragments.explorepost.viewmodel.ExploreVideoModel
@@ -44,7 +44,7 @@ class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
     var userName: String? = null
     var getExploreType: String? = null
     var explore_video_list: ArrayList<CreatePostData?>? = ArrayList()
-    var exploreVideo_adapter: ExploreVideoAdapater? = null
+    var oldExploreVideo_adapter: OldExploreVideoAdapater? = null
     var exploreVideoListadapter: ExploreVideoListAdapater? = null
 
     var swipeCount = 0
@@ -136,7 +136,7 @@ class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
         swipeCount += 1;
         if (swipeCount > 0) {
 
-            exploreVideo_adapter!!.notifyDataSetChanged()
+            oldExploreVideo_adapter!!.notifyDataSetChanged()
 
             swipe_refresh_layout.isRefreshing = false
 
@@ -154,7 +154,7 @@ class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
         linearLayoutManager = GridLayoutManager(mActivity!!, 2)
         if (explore_video_list.isNullOrEmpty() || pageNo == 0) {
 
-            exploreVideo_adapter = ExploreVideoAdapater(mActivity!!, object : ExploreVideoAdapater.OnItemClick {
+            oldExploreVideo_adapter = OldExploreVideoAdapater(mActivity!!, object : OldExploreVideoAdapater.OnItemClick {
                 override fun onClicklisneter(pos: Int) {
 
                     if (explore_video_list!!.get(pos)?.postAlbum.isNullOrEmpty() || explore_video_list!!.get(pos)?.posthashtag.isNullOrEmpty()) {
@@ -217,7 +217,7 @@ class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
         }
         rc_all_video.layoutManager = linearLayoutManager
         rc_all_video.setHasFixedSize(true)
-        rc_all_video.adapter = exploreVideo_adapter
+        rc_all_video.adapter = oldExploreVideo_adapter
 
         getViewAllExploreDataList("trending", RestClient.apiType, userData?.userID, "ExploreVideos", getExploreType!!, "",
                 RestClient.apiVersion, "", "", pageNo, "0", "",
@@ -310,14 +310,14 @@ class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
 
             relativeprogressBar.visibility = View.VISIBLE
             explore_video_list?.clear()
-            exploreVideo_adapter?.notifyDataSetChanged()
+            oldExploreVideo_adapter?.notifyDataSetChanged()
 
         } else {
 
             relativeprogressBar.visibility = View.GONE
             rc_all_video.visibility = View.VISIBLE
             explore_video_list!!.add(null)
-            exploreVideo_adapter?.notifyItemInserted(explore_video_list!!.size - 1)
+            oldExploreVideo_adapter?.notifyItemInserted(explore_video_list!!.size - 1)
         }
 
         val jsonArray = JSONArray()
@@ -366,7 +366,7 @@ class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
                                 if (pageNo > 0) {
 
                                     explore_video_list?.removeAt(explore_video_list!!.size - 1)
-                                    exploreVideo_adapter?.notifyItemRemoved(explore_video_list!!.size)
+                                    oldExploreVideo_adapter?.notifyItemRemoved(explore_video_list!!.size)
                                 }
 
                                 if (exploreVidelistpojo[0].status.equals("true", true)) {
@@ -381,7 +381,7 @@ class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
                                         isLastpage = true
                                     }
                                     explore_video_list?.addAll(exploreVidelistpojo[0].data!!)
-                                    exploreVideo_adapter?.notifyDataSetChanged()
+                                    oldExploreVideo_adapter?.notifyDataSetChanged()
                                     exploreVideoListadapter?.notifyDataSetChanged()
 
                                     if (!exploreVidelistpojo[0].data!!.isNullOrEmpty()) {

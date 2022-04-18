@@ -29,12 +29,13 @@
 
     <TextView
         android:id="@+id/tv_football_type"
-        style="@style/Font.SubTitle"
+        style="@style/Font.SubTitle_blue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/_5sdp"
         android:gravity="center"
         android:text="@string/talent_pool"
+        android:textColor="@color/white"
         app:autoSizeTextType="uniform" />
 </androidx.appcompat.widget.LinearLayoutCompat>

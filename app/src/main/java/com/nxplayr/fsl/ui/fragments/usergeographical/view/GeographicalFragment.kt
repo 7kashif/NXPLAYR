@@ -112,61 +112,61 @@ class GeographicalFragment : Fragment(),View.OnClickListener {
 
         jsonArray.put(jsonObject)
         languageModel.getGeomobilitysList(mActivity!!, false, jsonArray.toString(), "List")
-            .observe(viewLifecycleOwner,
-                { languagesPojo ->
+            .observe(viewLifecycleOwner
+            ) { languagesPojo ->
 
-                    relativeprogressBar.visibility = View.GONE
-                    recyclerview.visibility = View.VISIBLE
+                relativeprogressBar.visibility = View.GONE
+                recyclerview.visibility = View.VISIBLE
 
-                    if (languagesPojo != null && languagesPojo.isNotEmpty()) {
-                        if (languagesPojo[0].status.equals("true", true))
-                        {
-                            geomobilitysList?.clear()
-                            if(!userId.equals(userData?.userID,false))
-                            {
-                                if (otherUserData != null) {
-                                    for (i in languagesPojo[0].data.indices) {
-                                        if (otherUserData?.geomobilityID.equals(
-                                                languagesPojo[0].data[i].geomobilityID, false)) {
-                                            languagesPojo[0].data[i].checked = true
-                                        }
+                if (languagesPojo != null && languagesPojo.isNotEmpty()) {
+                    if (languagesPojo[0].status.equals("true", true)) {
+                        geomobilitysList?.clear()
+                        if (!userId.equals(userData?.userID, false)) {
+                            if (otherUserData != null) {
+                                for (i in languagesPojo[0].data.indices) {
+                                    if (otherUserData?.geomobilityID.equals(
+                                            languagesPojo[0].data[i].geomobilityID, false
+                                        )
+                                    ) {
+                                        languagesPojo[0].data[i].checked = true
                                     }
                                 }
                             }
-                            else
-                            {
-                                if (userData != null) {
-                                    for (i in languagesPojo[0].data.indices) {
-                                        if (userData?.geomobilityID.equals(languagesPojo[0].data[i].geomobilityID, false)) {
-                                            languagesPojo[0].data[i].checked = true
-                                        }
+                        } else {
+                            if (userData != null) {
+                                for (i in languagesPojo[0].data.indices) {
+                                    if (userData?.geomobilityID.equals(
+                                            languagesPojo[0].data[i].geomobilityID,
+                                            false
+                                        )
+                                    ) {
+                                        languagesPojo[0].data[i].checked = true
                                     }
                                 }
-
-                            }
-                            geomobilitysList?.addAll(languagesPojo[0].data)
-                            geographicalAdapter?.notifyDataSetChanged()
-                        }
-                        else
-                        {
-
-                            if (geomobilitysList!!.size == 0) {
-                                ll_no_data_found.visibility = View.VISIBLE
-                                recyclerview.visibility = View.GONE
-
-                            } else {
-                                ll_no_data_found.visibility = View.GONE
-                                recyclerview.visibility = View.VISIBLE
-
                             }
 
-
                         }
+                        geomobilitysList?.addAll(languagesPojo[0].data)
+                        geographicalAdapter?.notifyDataSetChanged()
                     } else {
-                        relativeprogressBar.visibility = View.GONE
-                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+
+                        if (geomobilitysList!!.size == 0) {
+                            ll_no_data_found.visibility = View.VISIBLE
+                            recyclerview.visibility = View.GONE
+
+                        } else {
+                            ll_no_data_found.visibility = View.GONE
+                            recyclerview.visibility = View.VISIBLE
+
+                        }
+
+
                     }
-                })
+                } else {
+                    relativeprogressBar.visibility = View.GONE
+                    ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                }
+            }
 
     }
 
@@ -263,15 +263,18 @@ class GeographicalFragment : Fragment(),View.OnClickListener {
         try {
             jsonObject.put("loginuserID", userData?.userID)
             jsonObject.put("leagueID", userData?.leagueID)
+            jsonObject.put("previousclubName", userData?.previousclubName)
             jsonObject.put("contractsituationID", userData?.contractsituationID)
+            jsonObject.put("outfitterIDs", userData?.outfitterIDs)
+            jsonObject.put("userAgentName", userData?.userAgentName)
             jsonObject.put("userContractExpiryDate", userData?.userContractExpiryDate)
             jsonObject.put("userPreviousClubID", userData?.userPreviousClubID)
             jsonObject.put("userJersyNumber", userData?.userJersyNumber)
             jsonObject.put("usertrophies", userData?.usertrophies)
-            jsonObject.put("geomobilityID", geomobilityID)
             jsonObject.put("userNationalCountryID", userData?.userNationalCountryID)
             jsonObject.put("userNationalCap", userData?.userNationalCap)
             jsonObject.put("useNationalGoals", userData?.useNationalGoals)
+            jsonObject.put("geomobilityID", geomobilityID)
             jsonObject.put("apiType", RestClient.apiType)
             jsonObject.put("apiVersion", RestClient.apiVersion)
         } catch (e: JSONException) {
@@ -280,31 +283,39 @@ class GeographicalFragment : Fragment(),View.OnClickListener {
         jsonArray.put(jsonObject)
         passportNationalityModel.getUpdateResume(mActivity!!, s, jsonArray.toString())
                 .observe(
-                    this@GeographicalFragment,
-                    { countryListPojo ->
-                        if (countryListPojo != null) {
-                            btn_addNationality.endAnimation()
-                            if (countryListPojo.get(0).status.equals("true", false)) {
-                                try {
-                                    StoreSessionManager(countryListPojo.get(0).data[0])
-                                    Handler().postDelayed({
-                                        (activity as MainActivity).onBackPressed()
-                                    }, 1000)
-                                    MyUtils.showSnackbar(mActivity!!, countryListPojo.get(0).message, llyGeographical)
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                }
-
-                            } else {
-                                MyUtils.showSnackbar(mActivity!!, countryListPojo.get(0).message, llyGeographical)
+                    this@GeographicalFragment
+                ) { countryListPojo ->
+                    if (countryListPojo != null) {
+                        btn_addNationality.endAnimation()
+                        if (countryListPojo.get(0).status.equals("true", false)) {
+                            try {
+                                StoreSessionManager(countryListPojo.get(0).data[0])
+                                Handler().postDelayed({
+                                    (activity as MainActivity).onBackPressed()
+                                }, 1000)
+                                MyUtils.showSnackbar(
+                                    mActivity!!,
+                                    countryListPojo.get(0).message,
+                                    llyGeographical
+                                )
+                            } catch (e: Exception) {
+                                e.printStackTrace()
                             }
 
                         } else {
-                            btn_addNationality.endAnimation()
-                            ErrorUtil.errorMethod(llyGeographical)
-//                                Toast.makeText(mActivity!!,"It seems there is no internet connection.",Toast.LENGTH_SHORT)
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                countryListPojo.get(0).message,
+                                llyGeographical
+                            )
                         }
-                    })
+
+                    } else {
+                        btn_addNationality.endAnimation()
+                        ErrorUtil.errorMethod(llyGeographical)
+//                                Toast.makeText(mActivity!!,"It seems there is no internet connection.",Toast.LENGTH_SHORT)
+                    }
+                }
     }
 
     private fun StoreSessionManager(uesedata: SignupData?) {

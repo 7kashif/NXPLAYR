@@ -82,8 +82,13 @@ import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 
 
-@Suppress("DEPRECATED_IDENTITY_EQUALS", "DEPRECATION", "RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.selectPrivacy,View.OnClickListener {
+@Suppress(
+    "DEPRECATED_IDENTITY_EQUALS",
+    "DEPRECATION",
+    "RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS"
+)
+class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.selectPrivacy,
+    View.OnClickListener {
 
     private val currentApiVersion = Build.VERSION.SDK_INT
     private val permissionsRequestStorage = 99
@@ -118,9 +123,9 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
     var type1 = ""
     var radioText = "Videos"
     var filterImage = ""
-    var connectionTypeIDs=""
-    private lateinit var  createPostModel: CreatePostModel
-    private lateinit var  checkStoragetModel: CheckStoragetModel
+    var connectionTypeIDs = ""
+    private lateinit var createPostModel: CreatePostModel
+    private lateinit var checkStoragetModel: CheckStoragetModel
 
     private val mYourBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -195,10 +200,10 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
         }
         imageViewProfilePicture.setImageURI(RestClient.image_base_url_users + userData?.userProfilePicture)
         textViewProfileName.text = userData?.userFirstName + " " + userData?.userLastName
-        textViewCreatePostPrivacy.setOnClickListener (this)
-        ll_add_location_post.setOnClickListener  (this)
+        textViewCreatePostPrivacy.setOnClickListener(this)
+        ll_add_location_post.setOnClickListener(this)
 
-        tvAddHashTag.setOnClickListener (this)
+        tvAddHashTag.setOnClickListener(this)
 
         LocalBroadcastManager.getInstance(this@CreatePostActivityTwo)
             .registerReceiver(mYourBroadcastReceiver, IntentFilter("CreatePost"))
@@ -215,7 +220,7 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
         openActivityContent(listFromPastActivity)
         openActivityForPlace(stringFromSelectPlaceActivity)
 
-        menuToolbarItem.setOnClickListener (this)
+        menuToolbarItem.setOnClickListener(this)
 
         radioGroup.setOnCheckedChangeListener { group, checkedId ->
             val radioButton: RadioButton = group.findViewById(checkedId) as RadioButton
@@ -224,8 +229,10 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
     }
 
     private fun setupViewModel() {
-         createPostModel = ViewModelProvider(this@CreatePostActivityTwo).get(CreatePostModel::class.java)
-         checkStoragetModel = ViewModelProvider(this@CreatePostActivityTwo).get(CheckStoragetModel::class.java)
+        createPostModel =
+            ViewModelProvider(this@CreatePostActivityTwo).get(CreatePostModel::class.java)
+        checkStoragetModel =
+            ViewModelProvider(this@CreatePostActivityTwo).get(CheckStoragetModel::class.java)
 
     }
 
@@ -255,15 +262,14 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
 
 
             jsonObject.put("postCategory", "")
-            when(textViewCreatePostPrivacy.text.toString().trim()   )
-            {
-                "Public"->{
+            when (textViewCreatePostPrivacy.text.toString().trim()) {
+                "Public" -> {
                     jsonObject.put("postPrivacyType", "Public")
                 }
-                "Connections"->{
+                "Connections" -> {
                     jsonObject.put("postPrivacyType", "Connection")
                 }
-                "Groups"->{
+                "Groups" -> {
                     jsonObject.put("postPrivacyType", "Group")
                 }
             }
@@ -316,10 +322,19 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                         for (i in 0 until postData?.postSerializedData!![0].albummedia.size) {
                             val jsonObjectAlbummedia = JSONObject()
                             try {
-                                jsonObjectAlbummedia.put("albummediaFile", postData?.postSerializedData!![0].albummedia[i].albummediaFile)
-                                jsonObjectAlbummedia.put("albummediaThumbnail", postData?.postSerializedData!![0].albummedia[i].albummediaThumbnail)
+                                jsonObjectAlbummedia.put(
+                                    "albummediaFile",
+                                    postData?.postSerializedData!![0].albummedia[i].albummediaFile
+                                )
+                                jsonObjectAlbummedia.put(
+                                    "albummediaThumbnail",
+                                    postData?.postSerializedData!![0].albummedia[i].albummediaThumbnail
+                                )
                                 jsonObjectAlbummedia.put("albummediaFileType", "Video")
-                                jsonObjectAlbummedia.put("albummediaFileSize", postData?.postSerializedData!![0].albummedia[i].albummediaFileSize)
+                                jsonObjectAlbummedia.put(
+                                    "albummediaFileSize",
+                                    postData?.postSerializedData!![0].albummedia[i].albummediaFileSize
+                                )
 
                                 jsonArrayAlbummedia.put(i, jsonObjectAlbummedia)
                             } catch (e: Exception) {
@@ -338,59 +353,65 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
         }
         jsonObject.put("postLanguage", "en")
         jsonArray.put(jsonObject)
-        val createPostModel = ViewModelProviders.of(this@CreatePostActivityTwo).get(CreatePostModel::class.java)
+        val createPostModel =
+            ViewModelProviders.of(this@CreatePostActivityTwo).get(CreatePostModel::class.java)
         createPostModel.apiFunction(this@CreatePostActivityTwo, jsonArray.toString(), fromType)
-                .observe(this@CreatePostActivityTwo,
-                        androidx.lifecycle.Observer { response ->
-                            if (!response.isNullOrEmpty()) {
-                                MyUtils.dismissProgressDialog()
-                                if (response[0].status.equals("true", true)) {
-                                    MyUtils.hideKeyboard1(this@CreatePostActivityTwo)
-                                    val intent2 = Intent("CreatePost")
-                                    intent2.putExtra("from", "MyExploreVideoEdit")
-                                    intent2.putExtra("postType",response!![0].data!![0]!!.postType)
-                                    intent2.putExtra("explore_video_list",response!![0].data as Serializable)
-                                    intent2.putExtra("pos",0)
-                                    intent2.putExtra("msg", response[0].message)
-                                    LocalBroadcastManager.getInstance(this@CreatePostActivityTwo)
-                                            .sendBroadcast(intent2)
+            .observe(this@CreatePostActivityTwo,
+                androidx.lifecycle.Observer { response ->
+                    if (!response.isNullOrEmpty()) {
+                        MyUtils.dismissProgressDialog()
+                        if (response[0].status.equals("true", true)) {
+                            MyUtils.hideKeyboard1(this@CreatePostActivityTwo)
+                            val intent2 = Intent("CreatePost")
+                            intent2.putExtra("from", "MyExploreVideoEdit")
+                            intent2.putExtra("postType", response!![0].data!![0]!!.postType)
+                            intent2.putExtra(
+                                "explore_video_list",
+                                response!![0].data as Serializable
+                            )
+                            intent2.putExtra("pos", 0)
+                            intent2.putExtra("msg", response[0].message)
+                            LocalBroadcastManager.getInstance(this@CreatePostActivityTwo)
+                                .sendBroadcast(intent2)
 
-                                    MyUtils.finishActivity(this@CreatePostActivityTwo, true)
-                                } else {
-                                    //No data and no internet
-                                    if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo)) {
-                                        if (!response[0].message.isNullOrEmpty()) {
-                                            MyUtils.showSnackbar(
-                                                    this@CreatePostActivityTwo,
-                                                    response[0].message,
-                                                    mainLinearLayoutCreatePostTwo
-                                            )
-                                        }
-
-                                    } else {
-                                        MyUtils.showSnackbar(
-                                                this@CreatePostActivityTwo,
-                                                resources.getString(R.string.error_common_network),
-                                                mainLinearLayoutCreatePostTwo
-                                        )
-                                    }
+                            MyUtils.finishActivity(this@CreatePostActivityTwo, true)
+                        } else {
+                            //No data and no internet
+                            if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo)) {
+                                if (!response[0].message.isNullOrEmpty()) {
+                                    MyUtils.showSnackbar(
+                                        this@CreatePostActivityTwo,
+                                        response[0].message,
+                                        mainLinearLayoutCreatePostTwo
+                                    )
                                 }
 
                             } else {
-                                MyUtils.dismissProgressDialog()
-                                if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo)) {
-                                    MyUtils.showSnackbar(
-                                            this@CreatePostActivityTwo,
-                                            resources.getString(R.string.error_crash_error_message), mainLinearLayoutCreatePostTwo
-                                    )
-                                } else {
-                                    MyUtils.showSnackbar(
-                                            this@CreatePostActivityTwo,
-                                            resources.getString(R.string.error_common_network), mainLinearLayoutCreatePostTwo
-                                    )
-                                }
+                                MyUtils.showSnackbar(
+                                    this@CreatePostActivityTwo,
+                                    resources.getString(R.string.error_common_network),
+                                    mainLinearLayoutCreatePostTwo
+                                )
                             }
-                        })
+                        }
+
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo)) {
+                            MyUtils.showSnackbar(
+                                this@CreatePostActivityTwo,
+                                resources.getString(R.string.error_crash_error_message),
+                                mainLinearLayoutCreatePostTwo
+                            )
+                        } else {
+                            MyUtils.showSnackbar(
+                                this@CreatePostActivityTwo,
+                                resources.getString(R.string.error_common_network),
+                                mainLinearLayoutCreatePostTwo
+                            )
+                        }
+                    }
+                })
     }
 
     private fun setShareData() {
@@ -411,13 +432,19 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
         postprocessor = BlurPostprocessor(this@CreatePostActivityTwo, 25, 10)
 
         try {
-            val request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(RestClient.image_base_url_posts + postData?.postSerializedData?.get(0)?.albummedia?.get(0)?.albummediaFile))
-                    .setPostprocessor(postprocessor)
-                    .build()
+            val request = ImageRequestBuilder.newBuilderWithSource(
+                Uri.parse(
+                    RestClient.image_base_url_posts + postData?.postSerializedData?.get(0)?.albummedia?.get(
+                        0
+                    )?.albummediaFile
+                )
+            )
+                .setPostprocessor(postprocessor)
+                .build()
             val controller = Fresco.newDraweeControllerBuilder()
-                    .setImageRequest(request)
-                    .setOldController(blurImage?.controller)
-                    .build() as PipelineDraweeController
+                .setImageRequest(request)
+                .setOldController(blurImage?.controller)
+                .build() as PipelineDraweeController
             blurImage?.controller = controller
         } catch (e: Exception) {
             e.printStackTrace()
@@ -435,14 +462,16 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
         setPostDescription(tv_details, postData?.postDescription)
         ll_comment_view?.visibility = View.GONE
         ll_count_view?.visibility = View.GONE
-        setFeedData1(tv_like_count!!,
-                tv_chat_count!!,
-                tv_views_count!!,
-                img_like!!,
-                btn_views!!,
-                btn_chat!!,
-                btn_share!!,
-                btnLike!!)
+        setFeedData1(
+            tv_like_count!!,
+            tv_chat_count!!,
+            tv_views_count!!,
+            img_like!!,
+            btn_views!!,
+            btn_chat!!,
+            btn_share!!,
+            btnLike!!
+        )
 
         when (postData?.postMediaType) {
             "Photo" -> {
@@ -484,8 +513,14 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
             postdescriptionTextview.visibility = View.VISIBLE
             val postdescription: String = Constant.decode(postDescription)
             postdescriptionTextview.text = postdescription
-            postdescriptionTextview.doResizeTextView(postdescriptionTextview,3, "...See More", true)
-            postdescriptionTextview.setCustomEventListener(object : PostDesTextView.OnCustomEventListener {
+            postdescriptionTextview.doResizeTextView(
+                postdescriptionTextview,
+                3,
+                "...See More",
+                true
+            )
+            postdescriptionTextview.setCustomEventListener(object :
+                PostDesTextView.OnCustomEventListener {
 
 
                 override fun onViewMore(viewMore: Boolean) {
@@ -499,14 +534,16 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
         }
     }
 
-    private fun setFeedData1(userliketextview: TextView,
-                             usercommenttextview: TextView,
-                             userviewtextview: TextView,
-                             userlikeimageview: ImageView,
-                             userviewpostImageview: ImageView,
-                             usercommentpostImageview: ImageView,
-                             shareImageView: ImageView,
-                             btnLike: ImageView) {
+    private fun setFeedData1(
+        userliketextview: TextView,
+        usercommenttextview: TextView,
+        userviewtextview: TextView,
+        userlikeimageview: ImageView,
+        userviewpostImageview: ImageView,
+        usercommentpostImageview: ImageView,
+        shareImageView: ImageView,
+        btnLike: ImageView
+    ) {
         if (postData?.youpostShared.equals("Yes", ignoreCase = true)) {
             shareImageView.setImageResource(R.drawable.post_share_icon_selected)
         } else {
@@ -543,18 +580,14 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
     private fun setData() {
         menuToolbarItem.visibility = View.VISIBLE
         textViewCreatePostPrivacy.text = postData?.postPrivacyType
-        if(!postData?.connectionTypeIDs.isNullOrEmpty())
-        {
-            connectionTypeIDs= postData?.connectionTypeIDs!!
+        if (!postData?.connectionTypeIDs.isNullOrEmpty()) {
+            connectionTypeIDs = postData?.connectionTypeIDs!!
         }
 
-        if (!postData?.postLocation.isNullOrEmpty())
-        {
+        if (!postData?.postLocation.isNullOrEmpty()) {
             tvAddLocationPost.text = postData?.postLocation
             ll_add_location_post.visibility = View.VISIBLE
-        }
-        else
-        {
+        } else {
             ll_add_location_post.visibility = View.VISIBLE
         }
         when (postData?.postMediaType) {
@@ -572,10 +605,22 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
             "Document" -> {
                 createPostEditText.setEditData(Constant.decode(postData?.postDescription!!))
 
-                val extension = postData?.postSerializedData?.get(0)?.albummedia?.get(0)?.albummediaFile?.substring(postData?.postSerializedData?.get(0)?.albummedia?.get(0)?.albummediaFile?.lastIndexOf(".")!!)
-                imageList.add(CreatePostPhotoPojo(null, "", false,
+                val extension =
+                    postData?.postSerializedData?.get(0)?.albummedia?.get(0)?.albummediaFile?.substring(
+                        postData?.postSerializedData?.get(0)?.albummedia?.get(0)?.albummediaFile?.lastIndexOf(
+                            "."
+                        )!!
+                    )
+                imageList.add(
+                    CreatePostPhotoPojo(
                         null,
-                        postData?.postSerializedData?.get(0)?.albummedia?.get(0)?.albummediaFile!!, extension!!))
+                        "",
+                        false,
+                        null,
+                        postData?.postSerializedData?.get(0)?.albummedia?.get(0)?.albummediaFile!!,
+                        extension!!
+                    )
+                )
                 documentViewLinearLayout.visibility = View.VISIBLE
                 initDocumentRV()
             }
@@ -607,14 +652,18 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                 }
                 if (des != null && des?.size!! > 2 && des[2] != null) {
                     postDes = des[2]
-              
+
                 }
 
                 imageViewCancelCameraImage.visibility = View.GONE
                 imageViewCameraCaptured.visibility = View.GONE
                 singleImageLinearLayout?.visibility = View.VISIBLE
                 linkImageview?.visibility = View.VISIBLE
-                linkImageview.setImageURI(RestClient.image_base_url_posts + postData?.postSerializedData?.get(0)?.albummedia?.get(0)?.albummediaFile)
+                linkImageview.setImageURI(
+                    RestClient.image_base_url_posts + postData?.postSerializedData?.get(
+                        0
+                    )?.albummedia?.get(0)?.albummediaFile
+                )
 
             }
         }
@@ -640,26 +689,29 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
             jsonArray.put(jsonObject)
 
             UploadVideo().uploadFileVideo(
-                    this@CreatePostActivityTwo,
-                    jsonArray.toString(),
-                    "post",
-                    imageList,
-                    false,
-                    object : UploadVideo.OnUploadFileListener {
+                this@CreatePostActivityTwo,
+                jsonArray.toString(),
+                "post",
+                imageList,
+                false,
+                object : UploadVideo.OnUploadFileListener {
 
 
-                        override fun onSuccessUpload(datumList: UploadImagePojo?) {
-                            MyUtils.dismissProgressDialog()
-                            uploadPostVideoThumb("Uploaded", listFromPastActivity, datumList?.fileName!!)
+                    override fun onSuccessUpload(datumList: UploadImagePojo?) {
+                        MyUtils.dismissProgressDialog()
+                        uploadPostVideoThumb(
+                            "Uploaded",
+                            listFromPastActivity,
+                            datumList?.fileName!!
+                        )
+                    }
 
-                        }
+                    override fun onFailureUpload(msg: String, datumList: List<UploadImagePojo>?) {
+                        MyUtils.dismissProgressDialog()
+                        //  ErrorUtil.errorMethod(ll_mainProfile)
+                    }
 
-                        override fun onFailureUpload(msg: String, datumList: List<UploadImagePojo>?) {
-                            MyUtils.dismissProgressDialog()
-                            //  ErrorUtil.errorMethod(ll_mainProfile)
-                        }
-
-                    })
+                })
         } else {
             MyUtils.dismissProgressDialog()
             //   ErrorUtil.errorMethod(ll_mainProfile)
@@ -672,48 +724,55 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
         if (videoListThumnail != null && videoListThumnail.size > 0) {
             MyUtils.showProgressDialog(this@CreatePostActivityTwo, "Uploading")
             UploadLinkPhoto(
-                    this@CreatePostActivityTwo,
-                    videoListThumnail,
-                    userData?.userID!!,
-                    mainLinearLayoutCreatePostTwo,
-                    object : UploadLinkPhoto.OnSuccess {
-                        override fun onSuccessUpload(datumList: List<CreatePostPhotoPojo>?) {
-                            MyUtils.dismissProgressDialog()
+                this@CreatePostActivityTwo,
+                videoListThumnail,
+                userData?.userID!!,
+                mainLinearLayoutCreatePostTwo,
+                object : UploadLinkPhoto.OnSuccess {
+                    override fun onSuccessUpload(datumList: List<CreatePostPhotoPojo>?) {
+                        MyUtils.dismissProgressDialog()
 
-                            if (datumList != null && datumList.isNotEmpty()) {
-                                datumList[0].videoThumnailName = fileName
-                                createPost(stringFromSelectPlaceActivity, (datumList as ArrayList<CreatePostPhotoPojo>?)!!)
+                        if (datumList != null && datumList.isNotEmpty()) {
+                            datumList[0].videoThumnailName = fileName
+                            createPost(
+                                stringFromSelectPlaceActivity,
+                                (datumList as ArrayList<CreatePostPhotoPojo>?)!!
+                            )
 
-                            }
                         }
+                    }
 
-                        override fun onFailureUpload(msg: String?, datumList: List<CreatePostPhotoPojo>?) {
-                            MyUtils.dismissProgressDialog()
+                    override fun onFailureUpload(
+                        msg: String?,
+                        datumList: List<CreatePostPhotoPojo>?
+                    ) {
+                        MyUtils.dismissProgressDialog()
 
-                            if (datumList != null && datumList.size > 0) {
-                                // numberOfImage!!.clear()
-                                //numberOfImage?.addAll(datumList)
-                            }
-                            if (msg?.length!! > 0) {
+                        if (datumList != null && datumList.size > 0) {
+                            // numberOfImage!!.clear()
+                            //numberOfImage?.addAll(datumList)
+                        }
+                        if (msg?.length!! > 0) {
+                            MyUtils.showSnackbar(
+                                this@CreatePostActivityTwo,
+                                msg,
+                                mainLinearLayoutCreatePostTwo
+                            )
+                        } else
+                            if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo))
                                 MyUtils.showSnackbar(
-                                        this@CreatePostActivityTwo,
-                                        msg,
-                                        mainLinearLayoutCreatePostTwo
-                                )
-                            } else
-                                if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo))
-                                    MyUtils.showSnackbar(
-                                            this@CreatePostActivityTwo,
-                                            resources.getString(R.string.error_crash_error_message),
-                                            mainLinearLayoutCreatePostTwo
-                                    ) else MyUtils.showSnackbar(
-                                        this@CreatePostActivityTwo,
-                                        resources.getString(R.string.error_common_network),
-                                        mainLinearLayoutCreatePostTwo
-                                )
-                        }
+                                    this@CreatePostActivityTwo,
+                                    resources.getString(R.string.error_crash_error_message),
+                                    mainLinearLayoutCreatePostTwo
+                                ) else MyUtils.showSnackbar(
+                                this@CreatePostActivityTwo,
+                                resources.getString(R.string.error_common_network),
+                                mainLinearLayoutCreatePostTwo
+                            )
+                    }
 
-                    }, "Link")
+                }, "Link"
+            )
 
 
         }
@@ -729,27 +788,27 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
             intent2.putExtra("latitude", latitude)
             intent2.putExtra("longitude", longitude)
             intent2.putExtra("postDescription", createPostEditText.tagText.toString().trim())
-            when(textViewCreatePostPrivacy.text.toString().trim()   )
-            {
-                "Public"->{
+            when (textViewCreatePostPrivacy.text.toString().trim()) {
+                "Public" -> {
                     intent2.putExtra("postPrivacyType", "Public")
 
                 }
-                "Connections"->{
+                "Connections" -> {
                     intent2.putExtra("postPrivacyType", "Connection")
 
                 }
-                "Groups"->{
+                "Groups" -> {
                     intent2.putExtra("postPrivacyType", "Group")
 
                 }
             }
-            intent2.putExtra("connectionTypeIDs",connectionTypeIDs)
+            intent2.putExtra("connectionTypeIDs", connectionTypeIDs)
             intent2.putExtra("videoListThumnail", videoListThumnail)
             intent2.putExtra("radioText", radioText)
-            intent2.putExtra("tag", if (!hashTag(createPostEditText.tagText.trim(),
-                            this@CreatePostActivityTwo
-                    ).isNullOrEmpty()
+            intent2.putExtra("tag", if (!hashTag(
+                    createPostEditText.tagText.trim(),
+                    this@CreatePostActivityTwo
+                ).isNullOrEmpty()
             ) {
                 hashTag(createPostEditText.tagText, this@CreatePostActivityTwo).joinToString {
                     it.toString().trim()
@@ -760,11 +819,15 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
             intent2.putExtra("datumList", imageList as Serializable)
             intent2.putExtra("msg", "")
             LocalBroadcastManager.getInstance(this@CreatePostActivityTwo)
-                    .sendBroadcast(intent2)
+                .sendBroadcast(intent2)
 
 
         } else {
-            MyUtils.showSnackbar(this@CreatePostActivityTwo!!, "Please go back and Select Video", ll_main_explore)
+            MyUtils.showSnackbar(
+                this@CreatePostActivityTwo!!,
+                "Please go back and Select Video",
+                ll_main_explore
+            )
 
         }
 
@@ -774,88 +837,101 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
 
         if (imageList != null && imageList.size > 0) {
             CompressPhoto(
-                    this@CreatePostActivityTwo,
-                    imageList,
-                    userData?.userID!!,
-                    mainLinearLayoutCreatePostTwo,
-                    object : CompressPhoto.OnSuccess {
-                        override fun onSuccessUpload(datumList: List<CreatePostPhotoPojo?>) {
-                            if (datumList != null && datumList.isNotEmpty()) {
-                                when (stringFromSelectPlaceActivity) {
-                                    "Photo" -> {
-                                        var hashText = if (!hashTag(createPostEditText.tagText.trim(),
-                                                        this@CreatePostActivityTwo
-                                                ).isNullOrEmpty()
-                                        ) {
-                                            hashTag(createPostEditText.tagText.trim(), this@CreatePostActivityTwo).joinToString {
-                                                it.toString().trim()
-                                            }
-                                        } else {
-                                            ""
+                this@CreatePostActivityTwo,
+                imageList,
+                userData?.userID!!,
+                mainLinearLayoutCreatePostTwo,
+                object : CompressPhoto.OnSuccess {
+                    override fun onSuccessUpload(datumList: List<CreatePostPhotoPojo?>) {
+                        if (datumList != null && datumList.isNotEmpty()) {
+                            when (stringFromSelectPlaceActivity) {
+                                "Photo" -> {
+                                    var hashText = if (!hashTag(
+                                            createPostEditText.tagText.trim(),
+                                            this@CreatePostActivityTwo
+                                        ).isNullOrEmpty()
+                                    ) {
+                                        hashTag(
+                                            createPostEditText.tagText.trim(),
+                                            this@CreatePostActivityTwo
+                                        ).joinToString {
+                                            it.toString().trim()
                                         }
-                                        val intent2 = Intent("CreatePost")
-                                        intent2.putExtra("from", listFromPastActivity)
-                                        intent2.putExtra("Location", tvAddLocationPost.text.toString().trim())
-                                        intent2.putExtra("latitude", latitude)
-                                        intent2.putExtra("longitude", longitude)
-                                        intent2.putExtra("postDescription", createPostEditText.tagText.toString().trim())
-                                        when(textViewCreatePostPrivacy.text.toString().trim()   )
-                                        {
-                                            "Public"->{
-                                                intent2.putExtra("postPrivacyType", "Public")
-
-                                            }
-                                            "Connections"->{
-                                                intent2.putExtra("postPrivacyType", "Connection")
-
-                                            }
-                                            "Groups"->{
-                                                intent2.putExtra("postPrivacyType", "Group")
-
-                                            }
-                                        }
-                                        intent2.putExtra("connectionTypeIDs",connectionTypeIDs)
-                                        intent2.putExtra("tag", hashText)
-                                        intent2.putExtra("datumList", datumList as Serializable)
-                                        intent2.putExtra("msg", "")
-                                        LocalBroadcastManager.getInstance(this@CreatePostActivityTwo)
-                                                .sendBroadcast(intent2)
-
+                                    } else {
+                                        ""
                                     }
+                                    val intent2 = Intent("CreatePost")
+                                    intent2.putExtra("from", listFromPastActivity)
+                                    intent2.putExtra(
+                                        "Location",
+                                        tvAddLocationPost.text.toString().trim()
+                                    )
+                                    intent2.putExtra("latitude", latitude)
+                                    intent2.putExtra("longitude", longitude)
+                                    intent2.putExtra(
+                                        "postDescription",
+                                        createPostEditText.tagText.toString().trim()
+                                    )
+                                    when (textViewCreatePostPrivacy.text.toString().trim()) {
+                                        "Public" -> {
+                                            intent2.putExtra("postPrivacyType", "Public")
+
+                                        }
+                                        "Connections" -> {
+                                            intent2.putExtra("postPrivacyType", "Connection")
+
+                                        }
+                                        "Groups" -> {
+                                            intent2.putExtra("postPrivacyType", "Group")
+
+                                        }
+                                    }
+                                    intent2.putExtra("connectionTypeIDs", connectionTypeIDs)
+                                    intent2.putExtra("tag", hashText)
+                                    intent2.putExtra("datumList", datumList as Serializable)
+                                    intent2.putExtra("msg", "")
+                                    LocalBroadcastManager.getInstance(this@CreatePostActivityTwo)
+                                        .sendBroadcast(intent2)
 
                                 }
 
-
                             }
+
+
                         }
+                    }
 
-                        override fun onFailureUpload(msg: String?, datumList: List<CreatePostPhotoPojo?>?) {
-                            MyUtils.dismissProgressDialog()
+                    override fun onFailureUpload(
+                        msg: String?,
+                        datumList: List<CreatePostPhotoPojo?>?
+                    ) {
+                        MyUtils.dismissProgressDialog()
 
-                            if (datumList != null && datumList.size > 0) {
-                                // numberOfImage!!.clear()
-                                //numberOfImage?.addAll(datumList)
-                            }
-                            if (msg?.length!! > 0) {
-                                MyUtils.showSnackbar(
-                                        this@CreatePostActivityTwo,
-                                        msg,
-                                        mainLinearLayoutCreatePostTwo
-                                )
-                            } else if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo))
-                                MyUtils.showSnackbar(
-                                        this@CreatePostActivityTwo,
-                                        resources.getString(R.string.error_crash_error_message),
-                                        mainLinearLayoutCreatePostTwo
-                                ) else MyUtils.showSnackbar(
-                                    this@CreatePostActivityTwo,
-                                    resources.getString(R.string.error_common_network),
-                                    mainLinearLayoutCreatePostTwo
+                        if (datumList != null && datumList.size > 0) {
+                            // numberOfImage!!.clear()
+                            //numberOfImage?.addAll(datumList)
+                        }
+                        if (msg?.length!! > 0) {
+                            MyUtils.showSnackbar(
+                                this@CreatePostActivityTwo,
+                                msg,
+                                mainLinearLayoutCreatePostTwo
                             )
-                        }
+                        } else if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo))
+                            MyUtils.showSnackbar(
+                                this@CreatePostActivityTwo,
+                                resources.getString(R.string.error_crash_error_message),
+                                mainLinearLayoutCreatePostTwo
+                            ) else MyUtils.showSnackbar(
+                            this@CreatePostActivityTwo,
+                            resources.getString(R.string.error_common_network),
+                            mainLinearLayoutCreatePostTwo
+                        )
+                    }
 
 
-                    }, stringFromSelectPlaceActivity)
+                }, stringFromSelectPlaceActivity
+            )
 
 
         }
@@ -866,50 +942,57 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
 
         if (imageList != null && imageList.size > 0) {
             UploadLinkPhoto(
-                    this@CreatePostActivityTwo,
-                    imageList,
-                    userData?.userID!!,
-                    mainLinearLayoutCreatePostTwo,
-                    object : UploadLinkPhoto.OnSuccess {
-                        override fun onSuccessUpload(datumList: List<CreatePostPhotoPojo>?) {
-                            if (datumList != null && datumList.isNotEmpty()) {
-                                when (stringFromSelectPlaceActivity) {
-                                    "Link" -> {
-                                        createPost(listFromPastActivity, (datumList as ArrayList<CreatePostPhotoPojo>?)!!)
-                                    }
+                this@CreatePostActivityTwo,
+                imageList,
+                userData?.userID!!,
+                mainLinearLayoutCreatePostTwo,
+                object : UploadLinkPhoto.OnSuccess {
+                    override fun onSuccessUpload(datumList: List<CreatePostPhotoPojo>?) {
+                        if (datumList != null && datumList.isNotEmpty()) {
+                            when (stringFromSelectPlaceActivity) {
+                                "Link" -> {
+                                    createPost(
+                                        listFromPastActivity,
+                                        (datumList as ArrayList<CreatePostPhotoPojo>?)!!
+                                    )
                                 }
-
-
                             }
+
+
                         }
+                    }
 
-                        override fun onFailureUpload(msg: String?, datumList: List<CreatePostPhotoPojo>?) {
-                            MyUtils.dismissProgressDialog()
+                    override fun onFailureUpload(
+                        msg: String?,
+                        datumList: List<CreatePostPhotoPojo>?
+                    ) {
+                        MyUtils.dismissProgressDialog()
 
-                            if (datumList != null && datumList.size > 0) {
-                                // numberOfImage!!.clear()
-                                //numberOfImage?.addAll(datumList)
-                            }
-                            if (msg?.length!! > 0) {
+                        if (datumList != null && datumList.size > 0) {
+                            // numberOfImage!!.clear()
+                            //numberOfImage?.addAll(datumList)
+                        }
+                        if (msg?.length!! > 0) {
+                            MyUtils.showSnackbar(
+                                this@CreatePostActivityTwo,
+                                msg,
+                                mainLinearLayoutCreatePostTwo
+                            )
+                        } else
+                            if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo))
                                 MyUtils.showSnackbar(
-                                        this@CreatePostActivityTwo,
-                                        msg,
-                                        mainLinearLayoutCreatePostTwo
-                                )
-                            } else
-                                if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo))
-                                    MyUtils.showSnackbar(
-                                            this@CreatePostActivityTwo,
-                                            resources.getString(R.string.error_crash_error_message),
-                                            mainLinearLayoutCreatePostTwo
-                                    ) else MyUtils.showSnackbar(
-                                        this@CreatePostActivityTwo,
-                                        resources.getString(R.string.error_common_network),
-                                        mainLinearLayoutCreatePostTwo
-                                )
-                        }
+                                    this@CreatePostActivityTwo,
+                                    resources.getString(R.string.error_crash_error_message),
+                                    mainLinearLayoutCreatePostTwo
+                                ) else MyUtils.showSnackbar(
+                                this@CreatePostActivityTwo,
+                                resources.getString(R.string.error_common_network),
+                                mainLinearLayoutCreatePostTwo
+                            )
+                    }
 
-                    }, listFromPastActivity)
+                }, listFromPastActivity
+            )
         }
 
     }
@@ -918,50 +1001,57 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
 
         if (imageList != null && imageList.size > 0) {
             UploadDocument(
-                    this@CreatePostActivityTwo,
-                    imageList,
-                    userData?.userID!!,
-                    mainLinearLayoutCreatePostTwo,
-                    object : UploadDocument.OnSuccess {
-                        override fun onSuccessUpload(datumList: List<CreatePostPhotoPojo>?) {
-                            if (datumList != null && datumList.isNotEmpty()) {
-                                when (stringFromSelectPlaceActivity) {
-                                    "Document" -> {
-                                        createPost(listFromPastActivity, (datumList as ArrayList<CreatePostPhotoPojo>?)!!)
-                                    }
+                this@CreatePostActivityTwo,
+                imageList,
+                userData?.userID!!,
+                mainLinearLayoutCreatePostTwo,
+                object : UploadDocument.OnSuccess {
+                    override fun onSuccessUpload(datumList: List<CreatePostPhotoPojo>?) {
+                        if (datumList != null && datumList.isNotEmpty()) {
+                            when (stringFromSelectPlaceActivity) {
+                                "Document" -> {
+                                    createPost(
+                                        listFromPastActivity,
+                                        (datumList as ArrayList<CreatePostPhotoPojo>?)!!
+                                    )
                                 }
-
-
                             }
+
+
                         }
+                    }
 
-                        override fun onFailureUpload(msg: String?, datumList: List<CreatePostPhotoPojo>?) {
-                            MyUtils.dismissProgressDialog()
+                    override fun onFailureUpload(
+                        msg: String?,
+                        datumList: List<CreatePostPhotoPojo>?
+                    ) {
+                        MyUtils.dismissProgressDialog()
 
-                            if (datumList != null && datumList.size > 0) {
-                                // numberOfImage!!.clear()
-                                //numberOfImage?.addAll(datumList)
-                            }
-                            if (msg?.length!! > 0) {
+                        if (datumList != null && datumList.size > 0) {
+                            // numberOfImage!!.clear()
+                            //numberOfImage?.addAll(datumList)
+                        }
+                        if (msg?.length!! > 0) {
+                            MyUtils.showSnackbar(
+                                this@CreatePostActivityTwo,
+                                msg,
+                                mainLinearLayoutCreatePostTwo
+                            )
+                        } else
+                            if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo))
                                 MyUtils.showSnackbar(
-                                        this@CreatePostActivityTwo,
-                                        msg,
-                                        mainLinearLayoutCreatePostTwo
-                                )
-                            } else
-                                if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo))
-                                    MyUtils.showSnackbar(
-                                            this@CreatePostActivityTwo,
-                                            resources.getString(R.string.error_crash_error_message),
-                                            mainLinearLayoutCreatePostTwo
-                                    ) else MyUtils.showSnackbar(
-                                        this@CreatePostActivityTwo,
-                                        resources.getString(R.string.error_common_network),
-                                        mainLinearLayoutCreatePostTwo
-                                )
-                        }
+                                    this@CreatePostActivityTwo,
+                                    resources.getString(R.string.error_crash_error_message),
+                                    mainLinearLayoutCreatePostTwo
+                                ) else MyUtils.showSnackbar(
+                                this@CreatePostActivityTwo,
+                                resources.getString(R.string.error_common_network),
+                                mainLinearLayoutCreatePostTwo
+                            )
+                    }
 
-                    }, listFromPastActivity)
+                }, listFromPastActivity
+            )
         }
 
     }
@@ -981,7 +1071,8 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
             "Photo" -> {
                 when (type) {
                     "Gallery" -> {
-                        val intent = Intent(this@CreatePostActivityTwo, AlbumSelectActivity::class.java)
+                        val intent =
+                            Intent(this@CreatePostActivityTwo, AlbumSelectActivity::class.java)
                         //set limit on number of images that can be selected, default is 10
                         intent.putExtra(Constants.INTENT_EXTRA_LIMIT, 5)
                         startActivityForResult(intent, 1211)
@@ -993,8 +1084,8 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                             startActivityForResult(intent, 1212)
                         } catch (e: Exception) {
                             Toast.makeText(
-                                    this@CreatePostActivityTwo, "Please install a File Manager.",
-                                    Toast.LENGTH_SHORT
+                                this@CreatePostActivityTwo, "Please install a File Manager.",
+                                Toast.LENGTH_SHORT
                             ).show()
                             e.printStackTrace()
                         }
@@ -1008,16 +1099,20 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
             "Video" -> {
                 when (type) {
                     "Gallery" -> {
-                        val intent = Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
+                        val intent =
+                            Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
                         intent.type = "video/*"
                         try {
                             // intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
                             intent.action = Intent.ACTION_GET_CONTENT
-                            startActivityForResult(Intent.createChooser(intent, "Select Video"), 1214)
+                            startActivityForResult(
+                                Intent.createChooser(intent, "Select Video"),
+                                1214
+                            )
                         } catch (e: Exception) {
                             Toast.makeText(
-                                    this@CreatePostActivityTwo, "Please install a File Manager.",
-                                    Toast.LENGTH_SHORT
+                                this@CreatePostActivityTwo, "Please install a File Manager.",
+                                Toast.LENGTH_SHORT
                             ).show()
                             e.printStackTrace()
                         }
@@ -1029,8 +1124,8 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                             startActivityForResult(intent, 1215)
                         } catch (e: Exception) {
                             Toast.makeText(
-                                    this@CreatePostActivityTwo, "Please install a File Manager.",
-                                    Toast.LENGTH_SHORT
+                                this@CreatePostActivityTwo, "Please install a File Manager.",
+                                Toast.LENGTH_SHORT
                             ).show()
                             e.printStackTrace()
                         }
@@ -1062,9 +1157,13 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                         imageUri = Uri.parse(saveBitmap1.absolutePath)
                         singleImageLinearLayout?.visibility = View.VISIBLE
 
-                        imageList.add(CreatePostPhotoPojo(imageUri, saveBitmap1.absolutePath, false,
+                        imageList.add(
+                            CreatePostPhotoPojo(
+                                imageUri, saveBitmap1.absolutePath, false,
                                 null,
-                                ""))
+                                ""
+                            )
+                        )
                         imageViewCameraCaptured.setImageBitmap(bitmapImage)
 
 
@@ -1097,8 +1196,10 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
 
         // ***************************selected location latlong -->
         val locationAddress = SelectedLocationLatLong()
-        locationAddress.getAddressFromLocation(placeFromCreatePostSelectPlace,
-                applicationContext, LocationHandler())
+        locationAddress.getAddressFromLocation(
+            placeFromCreatePostSelectPlace,
+            applicationContext, LocationHandler()
+        )
         //***************************to change place
         createPostEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
@@ -1158,10 +1259,14 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
         val intent = Intent()
         intent.addCategory(Intent.CATEGORY_OPENABLE)
         intent.type = "*/*"
-        val mimeTypes = arrayOf("application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",// 00 doc & docx
-                "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation", //01 .ppt && .pptx
-                "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",//02 .xls & .xlsx
-                "application/pdf"//03 .pdf
+        val mimeTypes = arrayOf(
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",// 00 doc & docx
+            "application/vnd.ms-powerpoint",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation", //01 .ppt && .pptx
+            "application/vnd.ms-excel",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",//02 .xls & .xlsx
+            "application/pdf"//03 .pdf
         )
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
@@ -1194,9 +1299,10 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                     intentData.extras!!.getString("From", "")
                 else ""
 
-                stringFromSelectPlaceActivity = if (intentData != null && intentData.hasExtra("Place"))
-                    intentData.extras!!.getString("Place", "")
-                else ""
+                stringFromSelectPlaceActivity =
+                    if (intentData != null && intentData.hasExtra("Place"))
+                        intentData.extras!!.getString("Place", "")
+                    else ""
 
                 latitude = if (intentData != null && intentData.hasExtra("latitude"))
                     intentData.extras!!.getDouble("latitude", 0.00).toString() else ""
@@ -1207,22 +1313,27 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                 Location = if (intentData != null && intentData.hasExtra("Location"))
                     intentData.extras!!.getString("Location", "") else ""
 
-                placeFromCreatePostSelectPlace = if (intentData != null && intentData.hasExtra("LocationAddress"))
-                    intentData.extras!!.getString("LocationAddress", "") else ""
+                placeFromCreatePostSelectPlace =
+                    if (intentData != null && intentData.hasExtra("LocationAddress"))
+                        intentData.extras!!.getString("LocationAddress", "") else ""
 
 
                 openActivityForPlace(stringFromSelectPlaceActivity)
 
             }
-            701->{
-                 var mSaveImageUri= intentData?.getStringExtra("mSaveImageUri")
-                var posEditImage= intentData?.getIntExtra("posEditImage",-1)
+            701 -> {
+                var mSaveImageUri = intentData?.getStringExtra("mSaveImageUri")
+                var posEditImage = intentData?.getIntExtra("posEditImage", -1)
                 imageUri = Uri.parse(mSaveImageUri)
 
                 try {
-                        imageList.set(posEditImage!!,CreatePostPhotoPojo(imageUri, imageUri?.path, false,
-                                null,
-                                ""))
+                    imageList.set(
+                        posEditImage!!, CreatePostPhotoPojo(
+                            imageUri, imageUri?.path, false,
+                            null,
+                            ""
+                        )
+                    )
                     initPhotoViewPager()
 
 
@@ -1230,9 +1341,9 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                     e.printStackTrace()
                 }
             }
-            800->{
-                textViewCreatePostPrivacy.text=intentData?.getStringExtra("postPrivacyType")
-                connectionTypeIDs= intentData?.getStringExtra("connectionTypeIDs")!!
+            800 -> {
+                textViewCreatePostPrivacy.text = intentData?.getStringExtra("postPrivacyType")
+                connectionTypeIDs = intentData?.getStringExtra("connectionTypeIDs")!!
 
             }
             else -> {
@@ -1248,14 +1359,18 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
 
                         photoViewPagerLinearLayout.visibility = View.VISIBLE
                         val images =
-                                intentData!!.getParcelableArrayListExtra<Image>(Constants.INTENT_EXTRA_IMAGES)
+                            intentData!!.getParcelableArrayListExtra<Image>(Constants.INTENT_EXTRA_IMAGES)
 
                         imageUri = intentData.data
                         try {
                             for (i in images!!.indices) {
-                                imageList.add(CreatePostPhotoPojo(imageUri, images[i].path, false,
+                                imageList.add(
+                                    CreatePostPhotoPojo(
+                                        imageUri, images[i].path, false,
                                         null,
-                                        ""))
+                                        ""
+                                    )
+                                )
                             }
 //                            indicatorForPhotos.visibility = View.VISIBLE
 
@@ -1273,8 +1388,7 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                     }
 
 
-                }
-                else if (requestCode == 1212) {
+                } else if (requestCode == 1212) {
                     if (intentData != null) {
 
                         singleImageLinearLayout.visibility = View.VISIBLE
@@ -1284,24 +1398,39 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                             val bitmap: Bitmap = intentData.extras!!.get("data") as Bitmap
                             val matrix = Matrix()
                             matrix.postRotate(90F)
-                            val bitmap2 = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                            val bitmap2 = Bitmap.createBitmap(
+                                bitmap,
+                                0,
+                                0,
+                                bitmap.width,
+                                bitmap.height,
+                                matrix,
+                                true
+                            )
                             imageUri = Uri.parse(savebitmap(bitmap2).absolutePath)
-                            imageList.add(CreatePostPhotoPojo(imageUri, savebitmap(bitmap2).absolutePath, false,
+                            imageList.add(
+                                CreatePostPhotoPojo(
+                                    imageUri, savebitmap(bitmap2).absolutePath, false,
                                     null,
-                                    ""))
+                                    ""
+                                )
+                            )
 
 //                            indicatorForPhotos.visibility = View.VISIBLE
 
                             initPhotoViewPager()
 
-                            lylEdit.visibility=View.VISIBLE
+                            lylEdit.visibility = View.VISIBLE
                             imageViewCameraCaptured.setImageBitmap(bitmap2)
 
                             lylEdit.setOnClickListener {
-                                var i_image = Intent(this@CreatePostActivityTwo, EditImageActivityTwo::class.java)
+                                var i_image = Intent(
+                                    this@CreatePostActivityTwo,
+                                    EditImageActivityTwo::class.java
+                                )
                                 i_image.putExtra("image_path", imageList[0].imagePath)
                                 i_image.putExtra("posEditImage", 0)
-                                startActivityForResult(i_image,701)
+                                startActivityForResult(i_image, 701)
                             }
 
 
@@ -1309,7 +1438,11 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                             e.printStackTrace()
                         }
                     } else {
-                        MyUtils.showSnackbar(this, "Please select valid data", mainLinearLayoutCreatePostTwo)
+                        MyUtils.showSnackbar(
+                            this,
+                            "Please select valid data",
+                            mainLinearLayoutCreatePostTwo
+                        )
                         MyUtils.finishActivity(this@CreatePostActivityTwo, true)
                     }
 
@@ -1324,11 +1457,13 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
 
                             while (currentItem < count!!) {
 
-                                val uriFileExtension = intentData.clipData?.getItemAt(currentItem)!!.uri
+                                val uriFileExtension =
+                                    intentData.clipData?.getItemAt(currentItem)!!.uri
                                 val cursor: Cursor? = contentResolver.query(
-                                        uriFileExtension!!, null,
-                                        null, null,
-                                        null, null)
+                                    uriFileExtension!!, null,
+                                    null, null,
+                                    null, null
+                                )
                                 var displayName = ""
                                 currentItem += 1
 
@@ -1336,20 +1471,27 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                                     cursor?.use {
                                         if (it.moveToFirst()) {
                                             displayName =
-                                                    it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                                                it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
                                             // Log.i("Tag", "Display Name: $displayName")
 
-                                            val sizeIndex: Int = it.getColumnIndex(OpenableColumns.SIZE)
+                                            val sizeIndex: Int =
+                                                it.getColumnIndex(OpenableColumns.SIZE)
                                             //                            val size: String = if (!it.isNull(sizeIndex)) { it.getString(sizeIndex) }
                                             //                            else { "Unknown" }
                                             val contentResolver = contentResolver
                                             val mimeTypeMap = MimeTypeMap.getSingleton()
-                                            extension = mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uriFileExtension))
+                                            extension = mimeTypeMap.getExtensionFromMimeType(
+                                                contentResolver.getType(uriFileExtension)
+                                            )
                                         }
                                     }
-                                    imageList.add(CreatePostPhotoPojo(uriFileExtension, uriFileExtension.path, false,
+                                    imageList.add(
+                                        CreatePostPhotoPojo(
+                                            uriFileExtension, uriFileExtension.path, false,
                                             null,
-                                            displayName, extension!!))
+                                            displayName, extension!!
+                                        )
+                                    )
                                     documentViewLinearLayout.visibility = View.VISIBLE
                                     initDocumentRV()
 
@@ -1373,21 +1515,24 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                                     PATH_FILE = (File(URI.create(PATH_FILE))).getAbsolutePath();
                                 }*/
                             val cursor: Cursor? = contentResolver.query(
-                                    uriFileExtension!!, null,
-                                    null, null,
-                                    null, null)
+                                uriFileExtension!!, null,
+                                null, null,
+                                null, null
+                            )
 
                             var displayName = ""
                             try {
                                 cursor?.use {
                                     if (it.moveToFirst()) {
                                         displayName =
-                                                it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                                            it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
                                     }
                                 }
                                 val contentResolver = contentResolver
                                 val mimeTypeMap = MimeTypeMap.getSingleton()
-                                extension = mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uriFileExtension))
+                                extension = mimeTypeMap.getExtensionFromMimeType(
+                                    contentResolver.getType(uriFileExtension)
+                                )
                                 var fileNameFile: File? = null
                                 var fileNameString = ""
 
@@ -1395,16 +1540,35 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                                     fileNameFile = File(getPathVideo(uriFileExtension))
                                     fileNameString = getPathVideo(uriFileExtension)!!
                                 } else {
-                                    if (getPathFromInputStreamUriDocument(uriFileExtension, extension, displayName) != null) {
-                                        fileNameFile = File(getPathFromInputStreamUriDocument(uriFileExtension, extension, displayName))
-                                        fileNameString = getPathFromInputStreamUriDocument(uriFileExtension, extension, displayName)
+                                    if (getPathFromInputStreamUriDocument(
+                                            uriFileExtension,
+                                            extension,
+                                            displayName
+                                        ) != null
+                                    ) {
+                                        fileNameFile = File(
+                                            getPathFromInputStreamUriDocument(
+                                                uriFileExtension,
+                                                extension,
+                                                displayName
+                                            )
+                                        )
+                                        fileNameString = getPathFromInputStreamUriDocument(
+                                            uriFileExtension,
+                                            extension,
+                                            displayName
+                                        )
                                     }
                                 }
 
                                 Log.e("file", "" + fileNameFile + "\n\n" + fileNameString)
-                                imageList.add(CreatePostPhotoPojo(uriFileExtension, fileNameString, false,
+                                imageList.add(
+                                    CreatePostPhotoPojo(
+                                        uriFileExtension, fileNameString, false,
                                         null,
-                                        fileNameFile?.name!!, extension!!))
+                                        fileNameFile?.name!!, extension!!
+                                    )
+                                )
                                 documentViewLinearLayout.visibility = View.VISIBLE
                                 initDocumentRV()
 
@@ -1414,13 +1578,21 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                         }
 
                         else -> {
-                            MyUtils.showSnackbar(this, "Please select valid data", mainLinearLayoutCreatePostTwo)
+                            MyUtils.showSnackbar(
+                                this,
+                                "Please select valid data",
+                                mainLinearLayoutCreatePostTwo
+                            )
                             MyUtils.finishActivity(this@CreatePostActivityTwo, true)
                         }
 
                     }
                 } else {
-                    MyUtils.showSnackbar(this, "Please select valid data", mainLinearLayoutCreatePostTwo)
+                    MyUtils.showSnackbar(
+                        this,
+                        "Please select valid data",
+                        mainLinearLayoutCreatePostTwo
+                    )
                     MyUtils.finishActivity(this@CreatePostActivityTwo, true)
 
                 }
@@ -1442,34 +1614,55 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                                         fileNameString = getPathVideo(videoUri!!)!!
                                     } else {
                                         if (getPathFromInputStreamUriVideo(videoUri!!) != null) {
-                                            fileNameFile = File(getPathFromInputStreamUriVideo(videoUri!!))
-                                            fileNameString = getPathFromInputStreamUriVideo(videoUri!!)
+                                            fileNameFile =
+                                                File(getPathFromInputStreamUriVideo(videoUri!!))
+                                            fileNameString =
+                                                getPathFromInputStreamUriVideo(videoUri!!)
                                         }
                                     }
 
                                     try {
                                         if (fileNameString != null) {
-                                            val fileName1: String = MyUtils.createFileName(Date(), "Image")!!
+                                            val fileName1: String =
+                                                MyUtils.createFileName(Date(), "Image")!!
 
                                             var thumb = ThumbnailUtils.createVideoThumbnail(
-                                                    fileNameString,
-                                                    MediaStore.Images.Thumbnails.MINI_KIND
+                                                fileNameString,
+                                                MediaStore.Images.Thumbnails.MINI_KIND
                                             )
 
                                             val file1 =
-                                                    ImageSaver(this@CreatePostActivityTwo).setExternal(true).setFileName(fileName1)
-                                                            .save(thumb!!)
+                                                ImageSaver(this@CreatePostActivityTwo).setExternal(
+                                                    true
+                                                ).setFileName(fileName1)
+                                                    .save(thumb!!)
                                             imageList.clear()
-                                            imageList.add(CreatePostPhotoPojo(videoUri, fileNameString, false,
-                                                    null, "", "VideoFile"))
+                                            imageList.add(
+                                                CreatePostPhotoPojo(
+                                                    videoUri, fileNameString, false,
+                                                    null, "", "VideoFile"
+                                                )
+                                            )
                                             videoListThumnail.clear()
-                                            videoListThumnail.add(CreatePostPhotoPojo(Uri.parse(file1.path), file1.absolutePath, false,
-                                                    null, file1.name, "ImageFile"))
+                                            videoListThumnail.add(
+                                                CreatePostPhotoPojo(
+                                                    Uri.parse(file1.path),
+                                                    file1.absolutePath,
+                                                    false,
+                                                    null,
+                                                    file1.name,
+                                                    "ImageFile"
+                                                )
+                                            )
 //                                        indicatorForVideo.visibility = View.GONE
 
                                             initVideoViewPager()
                                         } else {
-                                            MyUtils.showSnackbar(this, "Please select Video", mainLinearLayoutCreatePostTwo)
+                                            MyUtils.showSnackbar(
+                                                this,
+                                                "Please select Video",
+                                                mainLinearLayoutCreatePostTwo
+                                            )
                                         }
                                     } catch (e: Exception) {
                                         e.printStackTrace()
@@ -1477,13 +1670,21 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
 
                                 }
                                 else -> {
-                                    MyUtils.showSnackbar(this, "Please select valid data", mainLinearLayoutCreatePostTwo)
+                                    MyUtils.showSnackbar(
+                                        this,
+                                        "Please select valid data",
+                                        mainLinearLayoutCreatePostTwo
+                                    )
                                     MyUtils.finishActivity(this@CreatePostActivityTwo, true)
                                 }
                             }
 
                         } else {
-                            MyUtils.showSnackbar(this, "Please select valid data", mainLinearLayoutCreatePostTwo)
+                            MyUtils.showSnackbar(
+                                this,
+                                "Please select valid data",
+                                mainLinearLayoutCreatePostTwo
+                            )
                             MyUtils.finishActivity(this@CreatePostActivityTwo, true)
 
                         }
@@ -1501,7 +1702,8 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                                     fileNameString = getPathVideo(videoUri)!!
                                 } else {
                                     if (getPathFromInputStreamUriVideo(videoUri) != null) {
-                                        fileNameFile = File(getPathFromInputStreamUriVideo(videoUri))
+                                        fileNameFile =
+                                            File(getPathFromInputStreamUriVideo(videoUri))
                                         fileNameString = getPathFromInputStreamUriVideo(videoUri)
                                     }
                                 }
@@ -1511,14 +1713,19 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                                 var thumb = getVidioThumbnail(fileNameFile.toString())
                                 val fileName1: String = MyUtils.createFileName(Date(), "Image")!!
                                 val file1 =
-                                        ImageSaver(this@CreatePostActivityTwo).setExternal(true).setFileName(fileName1)
-                                                .save(thumb!!)
+                                    ImageSaver(this@CreatePostActivityTwo).setExternal(true)
+                                        .setFileName(fileName1)
+                                        .save(thumb!!)
 
                                 imageList.clear()
                                 imageList.add(CreatePostPhotoPojo(videoUri, fileNameString))
                                 videoListThumnail.clear()
-                                videoListThumnail.add(CreatePostPhotoPojo(Uri.parse(file1.path), file1.absolutePath, false,
-                                        null, file1.name, "ImageFile"))
+                                videoListThumnail.add(
+                                    CreatePostPhotoPojo(
+                                        Uri.parse(file1.path), file1.absolutePath, false,
+                                        null, file1.name, "ImageFile"
+                                    )
+                                )
 
                                 initVideoViewPager()
 
@@ -1526,13 +1733,21 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                                 e.printStackTrace()
                             }
                         } else {
-                            MyUtils.showSnackbar(this, "Please select valid data", mainLinearLayoutCreatePostTwo)
+                            MyUtils.showSnackbar(
+                                this,
+                                "Please select valid data",
+                                mainLinearLayoutCreatePostTwo
+                            )
                             MyUtils.finishActivity(this@CreatePostActivityTwo, true)
 
 
                         }
                     } else {
-                        MyUtils.showSnackbar(this, "Please select valid data", mainLinearLayoutCreatePostTwo)
+                        MyUtils.showSnackbar(
+                            this,
+                            "Please select valid data",
+                            mainLinearLayoutCreatePostTwo
+                        )
                         MyUtils.finishActivity(this@CreatePostActivityTwo, true)
 
                     }
@@ -1546,7 +1761,11 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
 
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, @NonNull permissions: Array<String>, @NonNull grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        @NonNull permissions: Array<String>,
+        @NonNull grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
 
@@ -1561,7 +1780,11 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
 
                 } else {
 
-                    Toast.makeText(this, resources.getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        resources.getString(R.string.permission_denied),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 return
             }
@@ -1570,7 +1793,11 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                     connectLocation()
                 } else {
 
-                    Toast.makeText(this, resources.getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        resources.getString(R.string.permission_denied),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 return
             }
@@ -1581,49 +1808,49 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
     @TargetApi(Build.VERSION_CODES.M)
     fun checkPermission(): Boolean {
         if (ContextCompat.checkSelfPermission(
-                        this.applicationContext!!,
-                        Manifest.permission.READ_EXTERNAL_STORAGE
+                this.applicationContext!!,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) + ContextCompat
+                .checkSelfPermission(
+                    this.applicationContext!!,
+                    Manifest.permission.CAMERA
                 ) + ContextCompat
-                        .checkSelfPermission(
-                                this.applicationContext!!,
-                                Manifest.permission.CAMERA
-                        ) + ContextCompat
-                        .checkSelfPermission(
-                                this.applicationContext!!,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        ) !== PackageManager.PERMISSION_GRANTED
+                .checkSelfPermission(
+                    this.applicationContext!!,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) !== PackageManager.PERMISSION_GRANTED
         ) {
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(
-                            this,
-                            Manifest.permission.READ_EXTERNAL_STORAGE
-                    ) ||
-                    ActivityCompat.shouldShowRequestPermissionRationale(
-                            this,
-                            Manifest.permission.CAMERA
-                    ) || ActivityCompat.shouldShowRequestPermissionRationale(
-                            this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    )
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) ||
+                ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.CAMERA
+                ) || ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
             ) {
                 requestPermissions(
-                        arrayOf(
-                                Manifest.permission
-                                        .READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission
-                                .WRITE_EXTERNAL_STORAGE
-                        ),
-                        permissionsRequestStorage
+                    arrayOf(
+                        Manifest.permission
+                            .READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission
+                            .WRITE_EXTERNAL_STORAGE
+                    ),
+                    permissionsRequestStorage
                 )
 
             } else {
                 requestPermissions(
-                        arrayOf(
-                                Manifest.permission
-                                        .READ_EXTERNAL_STORAGE,
-                                Manifest.permission.CAMERA,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        ),
-                        permissionsRequestStorage
+                    arrayOf(
+                        Manifest.permission
+                            .READ_EXTERNAL_STORAGE,
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ),
+                    permissionsRequestStorage
                 )
             }
             return false
@@ -1644,11 +1871,12 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
 
         if (string == "Photo") {
             selectPhotoBottomSheetFragment.setListener(object :
-                    SelectPhotoBottomSheetFragment.OnItemSelectedListener {
+                SelectPhotoBottomSheetFragment.OnItemSelectedListener {
                 override fun onselectoption(SelectName: String) {
                     when (SelectName) {
                         "Gallery" -> {
-                            val intent = Intent(this@CreatePostActivityTwo, AlbumSelectActivity::class.java)
+                            val intent =
+                                Intent(this@CreatePostActivityTwo, AlbumSelectActivity::class.java)
                             //set limit on number of images that can be selected, default is 10
                             intent.putExtra(Constants.INTENT_EXTRA_LIMIT, 5)
                             startActivityForResult(intent, 1211)
@@ -1675,8 +1903,8 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                                 startActivityForResult(intent, 1212)
                             } catch (e: Exception) {
                                 Toast.makeText(
-                                        this@CreatePostActivityTwo, "Please install a File Manager.",
-                                        Toast.LENGTH_SHORT
+                                    this@CreatePostActivityTwo, "Please install a File Manager.",
+                                    Toast.LENGTH_SHORT
                                 ).show()
                                 e.printStackTrace()
                             }
@@ -1686,21 +1914,27 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
             })
         } else if (string == "Video") {
             selectPhotoBottomSheetFragment.setListener(object :
-                    SelectPhotoBottomSheetFragment.OnItemSelectedListener {
+                SelectPhotoBottomSheetFragment.OnItemSelectedListener {
                 @SuppressLint("ObsoleteSdkInt")
                 override fun onselectoption(SelectName: String) {
                     when (SelectName) {
                         "Gallery" -> {
-                            val intent = Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
+                            val intent = Intent(
+                                Intent.ACTION_PICK,
+                                MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                            )
                             intent.type = "video/*"
                             try {
                                 // intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
                                 intent.action = Intent.ACTION_GET_CONTENT
-                                startActivityForResult(Intent.createChooser(intent, "Select Video"), 1214)
+                                startActivityForResult(
+                                    Intent.createChooser(intent, "Select Video"),
+                                    1214
+                                )
                             } catch (e: Exception) {
                                 Toast.makeText(
-                                        this@CreatePostActivityTwo, "Please install a File Manager.",
-                                        Toast.LENGTH_SHORT
+                                    this@CreatePostActivityTwo, "Please install a File Manager.",
+                                    Toast.LENGTH_SHORT
                                 ).show()
                                 e.printStackTrace()
                             }
@@ -1712,8 +1946,8 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                                 startActivityForResult(intent, 1215)
                             } catch (e: Exception) {
                                 Toast.makeText(
-                                        this@CreatePostActivityTwo, "Please install a File Manager.",
-                                        Toast.LENGTH_SHORT
+                                    this@CreatePostActivityTwo, "Please install a File Manager.",
+                                    Toast.LENGTH_SHORT
                                 ).show()
                                 e.printStackTrace()
                             }
@@ -1751,25 +1985,26 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
         var currentPage = 0
         menuToolbarItem.visibility = View.VISIBLE
         selectedPhotoViewPager!!.adapter = CreatePostPhotoAdapter(this, this.imageList,
-                object : CreatePostPhotoAdapter.OnClickToCancelPhoto {
-                    override fun onDelete(imageList: ArrayList<CreatePostPhotoPojo>, position: Int) {
-                        if (imageList.size == 1) {
-                            imageList.removeAt(position)
-                            selectedPhotoViewPager!!.adapter?.notifyDataSetChanged()
-                        } else {
-                            imageList.removeAt(position)
-                            selectedPhotoViewPager!!.adapter?.notifyDataSetChanged()
+            object : CreatePostPhotoAdapter.OnClickToCancelPhoto {
+                override fun onDelete(imageList: ArrayList<CreatePostPhotoPojo>, position: Int) {
+                    if (imageList.size == 1) {
+                        imageList.removeAt(position)
+                        selectedPhotoViewPager!!.adapter?.notifyDataSetChanged()
+                    } else {
+                        imageList.removeAt(position)
+                        selectedPhotoViewPager!!.adapter?.notifyDataSetChanged()
 
-                        }
                     }
+                }
 
-                    override fun onEditImage(imageList: ArrayList<CreatePostPhotoPojo>, position: Int) {
-                        var i_image = Intent(this@CreatePostActivityTwo, EditImageActivityTwo::class.java)
-                        i_image.putExtra("image_path", imageList[position].imagePath)
-                        i_image.putExtra("posEditImage", position)
-                        startActivityForResult(i_image,701)
-                    }
-                })
+                override fun onEditImage(imageList: ArrayList<CreatePostPhotoPojo>, position: Int) {
+                    var i_image =
+                        Intent(this@CreatePostActivityTwo, EditImageActivityTwo::class.java)
+                    i_image.putExtra("image_path", imageList[position].imagePath)
+                    i_image.putExtra("posEditImage", position)
+                    startActivityForResult(i_image, 701)
+                }
+            })
 
         val density = resources.displayMetrics.density
 
@@ -1788,7 +2023,8 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
         var currentPage = 0
         menuToolbarItem.visibility = View.VISIBLE
         photoViewPagerLinearLayout.visibility = View.VISIBLE
-        selectedPhotoViewPager!!.adapter = CreatePostPhotoServerAdapter(this, postData?.postSerializedData!![0].albummedia)
+        selectedPhotoViewPager!!.adapter =
+            CreatePostPhotoServerAdapter(this, postData?.postSerializedData!![0].albummedia)
 
         val density = resources.displayMetrics.density
 
@@ -1808,25 +2044,37 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
 
         var adapter: CreatePostDocumentAdapter? = null
         menuToolbarItem.visibility = View.VISIBLE
-        adapter = CreatePostDocumentAdapter(this, imageList, object : CreatePostDocumentAdapter.OnClickToOpenListener {
-            override fun onClickToOpen(documentArrayList: ArrayList<CreatePostPhotoPojo>, position: Int) {
+        adapter = CreatePostDocumentAdapter(
+            this,
+            imageList,
+            object : CreatePostDocumentAdapter.OnClickToOpenListener {
+                override fun onClickToOpen(
+                    documentArrayList: ArrayList<CreatePostPhotoPojo>,
+                    position: Int
+                ) {
 
-                //to open document file
-            }
-
-        }, object : CreatePostDocumentAdapter.OnItemClickListener {
-            override fun onClicked(documentArrayList: ArrayList<CreatePostPhotoPojo>, position: Int) {
-
-                documentArrayList.removeAt(position)
-                adapter!!.notifyDataSetChanged()
-                if (documentArrayList.isNullOrEmpty()) {
-                    menuToolbarItem.visibility = View.GONE
-                    onBackPressed()
+                    //to open document file
                 }
-            }
-        })
-        createPostDocumentCard!!.layoutManager = GridLayoutManager(applicationContext, 2, GridLayoutManager.VERTICAL,
-                false)
+
+            },
+            object : CreatePostDocumentAdapter.OnItemClickListener {
+                override fun onClicked(
+                    documentArrayList: ArrayList<CreatePostPhotoPojo>,
+                    position: Int
+                ) {
+
+                    documentArrayList.removeAt(position)
+                    adapter!!.notifyDataSetChanged()
+                    if (documentArrayList.isNullOrEmpty()) {
+                        menuToolbarItem.visibility = View.GONE
+                        onBackPressed()
+                    }
+                }
+            })
+        createPostDocumentCard!!.layoutManager = GridLayoutManager(
+            applicationContext, 2, GridLayoutManager.VERTICAL,
+            false
+        )
         createPostDocumentCard!!.adapter = adapter
 
     }
@@ -1834,26 +2082,30 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
     private fun initVideoViewPager() {
         menuToolbarItem.visibility = View.VISIBLE
         var currentVideoPage = 0
-        selectedVideoViewPager.adapter = CreatePostVideoAdapter(this, imageList, object : CreatePostVideoAdapter.OnClickToPlayVideo {
-            override fun onPlay(videoList: ArrayList<CreatePostPhotoPojo>, position: Int) {
-                val intent = Intent(this@CreatePostActivityTwo, PlayVideoActivity::class.java)
-                intent.putExtra("Video", videoList[position].image.toString())
-                startActivity(intent)
-            }
-
-        }, object : CreatePostVideoAdapter.OnClickToCancelVideo {
-            override fun onDelete(videoList: ArrayList<CreatePostPhotoPojo>, position: Int) {
-
-                if (videoList.size == 1) {
-                    videoList.removeAt(position)
-                    selectedVideoViewPager.adapter?.notifyDataSetChanged()
-                    MyUtils.finishActivity(this@CreatePostActivityTwo, true)
-                } else {
-                    videoList.removeAt(position)
-                    selectedVideoViewPager.adapter?.notifyDataSetChanged()
+        selectedVideoViewPager.adapter = CreatePostVideoAdapter(
+            this,
+            imageList,
+            object : CreatePostVideoAdapter.OnClickToPlayVideo {
+                override fun onPlay(videoList: ArrayList<CreatePostPhotoPojo>, position: Int) {
+                    val intent = Intent(this@CreatePostActivityTwo, PlayVideoActivity::class.java)
+                    intent.putExtra("Video", videoList[position].image.toString())
+                    startActivity(intent)
                 }
-            }
-        })
+
+            },
+            object : CreatePostVideoAdapter.OnClickToCancelVideo {
+                override fun onDelete(videoList: ArrayList<CreatePostPhotoPojo>, position: Int) {
+
+                    if (videoList.size == 1) {
+                        videoList.removeAt(position)
+                        selectedVideoViewPager.adapter?.notifyDataSetChanged()
+                        MyUtils.finishActivity(this@CreatePostActivityTwo, true)
+                    } else {
+                        videoList.removeAt(position)
+                        selectedVideoViewPager.adapter?.notifyDataSetChanged()
+                    }
+                }
+            })
         val numberOfVideoPages = imageList.size
 
         Runnable {
@@ -1867,7 +2119,8 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
     private fun initVideoServerViewPager() {
         menuToolbarItem.visibility = View.VISIBLE
         var currentVideoPage = 0
-        selectedVideoViewPager.adapter = CreatePostVideoServerAdapter(this, postData?.postSerializedData!![0].albummedia)
+        selectedVideoViewPager.adapter =
+            CreatePostVideoServerAdapter(this, postData?.postSerializedData!![0].albummedia)
         val numberOfVideoPages = imageList.size
         Runnable {
             if (currentVideoPage == numberOfVideoPages) {
@@ -1878,8 +2131,8 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
     }
 
     fun createPost(
-            listFromPastActivity: String,
-            datumList: ArrayList<CreatePostPhotoPojo>
+        listFromPastActivity: String,
+        datumList: ArrayList<CreatePostPhotoPojo>
 
     ) {
         MyUtils.showProgressDialog(this@CreatePostActivityTwo, resources.getString(R.string.wait))
@@ -1900,28 +2153,28 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
             jsonObject.put("loginuserID", userData?.userID)
             jsonObject.put("languageID", userData?.languageID)
             jsonObject.put("postHashTags",
-                    if (!hashTag(createPostEditText.tagText.trim(),
-                                    this@CreatePostActivityTwo
-                            ).isNullOrEmpty()
-                    ) {
-                        hashTag(createPostEditText.tagText, this@CreatePostActivityTwo).joinToString {
-                            it.toString().trim()
-                        }
-                    } else {
-                        ""
-                    })
+                if (!hashTag(
+                        createPostEditText.tagText.trim(),
+                        this@CreatePostActivityTwo
+                    ).isNullOrEmpty()
+                ) {
+                    hashTag(createPostEditText.tagText, this@CreatePostActivityTwo).joinToString {
+                        it.toString().trim()
+                    }
+                } else {
+                    ""
+                })
             jsonObject.put("postCategory", "")
-            when(textViewCreatePostPrivacy.text.toString().trim()   )
-            {
-                "Public"->{
-                jsonObject.put("postPrivacyType", "Public")
-                   }
-                "Connections"->{
-                jsonObject.put("postPrivacyType", "Connection")
-                   }
-                "Groups"->{
-                jsonObject.put("postPrivacyType", "Group")
-                   }
+            when (textViewCreatePostPrivacy.text.toString().trim()) {
+                "Public" -> {
+                    jsonObject.put("postPrivacyType", "Public")
+                }
+                "Connections" -> {
+                    jsonObject.put("postPrivacyType", "Connection")
+                }
+                "Groups" -> {
+                    jsonObject.put("postPrivacyType", "Group")
+                }
             }
             jsonObject.put("postUploadDate", formattedDate)
             jsonObject.put("connectiontypeIDs", connectionTypeIDs)
@@ -1932,7 +2185,10 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
         }
         when (listFromPastActivity) {
             "images" -> {
-                jsonObject.put("postDescription", Constant.encode(createPostEditText.tagText.trim()))
+                jsonObject.put(
+                    "postDescription",
+                    Constant.encode(createPostEditText.tagText.trim())
+                )
                 jsonObject.put("postLanguage", "en")
 
                 if (!Location.isNullOrEmpty()) {
@@ -1971,7 +2227,10 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                             try {
                                 jsonObjectAlbummedia.put("albummediaFile", datumList[i].imageName)
                                 jsonObjectAlbummedia.put("albummediaThumbnail", "")
-                                jsonObjectAlbummedia.put("albummediaFileSize", datumList[i]!!.fileSize)
+                                jsonObjectAlbummedia.put(
+                                    "albummediaFileSize",
+                                    datumList[i]!!.fileSize
+                                )
                                 jsonObjectAlbummedia.put("albummediaFileType", "Photo")
                                 jsonArrayAlbummedia.put(i, jsonObjectAlbummedia)
                             } catch (e: Exception) {
@@ -1988,7 +2247,12 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                 }
             }
             "Link" -> {
-                jsonObject.put("postDescription", Constant.encode(createPostEditText.text.toString().trim()) + "||${(url + "||" + postDes)}")
+                jsonObject.put(
+                    "postDescription",
+                    Constant.encode(
+                        createPostEditText.text.toString().trim()
+                    ) + "||${(url + "||" + postDes)}"
+                )
                 jsonObject.put("postLanguage", "en")
                 if (!Location.isNullOrEmpty()) {
                     jsonObject.put("postLocation", Location)
@@ -2025,7 +2289,10 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                             try {
                                 jsonObjectAlbummedia.put("albummediaFile", datumList[i].imageName)
                                 jsonObjectAlbummedia.put("albummediaThumbnail", "")
-                                jsonObjectAlbummedia.put("albummediaFileSize", datumList[i]!!.fileSize)
+                                jsonObjectAlbummedia.put(
+                                    "albummediaFileSize",
+                                    datumList[i]!!.fileSize
+                                )
                                 jsonObjectAlbummedia.put("albummediaFileType", "Link")
                                 jsonArrayAlbummedia.put(i, jsonObjectAlbummedia)
                             } catch (e: Exception) {
@@ -2042,7 +2309,10 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                 }
             }
             "Document" -> {
-                jsonObject.put("postDescription", Constant.encode(createPostEditText.text.toString().trim()))
+                jsonObject.put(
+                    "postDescription",
+                    Constant.encode(createPostEditText.text.toString().trim())
+                )
                 jsonObject.put("postLanguage", "en")
                 if (!Location.isNullOrEmpty()) {
                     jsonObject.put("postLocation", Location)
@@ -2079,7 +2349,10 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                             try {
                                 jsonObjectAlbummedia.put("albummediaFile", datumList[i].imageName)
                                 jsonObjectAlbummedia.put("albummediaThumbnail", "")
-                                jsonObjectAlbummedia.put("albummediaFileSize", datumList[i]!!.fileSize)
+                                jsonObjectAlbummedia.put(
+                                    "albummediaFileSize",
+                                    datumList[i]!!.fileSize
+                                )
 
                                 jsonObjectAlbummedia.put("albummediaFileType", "Document")
                                 jsonArrayAlbummedia.put(i, jsonObjectAlbummedia)
@@ -2097,7 +2370,10 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                 }
             }
             "Video" -> {
-                jsonObject.put("postDescription", Constant.encode(createPostEditText.tagText.trim()))
+                jsonObject.put(
+                    "postDescription",
+                    Constant.encode(createPostEditText.tagText.trim())
+                )
                 jsonObject.put("postLanguage", "en")
                 if (!Location.isNullOrEmpty()) {
                     jsonObject.put("postLocation", Location)
@@ -2132,9 +2408,18 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                         for (i in 0 until imageList.size) {
                             val jsonObjectAlbummedia = JSONObject()
                             try {
-                                jsonObjectAlbummedia.put("albummediaFile", datumList[i].videoThumnailName)
-                                jsonObjectAlbummedia.put("albummediaThumbnail", datumList[i].imageName)
-                                jsonObjectAlbummedia.put("albummediaFileSize", datumList[i]!!.fileSize)
+                                jsonObjectAlbummedia.put(
+                                    "albummediaFile",
+                                    datumList[i].videoThumnailName
+                                )
+                                jsonObjectAlbummedia.put(
+                                    "albummediaThumbnail",
+                                    datumList[i].imageName
+                                )
+                                jsonObjectAlbummedia.put(
+                                    "albummediaFileSize",
+                                    datumList[i]!!.fileSize
+                                )
 
                                 jsonObjectAlbummedia.put("albummediaFileType", "Video")
                                 jsonArrayAlbummedia.put(i, jsonObjectAlbummedia)
@@ -2152,7 +2437,10 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                 }
             }
             "Text" -> {
-                jsonObject.put("postDescription", Constant.encode(createPostEditText.tagText.trim()))
+                jsonObject.put(
+                    "postDescription",
+                    Constant.encode(createPostEditText.tagText.trim())
+                )
                 jsonObject.put("postLanguage", "en")
                 jsonObject.put("postLatitude", MyUtils.currentLattitude.toString())
                 jsonObject.put("postLongitude", MyUtils.currentLongtiude.toString())
@@ -2162,7 +2450,10 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                 jsonObject.put("postSerializedData", JSONArray())
             }
             "Place" -> {
-                jsonObject.put("postDescription", Constant.encode(createPostEditText.tagText.trim()))
+                jsonObject.put(
+                    "postDescription",
+                    Constant.encode(createPostEditText.tagText.trim())
+                )
                 jsonObject.put("postLanguage", "en")
                 jsonObject.put("postLatitude", latitude)
                 jsonObject.put("postLongitude", longitude)
@@ -2176,60 +2467,63 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
         jsonArray.put(jsonObject)
         Log.e("jsonArray", "" + jsonArray.toString())
         createPostModel.apiFunction(this@CreatePostActivityTwo, jsonArray.toString(), "")
-                .observe(this@CreatePostActivityTwo,
-                    { response ->
-                        if (!response.isNullOrEmpty()) {
-                            MyUtils.dismissProgressDialog()
-                            if (response[0].status.equals("true", true)) {
-                                MyUtils.hideKeyboard1(this@CreatePostActivityTwo)
+            .observe(
+                this@CreatePostActivityTwo
+            ) { response ->
+                if (!response.isNullOrEmpty()) {
+                    MyUtils.dismissProgressDialog()
+                    if (response[0].status.equals("true", true)) {
+                        MyUtils.hideKeyboard1(this@CreatePostActivityTwo)
+                        MyUtils.showSnackbar(
+                            this@CreatePostActivityTwo,
+                            response[0].message,
+                            mainLinearLayoutCreatePostTwo
+                        )
+
+                        val intent2 = Intent("CreatePost")
+                        intent2.putExtra("from", listFromPastActivity)
+                        intent2.putExtra("msg", response[0].message)
+                        LocalBroadcastManager.getInstance(this@CreatePostActivityTwo)
+                            .sendBroadcast(intent2)
+
+
+                    } else {
+                        //No data and no internet
+                        if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo)) {
+                            if (!response[0].message.isNullOrEmpty()) {
                                 MyUtils.showSnackbar(
-                                        this@CreatePostActivityTwo,
-                                        response[0].message,
-                                        mainLinearLayoutCreatePostTwo
+                                    this@CreatePostActivityTwo,
+                                    response[0].message,
+                                    mainLinearLayoutCreatePostTwo
                                 )
-
-                                val intent2 = Intent("CreatePost")
-                                intent2.putExtra("from", listFromPastActivity)
-                                intent2.putExtra("msg", response[0].message)
-                                LocalBroadcastManager.getInstance(this@CreatePostActivityTwo)
-                                        .sendBroadcast(intent2)
-
-
-                            } else {
-                                //No data and no internet
-                                if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo)) {
-                                    if (!response[0].message.isNullOrEmpty()) {
-                                        MyUtils.showSnackbar(
-                                                this@CreatePostActivityTwo,
-                                                response[0].message,
-                                                mainLinearLayoutCreatePostTwo
-                                        )
-                                    }
-
-                                } else {
-                                    MyUtils.showSnackbar(
-                                            this@CreatePostActivityTwo,
-                                            resources.getString(R.string.error_common_network),
-                                            mainLinearLayoutCreatePostTwo
-                                    )
-                                }
                             }
 
                         } else {
-                            MyUtils.dismissProgressDialog()
-                            if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo)) {
-                                MyUtils.showSnackbar(
-                                        this@CreatePostActivityTwo,
-                                        resources.getString(R.string.error_crash_error_message), mainLinearLayoutCreatePostTwo
-                                )
-                            } else {
-                                MyUtils.showSnackbar(
-                                        this@CreatePostActivityTwo,
-                                        resources.getString(R.string.error_common_network), mainLinearLayoutCreatePostTwo
-                                )
-                            }
+                            MyUtils.showSnackbar(
+                                this@CreatePostActivityTwo,
+                                resources.getString(R.string.error_common_network),
+                                mainLinearLayoutCreatePostTwo
+                            )
                         }
-                    })
+                    }
+
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo)) {
+                        MyUtils.showSnackbar(
+                            this@CreatePostActivityTwo,
+                            resources.getString(R.string.error_crash_error_message),
+                            mainLinearLayoutCreatePostTwo
+                        )
+                    } else {
+                        MyUtils.showSnackbar(
+                            this@CreatePostActivityTwo,
+                            resources.getString(R.string.error_common_network),
+                            mainLinearLayoutCreatePostTwo
+                        )
+                    }
+                }
+            }
     }
 
 
@@ -2256,28 +2550,33 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                 "postShare" -> {
                     jsonObject.put("originalPostID", postData?.postID)
                     jsonObject.put("originaluserID", postData?.userID)
-                    jsonObject.put("postWriteSomething", Constant.encode(createPostEditText.tagText.trim()))
+                    jsonObject.put(
+                        "postWriteSomething",
+                        Constant.encode(createPostEditText.tagText.trim())
+                    )
                     jsonObject.put("postDescription", postData?.postDescription)
                     jsonObject.put("postLanguage", "en")
 
                 }
                 "editPost" -> {
-                    jsonObject.put("postDescription", Constant.encode(createPostEditText.tagText.trim()))
+                    jsonObject.put(
+                        "postDescription",
+                        Constant.encode(createPostEditText.tagText.trim())
+                    )
                     jsonObject.put("postLanguage", "en")
                     jsonObject.put("postID", postData?.postID)
 
                 }
             }
             jsonObject.put("postCategory", "")
-            when(textViewCreatePostPrivacy.text.toString().trim()   )
-            {
-                "Public"->{
+            when (textViewCreatePostPrivacy.text.toString().trim()) {
+                "Public" -> {
                     jsonObject.put("postPrivacyType", "Public")
                 }
-                "Connections"->{
+                "Connections" -> {
                     jsonObject.put("postPrivacyType", "Connection")
                 }
-                "Groups"->{
+                "Groups" -> {
                     jsonObject.put("postPrivacyType", "Group")
                 }
             }
@@ -2325,10 +2624,16 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                         for (i in 0 until postData?.postSerializedData!![0].albummedia.size) {
                             val jsonObjectAlbummedia = JSONObject()
                             try {
-                                jsonObjectAlbummedia.put("albummediaFile", postData?.postSerializedData!![0].albummedia[i].albummediaFile)
+                                jsonObjectAlbummedia.put(
+                                    "albummediaFile",
+                                    postData?.postSerializedData!![0].albummedia[i].albummediaFile
+                                )
                                 jsonObjectAlbummedia.put("albummediaThumbnail", "")
                                 jsonObjectAlbummedia.put("albummediaFileType", "Photo")
-                                jsonObjectAlbummedia.put("albummediaFileSize", postData?.postSerializedData!![0].albummedia[i].albummediaFileSize)
+                                jsonObjectAlbummedia.put(
+                                    "albummediaFileSize",
+                                    postData?.postSerializedData!![0].albummedia[i].albummediaFileSize
+                                )
 
                                 jsonArrayAlbummedia.put(i, jsonObjectAlbummedia)
                             } catch (e: Exception) {
@@ -2345,7 +2650,12 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                 }
             }
             "Link" -> {
-                jsonObject.put("postDescription", Constant.encode(createPostEditText.text.toString().trim()) + "||${(url + "||" + postDes)}")
+                jsonObject.put(
+                    "postDescription",
+                    Constant.encode(
+                        createPostEditText.text.toString().trim()
+                    ) + "||${(url + "||" + postDes)}"
+                )
                 jsonObject.put("postLanguage", "en")
                 if (!Location.isNullOrEmpty()) {
                     jsonObject.put("postLocation", Location)
@@ -2380,10 +2690,16 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                         for (i in postData?.postSerializedData!![0].albummedia.indices) {
                             val jsonObjectAlbummedia = JSONObject()
                             try {
-                                jsonObjectAlbummedia.put("albummediaFile", postData?.postSerializedData!![0].albummedia[i].albummediaFile)
+                                jsonObjectAlbummedia.put(
+                                    "albummediaFile",
+                                    postData?.postSerializedData!![0].albummedia[i].albummediaFile
+                                )
                                 jsonObjectAlbummedia.put("albummediaThumbnail", "")
                                 jsonObjectAlbummedia.put("albummediaFileType", "Link")
-                                jsonObjectAlbummedia.put("albummediaFileSize", postData?.postSerializedData!![0].albummedia[i].albummediaFileSize)
+                                jsonObjectAlbummedia.put(
+                                    "albummediaFileSize",
+                                    postData?.postSerializedData!![0].albummedia[i].albummediaFileSize
+                                )
 
                                 jsonArrayAlbummedia.put(i, jsonObjectAlbummedia)
                             } catch (e: Exception) {
@@ -2433,10 +2749,19 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                         for (i in 0 until postData?.postSerializedData!![0].albummedia.size) {
                             val jsonObjectAlbummedia = JSONObject()
                             try {
-                                jsonObjectAlbummedia.put("albummediaFile", postData?.postSerializedData!![0].albummedia[i].albummediaFile)
-                                jsonObjectAlbummedia.put("albummediaThumbnail", postData?.postSerializedData!![0].albummedia[i].albummediaThumbnail)
+                                jsonObjectAlbummedia.put(
+                                    "albummediaFile",
+                                    postData?.postSerializedData!![0].albummedia[i].albummediaFile
+                                )
+                                jsonObjectAlbummedia.put(
+                                    "albummediaThumbnail",
+                                    postData?.postSerializedData!![0].albummedia[i].albummediaThumbnail
+                                )
                                 jsonObjectAlbummedia.put("albummediaFileType", "Video")
-                                jsonObjectAlbummedia.put("albummediaFileSize", postData?.postSerializedData!![0].albummedia[i].albummediaFileSize)
+                                jsonObjectAlbummedia.put(
+                                    "albummediaFileSize",
+                                    postData?.postSerializedData!![0].albummedia[i].albummediaFileSize
+                                )
 
                                 jsonArrayAlbummedia.put(i, jsonObjectAlbummedia)
                             } catch (e: Exception) {
@@ -2453,7 +2778,10 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                 }
             }
             "Text" -> {
-                jsonObject.put("postDescription", Constant.encode(createPostEditText.tagText.trim()))
+                jsonObject.put(
+                    "postDescription",
+                    Constant.encode(createPostEditText.tagText.trim())
+                )
                 jsonObject.put("postLanguage", "en")
                 jsonObject.put("postLatitude", MyUtils.currentLattitude.toString())
                 jsonObject.put("postLongitude", MyUtils.currentLongtiude.toString())
@@ -2463,7 +2791,10 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                 jsonObject.put("postSerializedData", JSONArray())
             }
             "Place" -> {
-                jsonObject.put("postDescription", Constant.encode(createPostEditText.tagText.trim()))
+                jsonObject.put(
+                    "postDescription",
+                    Constant.encode(createPostEditText.tagText.trim())
+                )
                 jsonObject.put("postLanguage", "en")
                 jsonObject.put("postLatitude", latitude)
                 jsonObject.put("postLongitude", longitude)
@@ -2506,10 +2837,16 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                         for (i in 0 until imageList.size) {
                             val jsonObjectAlbummedia = JSONObject()
                             try {
-                                jsonObjectAlbummedia.put("albummediaFile", postData?.postSerializedData!![0].albummedia[i].albummediaFile)
+                                jsonObjectAlbummedia.put(
+                                    "albummediaFile",
+                                    postData?.postSerializedData!![0].albummedia[i].albummediaFile
+                                )
                                 jsonObjectAlbummedia.put("albummediaThumbnail", "")
                                 jsonObjectAlbummedia.put("albummediaFileType", "Document")
-                                jsonObjectAlbummedia.put("albummediaFileSize", postData?.postSerializedData!![0].albummedia[i].albummediaFileSize)
+                                jsonObjectAlbummedia.put(
+                                    "albummediaFileSize",
+                                    postData?.postSerializedData!![0].albummedia[i].albummediaFileSize
+                                )
 
                                 jsonArrayAlbummedia.put(i, jsonObjectAlbummedia)
                             } catch (e: Exception) {
@@ -2529,79 +2866,81 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
         jsonObject.put("postLanguage", "en")
         jsonArray.put(jsonObject)
         createPostModel.apiFunction(this@CreatePostActivityTwo, jsonArray.toString(), fromType)
-                .observe(this@CreatePostActivityTwo,
-                    { response ->
-                        if (!response.isNullOrEmpty()) {
-                            MyUtils.dismissProgressDialog()
-                            if (response[0].status.equals("true", true)) {
-                                MyUtils.hideKeyboard1(this@CreatePostActivityTwo)
-                                MyUtils.showSnackbar(
+            .observe(this@CreatePostActivityTwo,
+                { response ->
+                    if (!response.isNullOrEmpty()) {
+                        MyUtils.dismissProgressDialog()
+                        if (response[0].status.equals("true", true)) {
+                            MyUtils.hideKeyboard1(this@CreatePostActivityTwo)
+                            MyUtils.showSnackbar(
+                                this@CreatePostActivityTwo,
+                                response[0].message,
+                                mainLinearLayoutCreatePostTwo
+                            )
+
+                            val intent2 = Intent("CreatePost")
+                            intent2.putExtra("from", listFromPastActivity)
+                            intent2.putExtra("msg", response[0].message)
+                            LocalBroadcastManager.getInstance(this@CreatePostActivityTwo)
+                                .sendBroadcast(intent2)
+
+
+                        } else {
+                            //No data and no internet
+                            if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo)) {
+                                if (!response[0].message.isNullOrEmpty()) {
+                                    MyUtils.showSnackbar(
                                         this@CreatePostActivityTwo,
                                         response[0].message,
                                         mainLinearLayoutCreatePostTwo
-                                )
-
-                                val intent2 = Intent("CreatePost")
-                                intent2.putExtra("from", listFromPastActivity)
-                                intent2.putExtra("msg", response[0].message)
-                                LocalBroadcastManager.getInstance(this@CreatePostActivityTwo)
-                                        .sendBroadcast(intent2)
-
-
-                            } else {
-                                //No data and no internet
-                                if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo)) {
-                                    if (!response[0].message.isNullOrEmpty()) {
-                                        MyUtils.showSnackbar(
-                                                this@CreatePostActivityTwo,
-                                                response[0].message,
-                                                mainLinearLayoutCreatePostTwo
-                                        )
-                                    }
-
-                                } else {
-                                    MyUtils.showSnackbar(
-                                            this@CreatePostActivityTwo,
-                                            resources.getString(R.string.error_common_network),
-                                            mainLinearLayoutCreatePostTwo
                                     )
                                 }
-                            }
 
-                        } else {
-                            MyUtils.dismissProgressDialog()
-                            if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo)) {
-                                MyUtils.showSnackbar(
-                                        this@CreatePostActivityTwo,
-                                        resources.getString(R.string.error_crash_error_message), mainLinearLayoutCreatePostTwo
-                                )
                             } else {
                                 MyUtils.showSnackbar(
-                                        this@CreatePostActivityTwo,
-                                        resources.getString(R.string.error_common_network), mainLinearLayoutCreatePostTwo
+                                    this@CreatePostActivityTwo,
+                                    resources.getString(R.string.error_common_network),
+                                    mainLinearLayoutCreatePostTwo
                                 )
                             }
                         }
-                    })
+
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo)) {
+                            MyUtils.showSnackbar(
+                                this@CreatePostActivityTwo,
+                                resources.getString(R.string.error_crash_error_message),
+                                mainLinearLayoutCreatePostTwo
+                            )
+                        } else {
+                            MyUtils.showSnackbar(
+                                this@CreatePostActivityTwo,
+                                resources.getString(R.string.error_common_network),
+                                mainLinearLayoutCreatePostTwo
+                            )
+                        }
+                    }
+                })
     }
 
     override fun onBackPressed() {
         //super.onBackPressed()
         MyUtils.showMessageOKCancel(this,
-                resources.getString(R.string.are_you_sure_you_want_to_discard_post),
-                resources.getString(R.string.discard_title),
-                DialogInterface.OnClickListener { _, _ ->
+            resources.getString(R.string.are_you_sure_you_want_to_discard_post),
+            resources.getString(R.string.discard_title),
+            DialogInterface.OnClickListener { _, _ ->
 
-                    MyUtils.finishActivity(this@CreatePostActivityTwo, true)
+                MyUtils.finishActivity(this@CreatePostActivityTwo, true)
 
 
-                })
+            })
     }
 
     override fun onDestroy() {
         super.onDestroy()
         LocalBroadcastManager.getInstance(this@CreatePostActivityTwo)
-                .unregisterReceiver(mYourBroadcastReceiver)
+            .unregisterReceiver(mYourBroadcastReceiver)
 
     }
 
@@ -2610,7 +2949,7 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
         try {
             val proj = arrayOf(MediaStore.Images.Media.DATA)
             cursor = this@CreatePostActivityTwo.contentResolver
-                    .query(pictureUri, proj, null, null, null)
+                .query(pictureUri, proj, null, null, null)
 
             val column_index = cursor?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
             cursor?.moveToFirst()
@@ -2654,7 +2993,11 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
         return filePath
     }
 
-    private fun getPathFromInputStreamUriDocument(uri: Uri, extension: String?, displayName: String): String {
+    private fun getPathFromInputStreamUriDocument(
+        uri: Uri,
+        extension: String?,
+        displayName: String
+    ): String {
 
         var inputStream: InputStream? = null
         var filePath = ""
@@ -2731,7 +3074,11 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
     }
 
     @Throws(IOException::class)
-    private fun createTemporalFileFromDocument(inputStream: InputStream?, extension: String?, displayName: String): File? {
+    private fun createTemporalFileFromDocument(
+        inputStream: InputStream?,
+        extension: String?,
+        displayName: String
+    ): File? {
         //    throw new IOException();
 
         if (inputStream != null) {
@@ -2779,7 +3126,7 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
 
     @Throws(IOException::class)
     fun savebitmap(bmp: Bitmap): File {
-        var f: File?=null
+        var f: File? = null
         val fo: FileOutputStream
         try {
             val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
@@ -2787,7 +3134,10 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
 
             bmp.compress(Bitmap.CompressFormat.JPEG, 60, bytes)
             val cw = ContextWrapper(applicationContext)
-            f = File(cw.getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString() + File.separator + "$timeStamp.jpg")
+            f = File(
+                cw.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                    .toString() + File.separator + "$timeStamp.jpg"
+            )
             f?.createNewFile()
             fo = FileOutputStream(f)
             fo.write(bytes.toByteArray())
@@ -2802,7 +3152,7 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
 
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val cw = ContextWrapper(applicationContext)
-        val path =  cw.getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString()
+        val path = cw.getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString()
 
         return File(path, "vid_$timeStamp.mp4")
     }
@@ -2822,14 +3172,16 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
         if (!addPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
             val message = getString(R.string.grant_access_location)
 
-            MyUtils.showMessageOKCancel(this@CreatePostActivityTwo, message, "Use Location Service?",
-                    DialogInterface.OnClickListener { dialog, _ ->
-                        dialog.dismiss()
-                        requestPermissions(
-                                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                                REQUEST_CODE_LOCATION_PERMISSIONS
-                        )
-                    })
+            MyUtils.showMessageOKCancel(this@CreatePostActivityTwo,
+                message,
+                "Use Location Service?",
+                DialogInterface.OnClickListener { dialog, _ ->
+                    dialog.dismiss()
+                    requestPermissions(
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                        REQUEST_CODE_LOCATION_PERMISSIONS
+                    )
+                })
 
         } else {
             connectLocation()
@@ -2848,7 +3200,8 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
 
     private fun connectLocation() {
         MyUtils.showProgressDialog(this@CreatePostActivityTwo, "Please wait..")
-        locationProvider = LocationProvider(this@CreatePostActivityTwo, LocationProvider.HIGH_ACCURACY,
+        locationProvider =
+            LocationProvider(this@CreatePostActivityTwo, LocationProvider.HIGH_ACCURACY,
                 object : LocationProvider.CurrentLocationCallback {
                     override fun handleNewLocation(location: Location) {
                         locationProvider?.disconnect()
@@ -2877,8 +3230,8 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
 
 
     fun hashTag(
-            text: String,
-            mContext: Context?
+        text: String,
+        mContext: Context?
     ): ArrayList<String> {
         var string = ArrayList<String>()
 
@@ -2902,7 +3255,10 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
     fun getVidioThumbnail(path: String?): Bitmap? {
         var bitmap: Bitmap? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
-            bitmap = ThumbnailUtils.createVideoThumbnail(path!!, MediaStore.Images.Thumbnails.MICRO_KIND)!!
+            bitmap = ThumbnailUtils.createVideoThumbnail(
+                path!!,
+                MediaStore.Images.Thumbnails.MICRO_KIND
+            )!!
             if (bitmap != null) {
                 return bitmap
             }
@@ -2956,48 +3312,50 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
         }
         jsonArray.put(jsonObject)
         checkStoragetModel.getCheckStorage(this@CreatePostActivityTwo, jsonArray.toString())
-                .observe(this@CreatePostActivityTwo,
-                    { response ->
-                        if (!response.isNullOrEmpty()) {
-                            MyUtils.dismissProgressDialog()
-                            if (response[0].status.equals("true", true)) {
-                                MyUtils.hideKeyboard1(this@CreatePostActivityTwo)
-                                showDialog()
-                            } else {
-                                //No data and no internet
-                                if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo)) {
-                                    if (!response[0].message.isNullOrEmpty()) {
-                                        MyUtils.showSnackbar(
-                                                this@CreatePostActivityTwo,
-                                                response[0].message,
-                                                mainLinearLayoutCreatePostTwo
-                                        )
-                                    }
-
-                                } else {
+            .observe(this@CreatePostActivityTwo,
+                { response ->
+                    if (!response.isNullOrEmpty()) {
+                        MyUtils.dismissProgressDialog()
+                        if (response[0].status.equals("true", true)) {
+                            MyUtils.hideKeyboard1(this@CreatePostActivityTwo)
+                            showDialog()
+                        } else {
+                            //No data and no internet
+                            if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo)) {
+                                if (!response[0].message.isNullOrEmpty()) {
                                     MyUtils.showSnackbar(
-                                            this@CreatePostActivityTwo,
-                                            resources.getString(R.string.error_common_network),
-                                            mainLinearLayoutCreatePostTwo
+                                        this@CreatePostActivityTwo,
+                                        response[0].message,
+                                        mainLinearLayoutCreatePostTwo
                                     )
                                 }
-                            }
 
-                        } else {
-                            MyUtils.dismissProgressDialog()
-                            if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo)) {
-                                MyUtils.showSnackbar(
-                                        this@CreatePostActivityTwo,
-                                        resources.getString(R.string.error_crash_error_message), mainLinearLayoutCreatePostTwo
-                                )
                             } else {
                                 MyUtils.showSnackbar(
-                                        this@CreatePostActivityTwo,
-                                        resources.getString(R.string.error_common_network), mainLinearLayoutCreatePostTwo
+                                    this@CreatePostActivityTwo,
+                                    resources.getString(R.string.error_common_network),
+                                    mainLinearLayoutCreatePostTwo
                                 )
                             }
                         }
-                    })
+
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        if (MyUtils.isInternetAvailable(this@CreatePostActivityTwo)) {
+                            MyUtils.showSnackbar(
+                                this@CreatePostActivityTwo,
+                                resources.getString(R.string.error_crash_error_message),
+                                mainLinearLayoutCreatePostTwo
+                            )
+                        } else {
+                            MyUtils.showSnackbar(
+                                this@CreatePostActivityTwo,
+                                resources.getString(R.string.error_common_network),
+                                mainLinearLayoutCreatePostTwo
+                            )
+                        }
+                    }
+                })
     }
 
     private fun showDialog() {
@@ -3029,12 +3387,15 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
         btn_cancel.setOnClickListener {
             dialogs?.dismiss()
         }
-        storagePurchaseAdapter = StoragePurchaseAdapter(this@CreatePostActivityTwo, storagePurchaseItem!!, object : StoragePurchaseAdapter.OnItemClick {
-            override fun onClicklisneter(pos: Int) {
+        storagePurchaseAdapter = StoragePurchaseAdapter(
+            this@CreatePostActivityTwo,
+            storagePurchaseItem!!,
+            object : StoragePurchaseAdapter.OnItemClick {
+                override fun onClicklisneter(pos: Int) {
 
-            }
+                }
 
-        })
+            })
 
         storagePurchaseItem.add("abc")
         storagePurchaseItem.add("abc1")
@@ -3050,17 +3411,16 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
     }
 
     override fun onClick(v: View?) {
-        when(v?.id){
-            R.id.textViewCreatePostPrivacy->{
+        when (v?.id) {
+            R.id.textViewCreatePostPrivacy -> {
                 Intent(this@CreatePostActivityTwo!!, PrivacyActivity::class.java).apply {
-                    if(postData!=null)
-                    {
-                        putExtra("postPrivacyType",postData?.postPrivacyType)
+                    if (postData != null) {
+                        putExtra("postPrivacyType", postData?.postPrivacyType)
                     }
                     startActivityForResult(this, 800)
                 }
             }
-            R.id.ll_add_location_post->{
+            R.id.ll_add_location_post -> {
                 ll_add_location_post.isEnabled = false
                 if (currentApiVersion >= Build.VERSION_CODES.M) {
                     permissionLocation()
@@ -3069,13 +3429,13 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                 }
                 ll_add_location_post.isEnabled = true
             }
-            R.id.tvAddHashTag->{
+            R.id.tvAddHashTag -> {
                 Intent(this, AddHashtagsActivity()::class.java).apply {
                     putExtra("from", "Add")
                     startActivityForResult(this, 115)
                 }
             }
-            R.id.menuToolbarItem->{
+            R.id.menuToolbarItem -> {
                 // getCheckStorage()
                 if (postData != null) {
 
@@ -3122,7 +3482,11 @@ class CreatePostActivityTwo : AppCompatActivity(), PrivacyBottomSheetFragment.se
                                 editPost(fromType)
                             } else {
                                 if (!imageList.isNullOrEmpty()) {
-                                    if (!type1.isNullOrEmpty() && type1.equals("MyExploreVideo", false)) {
+                                    if (!type1.isNullOrEmpty() && type1.equals(
+                                            "MyExploreVideo",
+                                            false
+                                        )
+                                    ) {
                                         uploadExploreVideoThumb("Uploaded", imageList)
                                     } else {
                                         uploadPostVideo("Uploaded", listFromPastActivity)

@@ -19,6 +19,7 @@ import java.io.File
 const val USER_DEFAULT_PASSWORD = "quickblox"
 const val CHAT_PORT = 5223
 const val SOCKET_TIMEOUT = 300
+
 //Chat credentials range
 private const val MAX_PORT_VALUE = 65535
 private const val MIN_PORT_VALUE = 1000
@@ -43,24 +44,25 @@ class MyApplication : Application() {
 
     companion object {
         lateinit var instance: MyApplication
-                        private set
+            private set
+
         @kotlin.jvm.JvmField
         var simpleCache: SimpleCache? = null
         protected var userAgent: String? = null
-        var sessionManager: SessionManager?=null
-        fun languageId(context: Context?=null):String
-        {
+        var sessionManager: SessionManager? = null
+        fun languageId(context: Context? = null): String {
 
-            if(sessionManager==null && context!=null)
+            if (sessionManager == null && context != null)
                 sessionManager = SessionManager(context!!)
-            else   if(sessionManager==null && instance!=null)
+            else if (sessionManager == null && instance != null)
                 sessionManager = SessionManager(instance)
-            return sessionManager?.getsetSelectedLanguage().toString()
+            return if (sessionManager?.getSelectedLanguage() == null)
+                "1" else
+                sessionManager?.getSelectedLanguage()?.languageID!!
         }
 
-        fun langugageName(context: Context):String
-        {
-            return if(languageId(context).equals("2"))
+        fun langugageName(context: Context): String {
+            return if (languageId(context) == "2")
                 "fr"
             else
                 "en"
@@ -81,7 +83,7 @@ class MyApplication : Application() {
         checkChatSettings()
         initCredentials()
         userAgent = Util.getUserAgent(this, "ExoPlayerDemo")
-        simpleCache =SimpleCache(cacheFolder, evictor, databaseProvider)
+        simpleCache = SimpleCache(cacheFolder, evictor, databaseProvider)
 
 
     }
@@ -94,7 +96,8 @@ class MyApplication : Application() {
 
     private fun checkChatSettings() {
         if (USER_DEFAULT_PASSWORD.isEmpty() || CHAT_PORT !in MIN_PORT_VALUE..MAX_PORT_VALUE
-                || SOCKET_TIMEOUT !in MIN_SOCKET_TIMEOUT..MAX_SOCKET_TIMEOUT) {
+            || SOCKET_TIMEOUT !in MIN_SOCKET_TIMEOUT..MAX_SOCKET_TIMEOUT
+        ) {
             throw AssertionError(getString(R.string.error_chat_credentails_empty))
         }
     }
@@ -115,8 +118,6 @@ class MyApplication : Application() {
     }*/
 
 
-
-
     /** Returns a [HttpDataSource.Factory].  */
     fun buildHttpDataSourceFactory(): HttpDataSource.Factory? {
         return DefaultHttpDataSourceFactory(userAgent)
@@ -124,16 +125,16 @@ class MyApplication : Application() {
     }
 
     private fun buildReadOnlyCacheDataSource(
-            upstreamFactory: DefaultDataSourceFactory,
-            cache: Cache
+        upstreamFactory: DefaultDataSourceFactory,
+        cache: Cache
     ): CacheDataSourceFactory? {
         return CacheDataSourceFactory(
-                cache,
-                upstreamFactory,
-                FileDataSourceFactory(),  /* cacheWriteDataSinkFactory= */
-                null,
-                CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR,  /* eventListener= */
-                null
+            cache,
+            upstreamFactory,
+            FileDataSourceFactory(),  /* cacheWriteDataSinkFactory= */
+            null,
+            CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR,  /* eventListener= */
+            null
         )
     }
 

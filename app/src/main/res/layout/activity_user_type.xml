@@ -29,6 +29,8 @@
             android:layout_marginTop="@dimen/_10sdp"
             android:fontFamily="@font/title"
             android:gravity="center"
+            android:paddingStart="@dimen/_20sdp"
+            android:paddingEnd="@dimen/_20sdp"
             android:text="@string/what_kind_of_user_are_you"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/_25ssp" />

@@ -25,18 +25,16 @@ class RestClient {
 //        var base = "http://13.235.206.122/fsl/"
 //        var url = "http://13.235.206.122/fsl/backend/web/index.php/v1/"
 
-        var base = "https://apis.nxplayr.com/"
-        var url = "https://apis.nxplayr.com/backend/web/index.php/v1/"
-
-        var image_base_url_users = base + "backend/web/uploads/users/"
-        var image_base_url_banners = base + "backend/web/uploads/banners/"
-        var image_base_url_flag = base + "backend/web/uploads/flag/"
-        var image_base_url_posts = base + "backend/web/uploads/post/"
-        var image_base_url_mediaEmp = base + "backend/web/uploads/employment/"
-        var image_base_url_mediaEdu = base + "backend/web/uploads/education/"
-        const val image_base_url_job ="http://13.235.206.122/fsl/backend/web/uploads/company/"
-        var sharingUrl = "${url}frontend/web/"
-
+        var base = ""
+        var url = ""
+        var image_base_url_users = ""
+        var image_base_url_banners =  ""
+        var image_base_url_flag = ""
+        var image_base_url_posts =""
+        var image_base_url_mediaEmp =""
+        var image_base_url_mediaEdu =  ""
+        var image_base_url_job = ""
+        var sharingUrl = ""
 
         internal var REST_CLIENT: RestApi? = null
 
@@ -46,8 +44,30 @@ class RestClient {
         var uniqueDeviceId = Settings.System.getString(MyApplication.instance.contentResolver, Settings.Secure.ANDROID_ID)
 
         init {
-            setupRestClient()
 
+            base = BuildConfig.BASE_URL
+            url = BuildConfig.JOB_URL
+            sharingUrl = "${url}frontend/web/"
+
+            if (BuildConfig.FLAVOR == "staging") {
+                image_base_url_users = BuildConfig.BASE_URL + BuildConfig.BASE_ASSET_URL + "users/"
+                image_base_url_banners = BuildConfig.BASE_URL + BuildConfig.BASE_ASSET_URL + "banners/"
+                image_base_url_flag = BuildConfig.BASE_URL + BuildConfig.BASE_ASSET_URL + "flag/"
+                image_base_url_posts = BuildConfig.BASE_URL + BuildConfig.BASE_ASSET_URL + "post/"
+                image_base_url_mediaEmp = BuildConfig.BASE_URL + BuildConfig.BASE_ASSET_URL + "employment/"
+                image_base_url_mediaEdu = BuildConfig.BASE_URL + BuildConfig.BASE_ASSET_URL + "education/"
+                image_base_url_job = BuildConfig.BASE_URL + BuildConfig.BASE_ASSET_URL + "company/"
+            } else {
+                image_base_url_users = BuildConfig.BASE_ASSET_URL + "users/"
+                image_base_url_banners = BuildConfig.BASE_ASSET_URL + "banners/"
+                image_base_url_flag = BuildConfig.BASE_ASSET_URL + "flag/"
+                image_base_url_posts = BuildConfig.BASE_ASSET_URL + "post/"
+                image_base_url_mediaEmp = BuildConfig.BASE_ASSET_URL + "employment/"
+                image_base_url_mediaEdu = BuildConfig.BASE_ASSET_URL + "education/"
+                image_base_url_job = BuildConfig.BASE_ASSET_URL + "company/"
+            }
+
+            setupRestClient()
         }
 
         fun setOkHttpClientBuilder(): OkHttpClient.Builder {

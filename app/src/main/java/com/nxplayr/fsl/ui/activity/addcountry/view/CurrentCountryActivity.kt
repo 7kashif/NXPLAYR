@@ -83,8 +83,8 @@ class CurrentCountryActivity : AppCompatActivity(),View.OnClickListener {
         Log.e("bounds", BOUNDS_INDIA.toString())
 
         typeFilter = AutocompleteFilter.Builder()
-            .setTypeFilter(AutocompleteFilter.TYPE_FILTER_NONE)
-            .setCountry("IN")
+            .setTypeFilter(AutocompleteFilter.TYPE_FILTER_REGIONS)
+            .setCountry("AE")
             .build()
 
         mGeoDataClient = Places.getGeoDataClient(this)

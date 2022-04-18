@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.model.ContractSitiuationData
@@ -21,9 +22,11 @@ import java.util.*
 
 class ContractSitiuationAdapter(
     val context: Activity,
-    val listData: ArrayList<ContractSitiuationData?>?, val onItemClick: OnItemClick, val from: String
+    val listData: ArrayList<ContractSitiuationData?>?,
+    val onItemClick: OnItemClick,
+    val from: String
 ) :
-        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var mSelection = -1
     var sessionManager: SessionManager = SessionManager(context)
@@ -31,7 +34,8 @@ class ContractSitiuationAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_nationality_list, parent, false)
+        val v = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_nationality_list, parent, false)
         return LanguageViewHolder(context, v)
     }
 
@@ -44,18 +48,15 @@ class ContractSitiuationAdapter(
         if (holder is LanguageViewHolder) {
             var holder1 = holder as LanguageViewHolder
             holder1.bind(context, listData!![position]!!, holder1.adapterPosition, onItemClick)
-            holder1.edit_expire_date.addTextChangedListener(object :TextWatcher{
+            holder1.edit_expire_date.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 }
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    if(listData!![position]!!.contractsituationName.equals("Free", false))
-                    {
-                        listData!![position]!!.userContractExpiryDate="Free"
-                    }
-                    else
-                    {
-                        listData!![position]!!.userContractExpiryDate= p0.toString();
+                    if (listData!![position]!!.contractsituationName.equals("Free", false)) {
+                        listData!![position]!!.userContractExpiryDate = "Free"
+                    } else {
+                        listData!![position]!!.userContractExpiryDate = p0.toString();
 
                     }
                 }
@@ -70,12 +71,13 @@ class ContractSitiuationAdapter(
         }
     }
 
-    class LanguageViewHolder(context: Activity, itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class LanguageViewHolder(context: Activity, itemView: View) :
+        RecyclerView.ViewHolder(itemView) {
         var sessionManager: SessionManager? = null
         var userData: SignupData? = null
         var select: Boolean = false
-        var edit_expire_date=itemView.edit_expire_date
-        var ll_expireDate=itemView.ll_expireDate
+        var edit_expire_date = itemView.edit_expire_date
+        var ll_expireDate = itemView.ll_expireDate
         var dob: String = ""
         var age1: String = ""
         var date: String = ""
@@ -86,23 +88,36 @@ class ContractSitiuationAdapter(
             sessionManager = SessionManager(context)
             userData = sessionManager!!.get_Authenticate_User()
         }
-        fun bind(context: Activity, countryList: ContractSitiuationData, position: Int, onItemClick: OnItemClick) = with(itemView) {
+
+        fun bind(
+            context: Activity,
+            countryList: ContractSitiuationData,
+            position: Int,
+            onItemClick: OnItemClick
+        ) = with(itemView) {
 
             tv_nationality.text = countryList.contractsituationName
             edit_expire_date.setText(countryList.userContractExpiryDate)
             if (countryList.checked) {
-                btn_nationality.setImageDrawable(resources.getDrawable(R.drawable.checkbox_selected))
-                if(countryList.contractsituationName.equals("Free", false))
-                {
-                    ll_expireDate.visibility=View.GONE
-                }
-                else
-                {
-                    ll_expireDate.visibility=View.VISIBLE
+                btn_nationality.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.checkbox_selected
+                    )
+                )
+                if (countryList.contractsituationName.equals("Free", false)) {
+                    ll_expireDate.visibility = View.GONE
+                } else {
+                    ll_expireDate.visibility = View.VISIBLE
                 }
             } else {
-                btn_nationality.setImageDrawable(resources.getDrawable(R.drawable.checkbox_unselected))
-                ll_expireDate.visibility=View.GONE
+                btn_nationality.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.checkbox_unselected
+                    )
+                )
+                ll_expireDate.visibility = View.GONE
 
             }
             edit_expire_date.setOnClickListener {
@@ -110,7 +125,6 @@ class ContractSitiuationAdapter(
             }
 
         }
-
 
 
         private fun DataPickerDialog(context: Activity, edit_expire_date: TextInputEditText) {
@@ -126,31 +140,32 @@ class ContractSitiuationAdapter(
             mincalendar.set(mYear, mMonth, mDay)
 
             val dpd = DatePickerDialog(
-                    context!!,
-                    DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                        var monthOfYear = monthOfYear
-                        Log.d("year", year.toString() + "")
-                        c.set(Calendar.YEAR, year)
-                        c.set(Calendar.MONTH, monthOfYear)
-                        c.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                        monthOfYear = monthOfYear + 1
-                        val minAdultAge = GregorianCalendar()
-                        minAdultAge.add(Calendar.YEAR, 0)
+                context!!,
+                DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                    var monthOfYear = monthOfYear
+                    Log.d("year", year.toString() + "")
+                    c.set(Calendar.YEAR, year)
+                    c.set(Calendar.MONTH, monthOfYear)
+                    c.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                    monthOfYear = monthOfYear + 1
+                    val minAdultAge = GregorianCalendar()
+                    minAdultAge.add(Calendar.YEAR, 0)
 
-                        age1 = (Integer.toString(calculateAge(c.timeInMillis)))
-                        dob = year.toString() + "-" + (if (monthOfYear < 10) "0$monthOfYear" else monthOfYear) + "-" + if (dayOfMonth < 10) "0$dayOfMonth" else dayOfMonth
-                        try {
-                            date = MyUtils.formatDate(dob, "yyyy-MM-dd", "dd/MM/yyyy")
-                            edit_expire_date.setText(date)
+                    age1 = (Integer.toString(calculateAge(c.timeInMillis)))
+                    dob =
+                        year.toString() + "-" + (if (monthOfYear < 10) "0$monthOfYear" else monthOfYear) + "-" + if (dayOfMonth < 10) "0$dayOfMonth" else dayOfMonth
+                    try {
+                        date = MyUtils.formatDate(dob, "yyyy-MM-dd", "dd/MM/yyyy")
+                        edit_expire_date.setText(date)
 
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
 
 
-                    }, mYear, mMonth, mDay
+                }, mYear, mMonth, mDay
             )
-            dpd.datePicker.maxDate = mincalendar.timeInMillis
+//            dpd.datePicker.maxDate = mincalendar.timeInMillis
             dpd.show()
         }
 

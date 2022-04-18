@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_basic_detail"
     android:layout_width="match_parent"
@@ -33,19 +32,23 @@
                     android:layout_gravity="center"
                     android:hint="@string/first_name"
                     android:textColorHint="@color/colorPrimary"
-                    android:theme="@style/MyEditTextTheme">
+                    android:theme="@style/MyEditTextTheme"
+                    app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edit_first_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
+                        android:enabled="false"
                         android:imeOptions="actionNext"
                         android:inputType="textCapSentences"
+                        android:paddingTop="@dimen/_35sdp"
                         android:singleLine="true"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_16ssp"
                         android:theme="@style/MyEditTextTheme" />
+
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -54,15 +57,18 @@
                     android:layout_gravity="center"
                     android:hint="@string/last_name"
                     android:textColorHint="@color/colorPrimary"
-                    android:theme="@style/MyEditTextTheme">
+                    android:theme="@style/MyEditTextTheme"
+                    app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edit_last_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
+                        android:enabled="false"
                         android:imeOptions="actionNext"
                         android:inputType="textCapSentences"
+                        android:paddingTop="@dimen/_35sdp"
                         android:singleLine="true"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_16ssp"
@@ -94,8 +100,8 @@
                     style="@style/Font.SubTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_12sdp"
                     android:layout_marginTop="@dimen/_10sdp"
-                    android:paddingLeft="@dimen/_5sdp"
                     android:text="@string/gender"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/_16ssp" />
@@ -117,6 +123,7 @@
                         android:button="@null"
                         android:drawableLeft="@drawable/male_icon_unselected"
                         android:drawablePadding="@dimen/_5sdp"
+                        android:enabled="false"
                         android:padding="@dimen/_5sdp"
                         android:text="@string/Male"
                         android:textColor="@color/white"
@@ -133,6 +140,7 @@
                         android:button="@null"
                         android:drawableLeft="@drawable/female_icon_unselected"
                         android:drawablePadding="@dimen/_5sdp"
+                        android:enabled="false"
                         android:padding="@dimen/_5sdp"
                         android:text="@string/Female"
                         android:textColor="@color/white"
@@ -146,7 +154,8 @@
                     android:layout_gravity="center"
                     android:hint="@string/date_of_birth"
                     android:textColorHint="@color/colorPrimary"
-                    android:theme="@style/MyEditTextTheme">
+                    android:theme="@style/MyEditTextTheme"
+                    app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edit_dateofbirth"
@@ -154,29 +163,35 @@
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:clickable="true"
+                        android:enabled="false"
                         android:focusable="false"
                         android:imeOptions="actionDone"
                         android:inputType="number"
+                        android:paddingTop="@dimen/_35sdp"
                         android:singleLine="true"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_16ssp"
                         android:theme="@style/MyEditTextTheme" />
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:hint="@string/place_of_birth"
                     android:textColorHint="@color/colorPrimary"
-                    android:theme="@style/MyEditTextTheme">
+                    android:theme="@style/MyEditTextTheme"
+                    app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edit_place_of_birth"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
+                        android:enabled="false"
                         android:imeOptions="actionNext"
                         android:inputType="textCapSentences"
+                        android:paddingTop="@dimen/_35sdp"
                         android:singleLine="true"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_16ssp"

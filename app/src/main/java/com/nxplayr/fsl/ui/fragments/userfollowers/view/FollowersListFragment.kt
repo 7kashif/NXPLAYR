@@ -33,7 +33,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 
-class FollowersListFragment : Fragment(),View.OnClickListener {
+class FollowersListFragment : Fragment(), View.OnClickListener {
 
     private var v: View? = null
     var mActivity: Activity? = null
@@ -53,11 +53,13 @@ class FollowersListFragment : Fragment(),View.OnClickListener {
     var y: Int = 0
     var userId = ""
     var fromFollow = ""
-    private lateinit var  followersModel: FollowersModel
-    private lateinit var  commonStatusModel: CommonStatusModel
+    private lateinit var followersModel: FollowersModel
+    private lateinit var commonStatusModel: CommonStatusModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         if (v == null) {
             v = inflater.inflate(R.layout.fragment_followers_list, container, false)
         }
@@ -81,10 +83,20 @@ class FollowersListFragment : Fragment(),View.OnClickListener {
             fromFollow = arguments!!.getString("fromData").toString()
         }
         setupViewModel()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        isLastpage = false
+        isLoading = false
+        pageNo = 0
+        pageSize = 10
+        visibleItemCount = 0
+        totalItemCount = 0
+        firstVisibleItemPosition = 0
+        list_followers = null
         setupUI()
-        setupObserver()
-
-
     }
 
     private fun setupObserver() {
@@ -111,7 +123,7 @@ class FollowersListFragment : Fragment(),View.OnClickListener {
             if (fromFollow.equals("profile")) {
                 jsonObject.put("userID", userData?.userID)
             } else if (fromFollow.equals("otherUser")) {
-                jsonObject.put("userID",userId)
+                jsonObject.put("userID", userId)
             }
             when (tabPosition) {
                 0 -> {
@@ -132,7 +144,7 @@ class FollowersListFragment : Fragment(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
         followersModel.getFollowerList(mActivity!!, false, jsonArray.toString(), "FollowingList")
-            .observe(viewLifecycleOwner, { followerListPojo ->
+            .observe(viewLifecycleOwner) { followerListPojo ->
 
                 if (followerListPojo != null && followerListPojo.isNotEmpty()) {
 
@@ -151,18 +163,18 @@ class FollowersListFragment : Fragment(),View.OnClickListener {
                         if (pageNo == 0) {
                             list_followers?.clear()
                         }
-                        list_followers?.addAll(followerListPojo[0].data!!)
-                        (parentFragment as FollowersFragment?)?.setFollowingCount(followerListPojo!![0]!!.count)
+                        list_followers?.addAll(followerListPojo[0].data)
+                        (parentFragment as FollowersFragment?)?.setFollowingCount(followerListPojo[0].count)
                         followersAdapter?.notifyDataSetChanged()
                         pageNo += 1
 
 
-                        if (followerListPojo[0].data!!.size < 10) {
+                        if (followerListPojo[0].data.size < 10) {
                             isLastpage = true
                         }
 
-                        if (!followerListPojo[0].data!!.isNullOrEmpty()) {
-                            if (followerListPojo[0].data!!.isNullOrEmpty()) {
+                        if (!followerListPojo[0].data.isNullOrEmpty()) {
+                            if (followerListPojo[0].data.isNullOrEmpty()) {
                                 ll_no_data_found.visibility = View.VISIBLE
                                 recyclerview.visibility = View.GONE
                             } else {
@@ -191,7 +203,7 @@ class FollowersListFragment : Fragment(),View.OnClickListener {
                     relativeprogressBar.visibility = View.GONE
                     ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
                 }
-            })
+            }
     }
 
     private fun setupUI() {
@@ -222,42 +234,62 @@ class FollowersListFragment : Fragment(),View.OnClickListener {
     }
 
     private fun setupViewModel() {
-         followersModel = ViewModelProvider(this@FollowersListFragment).get(FollowersModel::class.java)
-         commonStatusModel = ViewModelProvider(this@FollowersListFragment).get(CommonStatusModel::class.java)
+        followersModel =
+            ViewModelProvider(this@FollowersListFragment).get(FollowersModel::class.java)
+        commonStatusModel =
+            ViewModelProvider(this@FollowersListFragment).get(CommonStatusModel::class.java)
 
     }
 
     private fun followingList() {
         if (list_followers == null) {
             list_followers = ArrayList()
-            followersAdapter = FollowersAdapter(activity as MainActivity, list_followers, object : FollowersAdapter.OnItemClick {
-                override fun onClicled(position: Int, from: String) {
-                    when (from) {
-                        "follow" -> {
-                            followUserApi(position, list_followers!![position]!!.userID)
-                        }
-                        "unfollow" -> {
-                            userUnFollowApi(position, list_followers!![position]!!.userID)
-                        }
-                        "otherserProfile"->{
-                            if(!userData?.userID?.equals(list_followers?.get(position)?.userID)!!)
-                            {
-                                var bundle = Bundle()
-                                bundle.putString("userId",list_followers?.get(position)?.userID)
-                                (activity as MainActivity).navigateTo(OtherUserProfileMainFragment(), bundle, OtherUserProfileMainFragment::class.java.name, true)
-
+            followersAdapter = FollowersAdapter(
+                activity as MainActivity,
+                list_followers,
+                object : FollowersAdapter.OnItemClick {
+                    override fun onClicled(position: Int, from: String) {
+                        when (from) {
+                            "follow" -> {
+                                followUserApi(position, list_followers!![position]!!.userID)
                             }
-                            else
-                            {
-                                var bundle = Bundle()
-                                bundle.putString("userId",list_followers?.get(position)?.userID)
-                                (activity as MainActivity).navigateTo(ProfileMainFragment(), bundle, ProfileMainFragment::class.java.name, true)
+                            "unfollow" -> {
+                                userUnFollowApi(position, list_followers!![position]!!.userID)
+                            }
+                            "otherserProfile" -> {
+                                if (!userData?.userID?.equals(list_followers?.get(position)?.userID)!!) {
+                                    var bundle = Bundle()
+                                    bundle.putString(
+                                        "userId",
+                                        list_followers?.get(position)?.userID
+                                    )
+                                    (activity as MainActivity).navigateTo(
+                                        OtherUserProfileMainFragment(),
+                                        bundle,
+                                        OtherUserProfileMainFragment::class.java.name,
+                                        true
+                                    )
 
+                                } else {
+                                    var bundle = Bundle()
+                                    bundle.putString(
+                                        "userId",
+                                        list_followers?.get(position)?.userID
+                                    )
+                                    (activity as MainActivity).navigateTo(
+                                        ProfileMainFragment(),
+                                        bundle,
+                                        ProfileMainFragment::class.java.name,
+                                        true
+                                    )
+
+                                }
                             }
                         }
                     }
-                }
-            }, tabPosition)
+                },
+                tabPosition
+            )
 
             recyclerview.layoutManager = linearLayoutManager
             recyclerview.isNestedScrollingEnabled = true
@@ -289,29 +321,33 @@ class FollowersListFragment : Fragment(),View.OnClickListener {
         jsonArray.put(jsonObject)
 
         commonStatusModel.getCommonStatus(mActivity!!, false, jsonArray.toString(), "userFollow")
-                .observe(this@FollowersListFragment, { commonStatusPojo ->
+            .observe(this@FollowersListFragment) { commonStatusPojo ->
 
 
-                    if (commonStatusPojo != null && commonStatusPojo.isNotEmpty()) {
-                        if (commonStatusPojo[0].status.equals("true", true)) {
-                            MyUtils.dismissProgressDialog()
-
-                            list_followers?.get(position)?.isYouFollowing = "Yes"
-
-                            setupObserver()
-                            followersAdapter?.notifyDataSetChanged()
-
-                        } else {
-                            MyUtils.dismissProgressDialog()
-                            MyUtils.showSnackbar(activity!!, commonStatusPojo[0].message, ll_mainFollowersList)
-
-                        }
-                    } else {
+                if (commonStatusPojo != null && commonStatusPojo.isNotEmpty()) {
+                    if (commonStatusPojo[0].status.equals("true", true)) {
                         MyUtils.dismissProgressDialog()
 
-                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                        list_followers?.get(position)?.isYouFollowing = "Yes"
+
+                        setupObserver()
+                        followersAdapter?.notifyDataSetChanged()
+
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        MyUtils.showSnackbar(
+                            activity!!,
+                            commonStatusPojo[0].message,
+                            ll_mainFollowersList
+                        )
+
                     }
-                })
+                } else {
+                    MyUtils.dismissProgressDialog()
+
+                    ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                }
+            }
 
     }
 
@@ -333,24 +369,28 @@ class FollowersListFragment : Fragment(),View.OnClickListener {
 
         jsonArray.put(jsonObject)
         commonStatusModel.getCommonStatus(mActivity!!, false, jsonArray.toString(), "userUnfollow")
-                .observe(this@FollowersListFragment, { commonStatusPojo ->
+            .observe(this@FollowersListFragment) { commonStatusPojo ->
 
-                    if (commonStatusPojo != null && commonStatusPojo.isNotEmpty()) {
-                        if (commonStatusPojo[0].status.equals("true", true)) {
+                if (commonStatusPojo != null && commonStatusPojo.isNotEmpty()) {
+                    if (commonStatusPojo[0].status.equals("true", true)) {
 
-                            MyUtils.dismissProgressDialog()
-                            list_followers?.get(position)?.isYouFollowing = "No"
-                            setupObserver()
-                            followersAdapter?.notifyDataSetChanged()
-                        } else {
-                            MyUtils.dismissProgressDialog()
-                            MyUtils.showSnackbar(activity!!, commonStatusPojo[0].message, ll_mainFollowersList)
-                        }
+                        MyUtils.dismissProgressDialog()
+                        list_followers?.get(position)?.isYouFollowing = "No"
+                        setupObserver()
+                        followersAdapter?.notifyDataSetChanged()
                     } else {
                         MyUtils.dismissProgressDialog()
-                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                        MyUtils.showSnackbar(
+                            activity!!,
+                            commonStatusPojo[0].message,
+                            ll_mainFollowersList
+                        )
                     }
-                })
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                }
+            }
 
     }
 
@@ -364,9 +404,8 @@ class FollowersListFragment : Fragment(),View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-            R.id.btnRetry->{
+        when (v?.id) {
+            R.id.btnRetry -> {
                 setupObserver()
             }
 

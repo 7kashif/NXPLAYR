@@ -5,7 +5,7 @@
     android:id="@+id/toolbar"
     style="@style/Widget.Fusion.Toolbar"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/_45sdp"
     android:background="@android:color/transparent"
     android:elevation="@dimen/_1sdp"
     android:gravity="center"

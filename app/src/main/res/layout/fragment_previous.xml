@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_main_previousclub"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:id="@+id/ll_main_previousclub"
-    tools:context=".ui.fragments.usercurrentclub.view.PreviousFragment">
+    android:background="@drawable/appbg"
+    android:orientation="vertical">
 
     <include layout="@layout/toolbar" />
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,16 +19,41 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/baseLineGray" />
+
+            <EditText
+                android:id="@+id/edit_searchClub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_17sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginRight="@dimen/_17sdp"
+                android:background="@drawable/round_search_box_bg"
+                android:drawableRight="@drawable/search_icon"
+                android:fontFamily="@font/brandon_reg"
+                android:hint="@string/search"
+                android:imeOptions="actionDone"
+                android:paddingHorizontal="@dimen/_10sdp"
+                android:paddingVertical="@dimen/_6sdp"
+                android:singleLine="true"
+                android:textColor="@color/gray_text_color"
+                android:textColorHint="@color/gray_text_color" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/Font.SubTitle_blue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@drawable/rounded_text2"
                 android:padding="@dimen/_5sdp"
                 android:paddingStart="@dimen/_17sdp"
-                android:text="@string/selected_club" />
+                android:text="@string/selected_club"
+                android:textColor="@color/white" />
 
 
             <!--
@@ -64,7 +90,7 @@
                     android:orientation="vertical">
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/RV_addedClubList"
+                        android:id="@+id/RV_prevClubList"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:overScrollMode="never" />
@@ -77,7 +103,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_8sdp"
-                    android:overScrollMode="never" />
+                    android:overScrollMode="never"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -93,7 +120,7 @@
                 android:padding="@dimen/_5sdp"
                 android:paddingStart="@dimen/_17sdp"
                 android:text="@string/suggestions"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/white"
                 android:textSize="@dimen/_16ssp" />
 
             <!--<TextView
@@ -107,26 +134,6 @@
                 android:paddingLeft="@dimen/_10sdp"
                 android:textColor="@color/gray_text_color"
                 android:textColorHint="@color/gray_text_color" />-->
-
-
-            <EditText
-                android:id="@+id/edit_searchClub"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_17sdp"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:layout_marginRight="@dimen/_17sdp"
-                android:layout_marginBottom="@dimen/_5sdp"
-                android:background="@drawable/round_search_box_bg"
-                android:drawableRight="@drawable/search_icon"
-                android:fontFamily="@font/brandon_reg"
-                android:hint="@string/select_club"
-                android:imeOptions="actionDone"
-                android:padding="@dimen/_6sdp"
-                android:singleLine="true"
-                android:textColor="@color/gray_text_color"
-                android:textColorHint="@color/gray_text_color" />
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -157,21 +164,20 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_50sdp"
         android:layout_gravity="center|bottom"
-        android:layout_marginTop="@dimen/_30sdp"
-        android:layout_marginStart="@dimen/_30sdp"
-        android:layout_marginEnd="@dimen/_30sdp"
+        android:layout_marginLeft="@dimen/_25sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginRight="@dimen/_25sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
         app:p_arrowVisible="false"
         app:p_backgroundTint="@android:color/transparent"
         app:p_cornerRadius="@dimen/_3sdp"
         app:p_fontFamily="brandon_reg"
         app:p_progressColor="@color/colorPrimary"
-        app:p_strokeColor="@color/grayborder1"
+        app:p_strokeColor="@color/grayborder"
         app:p_strokeWidth="@dimen/_1sdp"
         app:p_style="progressBar"
         app:p_text="@string/save"
         app:p_textColor="@color/colorPrimary"
         app:p_textSize="@dimen/_18ssp" />
-
-
 
 </LinearLayout>

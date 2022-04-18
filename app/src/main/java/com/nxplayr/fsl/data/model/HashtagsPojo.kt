@@ -1,5 +1,7 @@
 package com.nxplayr.fsl.data.model
+
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 
 data class HashtagsPojo(
@@ -9,7 +11,7 @@ data class HashtagsPojo(
     var message: String,
     @SerializedName("status")
     var status: String
-)
+) : Serializable
 
 data class Hashtags(
     @SerializedName("hashtagID")
@@ -20,4 +22,4 @@ data class Hashtags(
     var userID: String,
     @SerializedName("userhashtagID")
     var userhashtagID: String
-)
+) : Serializable

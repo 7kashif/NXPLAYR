@@ -322,9 +322,7 @@ class FilterActivity : AppCompatActivity(), View.OnClickListener {
         try {
             jsonObject.put("loginuserID", "0")
 
-            jsonObject.put("languageID",  if (sessionManager?.getsetSelectedLanguage()
-                    .isNullOrEmpty()
-            ) "1" else sessionManager?.getsetSelectedLanguage())
+            jsonObject.put("languageID",  if (sessionManager?.getSelectedLanguage() == null) "1" else sessionManager?.getSelectedLanguage()?.languageID)
             jsonObject.put("page", pageNumberCountry)
             jsonObject.put("pagesize", "100")
             jsonObject.put("blankCountryCode","No")
@@ -402,7 +400,7 @@ class FilterActivity : AppCompatActivity(), View.OnClickListener {
             jsonObject.put("loginuserID", "0")
 
             if (!sessionManager!!.isLoggedIn()) {
-                jsonObject.put("languageID", sessionManager!!.getsetSelectedLanguage())
+                jsonObject.put("languageID",  if (sessionManager?.getSelectedLanguage() == null) "1" else sessionManager?.getSelectedLanguage()?.languageID)
             } else {
                 jsonObject.put("languageID", sessionManager!!.get_Authenticate_User().languageID)
             }
@@ -480,7 +478,7 @@ class FilterActivity : AppCompatActivity(), View.OnClickListener {
             jsonObject.put("loginuserID", "0")
 
             if (!sessionManager!!.isLoggedIn()) {
-                jsonObject.put("languageID", sessionManager!!.getsetSelectedLanguage())
+                jsonObject.put("languageID",  if (sessionManager?.getSelectedLanguage() == null) "1" else sessionManager?.getSelectedLanguage()?.languageID)
             } else {
                 jsonObject.put("languageID", sessionManager!!.get_Authenticate_User().languageID)
             }
@@ -558,7 +556,7 @@ class FilterActivity : AppCompatActivity(), View.OnClickListener {
             jsonObject.put("loginuserID", "0")
 
             if (!sessionManager!!.isLoggedIn()) {
-                jsonObject.put("languageID", sessionManager!!.getsetSelectedLanguage())
+                jsonObject.put("languageID",  if (sessionManager?.getSelectedLanguage() == null) "1" else sessionManager?.getSelectedLanguage()?.languageID)
             } else {
                 jsonObject.put("languageID", sessionManager!!.get_Authenticate_User().languageID)
             }
@@ -635,7 +633,7 @@ class FilterActivity : AppCompatActivity(), View.OnClickListener {
             jsonObject.put("loginuserID", "0")
 
             if (!sessionManager!!.isLoggedIn()) {
-                jsonObject.put("languageID", sessionManager!!.getsetSelectedLanguage())
+                jsonObject.put("languageID",  if (sessionManager?.getSelectedLanguage() == null) "1" else sessionManager?.getSelectedLanguage()?.languageID)
             } else {
                 jsonObject.put("languageID", sessionManager!!.get_Authenticate_User().languageID)
             }

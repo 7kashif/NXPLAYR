@@ -415,6 +415,7 @@
     <string name="please_select_user_type">Please select user type</string>
     <string name="please_select_football_type">Please select football type</string>
     <string name="please_enter_first_name">Please enter First Name</string>
+    <string name="please_enter_last_name">Please enter Last Name</string>
     <string name="please_enter_valid_first_name">First Name should have atleast 3 character</string>
     <string name="please_enter_valid_family_name">Family Name should have atleast 3 character</string>
     <string name="please_enter_family_name">Please enter Family Name</string>
@@ -426,6 +427,7 @@
     <string name="passwords_mismatch">Confirm Password must be similar with Password</string>
     <string name="please_enter_valid_password">Please enter valid Password</string>
     <string name="enter_email_mobile_msg">Please enter Email/Mobile</string>
+    <string name="accept_agreement">Please accept the agreement to continue.</string>
 
 
     <string name="please_enter_valid_mobile_number">Please enter valid Mobile Number</string>
@@ -506,7 +508,10 @@
     <string name="post_link">Post Link</string>
 
     <string name="action_sign_in">Sign in or register</string>
-    <string name="facebook_id">267530364354372</string>
+
+    <string name="facebook_app_id">267530364354372</string>
+    <string name="fb_login_protocol_scheme">fb267530364354372</string>
+    <string name="facebook_client_token">877c174fb5837a4da1c1303eb56b6622</string>
 
     <string name="your_profile">Your Profile</string>
     <string name="appbar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
@@ -764,6 +769,13 @@
     <string name="cancel">Cancel</string>
     <string name="ok">Ok</string>
     <string name="parent_details">Enter your Parent / Guardian information to continue</string>
+    <string name="password_must">Password must contain:\\none lowercase letter\\none uppercase letter\\none numeric digit\\none special character</string>
+    <string name="agreement_details">You have registered yourself as being a user under the age of 16 years. At NXPLAY.R, we are highly committed to protecting children’s data privacy. The Platform does not allow users under the age of 16 years to sign up for a user account. However, we do allow a parent/legal guardian to create and manage user accounts on behalf of their children. The parent/legal guardian must be over the age of 18 years to sign up for a user account. Parents are advised not to submit any personal data about their child that they do not wish to be publicly available. Furthermore, parents are advised not to upload, post or share any personal images, videos, or likeness of their child without first discussing such content with the child. We will provide a link to this privacy policy in the email we send to the parent/legal guardian, inviting them to create a user account on behalf of their child. It is solely parents’ responsibility to familiarise themselves with their local laws and not to submit any sensitive personal information relating to their child.</string>
+    <string name="declare_details">I declare on my honor that the information provided above is true and complete, and that I am aware that any erroneous statement may result in the permanent closure of my account.</string>
+    <string name="see_more"><![CDATA[...see more]]></string>
+    <string name="see_less"><![CDATA[...see less]]></string>
+    <string name="user_role">User Role</string>
+    <string name="write_text">Write text</string>
 
     <string-array name="animals">
         <item>Abyssinian</item>

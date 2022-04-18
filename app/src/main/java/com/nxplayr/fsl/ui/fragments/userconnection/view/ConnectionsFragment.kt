@@ -34,10 +34,17 @@ class ConnectionsFragment : Fragment() {
     var userId = ""
     var viewcount: ArrayList<String?>? = null
 
-    private val tabIcons = intArrayOf(0, com.nxplayr.fsl.R.drawable.friend_icon_big_connection, com.nxplayr.fsl.R.drawable.acquaintance_icon_big_connection, com.nxplayr.fsl.R.drawable.professional_icon_white)
+    private val tabIcons = intArrayOf(
+        0,
+        com.nxplayr.fsl.R.drawable.friend_icon_big_connection,
+        com.nxplayr.fsl.R.drawable.acquaintance_icon_big_connection,
+        com.nxplayr.fsl.R.drawable.professional_icon_white
+    )
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         if (v == null) {
             v = inflater.inflate(com.nxplayr.fsl.R.layout.fragment_connections, container, false)
         }
@@ -60,6 +67,7 @@ class ConnectionsFragment : Fragment() {
 
         setupUI()
     }
+
     private fun setupUI() {
         toolbar.setNavigationOnClickListener {
             MyUtils.hideKeyboard1(mActivity!!)
@@ -69,16 +77,18 @@ class ConnectionsFragment : Fragment() {
         tvToolbarTitle1.setText(com.nxplayr.fsl.R.string.connections)
 
 
-        if(from.equals("profile",false))
-        {
-            add_icon_connection.visibility=View.VISIBLE
-        }else{
-            add_icon_connection.visibility=View.GONE
+        if (from.equals("profile", false)) {
+            add_icon_connection.visibility = View.VISIBLE
+        } else {
+            add_icon_connection.visibility = View.GONE
         }
 
-
         add_icon_connection.setOnClickListener {
-            (activity as MainActivity).navigateTo(AddConnectionsFragment(), AddConnectionsFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                AddConnectionsFragment(),
+                AddConnectionsFragment::class.java.name,
+                true
+            )
         }
 
         viewcount = ArrayList()
@@ -87,7 +97,7 @@ class ConnectionsFragment : Fragment() {
         viewcount?.add("0")
         viewcount?.add("0")
         viewcount?.add("0")
-        viewcount?.add("0")
+//        viewcount?.add("0")
         setupViewPager(viewPager_connection)
         tab_layout_connection.tabMode = TabLayout.MODE_FIXED
     }
@@ -103,15 +113,15 @@ class ConnectionsFragment : Fragment() {
 
         for (i in 0 until tab_layout_connection.tabCount) {
             val yourlinearlayout = LayoutInflater.from(activity).inflate(
-                    R.layout.customtablayout,
-                    null
+                R.layout.customtablayout,
+                null
             ) as LinearLayoutCompat
             yourlinearlayout.orientation = LinearLayoutCompat.HORIZONTAL
             val tab_text = yourlinearlayout.findViewById<View>(R.id.tabContent) as AppCompatTextView
             val ivtabIcon =
-                    yourlinearlayout.findViewById<View>(R.id.ivTabIcon) as AppCompatImageView
+                yourlinearlayout.findViewById<View>(R.id.ivTabIcon) as AppCompatImageView
             val tabContentAll =
-                    yourlinearlayout.findViewById<View>(R.id.tabContentAll) as AppCompatTextView
+                yourlinearlayout.findViewById<View>(R.id.tabContentAll) as AppCompatTextView
 
             tabContentAll.text = "All"
 
@@ -125,12 +135,12 @@ class ConnectionsFragment : Fragment() {
 
             }
             tab_text.visibility = View.VISIBLE
-            tab_text.text = "(" + viewcount?.get(i) + ")"
+            tab_text.text = "" + viewcount?.get(i)
             tab_layout_connection.getTabAt(i)?.customView = yourlinearlayout
         }
     }
 
-    fun setupTabIcons(countArray: All) {
+    fun csetupTabIcons(countArray: All) {
         tab_layout_connection.setupWithViewPager(viewPager_connection)
         viewcount = ArrayList()
         viewcount?.clear()
@@ -141,15 +151,15 @@ class ConnectionsFragment : Fragment() {
 
         for (i in 0 until tab_layout_connection.tabCount) {
             val yourlinearlayout = LayoutInflater.from(activity).inflate(
-                    R.layout.customtablayout,
-                    null
+                R.layout.customtablayout,
+                null
             ) as LinearLayoutCompat
             yourlinearlayout.orientation = LinearLayoutCompat.HORIZONTAL
             val tab_text = yourlinearlayout.findViewById<View>(R.id.tabContent) as AppCompatTextView
             val ivtabIcon =
-                    yourlinearlayout.findViewById<View>(R.id.ivTabIcon) as AppCompatImageView
+                yourlinearlayout.findViewById<View>(R.id.ivTabIcon) as AppCompatImageView
             val tabContentAll =
-                    yourlinearlayout.findViewById<View>(R.id.tabContentAll) as AppCompatTextView
+                yourlinearlayout.findViewById<View>(R.id.tabContentAll) as AppCompatTextView
 
             tabContentAll.text = "All"
 
@@ -163,21 +173,22 @@ class ConnectionsFragment : Fragment() {
 
             }
             tab_text.visibility = View.VISIBLE
-            tab_text.text = "(" + viewcount?.get(i) + ")"
+            tab_text.text = "" + viewcount?.get(i)
             tab_layout_connection.getTabAt(i)?.customView = yourlinearlayout
         }
     }
 
-    fun setTabtitle(count: List<All>) {
-        tab_layout_connection.getTabAt(0)?.text = "All " + "(" + count[0].all + ")"
-        tab_layout_connection.getTabAt(1)?.text = count[0].friends.toString()
-        tab_layout_connection.getTabAt(2)?.text = count[0].acquaintances.toString()
-        tab_layout_connection.getTabAt(3)?.text = count[0].professionals.toString()
+    fun setTabtitle(count: ArrayList<String?>?) {
+        tab_layout_connection.getTabAt(0)?.text = "All " + count?.get(0).toString()
+        tab_layout_connection.getTabAt(1)?.text = count?.get(1).toString()
+        tab_layout_connection.getTabAt(2)?.text = count?.get(2).toString()
+        tab_layout_connection.getTabAt(3)?.text = count?.get(3).toString()
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
 
-        adapter = ConnectionViewPagerAdapter(childFragmentManager, from, userId,viewcount,tabIcons)
+        adapter =
+            ConnectionViewPagerAdapter(childFragmentManager, from, userId, viewcount, tabIcons)
         viewPager.offscreenPageLimit = 4
         viewPager.adapter = adapter
     }

@@ -523,6 +523,11 @@ class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
                                     0,
                                     response[0].data[0]
                                 )
+                                mViewPagerAdapter?.setupCommentAdapter(
+                                    position,
+                                    explore_video_list!!
+                                )
+//                                mViewPagerAdapter?.addComment(response[0].data[0])
                                 explore_video_list!![position]!!.postComment =
                                     (explore_video_list!![position]!!.postComment.toInt() + 1).toString()
                             }
@@ -759,10 +764,10 @@ class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
 
                         if (exploreVidelistpojo[0].status.equals("true", true)) {
                             for (i in 0 until explore_video_list?.size!!) {
-                                if (explore_video_list?.get(i)?.postID.equals(postId, false)) {
+                                if (!postId.equals(exploreVidelistpojo[0].data?.get(0)?.postID, false)) {
                                     explore_video_list?.add(
                                         i,
-                                        exploreVidelistpojo?.get(0)?.data?.get(0)
+                                        exploreVidelistpojo[0].data?.get(0)
                                     )
                                     break
                                 }

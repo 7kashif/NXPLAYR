@@ -26,8 +26,8 @@ class PopupMenu(internal var mContext: Context, internal var view: View, menuLis
         popup = ListPopupWindow(wrapper)
         popup.setAdapter(ArrayAdapter(mContext, R.layout.item_menu_textview, menuList))
         popup.anchorView = view
-       // popup.width = 250
-        popup.width = ListPopupWindow.WRAP_CONTENT
+        popup.width = 350
+//        popup.width = ListPopupWindow.WRAP_CONTENT
 
         if (menuList.size > 5)
             popup.height = 400

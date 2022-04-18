@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.toolbar2.*
 
 
 @Suppress("DEPRECATION")
-class FollowersFragment : Fragment(),View.OnClickListener {
+class FollowersFragment : Fragment(), View.OnClickListener {
 
     private var v: View? = null
     var adapter: FollowersViewPagerAdapter? = null
@@ -36,8 +36,10 @@ class FollowersFragment : Fragment(),View.OnClickListener {
     var userId = ""
     var from = ""
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         if (v == null) {
             v = inflater.inflate(com.nxplayr.fsl.R.layout.fragment_followers, container, false)
         }
@@ -63,9 +65,11 @@ class FollowersFragment : Fragment(),View.OnClickListener {
             from = arguments!!.getString("fromData").toString()
 
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
         setupUI()
-
-
     }
 
     private fun setupUI() {
@@ -89,6 +93,8 @@ class FollowersFragment : Fragment(),View.OnClickListener {
 
 
     private fun setupViewPager(viewPager: ViewPager) {
+        adapter = null
+        viewPager.adapter = null
         adapter = FollowersViewPagerAdapter(childFragmentManager, userId, from)
         adapter?.addFragment(FollowersListFragment(), "Followers")
         adapter?.addFragment(FollowersListFragment(), "Following")
@@ -103,15 +109,15 @@ class FollowersFragment : Fragment(),View.OnClickListener {
         tab_layout.getTabAt(1)?.text = "Following " + count[0].followingCount
     }
 
-
-
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-            R.id.add_icon_connection->{
-                (activity as MainActivity).navigateTo(AddConnectionsFragment(), AddConnectionsFragment::class.java.name, true)
+        when (v?.id) {
+            R.id.add_icon_connection -> {
+                (activity as MainActivity).navigateTo(
+                    AddConnectionsFragment(),
+                    AddConnectionsFragment::class.java.name,
+                    true
+                )
             }
-
         }
     }
 

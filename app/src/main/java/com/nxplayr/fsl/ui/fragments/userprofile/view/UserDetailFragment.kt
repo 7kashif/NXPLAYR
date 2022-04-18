@@ -729,37 +729,37 @@ class UserDetailFragment : Fragment(), View.OnClickListener {
             "update_profile_picture"
         )
             .observe(
-                this@UserDetailFragment,
-                { loginPojo ->
-                    if (loginPojo != null) {
-                        if (loginPojo.get(0).status.equals("true", true)) {
+                this@UserDetailFragment
+            ) { loginPojo ->
+                if (loginPojo != null) {
+                    if (loginPojo.get(0).status.equals("true", true)) {
 
-                            try {
-                                MyUtils.showSnackbar(
-                                    mActivity!!,
-                                    loginPojo.get(0).message,
-                                    main_content
-                                )
-                                (activity as MainActivity).StoreSessionManager(
-                                    loginPojo.get(0).data.get(
-                                        0
-                                    )
-                                )
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-                        } else {
+                        try {
                             MyUtils.showSnackbar(
                                 mActivity!!,
                                 loginPojo.get(0).message,
                                 main_content
                             )
+                            (activity as MainActivity).StoreSessionManager(
+                                loginPojo.get(0).data.get(
+                                    0
+                                )
+                            )
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
-
                     } else {
-                        ErrorUtil.errorMethod(main_content)
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            loginPojo.get(0).message,
+                            main_content
+                        )
                     }
-                })
+
+                } else {
+                    ErrorUtil.errorMethod(main_content)
+                }
+            }
 
 
     }
@@ -908,6 +908,7 @@ class UserDetailFragment : Fragment(), View.OnClickListener {
             R.id.image_update_profile -> {
                 var bundle = Bundle()
                 bundle.putString("type", "NameAndBio")
+                bundle.putString("userId", userData?.userID)
                 (activity as MainActivity).navigateTo(
                     UpdateUserProfileFragment(),
                     bundle,

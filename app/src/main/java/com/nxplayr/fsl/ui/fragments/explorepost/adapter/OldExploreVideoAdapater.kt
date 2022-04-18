@@ -13,13 +13,11 @@ import com.nxplayr.fsl.ui.fragments.feed.viewholder.LoaderViewHolder
 import kotlinx.android.synthetic.main.item_explore_video_grid_detail_activity.view.*
 import java.util.*
 
-class ExploreVideoAdapater(
-
+class OldExploreVideoAdapater(
     val context: Activity,
     val onItemClick: OnItemClick,
     val exploreVideoData: ArrayList<CreatePostData?>?,
     val viewAll: Boolean = false
-
 ) :
         RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

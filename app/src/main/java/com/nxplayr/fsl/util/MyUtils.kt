@@ -72,6 +72,8 @@ class MyUtils {
     companion object {
         val GSTN_CODEPOINT_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         val TEXT_TYPE = 0
+        val LIST_TYPE = 1
+        val GRID_TYPE = 2
         val Loder_TYPE = 1
         val TYPE_FULL = 0
         val TYPE_HALF = 1

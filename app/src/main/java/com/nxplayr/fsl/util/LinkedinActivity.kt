@@ -27,9 +27,9 @@ import com.google.gson.GsonBuilder
 
 
 class LinkedinActivity(context1: Context, var mListener: LinkedinData) {
-    private val API_KEY = "77oyexmcv4a991"
+    private val API_KEY = "77gpwvg363gsdu"
     //This is the private api key of our application
-    private val SECRET_KEY = "CJekBJF0IXxua4qO"
+    private val SECRET_KEY = "f8c9eXTfv1qm5Wtf"
     //This is any string we want to use. This will be used for avoiding CSRF attacks. You can generate one here: http://strongpasswordgenerator.com/
     private val STATE = "123456789"
     //We use a made up url that we will intercept when redirecting. Avoid Uppercases.

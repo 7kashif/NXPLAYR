@@ -6,7 +6,6 @@
         android:width="1dp"
         android:color="@color/colorAccent" />
     <solid
-        android:color="@color/black"
+        android:color="@color/colorAccent"
         />
-
 </shape>

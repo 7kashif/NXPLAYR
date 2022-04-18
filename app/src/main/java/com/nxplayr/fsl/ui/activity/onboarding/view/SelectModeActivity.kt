@@ -103,10 +103,10 @@ class SelectModeActivity : AppCompatActivity(), View.OnClickListener {
                             }
                             1 -> {
                                 btnNextSelectMode.backgroundTint =
-                                    (resources.getColor(R.color.yellow_modes))
+                                    (resources.getColor(R.color.yellow))
                                 btnNextSelectMode.textColor = (resources.getColor(R.color.black))
                                 btnNextSelectMode.strokeColor =
-                                    (resources.getColor(R.color.yellow_modes))
+                                    (resources.getColor(R.color.yellow))
                             }
                             2 -> {
                                 btnNextSelectMode.backgroundTint =
@@ -137,11 +137,9 @@ class SelectModeActivity : AppCompatActivity(), View.OnClickListener {
         recyclerview.adapter = userRoleListAdapter
         userRoleListAdapter?.notifyDataSetChanged()
         getuserRoleList()
+
         btnNextSelectMode.strokeColor = resources.getColor(R.color.grayborder)
-
-
         btnNextSelectMode.setOnClickListener(this)
-
         btnRetry.setOnClickListener(this)
     }
 

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <LinearLayout
@@ -41,17 +41,18 @@
             android:layout_gravity="center"
             android:background="@drawable/checkbox_selected"
             android:gravity="center"
-            android:visibility="gone"
-            android:src="@drawable/checkbox_selected" />
+            android:src="@drawable/checkbox_selected"
+            android:visibility="gone" />
     </LinearLayout>
+
     <LinearLayout
+        android:id="@+id/ll_expireDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
         android:orientation="vertical"
-        android:id="@+id/ll_expireDate"
-        android:visibility="visible"
-       android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginEnd="@dimen/_10sdp">
+        android:visibility="visible">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -59,7 +60,9 @@
             android:layout_gravity="center"
             android:hint="@string/expire_date"
             android:textColorHint="@color/colorPrimary"
-            android:theme="@style/MyEditTextTheme">
+            android:theme="@style/MyEditTextTheme"
+            app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
+
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_expire_date"
@@ -70,6 +73,7 @@
                 android:focusable="false"
                 android:imeOptions="actionDone"
                 android:inputType="text"
+                android:paddingTop="@dimen/_35sdp"
                 android:singleLine="true"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_16ssp"
@@ -77,6 +81,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
+
     <com.google.android.material.internal.BaselineLayout
         android:layout_width="match_parent"
         android:layout_height="0.5dp"

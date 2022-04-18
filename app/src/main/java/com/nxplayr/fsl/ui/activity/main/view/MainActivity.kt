@@ -285,6 +285,14 @@ class MainActivity :  BaseActivity(), NotifyInterface, NavigationHost, NotifyAlb
     fun logOut() {
 
         sessionManager!!.clear_login_session()
+        if (sessionManager?.getSelectedLanguage() == null)
+            sessionManager?.setSelectedLanguage(
+                LanguageListData(
+                    "20180213170741.png",
+                    "1",
+                    "English"
+                )
+            )
         MyUtils.startActivity(
             this@MainActivity,
             SignInActivity::class.java,

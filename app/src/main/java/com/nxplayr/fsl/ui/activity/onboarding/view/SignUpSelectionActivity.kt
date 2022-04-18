@@ -8,7 +8,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.content.res.Resources
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
@@ -19,7 +20,9 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.util.Log
-import android.view.*
+import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.View
 import android.view.View.VISIBLE
 import android.widget.EditText
 import android.widget.Toast
@@ -27,7 +30,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.viewpager.widget.ViewPager
@@ -51,31 +53,25 @@ import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.CountryListModel
 import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.FootballAgeGroupModel
 import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
 import com.nxplayr.fsl.ui.fragments.dialogs.ParentGuardianDialog
+import com.nxplayr.fsl.ui.fragments.dialogs.PasswordInfoDialog
 import com.nxplayr.fsl.util.*
 import com.nxplayr.fsl.util.interfaces.DialogListener
-import com.nxplayr.fsl.viewmodel.*
-import kotlinx.android.synthetic.main.activity_parent_info.*
-import kotlinx.android.synthetic.main.activity_signin.*
 import kotlinx.android.synthetic.main.activity_signup_selection.*
 import kotlinx.android.synthetic.main.common_recyclerview.*
 import kotlinx.android.synthetic.main.fragment_select_age.*
 import kotlinx.android.synthetic.main.fragment_select_gender.*
 import kotlinx.android.synthetic.main.layout_introduce_yourself.*
-import kotlinx.android.synthetic.main.layout_introduce_yourself.btnSubmit
-import kotlinx.android.synthetic.main.layout_introduce_yourself.emailAddress_edit_text
-import kotlinx.android.synthetic.main.layout_introduce_yourself.password_edit_text
-import kotlinx.android.synthetic.main.layout_introduce_yourself.password_textInput
 import kotlinx.android.synthetic.main.layout_select_dialog_camera.*
 import kotlinx.android.synthetic.main.layout_upload_picture.*
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
+import kotlinx.android.synthetic.main.toolbar.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.*
+import java.io.File
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 @Suppress("DEPRECATION")
@@ -109,6 +105,8 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var signup: SignupModel
     private lateinit var footballTypeListModel: FootballAgeGroupModel
     private lateinit var countryListModel: CountryListModel
+    var mDrawableEye: Drawable? = null
+    var mDrawableEyeOff: Drawable? = null
 
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -144,6 +142,11 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun setupUI() {
+        tvToolbarTitle.visibility = View.GONE
+        toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+
         if (!MyUtils.fbID.isNullOrEmpty()) {
             socialID = MyUtils.fbID
         }
@@ -228,30 +231,19 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
         when (selectModeType) {
             0 -> {
                 colorId = R.color.colorPrimary
-//                img_user_profile.hierarchy.setPlaceholderImage(R.drawable.placeholder_profile_blue)
-                image_camera_icon.setBackgroundResource(R.drawable.camera_icon_selected)
+                img_user_profile.setActualImageResource(R.drawable.placeholder_profile_blue)
+                image_camera_icon.setImageResource(R.drawable.camera_icon_selected)
             }
             1 -> {
                 colorId = R.color.yellow
-//                img_user_profile.hierarchy.setPlaceholderImage(R.drawable.placeholder_profile_pink)
-                image_camera_icon.imageTintList =
-                    ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yellow))
-                img_user_profile.setColorFilter(
-                    ContextCompat.getColor(
-                        this@SignUpSelectionActivity,
-                        R.color.yellow
-                    ), PorterDuff.Mode.SRC_IN
-                );
-
+                image_camera_icon.setImageResource(R.drawable.camera_profile_pink)
+                img_user_profile.setActualImageResource(R.drawable.placeholder_profile_blue)
             }
             2 -> {
                 colorId = R.color.colorAccent
-//                img_user_profile.hierarchy.setPlaceholderImage(R.drawable.placeholder_profile_pink)
-                image_camera_icon.setBackgroundResource(R.drawable.camera_profile_pink)
+                image_camera_icon.setImageResource(R.drawable.camera_profile_pink)
                 img_user_profile.setActualImageResource(R.drawable.placeholder_profile_pink)
-
             }
-
         }
         MyUtils.setSelectedModeTypeViewColor(
             this,
@@ -335,7 +327,13 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
                 btnSubmit.progressText = sessionManager?.LanguageLabel?.lngSubmit
         }
 
+        info.setColorFilter(
+            ContextCompat.getColor(this, colorId!!),
+            PorterDuff.Mode.SRC_IN
+        )
+
         btnNextUserProfile.textColor = (resources.getColor(colorId!!))
+        btnNextUserProfile.strokeColor = (resources.getColor(colorId!!))
         img_select_male.setColorFilter(
             ContextCompat.getColor(this, colorId!!),
             PorterDuff.Mode.SRC_IN
@@ -345,8 +343,11 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
             PorterDuff.Mode.SRC_IN
         )
         btnSelectAgeAgroup.textColor = (resources.getColor(colorId!!))
+        btnSelectAgeAgroup.strokeColor = (resources.getColor(colorId!!))
         btnSetGender.textColor = (resources.getColor(colorId!!))
+        btnSetGender.strokeColor = (resources.getColor(colorId!!))
         btnCloseProfileSelection.textColor = (resources.getColor(colorId!!))
+        btnCloseProfileSelection.strokeColor = (resources.getColor(colorId!!))
 
         img_select_gallery.imageTintList =
             ColorStateList.valueOf(ContextCompat.getColor(this, colorId!!))
@@ -358,12 +359,40 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
 
         btnSubmit.progressColor = (resources.getColor(colorId!!))
 
-        var mDrawable = resources.getDrawable(R.drawable.dropdown_icon)
-        mDrawable.setColorFilter(ContextCompat.getColor(this, colorId!!), PorterDuff.Mode.SRC_IN)
+        var mDrawable = ContextCompat.getDrawable(this, R.drawable.dropdown_icon)
+        mDrawable?.setColorFilter(ContextCompat.getColor(this, colorId!!), PorterDuff.Mode.SRC_IN)
         countrylist_edit_text.setCompoundDrawablesRelativeWithIntrinsicBounds(
             null,
             null,
             mDrawable,
+            null
+        )
+
+        mDrawableEye =
+            ContextCompat.getDrawable(this@SignUpSelectionActivity, R.drawable.show_icon_login)
+        mDrawableEyeOff =
+            ContextCompat.getDrawable(this@SignUpSelectionActivity, R.drawable.hide_icon_login)
+
+
+        mDrawableEye?.setColorFilter(
+            ContextCompat.getColor(this, colorId!!),
+            PorterDuff.Mode.SRC_IN
+        )
+        mDrawableEyeOff?.setColorFilter(
+            ContextCompat.getColor(this, colorId!!),
+            PorterDuff.Mode.SRC_IN
+        )
+
+        password_edit_text.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            null,
+            null,
+            mDrawableEye,
+            null
+        )
+        confirmPassword_edit_text.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            null,
+            null,
+            mDrawableEye,
             null
         )
         setTabLayoutBackground()
@@ -380,6 +409,7 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
         btnNextUserProfile.setOnClickListener(this)
         img_select_gallery.setOnClickListener(this)
         btnCloseProfileSelection.setOnClickListener(this)
+        info.setOnClickListener(this)
         btnSubmit.setOnClickListener(this)
     }
 
@@ -432,10 +462,10 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
         for (i in 0 until tab_Layout.tabCount) {
             if (tab_Layout.selectedTabPosition == i)
                 tab_Layout.getTabAt(i)!!.view.background =
-                    (resources.getDrawable(R.drawable.intro_slider_round_selected))
+                    (ContextCompat.getDrawable(this, R.drawable.intro_slider_round_selected))
             else
                 tab_Layout.getTabAt(i)!!.view.background =
-                    (resources.getDrawable(R.drawable.intro_slider_round_unselected))
+                    (ContextCompat.getDrawable(this, R.drawable.intro_slider_round_unselected))
 
             tab_Layout.getTabAt(i)!!.view.backgroundTintList =
                 ContextCompat.getColorStateList(this, colorId!!)
@@ -460,7 +490,8 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
 
                 if (agegroupID != 0) {
                     if (agegroupFrom <= 15) {
-                        val dialog = ParentGuardianDialog(this@SignUpSelectionActivity,
+                        val dialog = ParentGuardianDialog(selectModeType,
+                            this@SignUpSelectionActivity,
                             object : DialogListener {
                                 override fun onOK() {
                                     typeSelectionViewpager.currentItem = 2
@@ -491,24 +522,38 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
                     getCameraPermissionOther()
                     when (selectModeType) {
                         0 -> {
-                            img_select_camera.setImageDrawable(resources.getDrawable(R.drawable.camera_icon_selected_popup))
-                            img_select_gallery.setColorFilter(resources.getColor(R.color.transperent))
-
-                            img_select_gallery.setImageDrawable(resources.getDrawable(R.drawable.gallery_icon))
+                            img_select_camera.setImageDrawable(
+                                ContextCompat.getDrawable(
+                                    this,
+                                    R.drawable.camera_icon_selected_popup
+                                )
+                            )
+                            img_select_gallery.setColorFilter(
+                                ContextCompat.getColor(
+                                    this,
+                                    R.color.transperent
+                                )
+                            )
+                            img_select_gallery.setImageDrawable(
+                                ContextCompat.getDrawable(
+                                    this,
+                                    R.drawable.gallery_icon
+                                )
+                            )
                         }
                         1 -> {
                             img_select_gallery.background =
-                                resources.getDrawable(R.drawable.transparent_circle)
+                                ContextCompat.getDrawable(this, R.drawable.transparent_circle)
                             img_select_camera.imageTintList =
                                 ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yellow))
                             img_select_camera.background =
-                                resources.getDrawable(R.drawable.black_circle)
+                                ContextCompat.getDrawable(this, R.drawable.black_circle)
                             tv_camera.setTextColor(resources.getColor(colorId!!))
                             tv_gallery.setTextColor(resources.getColor(R.color.white))
                         }
                         2 -> {
                             img_select_gallery.background =
-                                resources.getDrawable(R.drawable.transparent_circle)
+                                ContextCompat.getDrawable(this, R.drawable.transparent_circle)
                             img_select_camera.imageTintList =
                                 ColorStateList.valueOf(
                                     ContextCompat.getColor(
@@ -517,7 +562,7 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
                                     )
                                 )
                             img_select_camera.background =
-                                resources.getDrawable(R.drawable.black_circle)
+                                ContextCompat.getDrawable(this, R.drawable.black_circle)
                             tv_camera.setTextColor(resources.getColor(colorId!!))
                             tv_gallery.setTextColor(resources.getColor(R.color.white))
                         }
@@ -556,23 +601,33 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
 
                     when (selectModeType) {
                         0 -> {
-                            img_select_gallery.setImageDrawable(resources.getDrawable(R.drawable.gallery_icon_selected_popup))
+                            img_select_gallery.setImageDrawable(
+                                ContextCompat.getDrawable(
+                                    this,
+                                    R.drawable.gallery_icon_selected_popup
+                                )
+                            )
                             img_select_camera.setColorFilter(resources.getColor(R.color.transperent))
-                            img_select_camera.setImageDrawable(resources.getDrawable(R.drawable.camera_icon_unselected_popup))
+                            img_select_camera.setImageDrawable(
+                                ContextCompat.getDrawable(
+                                    this,
+                                    R.drawable.camera_icon_unselected_popup
+                                )
+                            )
                         }
                         1 -> {
                             img_select_camera.background =
-                                resources.getDrawable(R.drawable.transparent_circle)
+                                ContextCompat.getDrawable(this, R.drawable.transparent_circle)
                             img_select_gallery.imageTintList =
                                 ColorStateList.valueOf(ContextCompat.getColor(this, R.color.yellow))
                             img_select_gallery.background =
-                                resources.getDrawable(R.drawable.black_circle)
+                                ContextCompat.getDrawable(this, R.drawable.black_circle)
                             tv_gallery.setTextColor(resources.getColor(colorId!!))
                             tv_camera.setTextColor(resources.getColor(R.color.white))
                         }
                         2 -> {
                             img_select_camera.background =
-                                resources.getDrawable(R.drawable.transparent_circle)
+                                ContextCompat.getDrawable(this, R.drawable.transparent_circle)
                             img_select_gallery.imageTintList =
                                 ColorStateList.valueOf(
                                     ContextCompat.getColor(
@@ -581,7 +636,7 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
                                     )
                                 )
                             img_select_gallery.background =
-                                resources.getDrawable(R.drawable.black_circle)
+                                ContextCompat.getDrawable(this, R.drawable.black_circle)
                             tv_gallery.setTextColor(resources.getColor(colorId!!))
                             tv_camera.setTextColor(resources.getColor(R.color.white))
                         }
@@ -603,9 +658,19 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
                 when (selectModeType) {
                     0 -> {
 
-                        img_select_female.setImageDrawable(resources.getDrawable(R.drawable.gender_icon_unselected_female))
+                        img_select_female.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                this,
+                                R.drawable.gender_icon_unselected_female
+                            )
+                        )
                         img_select_male.setColorFilter(resources.getColor(R.color.transperent))
-                        img_select_male.setImageDrawable(resources.getDrawable(R.drawable.gender_icon_selected_male))
+                        img_select_male.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                this,
+                                R.drawable.gender_icon_selected_male
+                            )
+                        )
                         btnSetGender.backgroundTint = (resources.getColor(colorPrimary))
                         btnSetGender.textColor = (resources.getColor(R.color.black))
                         btnSetGender.strokeColor = (resources.getColor(R.color.colorPrimary))
@@ -613,9 +678,14 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
                     }
                     1 -> {
                         img_select_female.background =
-                            resources.getDrawable(R.drawable.transparent_circle)
-                        img_select_male.background = resources.getDrawable(R.drawable.black_circle)
-                        tv_male.setTextColor(resources.getColor(R.color.white))
+                            ContextCompat.getDrawable(this, R.drawable.transparent_circle)
+                        img_select_female.setColorFilter(resources.getColor(R.color.yellow))
+
+                        img_select_male.background =
+                            ContextCompat.getDrawable(this, R.drawable.circle_border_yellow_light)
+                        img_select_male.setColorFilter(resources.getColor(R.color.black))
+
+                        tv_male.setTextColor(resources.getColor(R.color.yellow))
                         tv_female.setTextColor(resources.getColor(R.color.white))
                         btnSetGender.backgroundTint = (resources.getColor(R.color.yellow))
                         btnSetGender.textColor = (resources.getColor(R.color.black))
@@ -625,10 +695,16 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
                     }
                     2 -> {
                         img_select_female.background =
-                            resources.getDrawable(R.drawable.transparent_circle)
-                        img_select_male.background = resources.getDrawable(R.drawable.black_circle)
-                        tv_male.setTextColor(resources.getColor(R.color.colorAccent))
+                            ContextCompat.getDrawable(this, R.drawable.transparent_circle)
+                        img_select_female.setColorFilter(resources.getColor(R.color.colorAccent))
+
+                        img_select_male.background =
+                            ContextCompat.getDrawable(this, R.drawable.circle_border_accent_light)
+                        img_select_male.setColorFilter(resources.getColor(R.color.black))
+
                         tv_female.setTextColor(resources.getColor(R.color.white))
+                        tv_male.setTextColor(resources.getColor(R.color.colorAccent))
+
                         btnSetGender.backgroundTint = (resources.getColor(R.color.colorAccent))
                         btnSetGender.textColor = (resources.getColor(R.color.black))
                         btnSetGender.strokeColor = (resources.getColor(R.color.colorAccent))
@@ -640,9 +716,19 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
                 userGender = "Female"
                 when (selectModeType) {
                     0 -> {
-                        img_select_female.setImageDrawable(resources.getDrawable(R.drawable.gender_icon_selected_female))
+                        img_select_female.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                this,
+                                R.drawable.gender_icon_selected_female
+                            )
+                        )
                         img_select_female.setColorFilter(resources.getColor(R.color.transperent))
-                        img_select_male.setImageDrawable(resources.getDrawable(R.drawable.gender_icon_unselected_male))
+                        img_select_male.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                this,
+                                R.drawable.gender_icon_unselected_male
+                            )
+                        )
                         btnSetGender.backgroundTint = (resources.getColor(colorPrimary))
                         btnSetGender.textColor = (resources.getColor(R.color.black))
                         btnSetGender.strokeColor = (resources.getColor(R.color.colorPrimary))
@@ -651,11 +737,16 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
                     1 -> {
 //
                         img_select_female.background =
-                            resources.getDrawable(R.drawable.black_circle)
+                            ContextCompat.getDrawable(this, R.drawable.circle_border_yellow_light)
+                        img_select_female.setColorFilter(resources.getColor(R.color.black))
+
                         img_select_male.background =
-                            resources.getDrawable(R.drawable.transparent_circle)
-                        tv_female.setTextColor(resources.getColor(R.color.white))
+                            ContextCompat.getDrawable(this, R.drawable.transparent_circle)
+                        img_select_male.setColorFilter(resources.getColor(R.color.yellow))
+
+                        tv_female.setTextColor(resources.getColor(R.color.yellow))
                         tv_male.setTextColor(resources.getColor(R.color.white))
+
                         btnSetGender.backgroundTint = (resources.getColor(R.color.yellow))
                         btnSetGender.textColor = (resources.getColor(R.color.black))
                         btnSetGender.strokeColor = (resources.getColor(R.color.yellow))
@@ -664,11 +755,16 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
                     2 -> {
 //
                         img_select_female.background =
-                            resources.getDrawable(R.drawable.black_circle)
+                            ContextCompat.getDrawable(this, R.drawable.circle_border_accent_light)
+                        img_select_female.setColorFilter(resources.getColor(R.color.black))
+
                         img_select_male.background =
-                            resources.getDrawable(R.drawable.transparent_circle)
+                            ContextCompat.getDrawable(this, R.drawable.transparent_circle)
+                        img_select_male.setColorFilter(resources.getColor(R.color.colorAccent))
+
                         tv_female.setTextColor(resources.getColor(R.color.colorAccent))
                         tv_male.setTextColor(resources.getColor(R.color.white))
+
                         btnSetGender.backgroundTint = (resources.getColor(R.color.colorAccent))
                         btnSetGender.textColor = (resources.getColor(R.color.black))
                         btnSetGender.strokeColor = (resources.getColor(R.color.colorAccent))
@@ -683,6 +779,23 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
                         countrylist_edit_text.setText(item.toString())
                     }
                 })
+            }
+            R.id.info -> {
+
+//                var msg = getString(R.string.password_must)
+//
+//                if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+//                    if (!sessionManager?.LanguageLabel?.lngValidPasswordInfo.isNullOrEmpty())
+//                        msg = sessionManager?.LanguageLabel?.lngValidPasswordInfo.toString()
+//                }
+
+//                MyUtils.showMessageOK(
+//                    this@SignUpSelectionActivity,
+//                    msg
+//                ) { p0, p1 -> }
+
+                val dialog = PasswordInfoDialog(selectModeType, this)
+                dialog.show()
 
             }
         }
@@ -734,18 +847,19 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
             (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
 
         if (this.tag as Boolean) {
-            password_edit_text.setCompoundDrawablesWithIntrinsicBounds(
-                0,
-                0,
-                R.drawable.hide_icon_login,
-                0
+            password_edit_text.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                null,
+                null,
+                mDrawableEyeOff,
+                null
             )
+
         } else {
-            password_edit_text.setCompoundDrawablesWithIntrinsicBounds(
-                0,
-                0,
-                R.drawable.show_icon_login,
-                0
+            password_edit_text.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                null,
+                null,
+                mDrawableEye,
+                null
             )
         }
 
@@ -760,18 +874,19 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
             (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
 
         if (this.tag as Boolean) {
-            confirmPassword_edit_text.setCompoundDrawablesWithIntrinsicBounds(
-                0,
-                0,
-                R.drawable.hide_icon_login,
-                0
+            confirmPassword_edit_text.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                null,
+                null,
+                mDrawableEyeOff,
+                null
             )
+
         } else {
-            confirmPassword_edit_text.setCompoundDrawablesWithIntrinsicBounds(
-                0,
-                0,
-                R.drawable.show_icon_login,
-                0
+            confirmPassword_edit_text.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                null,
+                null,
+                mDrawableEye,
+                null
             )
         }
 
@@ -856,7 +971,7 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
                     btnSubmit.textColor = resources.getColor(R.color.black)
                 }
                 1 -> {
-                    btnSubmit.backgroundTint = (resources.getColor(R.color.yellow_modes))
+                    btnSubmit.backgroundTint = (resources.getColor(R.color.yellow))
                     btnSubmit.textColor = resources.getColor(R.color.black)
                 }
             }
@@ -870,9 +985,9 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
 
                 }
                 1 -> {
-                    btnSubmit.strokeColor = (resources.getColor(R.color.yellow_modes))
+                    btnSubmit.strokeColor = (resources.getColor(R.color.yellow))
                     btnSubmit.backgroundTint = (resources.getColor(R.color.transperent1))
-                    btnSubmit.textColor = resources.getColor(R.color.yellow_modes)
+                    btnSubmit.textColor = resources.getColor(R.color.yellow)
 
                 }
             }
@@ -986,7 +1101,7 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
             e.printStackTrace()
             mfUser = null
         }
-
+        takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", 1)
         startActivityForResult(takePictureIntent, 1212)
     }
 
@@ -1553,23 +1668,22 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
 
         countryListModel.getCountryList(this, false, jsonArray.toString())
             .observe(
-                this@SignUpSelectionActivity,
-                androidx.lifecycle.Observer { countryListPojo ->
-                    if (countryListPojo != null) {
-                        if (countryListPojo.get(0).status.equals("true", false)) {
-                            countryListData?.addAll(countryListPojo.get(0).data)
-                            countrylist = java.util.ArrayList()
-                            countrylist!!.clear()
-                            for (i in 0 until countryListData!!.size) {
-                                countrylist!!.add(countryListData!![i].countryDialCode)
+                this@SignUpSelectionActivity
+            ) { countryListPojo ->
+                if (countryListPojo != null) {
+                    if (countryListPojo[0].status.equals("true", false)) {
+                        countryListData?.addAll(countryListPojo.get(0).data)
+                        countrylist = java.util.ArrayList()
+                        countrylist!!.clear()
+                        for (i in 0 until countryListData!!.size) {
+                            countrylist!!.add(countryListData!![i].countryDialCode)
 
-                            }
-
-//                                    countrylist_edit_text.setText(countryListPojo.get(0).data!!.get(0).countryDialCode)
                         }
-
+                        countrylist_edit_text.setText(countryListPojo[0].data[0].countryDialCode)
                     }
-                })
+
+                }
+            }
 
     }
 

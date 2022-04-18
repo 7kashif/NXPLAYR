@@ -112,45 +112,45 @@ class AddSkillsEndorsementsFragment : Fragment(),View.OnClickListener {
         jsonArray.put(jsonObject)
         skillsListModel.getSkillsList(mActivity!!, false, jsonArray.toString())
             .observe(
-                viewLifecycleOwner,
-                { skillsListpojo ->
+                viewLifecycleOwner
+            ) { skillsListpojo ->
 
-                    relativeprogressBar.visibility = View.GONE
-                    recyclerview.visibility = View.VISIBLE
+                relativeprogressBar.visibility = View.GONE
+                recyclerview.visibility = View.VISIBLE
 
-                    if (skillsListpojo != null && skillsListpojo.isNotEmpty()) {
+                if (skillsListpojo != null && skillsListpojo.isNotEmpty()) {
 
-                        if (skillsListpojo[0].status.equals("true", false)) {
+                    if (skillsListpojo[0].status.equals("true", false)) {
 
-                            skill_list?.clear()
-                            if (!userData!!.skills.isNullOrEmpty()) {
-                                val firstListIds = userData!!.skills.map { it.skillID }
-                                val new = skillsListpojo[0].data.filter { it.skillID !in firstListIds }
-                                skill_list?.addAll((new))
-                                skillsAdapter?.notifyDataSetChanged()
-                            } else {
-                                skill_list?.addAll(skillsListpojo[0].data)
-                            }
+                        skill_list?.clear()
+                        if (!userData!!.skills.isNullOrEmpty()) {
+                            val firstListIds = userData!!.skills.map { it.skillID }
+                            val new = skillsListpojo[0].data.filter { it.skillID !in firstListIds }
+                            skill_list?.addAll((new))
                             skillsAdapter?.notifyDataSetChanged()
-
-
                         } else {
-
-                            if (skill_list!!.size == 0) {
-                                ll_no_data_found.visibility = View.VISIBLE
-                                recyclerview.visibility = View.GONE
-
-                            } else {
-                                ll_no_data_found.visibility = View.GONE
-                                recyclerview.visibility = View.VISIBLE
-
-                            }
+                            skill_list?.addAll(skillsListpojo[0].data)
                         }
+                        skillsAdapter?.notifyDataSetChanged()
+
 
                     } else {
-                        ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+
+                        if (skill_list!!.size == 0) {
+                            ll_no_data_found.visibility = View.VISIBLE
+                            recyclerview.visibility = View.GONE
+
+                        } else {
+                            ll_no_data_found.visibility = View.GONE
+                            recyclerview.visibility = View.VISIBLE
+
+                        }
                     }
-                })
+
+                } else {
+                    ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                }
+            }
     }
 
     private fun setupUI() {
@@ -390,46 +390,48 @@ class AddSkillsEndorsementsFragment : Fragment(),View.OnClickListener {
         jsonArray.put(jsonObject)
       skillsEndorsementsModel.getSkillsList(mActivity!!, false, jsonArray.toString(), "List")
                 .observe(
-                    viewLifecycleOwner,
-                    { skillsListPojo ->
+                    viewLifecycleOwner
+                ) { skillsListPojo ->
 
-                        RV_addedSkillsList.visibility = View.VISIBLE
+                    RV_addedSkillsList.visibility = View.VISIBLE
 
-                        if (skillsListPojo != null && skillsListPojo.isNotEmpty()) {
-                            if (skillsListPojo[0].status.equals("true", true)) {
-                                skillList?.clear()
-                                skillList?.addAll(skillsListPojo[0].data)
-                                if (skillsListPojo[0].data.size > 0) {
-                                    if (addskillList!!.size >= 0 || userData!!.skills.size >= 0) {
-                                        if (!userData?.skills.isNullOrEmpty()) {
-                                            var count = skillsListPojo[0].data.size + addskillList!!.size
-                                            tv_skill_count.text = "Skills Added " + "(" + count + ")"
-                                            skillListAdapter?.notifyDataSetChanged()
-                                            addskillsAdapter?.notifyDataSetChanged()
-                                        } else {
-                                            tv_skill_count.text = "Skills Added " + "(" + addskillList!!.size + ")"
-                                        }
-                                    } else if (addskillList!!.size <= 0) {
-                                        tv_skill_count.text = "Skills Added "
+                    if (skillsListPojo != null && skillsListPojo.isNotEmpty()) {
+                        if (skillsListPojo[0].status.equals("true", true)) {
+                            skillList?.clear()
+                            skillList?.addAll(skillsListPojo[0].data)
+                            if (skillsListPojo[0].data.size > 0) {
+                                if (addskillList!!.size >= 0 || userData!!.skills.size >= 0) {
+                                    if (!userData?.skills.isNullOrEmpty()) {
+                                        var count =
+                                            skillsListPojo[0].data.size + addskillList!!.size
+                                        tv_skill_count.text = "Skills Added " + "(" + count + ")"
+                                        skillListAdapter?.notifyDataSetChanged()
+                                        addskillsAdapter?.notifyDataSetChanged()
+                                    } else {
+                                        tv_skill_count.text =
+                                            "Skills Added " + "(" + addskillList!!.size + ")"
                                     }
-
+                                } else if (addskillList!!.size <= 0) {
+                                    tv_skill_count.text = "Skills Added "
                                 }
-                                StoreSessionManager(userData!!)
-                                skillListAdapter?.notifyDataSetChanged()
 
-
-                            } else {
-
-                                if (skillList!!.size == 0) {
-                                    RV_addedSkillsList.visibility = View.GONE
-                                } else {
-                                    RV_addedSkillsList.visibility = View.VISIBLE
-                                }
                             }
+                            StoreSessionManager(userData!!)
+                            skillListAdapter?.notifyDataSetChanged()
+
+
                         } else {
-                            ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+
+                            if (skillList!!.size == 0) {
+                                RV_addedSkillsList.visibility = View.GONE
+                            } else {
+                                RV_addedSkillsList.visibility = View.VISIBLE
+                            }
                         }
-                    })
+                    } else {
+                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                    }
+                }
 
     }
 

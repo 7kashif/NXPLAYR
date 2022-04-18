@@ -1,48 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_nationteam"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:id="@+id/ll_nationteam"
     tools:context=".ui.fragments.usernationteam.view.NationalTeamFragment">
 
     <include layout="@layout/toolbar2" />
 
+    <include layout="@layout/line_seperator" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/country"
-        android:layout_marginTop="@dimen/_20sdp"
         android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_20sdp"
         android:layout_marginEnd="@dimen/_10sdp"
+        android:hint="@string/country"
         android:textColorHint="@color/colorPrimary"
-        android:theme="@style/MyEditTextTheme">
+        android:theme="@style/MyEditTextTheme"
+        app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
+
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_country"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
+            android:clickable="true"
+            android:focusable="false"
             android:imeOptions="actionNext"
             android:inputType="textCapSentences"
+            android:paddingTop="@dimen/_35sdp"
             android:singleLine="true"
             android:textColor="@color/white"
             android:textSize="@dimen/_16ssp"
-            android:theme="@style/MyEditTextTheme"
-            android:clickable="true"
-            android:focusable="false" />
+            android:theme="@style/MyEditTextTheme" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/caps"
         android:layout_marginStart="@dimen/_10sdp"
         android:layout_marginEnd="@dimen/_10sdp"
+        android:hint="@string/caps"
         android:textColorHint="@color/colorPrimary"
-        android:theme="@style/MyEditTextTheme">
+        android:theme="@style/MyEditTextTheme"
+        app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
+
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_caps"
@@ -51,19 +58,23 @@
             android:background="@android:color/transparent"
             android:imeOptions="actionNext"
             android:inputType="number"
+            android:paddingTop="@dimen/_35sdp"
             android:singleLine="true"
             android:textColor="@color/white"
             android:textSize="@dimen/_16ssp"
             android:theme="@style/MyEditTextTheme" />
     </com.google.android.material.textfield.TextInputLayout>
+
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/goals"
         android:layout_marginStart="@dimen/_10sdp"
         android:layout_marginEnd="@dimen/_10sdp"
+        android:hint="@string/goals"
         android:textColorHint="@color/colorPrimary"
-        android:theme="@style/MyEditTextTheme">
+        android:theme="@style/MyEditTextTheme"
+        app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
+
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_goals"
@@ -72,6 +83,7 @@
             android:background="@android:color/transparent"
             android:imeOptions="actionNext"
             android:inputType="number"
+            android:paddingTop="@dimen/_35sdp"
             android:singleLine="true"
             android:textColor="@color/white"
             android:textSize="@dimen/_16ssp"

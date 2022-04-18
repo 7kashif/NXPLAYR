@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.nxplayr.fsl.BuildConfig
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
+import com.nxplayr.fsl.data.model.LanguageListData
 import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.ui.activity.onboarding.view.OtpVerificationActivity
 import com.nxplayr.fsl.ui.activity.onboarding.view.SignInActivity
@@ -99,9 +100,8 @@ class SplashActivity : AppCompatActivity() {
         try {
             jsonObject.put("loginuserID", "0")
             jsonObject.put(
-                "languageID", if (sessionManager?.getsetSelectedLanguage()
-                        .isNullOrEmpty()
-                ) "1" else sessionManager?.getsetSelectedLanguage()
+                "languageID", if (sessionManager?.getSelectedLanguage() == null)
+                    "1" else sessionManager?.getSelectedLanguage()?.languageID
             )
             jsonObject.put("langLabelStatus", "")
             jsonObject.put("apiType", RestClient.apiType)
@@ -120,8 +120,15 @@ class SplashActivity : AppCompatActivity() {
                     if (languageLabelPojo[0].status == true && !languageLabelPojo[0].data.isNullOrEmpty()) {
 
                         sessionManager?.LanguageLabel = languageLabelPojo[0].data?.get(0)
+                        if (sessionManager?.getSelectedLanguage() == null)
+                            sessionManager?.setSelectedLanguage(
+                                LanguageListData(
+                                    "20180213170741.png",
+                                    "1",
+                                    "English"
+                                )
+                            )
                         runSplash()
-
 
                     } else {
 

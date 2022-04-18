@@ -87,7 +87,8 @@ class HomeFeedListAdapter(
 
         when (viewType) {
             Model.Loder_TYPE -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.loader, parent, false)
+                val view =
+                    LayoutInflater.from(parent.context).inflate(R.layout.loader, parent, false)
                 viewHolder = LoaderViewHolder(view)
 
             }
@@ -115,13 +116,14 @@ class HomeFeedListAdapter(
                     LayoutInflater.from(parent.context)
                         .inflate(R.layout.item_feed_list, parent, false)
                 viewHolder = DocumentViewHolder(view, context)
-            }else-> {
-            val view =
-                LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_feed_list, parent, false)
-            viewHolder = LinkViewHolder(view, context)
+            }
+            else -> {
+                val view =
+                    LayoutInflater.from(parent.context)
+                        .inflate(R.layout.item_feed_list, parent, false)
+                viewHolder = LinkViewHolder(view, context)
 
-        }
+            }
         }
         return viewHolder!!
 
@@ -136,8 +138,7 @@ class HomeFeedListAdapter(
             return
 
 
-        }
-        else if (holder is ImageViewHolder) {
+        } else if (holder is ImageViewHolder) {
             val holder1 = holder
             holder1.tv_name?.text =
                 "${feedlist.get(position)?.userFirstName} ${feedlist.get(position)?.userLastName}"
@@ -497,8 +498,7 @@ class HomeFeedListAdapter(
                     true
                 )
             }
-        }
-        else if (holder is VideoViewHolder) {
+        } else if (holder is VideoViewHolder) {
             val holder1 = holder
             holder1.tv_name?.text =
                 "${feedlist.get(position)?.userFirstName} ${feedlist.get(position)?.userLastName}"
@@ -896,8 +896,7 @@ class HomeFeedListAdapter(
                 holder1.ll_add_location_share?.visibility = View.GONE
                 holder1.tvAddLocation_share?.visibility = View.GONE
             }
-        }
-        else if (holder is LinkViewHolder) {
+        } else if (holder is LinkViewHolder) {
             val holder1 = holder
             holder1.tv_name?.text =
                 "${feedlist.get(position)?.userFirstName} ${feedlist.get(position)?.userLastName}"
@@ -1278,8 +1277,7 @@ class HomeFeedListAdapter(
                     true
                 )
             }
-        }
-        else if (holder is DocumentViewHolder) {
+        } else if (holder is DocumentViewHolder) {
             val holder1 = holder
             holder1.tv_name?.text =
                 "${feedlist.get(position)?.userFirstName} ${feedlist.get(position)?.userLastName}"
@@ -1647,17 +1645,17 @@ class HomeFeedListAdapter(
             val type: String = feedlist.get(position)?.postType!!
             when (type) {
                 "Social" -> {
-                    if (feedlist.get(position)?.postMediaType.equals("Photo", false)) {
+                    if (feedlist.get(position)?.postMediaType.equals("Photo", true)) {
                         r = Model.IMAGE_TYPE
-                    } else if (feedlist.get(position)?.postMediaType.equals("Video", false)) {
+                    } else if (feedlist.get(position)?.postMediaType.equals("Video", true)) {
                         r = Model.Video_TYPE
-                    } else if (feedlist.get(position)?.postMediaType.equals("Link", false)) {
+                    } else if (feedlist.get(position)?.postMediaType.equals("Link", true)) {
                         r = Model.Link_TYPE
-                    } else if (feedlist.get(position)?.postMediaType.equals("Text", false)) {
+                    } else if (feedlist.get(position)?.postMediaType.equals("Text", true)) {
                         r = Model.TEXT_TYPE
-                    } else if (feedlist.get(position)?.postMediaType.equals("Place", false)) {
+                    } else if (feedlist.get(position)?.postMediaType.equals("Place", true)) {
                         r = Model.CheckIn_TYPE
-                    } else if (feedlist.get(position)?.postMediaType.equals("Document", false)) {
+                    } else if (feedlist.get(position)?.postMediaType.equals("Document", true)) {
                         r = Model.Document_TYPE
                     }
                 }
@@ -1792,7 +1790,7 @@ class HomeFeedListAdapter(
                     var hashTagPostListFragment = HashTagPostListFragment()
                     Bundle().apply {
                         putString("hashTag", friendsId)
-                        putString("postType",feedlist[position]!!.postType)
+                        putString("postType", feedlist[position]!!.postType)
 
                         hashTagPostListFragment.arguments = this
                     }
@@ -1843,7 +1841,7 @@ class HomeFeedListAdapter(
                     var hashTagPostListFragment = HashTagPostListFragment()
                     Bundle().apply {
                         putString("hashTag", friendsId)
-                        putString("postType",feedlist[position]!!.postType)
+                        putString("postType", feedlist[position]!!.postType)
                         hashTagPostListFragment.arguments = this
                     }
                     (context as MainActivity).navigateTo(

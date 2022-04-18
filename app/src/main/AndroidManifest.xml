@@ -6,6 +6,7 @@
     <application
         android:name=".application.MyApplication"
         android:allowBackup="true"
+        android:networkSecurityConfig="@xml/network_config"
         android:icon="@mipmap/app_icon_three"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
@@ -14,7 +15,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
-        <activity android:name=".ui.activity.post.view.PrivacyActivity"></activity>
+        <activity
+            android:name=".ui.activity.post.view.PrivacyActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.onboarding.view.PartnerWithUSActivity"
             android:screenOrientation="portrait"
@@ -65,7 +68,7 @@
             android:name=".ui.activity.addcountry.view.CurrentCountryActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-          <activity
+        <activity
             android:name=".ui.activity.addmedia.view.AddMediaActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
@@ -182,12 +185,23 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Transparent.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-        <activity
-            android:name="com.facebook.FacebookActivity"
+
+        <activity android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            tools:replace="android:theme" />
+            android:label="@string/app_name" />
+
+        <activity
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
+
+
         <activity
             android:name=".ui.activity.filterimage.view.EditImageFilterActivity"
             android:screenOrientation="portrait"
@@ -208,8 +222,11 @@
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_id"
-            tools:replace="android:value" />
+            android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.facebook.sdk.ClientToken"
+            android:value="@string/facebook_client_token" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -242,6 +259,7 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
     </application>
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />

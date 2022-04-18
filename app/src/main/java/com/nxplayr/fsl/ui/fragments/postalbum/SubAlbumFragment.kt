@@ -26,10 +26,9 @@ import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.ui.activity.main.managers.NotifyAlbumInterface
 import com.nxplayr.fsl.ui.fragments.collection.adapter.CreateSubAlbumAdapter
-import com.nxplayr.fsl.ui.fragments.explorepost.adapter.ExploreVideoAdapater
+import com.nxplayr.fsl.ui.fragments.explorepost.adapter.OldExploreVideoAdapater
 import com.nxplayr.fsl.ui.fragments.explorepost.adapter.ExploreVideoListAdapater
 import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.viewmodel.*
 import com.nxplayr.fsl.data.model.CreatePostData
 import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.data.model.SubAlbum
@@ -41,15 +40,12 @@ import com.nxplayr.fsl.ui.fragments.collection.view.AssignPostAlbumFragment
 import com.nxplayr.fsl.ui.fragments.collection.viewmodel.*
 import com.nxplayr.fsl.ui.fragments.explorepost.view.ExploreVideoDetailFragment
 import com.nxplayr.fsl.ui.fragments.explorepost.viewmodel.ExploreVideoModel
-import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.fragment_collection.*
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
 import kotlinx.android.synthetic.main.sub_album_activity.*
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -77,7 +73,7 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
     var clicked = false
     var sharedPreferences: SharedPreferences? = null
     var explore_video_list: ArrayList<CreatePostData?>? = ArrayList()
-    var exploreVideo_adapter: ExploreVideoAdapater? = null
+    var oldExploreVideo_adapter: OldExploreVideoAdapater? = null
     var exploreVideoListadapter: ExploreVideoListAdapater? = null
     var Add=""
     var explore_video_list1: ArrayList<CreatePostData?>? = ArrayList()
@@ -296,7 +292,7 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
         rc_subalbum_list.layoutManager = GridLayoutManager(mActivity!!, 2)
         if (explore_video_list.isNullOrEmpty()) {
 
-            exploreVideo_adapter = ExploreVideoAdapater(mActivity!!, object : ExploreVideoAdapater.OnItemClick {
+            oldExploreVideo_adapter = OldExploreVideoAdapater(mActivity!!, object : OldExploreVideoAdapater.OnItemClick {
                 override fun onClicklisneter(pos: Int) {
 
                     val exploreDetailFragment = ExploreVideoDetailFragment()
@@ -326,7 +322,7 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
             }, explore_video_list!!, false)
         }
         rc_subalbum_list.setHasFixedSize(true)
-        rc_subalbum_list.adapter = exploreVideo_adapter
+        rc_subalbum_list.adapter = oldExploreVideo_adapter
 
         getAssignPostAlbumData(userData?.userID!!, pageNo, "Album", "", "", "", "", RestClient.apiVersion, "10",
                 "", "", "", "", "0", "", "",
@@ -825,14 +821,14 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
 
             relativeprogressBar.visibility = View.VISIBLE
             explore_video_list?.clear()
-            exploreVideo_adapter?.notifyDataSetChanged()
+            oldExploreVideo_adapter?.notifyDataSetChanged()
 
         } else {
 
             relativeprogressBar.visibility = View.GONE
             rc_subalbum_list.visibility = View.VISIBLE
             explore_video_list!!.add(null)
-            exploreVideo_adapter?.notifyItemInserted(explore_video_list!!.size - 1)
+            oldExploreVideo_adapter?.notifyItemInserted(explore_video_list!!.size - 1)
         }
 
         val jsonArray = JSONArray()
@@ -881,7 +877,7 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
                                 if (pageNo > 0) {
 
                                     explore_video_list?.removeAt(explore_video_list!!.size - 1)
-                                    exploreVideo_adapter?.notifyItemRemoved(explore_video_list!!.size)
+                                    oldExploreVideo_adapter?.notifyItemRemoved(explore_video_list!!.size)
                                 }
 
                                 if (exploreVidelistpojo[0].status.equals("true", true)) {
@@ -892,7 +888,7 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
                                     }
 
                                     explore_video_list?.addAll(exploreVidelistpojo[0].data!!)
-                                    exploreVideo_adapter?.notifyDataSetChanged()
+                                    oldExploreVideo_adapter?.notifyDataSetChanged()
                                     exploreVideoListadapter?.notifyDataSetChanged()
                                     pageNo += 1
                                     if (exploreVidelistpojo[0].data!!.size < 10) {

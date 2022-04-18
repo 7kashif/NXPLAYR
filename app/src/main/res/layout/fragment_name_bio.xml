@@ -5,8 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".fragment.NameBioFragment">
+    android:orientation="vertical">
 
 
     <androidx.core.widget.NestedScrollView
@@ -49,7 +48,8 @@
                         android:hint="@string/first_name"
                         android:textColorHint="@color/colorPrimary"
                         android:theme="@style/MyEditTextTheme"
-                        app:errorEnabled="false">
+                        app:errorEnabled="false"
+                        app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/edit_userFirstname"
@@ -58,6 +58,7 @@
                             android:background="@android:color/transparent"
                             android:imeOptions="actionNext"
                             android:inputType="textCapSentences"
+                            android:paddingTop="@dimen/_35sdp"
                             android:singleLine="true"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_16ssp"
@@ -70,7 +71,9 @@
                         android:hint="@string/last_name"
                         android:textColorHint="@color/colorPrimary"
                         android:theme="@style/MyEditTextTheme"
-                        app:errorEnabled="false">
+                        app:errorEnabled="false"
+                        app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
+
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/edit_userLastname"
@@ -79,6 +82,7 @@
                             android:background="@android:color/transparent"
                             android:imeOptions="actionNext"
                             android:inputType="textCapSentences"
+                            android:paddingTop="@dimen/_35sdp"
                             android:singleLine="true"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_16ssp"
@@ -131,7 +135,9 @@
                         android:hint="@string/write_about_yourself"
                         android:textColorHint="@color/colorPrimary"
                         android:theme="@style/MyEditTextTheme"
-                        app:errorEnabled="false">
+                        app:errorEnabled="false"
+                        app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
+
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/edit_write_about_yourself"
@@ -139,10 +145,10 @@
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
                             android:imeOptions="actionNext"
-                            android:inputType="textCapSentences"
-                            android:singleLine="true"
-                            android:textColor="@color/white"
+                            android:inputType="textCapSentences|textMultiLine"
                             android:maxLength="150"
+                            android:paddingTop="@dimen/_35sdp"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/_16ssp"
                             android:theme="@style/MyEditTextTheme" />
 
@@ -161,6 +167,26 @@
 
 
                 </LinearLayout>
+
+                <TextView
+                    style="@style/Font.SubTitle_blue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:background="@drawable/rounded_text2"
+                    android:padding="@dimen/_5sdp"
+                    android:paddingStart="@dimen/_10sdp"
+                    android:text="@string/user_role" />
+
+                <TextView
+                    android:id="@+id/tv_userRole"
+                    style="@style/Font.SubTitle_blue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:padding="@dimen/_5sdp"
+                    android:paddingStart="@dimen/_10sdp"
+                    android:textColor="@color/white" />
 
             </LinearLayout>
 

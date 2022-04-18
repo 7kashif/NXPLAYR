@@ -626,7 +626,8 @@ class PostCommentListFragment : Fragment(), PrivacyBottomSheetFragment.selectPri
                 userData?.userID
             ) else jsonObject.put("loginuserID", "0")
 
-            val lID = sessionManager?.getsetSelectedLanguage()
+            val lID = if (sessionManager?.getSelectedLanguage() == null) "1"
+            else sessionManager?.getSelectedLanguage()?.languageID
 
             jsonObject.put("languageID", lID)
             jsonObject.put("action", "List")
@@ -1053,7 +1054,9 @@ class PostCommentListFragment : Fragment(), PrivacyBottomSheetFragment.selectPri
                 userData?.userID
             ) else jsonObject.put("loginuserID", "0")
 
-            val lID = sessionManager?.getsetSelectedLanguage()
+            val lID = if (sessionManager?.getSelectedLanguage() == null) "1"
+            else sessionManager?.getSelectedLanguage()?.languageID
+
             jsonObject.put("languageID", lID)
             jsonObject.put("action", "List")
             jsonObject.put("postID", postID)

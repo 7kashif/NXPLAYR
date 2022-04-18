@@ -33,7 +33,7 @@ class ClubListModel : ViewModel() {
         val data = MutableLiveData<List<ClubListPojo>>()
 
         var call = RestClient.get()!!.getClubList(json!!)
-        call!!.enqueue(object : RestCallback<List<ClubListPojo>>(mContext) {
+        call.enqueue(object : RestCallback<List<ClubListPojo>>(mContext) {
             override fun Success(response: Response<List<ClubListPojo>>) {
                 data.value = response.body()
             }

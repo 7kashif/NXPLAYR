@@ -15,16 +15,16 @@ import kotlinx.android.synthetic.main.item_current_club_adapter.view.*
 
 class SetOfSkillAdapter(
     val context: Activity,
-    val listData: ArrayList<UsersSkils>?
-    , val onItemClick: OnItemClick,
-    var userId:String
+    val listData: ArrayList<UsersSkils>?, val onItemClick: OnItemClick,
+    var userId: String
 ) :
-        RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filterable {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filterable {
     private var clubListFiltered: List<UsersSkils>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_current_club_adapter, parent, false)
+        val v = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_current_club_adapter, parent, false)
         return CurrentClubViewHolder(v, context)
     }
 
@@ -36,12 +36,13 @@ class SetOfSkillAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
         if (holder is CurrentClubViewHolder) {
-            holder.bind(clubListFiltered!![position], holder.adapterPosition, onItemClick,userId)
+            holder.bind(clubListFiltered!![position], holder.adapterPosition, onItemClick, userId)
         }
 
     }
 
-    class CurrentClubViewHolder(itemView: View, context: Activity) : RecyclerView.ViewHolder(itemView) {
+    class CurrentClubViewHolder(itemView: View, context: Activity) :
+        RecyclerView.ViewHolder(itemView) {
 
         var sessionManager: SessionManager? = null
         var userData: SignupData? = null
@@ -50,21 +51,21 @@ class SetOfSkillAdapter(
             sessionManager = SessionManager(context)
         }
 
-        fun bind(listData: UsersSkils,
-                 adapterPosition: Int,
-                 onItemClick: OnItemClick, userId:String) = with(itemView) {
+        fun bind(
+            listData: UsersSkils,
+            adapterPosition: Int,
+            onItemClick: OnItemClick, userId: String
+        ) = with(itemView) {
 
             userData = sessionManager!!.get_Authenticate_User()
 
             tv_club_name.text = listData.skillName
-            if(!userId.equals(userData?.userID,false))
-            {
-                tv_add.visibility=View.GONE
+            if (!userId.equals(userData?.userID, false)) {
+                icon_Addclub.visibility = View.GONE
+            } else {
+                icon_Addclub.visibility = View.VISIBLE
             }
-            else{
-                tv_add.visibility=View.VISIBLE
-            }
-            tv_add.setOnClickListener {
+            icon_Addclub.setOnClickListener {
                 onItemClick.onClicled(listData, adapterPosition)
             }
 
@@ -83,7 +84,11 @@ class SetOfSkillAdapter(
                     val filteredList: MutableList<UsersSkils> = ArrayList<UsersSkils>()
                     for (row in listData!!) {
 
-                        if (row.skillName.toLowerCase().contains(charString.toLowerCase()) || row.skillName.contains(charSequence)) {
+                        if (row.skillName.toLowerCase()
+                                .contains(charString.toLowerCase()) || row.skillName.contains(
+                                charSequence
+                            )
+                        ) {
                             filteredList.add(row)
                         }
                     }

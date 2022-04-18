@@ -215,21 +215,70 @@ class NationalTeamFragment : Fragment(),View.OnClickListener {
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
         try {
-            jsonObject.put("contractsituationID",  "0")
-            jsonObject.put("geomobilityID", "0")
-            jsonObject.put("userJersyNumber", userData?.userJersyNumber)
-            jsonObject.put("apiVersion", RestClient.apiVersion)
-            jsonObject.put("userNationalCap", edit_caps.text.toString().trim())
-            jsonObject.put("usertrophies", userData?.usertrophies)
-            jsonObject.put("userPreviousClubID", "FSL")
             jsonObject.put("userNationalCountryID", userNationalCountryID)
+            jsonObject.put("userNationalCap", edit_caps.text.toString().trim())
             jsonObject.put("useNationalGoals", edit_goals.text.toString().trim())
-            jsonObject.put("leagueID", "0")
-            jsonObject.put("languageID", "1")
+
             jsonObject.put("loginuserID", userData?.userID)
+            if (userData?.contractsituationID.isNullOrEmpty()) {
+                jsonObject.put("contractsituationID", "")
+            } else {
+                jsonObject.put("contractsituationID", userData?.contractsituationID)
+            }
+
+            if (userData?.leagueID.isNullOrEmpty()) {
+                jsonObject.put("leagueID", "")
+            } else {
+                jsonObject.put("leagueID", userData?.leagueID)
+            }
+
+            if (userData?.userContractExpiryDate.isNullOrEmpty()) {
+                jsonObject.put("userContractExpiryDate", "")
+            } else {
+                jsonObject.put("userContractExpiryDate", userData?.userContractExpiryDate)
+            }
+            if (userData?.userPreviousClubID.isNullOrEmpty()) {
+                jsonObject.put("userPreviousClubID", "")
+            } else {
+                jsonObject.put("userPreviousClubID", userData?.userPreviousClubID)
+            }
+            if (userData?.usertrophies.isNullOrEmpty()) {
+                jsonObject.put("usertrophies", "")
+            } else {
+                jsonObject.put("usertrophies", userData?.usertrophies)
+            }
+            if (userData?.userJersyNumber.isNullOrEmpty()) {
+                jsonObject.put("userJersyNumber", "")
+            } else {
+                jsonObject.put("userJersyNumber", userData?.userJersyNumber)
+            }
+            if (userData?.geomobilityID.isNullOrEmpty()) {
+                jsonObject.put("geomobilityID", "")
+            } else {
+                jsonObject.put("geomobilityID", userData?.geomobilityID)
+            }
+            if (userData?.userPreviousClubID.isNullOrEmpty()) {
+                jsonObject.put("userPreviousClubID", "")
+            } else {
+                jsonObject.put("userPreviousClubID", userData?.userPreviousClubID)
+            }
+            if (userData?.previousclubName.isNullOrEmpty()) {
+                jsonObject.put("previousclubName", "")
+            } else {
+                jsonObject.put("previousclubName", userData?.previousclubName)
+            }
+            if (userData?.userAgentName.isNullOrEmpty()) {
+                jsonObject.put("userAgentName", "")
+            } else {
+                jsonObject.put("userAgentName", userData?.userAgentName)
+            }
+            if (userData?.outfitterIDs.isNullOrEmpty()) {
+                jsonObject.put("outfitterIDs", "")
+            } else {
+                jsonObject.put("outfitterIDs", userData?.outfitterIDs)
+            }
             jsonObject.put("apiType", RestClient.apiType)
-            jsonObject.put("userContractExpiryDate","")
-            jsonObject.put("outfitterIDs", "")
+            jsonObject.put("apiVersion", RestClient.apiVersion)
 
         } catch (e: JSONException) {
             e.printStackTrace()
@@ -237,30 +286,39 @@ class NationalTeamFragment : Fragment(),View.OnClickListener {
         jsonArray.put(jsonObject)
         Log.e("team_OBJECT",jsonObject.toString())
         passportNationalityModel.getUpdateResume(mActivity!!, s, jsonArray?.toString())
-                .observe(this@NationalTeamFragment!!,
-                    { countryListPojo ->
-                        if (countryListPojo != null) {
-                            btnUpdateBasicDetail.endAnimation()
-                            if (countryListPojo.get(0).status.equals("true", false)) {
-                                try {
-                                    StoreSessionManager(countryListPojo.get(0).data[0])
-                                    Handler().postDelayed({
-                                        (activity as MainActivity).onBackPressed()
-                                    }, 1000)
-                                    MyUtils.showSnackbar(mActivity!!, countryListPojo.get(0).message, ll_nationteam)
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                }
-
-                            } else {
-                                MyUtils.showSnackbar(mActivity!!, countryListPojo.get(0).message, ll_nationteam)
+                .observe(this@NationalTeamFragment!!
+                ) { countryListPojo ->
+                    if (countryListPojo != null) {
+                        btnUpdateBasicDetail.endAnimation()
+                        if (countryListPojo.get(0).status.equals("true", false)) {
+                            try {
+                                MyUtils.hideKeyboard1(mActivity!!)
+                                StoreSessionManager(countryListPojo.get(0).data[0])
+                                Handler().postDelayed({
+                                    (activity as MainActivity).onBackPressed()
+                                }, 1000)
+                                MyUtils.showSnackbar(
+                                    mActivity!!,
+                                    countryListPojo.get(0).message,
+                                    ll_nationteam
+                                )
+                            } catch (e: Exception) {
+                                e.printStackTrace()
                             }
 
                         } else {
-                            btnUpdateBasicDetail.endAnimation()
-                            ErrorUtil.errorMethod(ll_nationteam)
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                countryListPojo.get(0).message,
+                                ll_nationteam
+                            )
                         }
-                    })
+
+                    } else {
+                        btnUpdateBasicDetail.endAnimation()
+                        ErrorUtil.errorMethod(ll_nationteam)
+                    }
+                }
     }
 
     private fun StoreSessionManager(uesedata: SignupData?) {

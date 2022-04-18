@@ -287,7 +287,7 @@ class OtherUserConnectionsFragment : Fragment(),View.OnClickListener {
         jsonArray.put(jsonObject)
         friendListModel.getFriendList(
                 mActivity!!, jsonArray.toString(), "friend_list")
-                .observe(viewLifecycleOwner, { friendlistpojo ->
+                .observe(viewLifecycleOwner) { friendlistpojo ->
 
                     if (friendlistpojo != null && friendlistpojo.isNotEmpty()) {
                         isLoading = false
@@ -310,7 +310,11 @@ class OtherUserConnectionsFragment : Fragment(),View.OnClickListener {
 
                             connection_list?.addAll(friendlistpojo[0].data!!)
 
-                            (parentFragment as ConnectionsFragment?)?.setupTabIcons(friendlistpojo[0].count?.get(0))
+                            (parentFragment as ConnectionsFragment?)?.setupTabIcons(
+                                friendlistpojo[0].count?.get(
+                                    0
+                                )
+                            )
 
                             connectionAdapter?.notifyDataSetChanged()
                             pageNo += 1
@@ -354,7 +358,7 @@ class OtherUserConnectionsFragment : Fragment(),View.OnClickListener {
                             ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
                         }
                     }
-                })
+                }
     }
 
 

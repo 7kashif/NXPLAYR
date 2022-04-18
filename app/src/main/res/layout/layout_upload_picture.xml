@@ -57,7 +57,6 @@
                     app:roundingBorderColor="@color/colorPrimary"
                     android:layout_gravity="center"
                     app:actualImageResource="@drawable/profile_pic_placeholder"
-                    app:actualImageScaleType="fitXY"
                     app:placeholderImage="@drawable/profile_pic_placeholder"
                     android:backgroundTint="@color/colorPrimary"
                     app:placeholderImageScaleType="fitXY" />

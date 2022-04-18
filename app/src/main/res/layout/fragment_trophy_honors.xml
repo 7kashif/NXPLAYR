@@ -1,41 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_nationteam"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:id="@+id/ll_nationteam"
     tools:context=".ui.fragments.usertrophyhonors.view.TrophyHonorsFragment">
+
     <include layout="@layout/toolbar2" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_20sdp"
-            android:layout_marginStart="@dimen/_20sdp"
-            android:layout_marginEnd="@dimen/_20sdp"
-            android:layout_marginTop="@dimen/_20sdp"
-            android:background="@drawable/background_boderless_curve">
+    <include layout="@layout/line_seperator" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:background="@drawable/background_boderless_curve">
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_trophyHonors"
             android:layout_width="match_parent"
-            android:background="@android:color/transparent"
-            android:imeOptions="actionNext"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_16ssp"
-            android:theme="@style/MyEditTextTheme"
             android:layout_height="150dp"
+            android:background="@android:color/transparent"
             android:backgroundTint="@color/colorPrimaryDark"
-            android:gravity="top"
-            android:textColorHint="@color/white"
-            android:hint="@string/trophy_amp_honors"
-            android:fitsSystemWindows="true"
             android:breakStrategy="balanced"
+            android:fitsSystemWindows="true"
+            android:gravity="top"
+            android:hint="@string/write_text"
+            android:imeOptions="actionNext"
             android:inputType="textMultiLine"
+            android:padding="@dimen/_10sdp"
             android:singleLine="false"
-            android:padding="5dp" />
-</LinearLayout>
+            android:textColor="@color/white"
+            android:textColorHint="@color/colorPrimary"
+            android:textSize="@dimen/_16ssp"
+            android:theme="@style/MyEditTextTheme" />
+    </LinearLayout>
+
     <com.chand.progressbutton.ProgressButton
         android:id="@+id/btnUpdateBasicDetail"
         android:layout_width="match_parent"

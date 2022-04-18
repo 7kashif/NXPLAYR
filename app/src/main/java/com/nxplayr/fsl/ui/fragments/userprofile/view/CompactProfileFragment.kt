@@ -34,6 +34,7 @@ import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
 import com.nxplayr.fsl.data.model.ClubData
+import com.nxplayr.fsl.data.model.ClubListData
 import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.fragment.*
 import com.nxplayr.fsl.ui.fragments.PreferreOutfittersFragment
@@ -88,15 +89,17 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
     var fromProfile = ""
     var userId = ""
     var otherUserData: SignupData? = null
-    private lateinit var  loginModel: SignupModel
-    private lateinit var  passportNationalityModel: UpdateResumeCallsViewModel
+    private lateinit var loginModel: SignupModel
+    private lateinit var passportNationalityModel: UpdateResumeCallsViewModel
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-       // if (v == null) {
-            v = inflater.inflate(R.layout.fragment_compact_profile, container, false)
-       // }
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // if (v == null) {
+        v = inflater.inflate(R.layout.fragment_compact_profile, container, false)
+        // }
         return v
     }
 
@@ -138,8 +141,10 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
         } catch (e: ParseException) {
             e.printStackTrace()
         }
-        loginModel.userRegistration(mActivity!!, false, jsonArray.toString(), "other_userProfile").observe(viewLifecycleOwner,
-            { loginPojo ->
+        loginModel.userRegistration(mActivity!!, false, jsonArray.toString(), "other_userProfile")
+            .observe(
+                viewLifecycleOwner
+            ) { loginPojo ->
 
                 if (loginPojo != null) {
 
@@ -154,13 +159,12 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
                     }
                 }
 
-            })
+            }
 
     }
 
     private fun setupUI() {
-        if (fromProfile.equals("OtherUserProfile"))
-        {
+        if (fromProfile.equals("OtherUserProfile")) {
             setupObserver()
             ll_nationality.setOnClickListener(this)
             ll_football_age_group.setOnClickListener(this)
@@ -176,9 +180,7 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
             ll_setskill.setOnClickListener(this)
             ll_preferred_outfitters.setOnClickListener(this)
 
-        }
-        else
-        {
+        } else {
             setupObserver()
             setProfileData(userData!!)
             setClubData(userData!!.clubs)
@@ -187,9 +189,10 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setupViewModel() {
-        loginModel= ViewModelProvider(this@CompactProfileFragment).get(SignupModel::class.java)
+        loginModel = ViewModelProvider(this@CompactProfileFragment).get(SignupModel::class.java)
         passportNationalityModel = ViewModelProvider(this@CompactProfileFragment).get(
-            UpdateResumeCallsViewModel::class.java)
+            UpdateResumeCallsViewModel::class.java
+        )
     }
 
     fun setOnClick() {
@@ -220,26 +223,36 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
         when (v?.id) {
 
             R.id.ll_current_country -> {
-                ll_current_country.isEnabled=false
+                ll_current_country.isEnabled = false
                 val currentapiVersion = Build.VERSION.SDK_INT
                 if (currentapiVersion >= Build.VERSION_CODES.M) {
                     permissionLocation()
                 } else {
                     connectLocation()
                 }
-                ll_current_country.isEnabled=true
+                ll_current_country.isEnabled = true
             }
             R.id.ll_basic -> {
                 var bundle = Bundle()
                 bundle.putString("type", "BasicDetails")
-                (activity as MainActivity).navigateTo(UpdateUserProfileFragment(), bundle, UpdateUserProfileFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    UpdateUserProfileFragment(),
+                    bundle,
+                    UpdateUserProfileFragment::class.java.name,
+                    true
+                )
             }
             R.id.ll_nationality -> {
                 var bundle = Bundle()
                 bundle.putString("fromProfile", fromProfile)
                 bundle.putString("userId", userId)
                 bundle.putSerializable("otherUserData", otherUserData)
-                (activity as MainActivity).navigateTo(PassportNationalityFragment(), bundle, PassportNationalityFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    PassportNationalityFragment(),
+                    bundle,
+                    PassportNationalityFragment::class.java.name,
+                    true
+                )
             }
             R.id.ll_football_age_group -> {
                 var bundle = Bundle()
@@ -247,12 +260,22 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
                 bundle.putString("fromProfile", fromProfile)
                 bundle.putString("userId", userId)
                 bundle.putSerializable("otherUserData", otherUserData)
-                (activity as MainActivity).navigateTo(UpdateUserProfileFragment(), bundle, UpdateUserProfileFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    UpdateUserProfileFragment(),
+                    bundle,
+                    UpdateUserProfileFragment::class.java.name,
+                    true
+                )
             }
             R.id.ll_height_weight -> {
                 var bundle = Bundle()
                 bundle.putString("type", "heightWeight")
-                (activity as MainActivity).navigateTo(UpdateUserProfileFragment(), bundle, UpdateUserProfileFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    UpdateUserProfileFragment(),
+                    bundle,
+                    UpdateUserProfileFragment::class.java.name,
+                    true
+                )
             }
             R.id.ll_foorball_level -> {
                 var bundle = Bundle()
@@ -260,7 +283,12 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
                 bundle.putString("fromProfile", fromProfile)
                 bundle.putString("userId", userId)
                 bundle.putSerializable("otherUserData", otherUserData)
-                (activity as MainActivity).navigateTo(UpdateUserProfileFragment(), bundle, UpdateUserProfileFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    UpdateUserProfileFragment(),
+                    bundle,
+                    UpdateUserProfileFragment::class.java.name,
+                    true
+                )
             }
             R.id.ll_foorball_language -> {
                 var bundle = Bundle()
@@ -270,21 +298,32 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
                 bundle.putSerializable("otherUserData", otherUserData)
                 (activity as MainActivity).navigateTo(
                     FootballLeagueFragment(), bundle,
-                    FootballLeagueFragment::class.java.name, true)
+                    FootballLeagueFragment::class.java.name, true
+                )
             }
             R.id.ll_current_club -> {
                 var bundle = Bundle()
                 bundle.putString("fromProfile", fromProfile)
                 bundle.putString("userId", userId)
                 bundle.putSerializable("otherUserData", otherUserData)
-                (activity as MainActivity).navigateTo(CurrentClubFragment(),bundle, CurrentClubFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    CurrentClubFragment(),
+                    bundle,
+                    CurrentClubFragment::class.java.name,
+                    true
+                )
             }
             R.id.ll_previous_club -> {
                 var bundle = Bundle()
                 bundle.putString("fromProfile", fromProfile)
                 bundle.putString("userId", userId)
                 bundle.putSerializable("otherUserData", otherUserData)
-                (activity as MainActivity).navigateTo(PreviousFragment(),bundle, PreviousFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    PreviousFragment(),
+                    bundle,
+                    PreviousFragment::class.java.name,
+                    true
+                )
             }
             R.id.ll_pitch_position -> {
                 var bundle = Bundle()
@@ -292,7 +331,12 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
                 bundle.putString("fromProfile", fromProfile)
                 bundle.putString("userId", userId)
                 bundle.putSerializable("otherUserData", otherUserData)
-                (activity as MainActivity).navigateTo(PitchPositionFragment(),bundle, PitchPositionFragment()::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    PitchPositionFragment(),
+                    bundle,
+                    PitchPositionFragment()::class.java.name,
+                    true
+                )
             }
             R.id.ll_agent -> {
                 showAgent()
@@ -303,7 +347,12 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
                 bundle.putString("fromProfile", fromProfile)
                 bundle.putString("userId", userId)
                 bundle.putSerializable("otherUserData", otherUserData)
-                (activity as MainActivity).navigateTo(UpdateUserProfileFragment(), bundle, UpdateUserProfileFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    UpdateUserProfileFragment(),
+                    bundle,
+                    UpdateUserProfileFragment::class.java.name,
+                    true
+                )
             }
             R.id.ll_static_website -> {
                 var bundle = Bundle()
@@ -313,12 +362,18 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
                 bundle.putSerializable("otherUserData", otherUserData)
                 (activity as MainActivity).navigateTo(
                     StaticWebsiteFragment(), bundle,
-                    StaticWebsiteFragment::class.java.name, true)
+                    StaticWebsiteFragment::class.java.name, true
+                )
             }
             R.id.ll_Contract -> {
                 var bundle = Bundle()
                 bundle.putString("type", "Contract")
-                (activity as MainActivity).navigateTo(ContractSitiuationFragment(), bundle, ContractSitiuationFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    ContractSitiuationFragment(),
+                    bundle,
+                    ContractSitiuationFragment::class.java.name,
+                    true
+                )
             }
             R.id.ll_National_team -> {
                 var bundle = Bundle()
@@ -326,12 +381,22 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
                 bundle.putString("fromProfile", fromProfile)
                 bundle.putString("userId", userId)
                 bundle.putSerializable("otherUserData", otherUserData)
-                (activity as MainActivity).navigateTo(NationalTeamFragment(), bundle, NationalTeamFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    NationalTeamFragment(),
+                    bundle,
+                    NationalTeamFragment::class.java.name,
+                    true
+                )
             }
             R.id.ll_jersury_number -> {
                 var bundle = Bundle()
                 bundle.putString("type", "jersury_number")
-                (activity as MainActivity).navigateTo(JerusyNumberFragment(), bundle, JerusyNumberFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    JerusyNumberFragment(),
+                    bundle,
+                    JerusyNumberFragment::class.java.name,
+                    true
+                )
             }
             R.id.ll_preferred_outfitters -> {
                 var bundle = Bundle()
@@ -339,7 +404,12 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
                 bundle.putString("fromProfile", fromProfile)
                 bundle.putString("userId", userId)
                 bundle.putSerializable("otherUserData", otherUserData)
-                (activity as MainActivity).navigateTo(PreferreOutfittersFragment(), bundle, PreferreOutfittersFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    PreferreOutfittersFragment(),
+                    bundle,
+                    PreferreOutfittersFragment::class.java.name,
+                    true
+                )
             }
             R.id.ll_setskill -> {
                 var bundle = Bundle()
@@ -347,7 +417,12 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
                 bundle.putString("fromProfile", fromProfile)
                 bundle.putString("userId", userId)
                 bundle.putSerializable("otherUserData", otherUserData)
-                (activity as MainActivity).navigateTo(SetOfSkillsFragment(), bundle, SetOfSkillsFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    SetOfSkillsFragment(),
+                    bundle,
+                    SetOfSkillsFragment::class.java.name,
+                    true
+                )
             }
             R.id.ll_trophyhonors -> {
                 var bundle = Bundle()
@@ -355,7 +430,12 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
                 bundle.putString("fromProfile", fromProfile)
                 bundle.putString("userId", userId)
                 bundle.putSerializable("otherUserData", otherUserData)
-                (activity as MainActivity).navigateTo(TrophyHonorsFragment(), bundle, TrophyHonorsFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    TrophyHonorsFragment(),
+                    bundle,
+                    TrophyHonorsFragment::class.java.name,
+                    true
+                )
             }
             R.id.ll_geographical -> {
                 var bundle = Bundle()
@@ -363,7 +443,12 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
                 bundle.putString("fromProfile", fromProfile)
                 bundle.putString("userId", userId)
                 bundle.putSerializable("otherUserData", otherUserData)
-                (activity as MainActivity).navigateTo(GeographicalFragment(), bundle, GeographicalFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    GeographicalFragment(),
+                    bundle,
+                    GeographicalFragment::class.java.name,
+                    true
+                )
             }
         }
     }
@@ -385,8 +470,7 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
             if (!userData!!.userHeight.isNullOrEmpty() && !userData!!.userWeight.isNullOrEmpty()) {
                 tv_heightWeight.visibility = View.VISIBLE
                 tv_heightWeight.text = userData!!.userHeight + ", " + userData!!.userWeight
-            }
-            else {
+            } else {
                 tv_heightWeight.text = " "
             }
             if (!userData!!.userBestFoot.isNullOrEmpty()) {
@@ -407,7 +491,7 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
             }
             if (!userData?.location.isNullOrEmpty()) {
                 tv_currentCountry.visibility = View.VISIBLE
-                tv_currentCountry.text = userData!!.location[0].cityName
+                tv_currentCountry.text = userData!!.location[0].countryName
             }
             if (!userData!!.clubs.isNullOrEmpty()) {
                 clubId = userData!!.clubs[0].clubID
@@ -416,39 +500,44 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
             }
             if (!userData!!.plyrposiName.isNullOrEmpty()) {
                 tv_pitchPosition.visibility = View.VISIBLE
-                tv_pitchPosition.text = userData!!.plyrposiName
+                tv_pitchPosition.text = userData.plyrposiName.trim().replace(",", ", ")
 
             }
             if (!userData?.contractsituationName.isNullOrEmpty()) {
                 tv_Contract.visibility = View.VISIBLE
                 try {
-                    tv_Contract.text=userData?.contractsituationName+"(${MyUtils.formatDate(userData?.userContractExpiryDate!!, "yyyy-MM-dd", "dd/MM/yyyy")})"
+                    tv_Contract.text = userData?.contractsituationName + "(${
+                        MyUtils.formatDate(
+                            userData?.userContractExpiryDate!!,
+                            "yyyy-MM-dd",
+                            "dd/MM/yyyy"
+                        )
+                    })"
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    tv_Contract.text=userData?.contractsituationName
+                    tv_Contract.text = userData?.contractsituationName
                 }
             } else {
 
                 tv_Contract.text = ""
                 tv_Contract.visibility = View.GONE
             }
-            if(!userData?.userPreviousClubID.isNullOrEmpty())
-            {
-                tv_clubName_compatProfile.visibility=View.VISIBLE
+            if (!userData?.previousclubName.isNullOrEmpty()) {
+                tv_clubName_compatProfile.visibility = View.VISIBLE
                 try {
-                    tv_clubName_compatProfile.text=userData?.previousclubName
+                    tv_clubName_compatProfile.text =
+                        userData?.previousclubName.trim().replace(",", ", ")
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-            }else{
+            } else {
 
-                tv_clubName_compatProfile.text=""
-                tv_clubName_compatProfile.visibility=View.GONE
+                tv_clubName_compatProfile.text = ""
+                tv_clubName_compatProfile.visibility = View.GONE
             }
 
-            if(!userData?.teamcountryName.isNullOrEmpty())
-            {
-                tv_national_team.visibility=View.VISIBLE
+            if (!userData?.teamcountryName.isNullOrEmpty()) {
+                tv_national_team.visibility = View.VISIBLE
                 try {
                     tv_national_team.text = userData?.teamcountryName
                 } catch (e: Exception) {
@@ -479,7 +568,8 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
             if (!userData?.outfitterNames.isNullOrEmpty()) {
                 tv_preferred_outfitters.visibility = View.VISIBLE
                 try {
-                    tv_preferred_outfitters.text = userData?.outfitterNames
+                    tv_preferred_outfitters.text =
+                        userData?.outfitterNames.trim().replace(",", ", ")
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -515,7 +605,7 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
             if (!userData?.skills.isNullOrEmpty()) {
                 tv_Setofskills.visibility = View.VISIBLE
                 try {
-                    tv_Setofskills.text=userData?.skills?.joinToString { it.skillName }
+                    tv_Setofskills.text = userData?.skills?.joinToString { it.skillName }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -524,20 +614,32 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
                 tv_Setofskills.text = ""
                 tv_Setofskills.visibility = View.GONE
             }
-            tv_site.visibility=View.GONE
-            /*if(!userData?.websitetitle.isNullOrEmpty()){
-                tv_footballLanguage.visibility = View.VISIBLE
+
+            if (!userData?.userAgentName.isNullOrEmpty()) {
+                tv_agent.visibility = View.VISIBLE
                 try {
-                    tv_footballLanguage.text = userData?.leagueName
+                    tv_agent.text = userData?.userAgentName
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             } else {
-                tv_footballLanguage.text = ""
-                tv_footballLanguage.visibility = View.GONE
+                tv_agent.text = ""
+                tv_agent.visibility = View.GONE
             }
 
-            if (!userData?.userHeight.isNullOrEmpty()) {
+            if (!sessionManager?.getWebLinks().isNullOrEmpty()) {
+                tv_site.visibility = View.VISIBLE
+                try {
+                    tv_site.text = sessionManager?.getWebLinks()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            } else {
+                tv_site.text = ""
+                tv_site.visibility = View.GONE
+            }
+
+            /*if (!userData?.userHeight.isNullOrEmpty()) {
                 tv_heightWeight.visibility = View.VISIBLE
                 try {
 
@@ -555,12 +657,16 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
 
     }
 
-    private fun setClubData(clubs: ArrayList<ClubData>) {
+    private fun setClubData(clubs: ArrayList<ClubListData>) {
 
         ll_mainClubList.removeAllViews()
         for (i in 0 until clubs.size) {
-            infaltorScheduleMode = activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
-            var convertView = infaltorScheduleMode?.inflate(com.nxplayr.fsl.R.layout.list_current_club_layout, null)
+            infaltorScheduleMode =
+                activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
+            var convertView = infaltorScheduleMode?.inflate(
+                com.nxplayr.fsl.R.layout.list_current_club_layout,
+                null
+            )
 
             var tv_clubName = convertView?.findViewById(R.id.tv_clubName) as TextView
             if (i == clubs.size - 1) {
@@ -580,17 +686,17 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
             val message = getString(R.string.grant_access_location)
 
             MyUtils.showMessageOKCancel(mActivity!!, message, "Use Location Service?",
-                    DialogInterface.OnClickListener { dialog, _ ->
-                        dialog.dismiss()
-                        requestPermissions(
-                                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                                REQUEST_CODE_LOCATION_PERMISSIONS
-                        )
+                DialogInterface.OnClickListener { dialog, _ ->
+                    dialog.dismiss()
+                    requestPermissions(
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                        REQUEST_CODE_LOCATION_PERMISSIONS
+                    )
 
-                    })
+                })
 
         } else {
-                connectLocation()
+            connectLocation()
 
         }
         return true
@@ -598,14 +704,22 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
 
     private fun addPermission(permission: String): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(mActivity!!, permission) !== android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            if (checkSelfPermission(
+                    mActivity!!,
+                    permission
+                ) !== android.content.pm.PackageManager.PERMISSION_GRANTED
+            ) {
                 return false
             }
         }
         return true
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, @NonNull permissions: Array<String>, @NonNull grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        @NonNull permissions: Array<String>,
+        @NonNull grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
@@ -617,7 +731,11 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
 
                 } else {
 
-                    Toast.makeText(mActivity, resources.getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        mActivity,
+                        resources.getString(R.string.permission_denied),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 return
             }
@@ -638,19 +756,19 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
     private fun connectLocation() {
         MyUtils.showProgressDialog(mActivity!!, "Please wait..")
         locationProvider = LocationProvider(mActivity!!, LocationProvider.HIGH_ACCURACY,
-                object : LocationProvider.CurrentLocationCallback {
-                    override fun handleNewLocation(location: Location) {
-                        MyUtils.dismissProgressDialog()
-                        locationProvider?.disconnect()
-                        if (location != null) {
-                            LATITUDE = location.latitude
-                            LONGITUDE = location.longitude
-                            isLocationGot = true
-                            selectPlace()
-                        }
-
+            object : LocationProvider.CurrentLocationCallback {
+                override fun handleNewLocation(location: Location) {
+                    MyUtils.dismissProgressDialog()
+                    locationProvider?.disconnect()
+                    if (location != null) {
+                        LATITUDE = location.latitude
+                        LONGITUDE = location.longitude
+                        isLocationGot = true
+                        selectPlace()
                     }
-                })
+
+                }
+            })
         locationProvider!!.connect()
 
     }
@@ -658,8 +776,8 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode){
-            503->{
+        when (requestCode) {
+            503 -> {
                 setupObserver()
                 setProfileData(userData!!)
                 setClubData(userData!!.clubs)
@@ -672,10 +790,12 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
         }
 
     }
+
     private fun showAgent() {
 
         val dialogBuilder = AlertDialog.Builder(context)
         val inflater = (context as AppCompatActivity).getLayoutInflater()
+
         @SuppressLint("InflateParams")
         val rv = inflater.inflate(R.layout.custom_dialog_add_agent, null)
         dialogBuilder.setView(rv)
@@ -687,10 +807,9 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
 
         txt_album.setText("Add Agent")
         txt_okay.setText("Add")
-        if(!userData?.userAgentName.isNullOrEmpty())
-        {
-            edtAlbumName.setText(userData?.userAgentName)
-        }
+//        if (!userData?.userAgentName.isNullOrEmpty()) {
+//            edtAlbumName.setText(userData?.userAgentName)
+//        }
         txt_okay.setOnClickListener {
 
             val albumName = edtAlbumName!!.text.toString().trim()
@@ -720,7 +839,7 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
     }
 
     private fun getUpadteResume(s: String) {
-        MyUtils.showProgressDialog(mActivity!!,"Please wait")
+        MyUtils.showProgressDialog(mActivity!!, "Please wait")
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
         try {
@@ -729,7 +848,14 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
 
             jsonObject.put("contractsituationID", userData?.contractsituationID)
             try {
-                jsonObject.put("userContractExpiryDate", MyUtils.formatDate(userData?.userContractExpiryDate!!, "dd/MM/yyyy", "yyyy-MM-dd"))
+                jsonObject.put(
+                    "userContractExpiryDate",
+                    MyUtils.formatDate(
+                        userData?.userContractExpiryDate!!,
+                        "dd/MM/yyyy",
+                        "yyyy-MM-dd"
+                    )
+                )
             } catch (e: Exception) {
             }
 
@@ -741,7 +867,10 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
             jsonObject.put("userNationalCountryID", userData?.userNationalCountryID)
             jsonObject.put("userNationalCap", userData?.userNationalCap)
             jsonObject.put("useNationalGoals", userData?.useNationalGoals)
-            jsonObject.put("userAgentName",s)
+            jsonObject.put("userAgentName", s)
+            jsonObject.put("outfitterIDs", userData?.outfitterIDs)
+            jsonObject.put("userPreviousClubID", userData?.userPreviousClubID)
+            jsonObject.put("previousclubName", userData?.previousclubName)
             jsonObject.put("apiType", RestClient.apiType)
             jsonObject.put("apiVersion", RestClient.apiVersion)
         } catch (e: JSONException) {
@@ -756,15 +885,23 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
                         if (countryListPojo.get(0).status.equals("true", false)) {
                             try {
                                 StoreSessionManager(countryListPojo.get(0).data[0])
-                                tv_agent.visibility=View.VISIBLE
+                                tv_agent.visibility = View.VISIBLE
                                 tv_agent.setText(countryListPojo.get(0).data[0]?.userAgentName)
-                                MyUtils.showSnackbar(mActivity!!, countryListPojo.get(0).message, ll_agent)
+                                MyUtils.showSnackbar(
+                                    mActivity!!,
+                                    countryListPojo.get(0).message,
+                                    ll_agent
+                                )
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }
 
                         } else {
-                            MyUtils.showSnackbar(mActivity!!, countryListPojo.get(0).message, ll_agent)
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                countryListPojo.get(0).message,
+                                ll_agent
+                            )
                         }
 
                     } else {
@@ -773,6 +910,7 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
                     }
                 })
     }
+
     private fun StoreSessionManager(uesedata: SignupData?) {
 
         val gson = Gson()

@@ -27,30 +27,25 @@ import com.facebook.login.LoginResult
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.messaging.FirebaseMessaging
-import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.CountryListModel
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
-import com.nxplayr.fsl.util.*
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import com.nxplayr.fsl.R
+import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.*
 import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.CountryListModel
+import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
 import com.nxplayr.fsl.ui.fragments.dialogs.LanguageDialog
 import com.nxplayr.fsl.ui.fragments.setting.viewmodel.LanguageIntefaceListModel
 import com.nxplayr.fsl.ui.fragments.setting.viewmodel.LanguageLabelModel
+import com.nxplayr.fsl.util.*
 import com.nxplayr.fsl.util.interfaces.LanguageSelection
 import kotlinx.android.synthetic.main.activity_signin.*
-import kotlinx.android.synthetic.main.activity_signin.buttonFacebookLoginScreen
-import kotlinx.android.synthetic.main.activity_signin.flag
-import kotlinx.android.synthetic.main.activity_signin.language
-import kotlinx.android.synthetic.main.activity_signin.language_name
-import kotlinx.android.synthetic.main.activity_signup.*
-import kotlinx.android.synthetic.main.fragment_change_password.*
-import kotlinx.android.synthetic.main.toolbar.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class SignInActivity : AppCompatActivity(), View.OnClickListener {
@@ -154,7 +149,8 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
         imgLinkedIn.setOnClickListener(this)
         language.setOnClickListener(this)
 
-        buttonFacebookLoginScreen?.setReadPermissions("public_profile", "email")
+        buttonFacebookLoginScreen?.setPermissions("public_profile", "email")
+        buttonFacebookLoginScreen.authType = "rerequest";
         buttonFacebookLoginScreen?.registerCallback(callbackManager, object :
             FacebookCallback<LoginResult> {
             override fun onSuccess(loginResult: LoginResult) {
@@ -182,12 +178,8 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                             } else {
                                 MyUtils.showMessageOK(
                                     this@SignInActivity,
-                                    "your privacy setting in facebook is not allowing us to acccess your data, please try another account or change your privacy settings for CamFire.",
-                                    object : DialogInterface.OnClickListener {
-                                        override fun onClick(dialog: DialogInterface?, which: Int) {
-                                            dialog?.dismiss()
-                                        }
-                                    })
+                                    "your privacy setting in facebook is not allowing us to acccess your data, please try another account or change your privacy settings for CamFire."
+                                ) { dialog, which -> dialog?.dismiss() }
 
                             }
                             Log.d("FBLOGIN_JSON_RES", jsonObj.toString())
@@ -660,58 +652,58 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
             var jsonArray = JSONArray()
             jsonArray.put(jsonObject)
             signup.userRegistration(this, false, jsonArray.toString(), "login")
-                .observe(this@SignInActivity,
-                    { loginPojo ->
-                        if (loginPojo != null) {
-                            btn_signIn.endAnimation()
-                            MyUtils.setViewAndChildrenEnabled(ll_main_login, true)
+                .observe(this@SignInActivity
+                ) { loginPojo ->
+                    if (loginPojo != null) {
+                        btn_signIn.endAnimation()
+                        MyUtils.setViewAndChildrenEnabled(ll_main_login, true)
 
-                            if (loginPojo.get(0).status.equals("true", false)) {
-                                try {
-                                    sessionManager?.login_pass(
-                                        password_edit_text.text.toString().trim()
-                                    )
-                                    storeSessionManager(loginPojo.get(0).data.get(0))
-                                    Handler(Looper.getMainLooper()).postDelayed({
+                        if (loginPojo.get(0).status.equals("true", false)) {
+                            try {
+                                sessionManager?.login_pass(
+                                    password_edit_text.text.toString().trim()
+                                )
+                                storeSessionManager(loginPojo.get(0).data.get(0))
+                                Handler(Looper.getMainLooper()).postDelayed({
 
-                                        if (loginPojo[0].data[0].userOVerified.equals(
-                                                "Yes",
-                                                true
-                                            )
-                                        ) {
-                                            MyUtils.startActivity(
-                                                this@SignInActivity,
-                                                MainActivity::class.java,
-                                                true
-                                            )
-                                            finishAffinity()
-                                        } else {
-                                            var i = Intent(
-                                                this@SignInActivity,
-                                                OtpVerificationActivity::class.java
-                                            )
-                                            i.putExtra("from", "LoginByOtpVerification")
-                                            startActivity(i)
-                                            overridePendingTransition(
-                                                R.anim.slide_in_right,
-                                                R.anim.slide_out_left
-                                            )
-                                        }
-                                    }, 1000)
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                }
-
-                            } else {
-                                MyUtils.showSnackbar(this, loginPojo.get(0).message, ll_main_login)
+                                    if (loginPojo[0].data[0].userOVerified.equals(
+                                            "Yes",
+                                            true
+                                        )
+                                    ) {
+                                        MyUtils.startActivity(
+                                            this@SignInActivity,
+                                            MainActivity::class.java,
+                                            true
+                                        )
+                                        finishAffinity()
+                                    } else {
+                                        var i = Intent(
+                                            this@SignInActivity,
+                                            OtpVerificationActivity::class.java
+                                        )
+                                        i.putExtra("from", "LoginByOtpVerification")
+                                        startActivity(i)
+                                        overridePendingTransition(
+                                            R.anim.slide_in_right,
+                                            R.anim.slide_out_left
+                                        )
+                                    }
+                                }, 1000)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
                             }
 
                         } else {
-                            btn_signIn.endAnimation()
-                            MyUtils.setViewAndChildrenEnabled(ll_main_login, true)
-                            ErrorUtil.errorMethod(ll_main_login)
+                            MyUtils.showSnackbar(this, loginPojo.get(0).message, ll_main_login)
                         }
-                    })
+
+                    } else {
+                        btn_signIn.endAnimation()
+                        MyUtils.setViewAndChildrenEnabled(ll_main_login, true)
+                        ErrorUtil.errorMethod(ll_main_login)
+                    }
+                }
 
         })
 

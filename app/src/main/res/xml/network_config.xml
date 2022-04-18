@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">13.235.206.122</domain>
+        <domain includeSubdomains="true">apis.nxplayr.com</domain>
+        <domain includeSubdomains="true">dznio54bv1196.cloudfront.net</domain>
+    </domain-config>
+<!--    <base-config cleartextTrafficPermitted="true">-->
+<!--        <trust-anchors>-->
+<!--            <certificates src="system" />-->
+<!--        </trust-anchors>-->
+<!--    </base-config>-->
+</network-security-config>

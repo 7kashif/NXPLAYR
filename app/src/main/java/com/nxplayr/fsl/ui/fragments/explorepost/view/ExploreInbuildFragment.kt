@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.nxplayr.fsl.*
 import com.nxplayr.fsl.ui.activity.main.view.MainActivity
-import com.nxplayr.fsl.ui.fragments.adapter.*
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.ui.fragments.explorepost.viewmodel.ExploreBannerModel
 import com.nxplayr.fsl.ui.fragments.explorepost.viewmodel.ExploreVideoModel
@@ -25,7 +24,6 @@ import com.nxplayr.fsl.util.AutoScrollViewPager
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.fragment_explore_all.*
-import kotlinx.android.synthetic.main.nointernetconnection.view.*
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -46,7 +44,7 @@ class ExploreInbuildFragment : androidx.fragment.app.Fragment(), SwipeRefreshLay
     var explore_discover_list: ArrayList<CreatePostData?>? = ArrayList()
 
     var exploreFeature_adapter: ExploreFeatureAdapater? = null
-    var explorePopular_adapter: ExploreVideoAdapater? = null
+    var oldExplorePopular_adapter: OldExploreVideoAdapater? = null
     var exploreRising_adapter: ExploreRisingAdapater? = null
     var exploreDiscovered_adapter: ExploreCoveredAdapater? = null
 
@@ -102,7 +100,7 @@ class ExploreInbuildFragment : androidx.fragment.app.Fragment(), SwipeRefreshLay
         swipeCount += 1;
         if (swipeCount > 0) {
 
-            explorePopular_adapter!!.notifyDataSetChanged()
+            oldExplorePopular_adapter!!.notifyDataSetChanged()
             exploreRising_adapter!!.notifyDataSetChanged()
             exploreDiscovered_adapter!!.notifyDataSetChanged()
 
@@ -183,7 +181,7 @@ class ExploreInbuildFragment : androidx.fragment.app.Fragment(), SwipeRefreshLay
 
     private fun MostPopular() {
         rc_most_popular.layoutManager = LinearLayoutManager(mActivity!!, LinearLayoutManager.HORIZONTAL, false)
-        explorePopular_adapter = ExploreVideoAdapater(mActivity!!, object : ExploreVideoAdapater.OnItemClick {
+        oldExplorePopular_adapter = OldExploreVideoAdapater(mActivity!!, object : OldExploreVideoAdapater.OnItemClick {
             override fun onClicklisneter(pos: Int) {
                 if (explore_popular_list!!.get(pos)?.postAlbum.isNullOrEmpty() || explore_popular_list!!.get(pos)?.posthashtag.isNullOrEmpty()) {
 
@@ -242,7 +240,7 @@ class ExploreInbuildFragment : androidx.fragment.app.Fragment(), SwipeRefreshLay
 
         }, explore_popular_list, false)
         rc_most_popular.setHasFixedSize(true)
-        rc_most_popular.adapter = explorePopular_adapter
+        rc_most_popular.adapter = oldExplorePopular_adapter
 
         getPopularDataList()
     }
@@ -554,7 +552,7 @@ class ExploreInbuildFragment : androidx.fragment.app.Fragment(), SwipeRefreshLay
                                 if (exploreVidelistpojo[0].status.equals("true", true)) {
                                     explore_popular_list?.clear()
                                     explore_popular_list?.addAll(exploreVidelistpojo!![0]!!.data!!)
-                                    explorePopular_adapter?.notifyDataSetChanged()
+                                    oldExplorePopular_adapter?.notifyDataSetChanged()
                                     if (explore_popular_list!!.size == 0) {
 
                                         most_popularnodatafoundtextview.visibility = View.VISIBLE

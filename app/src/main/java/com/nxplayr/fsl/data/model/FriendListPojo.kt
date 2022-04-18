@@ -21,11 +21,11 @@ data class FriendCount(
         @SerializedName("Acquaintances")
         var acquaintances: String,
         @SerializedName("All")
-        var all: Int,
+        var all: String,
         @SerializedName("Friends")
-        var friends: Int,
+        var friends: String,
         @SerializedName("Professionals")
-        var professionals: Int,
+        var professionals: String,
         @SerializedName("pendingCount")
         var pendingCount: String,
         @SerializedName("sentCount")
@@ -61,13 +61,13 @@ data class FriendListData(
         var userProfilePicture: String,
 
     @SerializedName("cityName")
-        var cityName: Any,
+        var cityName: String,
     @SerializedName("userEmail")
         var userEmail: String,
     @SerializedName("userFullname")
         var userFullname: String,
     @SerializedName("useremployementID")
-        var useremployementID: Any,
+        var useremployementID: String,
     @SerializedName("userfriendReceiverID")
         var userfriendReceiverID: String,
     @SerializedName("userfriendSenderID")
@@ -99,9 +99,9 @@ data class Counts(
 
 data class All(
         @SerializedName("Acquaintances")
-        val acquaintances: Int?,
+        val acquaintances: String?,
         @SerializedName("All")
-        val all: Int?,
+        val all: String?,
         @SerializedName("Friends")
         val friends: String?,
         @SerializedName("Professionals")

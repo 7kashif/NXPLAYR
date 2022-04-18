@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.R
-import com.nxplayr.fsl.ui.fragments.explorepost.adapter.ExploreVideoAdapater
+import com.nxplayr.fsl.ui.fragments.explorepost.adapter.OldExploreVideoAdapater
 import com.nxplayr.fsl.ui.fragments.explorepost.adapter.ExploreVideoListAdapater
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.ui.fragments.explorepost.viewmodel.ExploreVideoModel
@@ -41,7 +41,7 @@ class AssignPostAlbumFragment : Fragment(), View.OnClickListener, SwipeRefreshLa
     var mActivity: AppCompatActivity? = null
 
     var explore_video_list: ArrayList<CreatePostData?>? = ArrayList()
-    var exploreVideo_adapter: ExploreVideoAdapater? = null
+    var oldExploreVideo_adapter: OldExploreVideoAdapater? = null
     var exploreVideoListadapter: ExploreVideoListAdapater? = null
 
     var swipeCount = 0
@@ -105,7 +105,7 @@ class AssignPostAlbumFragment : Fragment(), View.OnClickListener, SwipeRefreshLa
         swipeCount += 1;
         if (swipeCount > 0) {
 
-            exploreVideo_adapter!!.notifyDataSetChanged()
+            oldExploreVideo_adapter!!.notifyDataSetChanged()
 
             swipe_refresh_layout.isRefreshing = false
 
@@ -186,7 +186,7 @@ class AssignPostAlbumFragment : Fragment(), View.OnClickListener, SwipeRefreshLa
         rc_all_video.layoutManager = GridLayoutManager(mActivity!!, 2)
         if (explore_video_list.isNullOrEmpty() || pageNo == 0) {
 
-            exploreVideo_adapter = ExploreVideoAdapater(mActivity!!, object : ExploreVideoAdapater.OnItemClick {
+            oldExploreVideo_adapter = OldExploreVideoAdapater(mActivity!!, object : OldExploreVideoAdapater.OnItemClick {
                 override fun onClicklisneter(pos: Int) {
 
                     val exploreDetailFragment = ExploreVideoDetailFragment()
@@ -215,7 +215,7 @@ class AssignPostAlbumFragment : Fragment(), View.OnClickListener, SwipeRefreshLa
             }, explore_video_list!!, false)
         }
         rc_all_video.setHasFixedSize(true)
-        rc_all_video.adapter = exploreVideo_adapter
+        rc_all_video.adapter = oldExploreVideo_adapter
 
         pageNo = 0
         getAssignPostAlbumData(userData?.userID!!, pageNo, "Album", "", "", "", "", RestClient.apiVersion, "10",
@@ -277,14 +277,14 @@ class AssignPostAlbumFragment : Fragment(), View.OnClickListener, SwipeRefreshLa
 
             relativeprogressBar.visibility = View.VISIBLE
             explore_video_list?.clear()
-            exploreVideo_adapter?.notifyDataSetChanged()
+            oldExploreVideo_adapter?.notifyDataSetChanged()
 
         } else {
 
             relativeprogressBar.visibility = View.GONE
             rc_all_video.visibility = View.VISIBLE
             explore_video_list!!.add(null)
-            exploreVideo_adapter?.notifyItemInserted(explore_video_list!!.size - 1)
+            oldExploreVideo_adapter?.notifyItemInserted(explore_video_list!!.size - 1)
         }
 
         val jsonArray = JSONArray()
@@ -335,7 +335,7 @@ class AssignPostAlbumFragment : Fragment(), View.OnClickListener, SwipeRefreshLa
                                 if (pageNo > 0) {
 
                                     explore_video_list?.removeAt(explore_video_list!!.size - 1)
-                                    exploreVideo_adapter?.notifyItemRemoved(explore_video_list!!.size)
+                                    oldExploreVideo_adapter?.notifyItemRemoved(explore_video_list!!.size)
                                 }
 
                                 if (exploreVidelistpojo[0].status.equals("true", true)) {
@@ -346,7 +346,7 @@ class AssignPostAlbumFragment : Fragment(), View.OnClickListener, SwipeRefreshLa
                                     }
 
                                     explore_video_list?.addAll(exploreVidelistpojo!![0]!!.data!!)
-                                    exploreVideo_adapter?.notifyDataSetChanged()
+                                    oldExploreVideo_adapter?.notifyDataSetChanged()
                                     exploreVideoListadapter?.notifyDataSetChanged()
                                     pageNo += 1
                                     if (exploreVidelistpojo[0].data!!.size < 10) {

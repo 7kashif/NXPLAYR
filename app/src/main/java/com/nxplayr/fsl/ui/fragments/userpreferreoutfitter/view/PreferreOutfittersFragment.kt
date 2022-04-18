@@ -236,8 +236,6 @@ class PreferreOutfittersFragment : Fragment(),View.OnClickListener {
                                         recyclerview.visibility = View.VISIBLE
 
                                     }
-
-
                                 }
                             } else {
                                 relativeprogressBar.visibility = View.GONE
@@ -256,9 +254,11 @@ class PreferreOutfittersFragment : Fragment(),View.OnClickListener {
             jsonObject.put("contractsituationID", userData?.contractsituationID)
             jsonObject.put("userContractExpiryDate", userData?.userContractExpiryDate)
             jsonObject.put("userPreviousClubID", userData?.userPreviousClubID)
+            jsonObject.put("previousclubName", userData?.previousclubName)
             jsonObject.put("userJersyNumber", userData?.userJersyNumber)
             jsonObject.put("usertrophies", userData?.usertrophies)
             jsonObject.put("outfitterIDs", outfitterIDs)
+            jsonObject.put("userAgentName", userData?.userAgentName)
             jsonObject.put("geomobilityID", userData?.geomobilityID)
             jsonObject.put("userNationalCountryID", userData?.userNationalCountryID)
             jsonObject.put("userNationalCap", userData?.userNationalCap)

@@ -6,187 +6,155 @@ import java.io.Serializable
 
 data class PostCreatePojo(
     @SerializedName("data")
-        var `data`: List<CreatePostData?>? = listOf(),
+    var `data`: List<CreatePostData?>? = listOf(),
     @SerializedName("message")
-        var message: String="",
+    var message: String = "",
     @SerializedName("status")
-        var status: String=""
-): Serializable
+    var status: String = ""
+) : Serializable
 
 data class CreatePostData(
     @SerializedName("IsYouAreBlocked")
-        var isYouAreBlocked: String="",
+    var isYouAreBlocked: String = "",
     @SerializedName("IsYouBlocked")
-        var isYouBlocked: String="",
+    var isYouBlocked: String = "",
     @SerializedName("IsYouFollowing")
-        var isYouFollowing: String="",
+    var isYouFollowing: String = "",
     @SerializedName("IsYouLikedProfile")
-        var isYouLikedProfile: String="",
+    var isYouLikedProfile: String = "",
     @SerializedName("IsYouReceiveRequest")
-        var isYouReceiveRequest: String="",
+    var isYouReceiveRequest: String = "",
     @SerializedName("IsYouSentRequest")
-        var isYouSentRequest: String="",
+    var isYouSentRequest: String = "",
     @SerializedName("IsYourFriend")
-        var isYourFriend: String="",
+    var isYourFriend: String = "",
     @SerializedName("IsYourRequestRejected")
-        var isYourRequestRejected: String="",
+    var isYourRequestRejected: String = "",
     @SerializedName("languageID")
-        var languageID: String="",
+    var languageID: String = "",
     @SerializedName("original_postCreatedDate")
-        var originalPostCreatedDate: String="",
+    var originalPostCreatedDate: String = "",
     @SerializedName("originalPostID")
-        var originalPostID: String="",
+    var originalPostID: String = "",
     @SerializedName("original_userEmail")
-        var originalUserEmail: String="",
+    var originalUserEmail: String = "",
     @SerializedName("original_userFirstName")
-        var originalUserFirstName: String="",
+    var originalUserFirstName: String = "",
     @SerializedName("original_userLastName")
-        var originalUserLastName: String="",
+    var originalUserLastName: String = "",
     @SerializedName("original_userMobile")
-        var originalUserMobile: String="",
+    var originalUserMobile: String = "",
     @SerializedName("original_userProfilePicture")
-        var originalUserProfilePicture: String="",
+    var originalUserProfilePicture: String = "",
     @SerializedName("originaluserID")
-        var originaluserID: String="",
+    var originaluserID: String = "",
     @SerializedName("postCategory")
-        var postCategory: String="",
+    var postCategory: String = "",
     @SerializedName("postComment")
-        var postComment: String="",
+    var postComment: String = "",
     @SerializedName("postCommentList")
-        var postCommentList: ArrayList<CommentData>,
+    var postCommentList: ArrayList<CommentData>,
     @SerializedName("postCreateType")
-        var postCreateType: String="",
+    var postCreateType: String = "",
     @SerializedName("postCreatedDate")
-        var postCreatedDate: String="",
+    var postCreatedDate: String = "",
     @SerializedName("PostCreatedMinutesAgo")
-        var postCreatedMinutesAgo: String="",
+    var postCreatedMinutesAgo: String = "",
     @SerializedName("postDescription")
-        var postDescription: String="",
+    var postDescription: String = "",
     @SerializedName("postDisLike")
-        var postDisLike: String="",
+    var postDisLike: String = "",
     @SerializedName("postFavorite")
-        var postFavorite: String="",
+    var postFavorite: String = "",
     @SerializedName("postFor")
-        var postFor: String="",
+    var postFor: String = "",
     @SerializedName("postID")
-        var postID: String="",
+    var postID: String = "",
     @SerializedName("postLatitude")
-        var postLatitude: String="",
+    var postLatitude: String = "",
     @SerializedName("postLike")
-        var postLike: String="",
+    var postLike: String = "",
     @SerializedName("postLongitude")
-        var postLongitude: String="",
+    var postLongitude: String = "",
     @SerializedName("postMediaType")
-        var postMediaType: String="",
+    var postMediaType: String = "",
     @SerializedName("postPrivacyType")
-        var postPrivacyType: String="",
+    var postPrivacyType: String = "",
     @SerializedName("connectionTypeIDs")
-        var connectionTypeIDs: String="",
+    var connectionTypeIDs: String = "",
     @SerializedName("postRatting")
-        var postRatting: String="",
+    var postRatting: String = "",
     @SerializedName("postSerializedData")
-        var postSerializedData: ArrayList<PostSerializedData>,
+    var postSerializedData: ArrayList<PostSerializedData>,
     @SerializedName("postShared")
-        var postShared: String="",
+    var postShared: String = "",
     @SerializedName("postStatus")
-        var postStatus: String="",
+    var postStatus: String = "",
     @SerializedName("postType")
-        var postType: String="",
+    var postType: String = "",
     @SerializedName("postUploadDate")
-        var postUploadDate: String="",
+    var postUploadDate: String = "",
     @SerializedName("postViews")
-        var postViews: String="",
+    var postViews: String = "",
     @SerializedName("postLocation")
-        var postLocation: String="",
+    var postLocation: String = "",
     @SerializedName("userFirstName")
-        var userFirstName: String="",
+    var userFirstName: String = "",
     @SerializedName("userID")
-        var userID: String="",
+    var userID: String = "",
     @SerializedName("userLastName")
-        var userLastName: String="",
+    var userLastName: String = "",
     @SerializedName("userProfilePicture")
-        var userProfilePicture: String="",
+    var userProfilePicture: String = "",
     @SerializedName("youpostLiked")
-        var youpostLiked: String="",
+    var youpostLiked: String = "",
     @SerializedName("youpostShared")
-        var youpostShared: String="",
+    var youpostShared: String = "",
     @SerializedName("youpostViews")
-        var youpostViews: String="",
+    var youpostViews: String = "",
     @SerializedName("postWriteSomething")
-        var postWriteSomething: String="",
+    var postWriteSomething: String = "",
     @SerializedName("agegroupID")
-        var agegroupID: String="",
+    var agegroupID: String = "",
     @SerializedName("footballagecatID")
-        var footballagecatID: String="",
+    var footballagecatID: String = "",
     @SerializedName("footbllevelID")
-        var footbllevelID: String="",
+    var footbllevelID: String = "",
     @SerializedName("footbltypeID")
-        var footbltypeID: String="",
+    var footbltypeID: String = "",
     @SerializedName("orgPostPostCreatedMinutesAgo")
-        var orgPostPostCreatedMinutesAgo: String,
+    var orgPostPostCreatedMinutesAgo: String,
     @SerializedName("plyrposiID")
-        var plyrposiID: String="",
+    var plyrposiID: String = "",
     @SerializedName("postAlbum")
-        var postAlbum: ArrayList<PostALbum>,
+    var postAlbum: ArrayList<PostALbum>,
     @SerializedName("postIsSaved")
-        var postIsSaved: String="",
+    var postIsSaved: String = "",
     @SerializedName("posthashtag")
-        var posthashtag: String,
+    var posthashtag: String,
     @SerializedName("userGender")
-        var userGender: String="",
+    var userGender: String = "",
     @SerializedName("userHomeCountryID")
-        var userHomeCountryID: String="",
+    var userHomeCountryID: String = "",
     @SerializedName("postLanguage")
-        var postLanguage: String=""
-): Serializable
+    var postLanguage: String = "",
+    var isListView: Boolean = false
+) : Serializable
 
 data class PostSerialized(
-        @SerializedName("albumName")
-        var albumName: String="",
-        @SerializedName("albumType")
-        var albumType: String="",
-        @SerializedName("albummedia")
-        var albummedia: List<AlbummediaData>
-): Serializable
+    @SerializedName("albumName")
+    var albumName: String = "",
+    @SerializedName("albumType")
+    var albumType: String = "",
+    @SerializedName("albummedia")
+    var albummedia: List<AlbummediaData>
+) : Serializable
 
 data class AlbummediaData(
-        @SerializedName("albummediaFile")
-        var albummediaFile: String="",
-        @SerializedName("albummediaFileType")
-        var albummediaFileType: String="",
-        @SerializedName("albummediaThumbnail")
-        var albummediaThumbnail: String=""
-): Serializable
-
-
-/*class EquationListJsonAdapter : TypeAdapter<ArrayList<PostSerializedData?>?>() {
-
-        @Throws(IOException::class)
-        override fun read(`in`: JsonReader): ArrayList<PostSerializedData?>? {
-                val deserializedObject : ArrayList<PostSerializedData?>?=ArrayList()
-
-                // type of next token
-                val peek: JsonToken = `in`.peek()
-
-                // if the json field is string
-                if (JsonToken.BOOLEAN.equals(peek)) {
-                        `in`.beginArray()
-                        `in`.endArray()
-                }
-
-                // if it is array then implement normal array deserialization
-                if (JsonToken.BEGIN_ARRAY.equals(peek)) {
-                        `in`.beginArray()
-                        while (`in`.hasNext()) {
-                                val element: Array<JsonReader> = arrayOf(`in`)
-                                deserializedObject?.addAll(element[`in`])
-                        }
-                        `in`.endArray()
-                }
-                return deserializedObject!!
-        }
-
-        override fun write(out: JsonWriter?, value: ArrayList<PostSerializedData?>?) {
-                TODO("Not yet implemented")
-        }
-}*/
+    @SerializedName("albummediaFile")
+    var albummediaFile: String = "",
+    @SerializedName("albummediaFileType")
+    var albummediaFileType: String = "",
+    @SerializedName("albummediaThumbnail")
+    var albummediaThumbnail: String = ""
+) : Serializable

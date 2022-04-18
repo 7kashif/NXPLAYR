@@ -12,12 +12,6 @@
 
     <include layout="@layout/toolbar" />
 
-    <!--  <androidx.core.widget.NestedScrollView
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:fillViewport="true"
-          android:overScrollMode="never">-->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,6 +24,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:paddingStart="@dimen/_20sdp"
+            android:paddingEnd="@dimen/_20sdp"
             android:text="@string/select_modes"
             android:textSize="@dimen/_25ssp" />
 
@@ -52,9 +48,11 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:gravity="center"
             android:orientation="vertical">
 
-            <include layout="@layout/common_recyclerview" />
+            <include layout="@layout/common_recyclerview_center" />
+
         </LinearLayout>
 
         <LinearLayout

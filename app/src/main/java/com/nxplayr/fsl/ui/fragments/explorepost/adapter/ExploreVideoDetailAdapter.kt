@@ -53,10 +53,13 @@ class ExploreVideoDetailAdapter(
     val viewAll: Boolean = false
 ) : PagerAdapter() {
 
+    private lateinit var rcCommentList: RecyclerView
+    private lateinit var postCommentAdapter: CommentAdapter
     private val inflater: LayoutInflater
     private var isMuteing = false
     var exoPlayer: SimpleExoPlayer? = null
     var videoPlayPosition = -1
+    var pagerPosition = -1
     var cache: SimpleCache? = null
     var sessionManager: SessionManager? = null
 
@@ -81,6 +84,7 @@ class ExploreVideoDetailAdapter(
 
     override fun instantiateItem(view: ViewGroup, position: Int): Any {
 
+        pagerPosition = position
         val imageLayout =
             inflater.inflate(R.layout.explore_video_detail_page_activity, view, false)!!
 
@@ -106,7 +110,7 @@ class ExploreVideoDetailAdapter(
         val playerView = imageLayout.findViewById(R.id.playerView) as PlayerView
         val exo_player_progress_bar =
             imageLayout.findViewById(R.id.exo_player_progress_bar) as ProgressBar
-        val rcCommentList = imageLayout.findViewById(R.id.rcCommentList) as RecyclerView
+        rcCommentList = imageLayout.findViewById(R.id.rcCommentList) as RecyclerView
         val txt_write_comment = imageLayout.findViewById(R.id.txt_write_comment) as EditText
         val img_send_arrow = imageLayout.findViewById(R.id.img_send_arrow) as ImageView
         val tvCommenViewAll = imageLayout.findViewById(R.id.tvCommenViewAll) as TextView
@@ -294,11 +298,27 @@ class ExploreVideoDetailAdapter(
         } else {
             tvCommenViewAll.visibility = View.GONE
         }
+
+
+        setupCommentAdapter(position, exploreList)
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rcCommentList.layoutManager = linearLayoutManager
 
-        val postCommetnAdapter = CommentAdapter(
-            context, exploreList.get(position)?.postCommentList!!,
+        view.addView(
+            imageLayout,
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+
+        return imageLayout
+    }
+
+    fun setupCommentAdapter(position: Int, exploreList: ArrayList<CreatePostData?>?) {
+
+        rcCommentList.adapter = null
+
+        postCommentAdapter = CommentAdapter(
+            context, exploreList?.get(position)?.postCommentList!!,
             object : CommentAdapter.OnItemClick {
                 override fun onClicklisneter(
                     pos: Int,
@@ -344,15 +364,14 @@ class ExploreVideoDetailAdapter(
             }, ""
         )
         rcCommentList.setHasFixedSize(true)
-        rcCommentList.adapter = postCommetnAdapter
+        rcCommentList.adapter = postCommentAdapter
 
-        view.addView(
-            imageLayout,
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
+    }
 
-        return imageLayout
+    fun addComment(comment: CommentData) {
+        exploreList?.get(pagerPosition)?.postCommentList?.add(comment)
+        postCommentAdapter.notifyItemChanged(pagerPosition)
+        postCommentAdapter.addComment(comment)
     }
 
     fun playAvailableVideos(

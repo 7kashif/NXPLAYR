@@ -1,6 +1,7 @@
 package com.nxplayr.fsl.data.model
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 
 data class SkillsPojo(
@@ -10,7 +11,7 @@ data class SkillsPojo(
         var message: String,
     @SerializedName("status")
         var status: String
-)
+):Serializable
 
 data class UsersSkils(
         @SerializedName("skillID")
@@ -23,4 +24,4 @@ data class UsersSkils(
         var userskillCreatedDate: String,
         @SerializedName("userskillID")
         var userskillID: String
-)
+):Serializable

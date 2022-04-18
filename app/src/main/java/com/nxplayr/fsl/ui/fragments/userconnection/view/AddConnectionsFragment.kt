@@ -504,8 +504,8 @@ class AddConnectionsFragment : Fragment(),View.OnClickListener {
 
                                 if (connectionListpojo[0].status.equals("true", false)) {
                                     MyUtils.dismissProgressDialog()
-                                    list_connection?.remove(connectionData);
-                                    addConnectionListAdapter?.notifyDataSetChanged()
+//                                    list_connection?.remove(connectionData);
+//                                    addConnectionListAdapter?.notifyDataSetChanged()
 
                                 } else {
                                     MyUtils.dismissProgressDialog()

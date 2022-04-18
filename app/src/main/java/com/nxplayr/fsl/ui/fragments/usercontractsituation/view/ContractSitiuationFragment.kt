@@ -37,7 +37,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
 
-class ContractSitiuationFragment : Fragment(),View.OnClickListener {
+class ContractSitiuationFragment : Fragment(), View.OnClickListener {
 
     private var v: View? = null
     var mActivity: AppCompatActivity? = null
@@ -52,11 +52,13 @@ class ContractSitiuationFragment : Fragment(),View.OnClickListener {
     var contractsituationID = ""
     var contractsituationName = ""
     var userContractExpiryDate = ""
-    private lateinit var  languageModel: ContractSitiuationListModel
-    private lateinit var  passportNationalityModel: UpdateResumeCallsViewModel
+    private lateinit var languageModel: ContractSitiuationListModel
+    private lateinit var passportNationalityModel: UpdateResumeCallsViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         if (v == null) {
             v = inflater.inflate(R.layout.fragment_contract_sitiuation, container, false)
@@ -71,15 +73,18 @@ class ContractSitiuationFragment : Fragment(),View.OnClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-         sessionManager = SessionManager(mActivity!!)
-        if (sessionManager?.get_Authenticate_User() != null)
-        {
+        sessionManager = SessionManager(mActivity!!)
+        if (sessionManager?.get_Authenticate_User() != null) {
             userData = sessionManager?.get_Authenticate_User()
             if (!userData?.contractsituationID.isNullOrEmpty() && !userData?.contractsituationName.isNullOrEmpty()) {
                 contractsituationID = userData?.contractsituationID!!
                 contractsituationName = userData?.contractsituationName!!
                 userContractExpiryDate = if (userData?.userContractExpiryDate != null) {
-                    MyUtils.formatDate(userData?.userContractExpiryDate!!, "yyyy-MM-dd", "dd/MM/yyyy")
+                    MyUtils.formatDate(
+                        userData?.userContractExpiryDate!!,
+                        "yyyy-MM-dd",
+                        "dd/MM/yyyy"
+                    )
                 } else {
                     ""
                 }
@@ -125,12 +130,20 @@ class ContractSitiuationFragment : Fragment(),View.OnClickListener {
                             contract_list?.clear()
                             if (userData != null) {
                                 for (i in languagesPojo[0].data.indices) {
-                                    if (userData?.contractsituationID.equals(languagesPojo[0].data[i].contractsituationID, false)) {
+                                    if (userData?.contractsituationID.equals(
+                                            languagesPojo[0].data[i].contractsituationID,
+                                            false
+                                        )
+                                    ) {
                                         languagesPojo[0].data[i].checked = true
-                                        if(!userData?.userContractExpiryDate.isNullOrEmpty())
-                                        {
+                                        if (!userData?.userContractExpiryDate.isNullOrEmpty()) {
                                             try {
-                                                languagesPojo[0].data[i].userContractExpiryDate=MyUtils.formatDate(userData?.userContractExpiryDate!!, "yyyy-MM-dd", "dd/MM/yyyy")
+                                                languagesPojo[0].data[i].userContractExpiryDate =
+                                                    MyUtils.formatDate(
+                                                        userData?.userContractExpiryDate!!,
+                                                        "yyyy-MM-dd",
+                                                        "dd/MM/yyyy"
+                                                    )
                                             } catch (e: Exception) {
                                             }
                                         }
@@ -166,36 +179,45 @@ class ContractSitiuationFragment : Fragment(),View.OnClickListener {
 
     private fun setupUI() {
         tvToolbarTitle1.text = getString(R.string.contract_situation)
-        add_icon_connection.visibility=View.GONE
+        add_icon_connection.visibility = View.GONE
         toolbar.setNavigationOnClickListener {
             (activity as MainActivity).onBackPressed()
         }
         if (contract_list == null) {
             contract_list = ArrayList()
-            contractSitiuationAdapter = ContractSitiuationAdapter(mActivity!!, contract_list, object : ContractSitiuationAdapter.OnItemClick {
+            contractSitiuationAdapter = ContractSitiuationAdapter(
+                mActivity!!,
+                contract_list,
+                object : ContractSitiuationAdapter.OnItemClick {
 
-                override fun onClicled(position: Int, from: String) {
-                    when (from) {
-                        "click" -> {
+                    override fun onClicled(position: Int, from: String) {
+                        when (from) {
+                            "click" -> {
 
-                        }
-                        else -> {
-                            for (i in 0 until contract_list!!.size) {
-                                if (i == position) {
-                                    contract_list!![i]!!.checked = !(contract_list!![i]!!.checked)
-                                    btn_addNationality.backgroundTint = (resources.getColor(R.color.colorPrimary))
-                                    btn_addNationality.textColor = resources.getColor(R.color.black)
-                                    btn_addNationality.strokeColor = resources.getColor(R.color.colorPrimary)
-                                } else {
-                                    contract_list!![i]!!.checked = false
+                            }
+                            else -> {
+                                for (i in 0 until contract_list!!.size) {
+                                    if (i == position) {
+                                        contract_list!![i]!!.checked =
+                                            !(contract_list!![i]!!.checked)
+                                        btn_addNationality.backgroundTint =
+                                            (resources.getColor(R.color.colorPrimary))
+                                        btn_addNationality.textColor =
+                                            resources.getColor(R.color.black)
+                                        btn_addNationality.strokeColor =
+                                            resources.getColor(R.color.colorPrimary)
+                                    } else {
+                                        contract_list!![i]!!.checked = false
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    contractSitiuationAdapter?.notifyDataSetChanged()
-                }
-            }, "Language")
+                        contractSitiuationAdapter?.notifyDataSetChanged()
+                    }
+                },
+                "Language"
+            )
             recyclerview.layoutManager = LinearLayoutManager(mActivity!!)
             recyclerview.setHasFixedSize(true)
             recyclerview.adapter = contractSitiuationAdapter
@@ -209,10 +231,12 @@ class ContractSitiuationFragment : Fragment(),View.OnClickListener {
     }
 
     private fun setupViewModel() {
-         languageModel = ViewModelProvider(this@ContractSitiuationFragment).get(
-             ContractSitiuationListModel::class.java)
-         passportNationalityModel = ViewModelProvider(this@ContractSitiuationFragment).get(
-             UpdateResumeCallsViewModel::class.java)
+        languageModel = ViewModelProvider(this@ContractSitiuationFragment).get(
+            ContractSitiuationListModel::class.java
+        )
+        passportNationalityModel = ViewModelProvider(this@ContractSitiuationFragment).get(
+            UpdateResumeCallsViewModel::class.java
+        )
 
     }
 
@@ -223,25 +247,33 @@ class ContractSitiuationFragment : Fragment(),View.OnClickListener {
         try {
             jsonObject.put("loginuserID", userData?.userID)
             jsonObject.put("leagueID", userData?.leagueID)
-            if(s.equals("Edit",false))
-            {
+            if (s.equals("Edit", false)) {
                 jsonObject.put("contractsituationID", contractsituationID)
             }
-            if(!userContractExpiryDate.equals("Free",false))
-            {
+            if (!userContractExpiryDate.equals("Free", false)) {
                 try {
-                    jsonObject.put("userContractExpiryDate", MyUtils.formatDate(userContractExpiryDate, "dd/MM/yyyy", "yyyy-MM-dd"))
+                    jsonObject.put(
+                        "userContractExpiryDate",
+                        MyUtils.formatDate(userContractExpiryDate, "dd/MM/yyyy", "yyyy-MM-dd")
+                    )
                 } catch (e: Exception) {
                 }
             }
 
+            jsonObject.put("geomobilityID", userData?.geomobilityID)
+            jsonObject.put("loginuserID", userData?.userID)
+            jsonObject.put("leagueID", userData?.leagueID)
+            jsonObject.put("previousclubName", userData?.previousclubName)
+            jsonObject.put("outfitterIDs", userData?.outfitterIDs)
+            jsonObject.put("userAgentName", userData?.userAgentName)
+            jsonObject.put("userContractExpiryDate", userData?.userContractExpiryDate)
             jsonObject.put("userPreviousClubID", userData?.userPreviousClubID)
             jsonObject.put("userJersyNumber", userData?.userJersyNumber)
             jsonObject.put("usertrophies", userData?.usertrophies)
-            jsonObject.put("geomobilityID", userData?.geomobilityID)
             jsonObject.put("userNationalCountryID", userData?.userNationalCountryID)
             jsonObject.put("userNationalCap", userData?.userNationalCap)
             jsonObject.put("useNationalGoals", userData?.useNationalGoals)
+
             jsonObject.put("apiType", RestClient.apiType)
             jsonObject.put("apiVersion", RestClient.apiVersion)
         } catch (e: JSONException) {
@@ -250,32 +282,40 @@ class ContractSitiuationFragment : Fragment(),View.OnClickListener {
         jsonArray.put(jsonObject)
         Log.e("json", "" + jsonArray.toString())
         passportNationalityModel.getUpdateResume(mActivity!!, s, jsonArray.toString())
-                .observe(
-                    this@ContractSitiuationFragment,
-                    { countryListPojo ->
-                        if (countryListPojo != null) {
-                            btn_addNationality.endAnimation()
-                            if (countryListPojo.get(0).status.equals("true", false)) {
-                                try {
-                                    StoreSessionManager(countryListPojo.get(0).data[0])
-                                    Handler().postDelayed({
-                                        (activity as MainActivity).onBackPressed()
-                                    }, 1000)
-                                    MyUtils.showSnackbar(mActivity!!, countryListPojo.get(0).message, llycontract)
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                }
-
-                            } else {
-                                MyUtils.showSnackbar(mActivity!!, countryListPojo.get(0).message, llycontract)
-                            }
-
-                        } else {
-                            btn_addNationality.endAnimation()
-                            ErrorUtil.errorMethod(llycontract)
-//                                Toast.makeText(context,R.string.error_common_network, Toast.LENGTH_SHORT).show()
+            .observe(
+                this@ContractSitiuationFragment
+            ) { countryListPojo ->
+                if (countryListPojo != null) {
+                    btn_addNationality.endAnimation()
+                    if (countryListPojo.get(0).status.equals("true", false)) {
+                        try {
+                            StoreSessionManager(countryListPojo.get(0).data[0])
+                            Handler().postDelayed({
+                                (activity as MainActivity).onBackPressed()
+                            }, 1000)
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                countryListPojo.get(0).message,
+                                llycontract
+                            )
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
-                    })
+
+                    } else {
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            countryListPojo.get(0).message,
+                            llycontract
+                        )
+                    }
+
+                } else {
+                    btn_addNationality.endAnimation()
+                    ErrorUtil.errorMethod(llycontract)
+//                                Toast.makeText(context,R.string.error_common_network, Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
     private fun StoreSessionManager(uesedata: SignupData?) {
@@ -284,23 +324,22 @@ class ContractSitiuationFragment : Fragment(),View.OnClickListener {
 
         val json = gson.toJson(uesedata)
         sessionManager?.create_login_session(
-                json,
-                uesedata!!.userMobile,
-                "",
-                true,
-                sessionManager!!.isEmailLogin()
+            json,
+            uesedata!!.userMobile,
+            "",
+            true,
+            sessionManager!!.isEmailLogin()
         )
 
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-            R.id.btnRetry->{
+        when (v?.id) {
+            R.id.btnRetry -> {
                 pageNo = 0
                 setupObserver()
             }
-            R.id.btn_addNationality->{
+            R.id.btn_addNationality -> {
                 for (i in 0 until contract_list!!.size) {
                     if (contract_list!![i]!!.checked) {
                         contractsituationName = contract_list!![i]!!.contractsituationName
@@ -316,7 +355,11 @@ class ContractSitiuationFragment : Fragment(),View.OnClickListener {
                     }
                 }
                 if (contractsituationID.isNullOrEmpty()) {
-                    MyUtils.showSnackbar(mActivity!!, "Please select contract situation", llycontract)
+                    MyUtils.showSnackbar(
+                        mActivity!!,
+                        "Please select contract situation",
+                        llycontract
+                    )
                 } else if (userContractExpiryDate.isNullOrEmpty()) {
                     MyUtils.showSnackbar(mActivity!!, "Please select expiry date", llycontract)
                 } else {

@@ -151,14 +151,14 @@ class PitchPositionFragment : Fragment() {
                 tv_RS.background = resources.getDrawable(R.drawable.circle_fill_blue)
                 tv_RS.setTextColor(resources.getColor(R.color.black))
                 plyposList?.add(plyrposiID)
-                tv_playerUpdatedPos.text = "Right Safety"
+                tv_playerUpdatedPos.text = "Right Wing"
             } else {
                 tv_RS.background = resources.getDrawable(R.drawable.circle_pitch_black)
                 tv_RS.setTextColor(resources.getColor(R.color.colorPrimary))
                 plyposList?.remove(plyrposiID)
             }
-            tv_RS.text = "RS"
-            plyPosTags = "RS"
+            tv_RS.text = "RW"
+            plyPosTags = "RW"
 
             btn_changePitchPosition.backgroundTint = (resources.getColor(R.color.colorPrimary))
             btn_changePitchPosition.textColor = resources.getColor(R.color.black)
@@ -193,15 +193,15 @@ class PitchPositionFragment : Fragment() {
                 tv_LS.background = resources.getDrawable(R.drawable.circle_fill_blue)
                 tv_LS.setTextColor(resources.getColor(R.color.black))
                 plyposList?.add(plyrposiID)
-                tv_playerUpdatedPos.text = "Left Safety"
+                tv_playerUpdatedPos.text = "Left Wing"
             } else {
                 tv_LS.background = resources.getDrawable(R.drawable.circle_pitch_black)
                 tv_LS.setTextColor(resources.getColor(R.color.colorPrimary))
                 plyposList?.remove(plyrposiID)
             }
 
-            tv_LS.text = "LS"
-            plyPosTags = "LS"
+            tv_LS.text = "LW"
+            plyPosTags = "LW"
 
             btn_changePitchPosition.backgroundTint = (resources.getColor(R.color.colorPrimary))
             btn_changePitchPosition.textColor = resources.getColor(R.color.black)

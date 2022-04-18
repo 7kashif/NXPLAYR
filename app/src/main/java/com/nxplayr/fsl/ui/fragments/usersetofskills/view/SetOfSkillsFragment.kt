@@ -57,15 +57,10 @@ class SetOfSkillsFragment : Fragment(),View.OnClickListener {
     var clubAdapter: SetOfSkillAdapter? = null
     var addClubListAdapter: AddSkillListAdapter? = null
 
-    //var addClubListData: ArrayList<UsersSkils>? = ArrayList()
     var sessionManager: SessionManager? = null
     var userData: SignupData? = null
-    var club: ClubListData? = null
     var clubListAdapter: SkillListAdapter? = null
-    var infaltorScheduleMode: LayoutInflater? = null
     var clubID = ""
-    var searchClub: String = ""
-    var dif = ""
     var deleteList: ArrayList<UsersSkils>? = ArrayList()
     var fromProfile = ""
     var userId = ""
@@ -199,10 +194,12 @@ class SetOfSkillsFragment : Fragment(),View.OnClickListener {
     }
 
     fun addClubList(club: UsersSkils) {
+//        ll_mainAddClubSetSkill.visibility = View.GONE
         addClubListAdapter = AddSkillListAdapter(activity as MainActivity, addSaveClubList, object : AddSkillListAdapter.OnItemClick {
             override fun onClicled(position: Int, from: String) {
                 when (from) {
                     "removefromList" -> {
+//                        deleteClub(addSaveClubList!![position].userskillID, position)
 
                         if (!addSaveClubList.isNullOrEmpty()) {
                             club_list?.add(addSaveClubList!![position])
@@ -240,7 +237,7 @@ class SetOfSkillsFragment : Fragment(),View.OnClickListener {
 
                 }
             }
-        })
+        }, userId)
 
         RV_addedClubList.layoutManager = LinearLayoutManager(mActivity)
         RV_addedClubList.setHasFixedSize(true)
@@ -269,53 +266,56 @@ class SetOfSkillsFragment : Fragment(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
         clubListModel.getSkillsList(mActivity!!, false, jsonArray.toString())
-                .observe(viewLifecycleOwner,
-                    { clubListpojo ->
-                        relativeprogressBar.visibility = View.GONE
-                        recyclerview.visibility = View.VISIBLE
-                        if (clubListpojo != null && clubListpojo.isNotEmpty()) {
+                .observe(viewLifecycleOwner
+                ) { clubListpojo ->
+                    relativeprogressBar.visibility = View.GONE
+                    recyclerview.visibility = View.VISIBLE
+                    if (clubListpojo != null && clubListpojo.isNotEmpty()) {
 
-                            if (clubListpojo[0].status.equals("true", false)) {
+                        if (clubListpojo[0].status.equals("true", false)) {
 
-                                club_list?.clear()
-                                if (!userId.equals(userData?.userID, false)) {
-                                    if (!otherUserData!!.skills.isNullOrEmpty()) {
-                                        val firstListIds = otherUserData!!.skills?.map { it.skillID }
-                                        val new = clubListpojo[0].data?.filter { it.skillID !in firstListIds!! }
-                                        club_list?.addAll((new))
-                                        clubAdapter?.notifyDataSetChanged()
-                                    } else {
-                                        club_list?.addAll(clubListpojo[0].data)
-                                    }
+                            club_list?.clear()
+                            if (!userId.equals(userData?.userID, false)) {
+                                if (!otherUserData!!.skills.isNullOrEmpty()) {
+                                    val firstListIds = otherUserData!!.skills?.map { it.skillID }
+                                    val new =
+                                        clubListpojo[0].data?.filter { it.skillID !in firstListIds!! }
+                                    club_list?.addAll((new))
+                                    clubAdapter?.notifyDataSetChanged()
                                 } else {
-                                    if (!userData!!.skills.isNullOrEmpty()) {
-                                        val firstListIds = userData!!.skills?.map { it.skillID }
-                                        val new = clubListpojo[0].data?.filter { it.skillID !in firstListIds!! }
-                                        club_list?.addAll((new))
-                                        clubAdapter?.notifyDataSetChanged()
-                                    } else {
-                                        club_list?.addAll(clubListpojo[0].data)
-                                    }
+                                    club_list?.addAll(clubListpojo[0].data)
                                 }
-
-                                clubAdapter?.notifyDataSetChanged()
                             } else {
-
-                                if (club_list!!.size == 0) {
-                                    ll_no_data_found.visibility = View.VISIBLE
-                                    recyclerview.visibility = View.GONE
+                                if (!userData!!.skills.isNullOrEmpty()) {
+                                    val firstListIds = userData!!.skills?.map { it.skillID }
+                                    val new =
+                                        clubListpojo[0].data?.filter { it.skillID !in firstListIds!! }
+                                    club_list?.addAll((new))
+                                    clubAdapter?.notifyDataSetChanged()
                                 } else {
-                                    ll_no_data_found.visibility = View.GONE
-                                    recyclerview.visibility = View.VISIBLE
+                                    club_list?.addAll(clubListpojo[0].data)
                                 }
                             }
+
+                            clubAdapter?.notifyDataSetChanged()
                         } else {
-                            btn_save_current_club.backgroundTint = (resources.getColor(R.color.transperent1))
-                            btn_save_current_club.textColor = resources.getColor(R.color.colorPrimary)
-                            btn_save_current_club.strokeColor = (resources.getColor(R.color.grayborder))
-                            errorMethod()
+
+                            if (club_list!!.size == 0) {
+                                ll_no_data_found.visibility = View.VISIBLE
+                                recyclerview.visibility = View.GONE
+                            } else {
+                                ll_no_data_found.visibility = View.GONE
+                                recyclerview.visibility = View.VISIBLE
+                            }
                         }
-                    })
+                    } else {
+                        btn_save_current_club.backgroundTint =
+                            (resources.getColor(R.color.transperent1))
+                        btn_save_current_club.textColor = resources.getColor(R.color.colorPrimary)
+                        btn_save_current_club.strokeColor = (resources.getColor(R.color.grayborder))
+                        errorMethod()
+                    }
+                }
 
     }
 

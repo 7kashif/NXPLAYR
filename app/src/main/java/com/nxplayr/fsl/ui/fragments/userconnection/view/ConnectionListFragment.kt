@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,10 +46,11 @@ import java.io.Serializable
 import java.text.ParseException
 
 
-class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPrivacy,View.OnClickListener {
+class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPrivacy,
+    View.OnClickListener {
 
     private var v: View? = null
-    var connection_list: ArrayList<FriendListData?>?  = ArrayList()
+    var connection_list: ArrayList<FriendListData?>? = ArrayList()
     var connectionAdapter: ConnectionAdapter? = null
     private lateinit var linearLayoutManager: LinearLayoutManager
     var list_bottomsheet: ArrayList<String>? = ArrayList()
@@ -64,7 +66,34 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
     var firstVisibleItemPosition: Int = 0
     var y: Int = 0
     var idx = 0
-    private var l: CharArray? = charArrayOf('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z')
+    private var l: CharArray? = charArrayOf(
+        'A',
+        'B',
+        'C',
+        'D',
+        'E',
+        'F',
+        'G',
+        'H',
+        'I',
+        'J',
+        'K',
+        'L',
+        'M',
+        'N',
+        'O',
+        'P',
+        'Q',
+        'R',
+        'S',
+        'T',
+        'U',
+        'V',
+        'W',
+        'X',
+        'Y',
+        'Z'
+    )
     private var isLoading = false
     private var isLastpage = false
     var sessionManager: SessionManager? = null
@@ -76,11 +105,13 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
     var from = ""
     var userIdConnect = ""
     var _areLecturesLoaded = false
-    private lateinit var connectionModel : FriendListModel
-    private lateinit var blockUserListModel : BlockUserListModel
+    private lateinit var connectionModel: FriendListModel
+    private lateinit var blockUserListModel: BlockUserListModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         v = inflater.inflate(R.layout.fragment_connection_list, container, false)
         return v
     }
@@ -93,7 +124,7 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        toolbar.visibility=View.GONE
+        toolbar.visibility = View.GONE
         sessionManager = SessionManager(mActivity!!)
         if (sessionManager?.get_Authenticate_User() != null) {
             userData = sessionManager?.get_Authenticate_User()
@@ -106,7 +137,7 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
 
         setupViewModel()
         setupUI()
-        setupObserver()
+//        setupObserver()
     }
 
     private fun setupObserver() {
@@ -160,8 +191,9 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
         }
         jsonArray.put(jsonObject)
         connectionModel.getFriendList(
-            mActivity!!, jsonArray.toString(), "friend_list")
-            .observe(viewLifecycleOwner,{ friendlistpojo ->
+            mActivity!!, jsonArray.toString(), "friend_list"
+        )
+            .observe(viewLifecycleOwner) { friendlistpojo ->
 
                 if (friendlistpojo != null && friendlistpojo.isNotEmpty()) {
                     isLoading = false
@@ -183,7 +215,9 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
 
                         connection_list?.addAll(friendlistpojo[0].data!!)
                         connectionAdapter?.notifyDataSetChanged()
-                        (parentFragment as ConnectionsFragment?)?.setupTabIcons(friendlistpojo!![0]!!.count.get(0))
+                        (parentFragment as ConnectionsFragment?)?.setupTabIcons(
+                            friendlistpojo[0].count[0]
+                        )
 
                         pageNo += 1
 
@@ -209,7 +243,9 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
 
                     } else {
                         relativeprogressBar.visibility = View.GONE
-                        (parentFragment as ConnectionsFragment?)?.setupTabIcons(friendlistpojo!![0].count?.get(0))
+                        (parentFragment as ConnectionsFragment?)?.setupTabIcons(
+                            friendlistpojo[0].count[0]
+                        )
 
                         if (connection_list!!.isNullOrEmpty()) {
                             ll_no_data_found.visibility = View.VISIBLE
@@ -227,7 +263,7 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
                         ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
                     }
                 }
-            })
+            }
     }
 
     private fun setupUI() {
@@ -239,53 +275,77 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
         linearLayoutManageralphabet = LinearLayoutManager(mActivity)
         linearLayoutManager = LinearLayoutManager(mActivity)
         //  if (connection_list == null) {
-        connectionAdapter = ConnectionAdapter(activity as MainActivity, object : ConnectionAdapter.OnItemClick {
-            override fun onClicklisneter(pos: Int, name: String, connectionData: FriendListData, v: View) {
-                when (name) {
-                    "profile" -> {
-                        if (!userData?.userID?.equals(connection_list?.get(pos)?.userID)!!) {
-                            var bundle = Bundle()
-                            bundle.putString("userId", connection_list?.get(pos)?.userID)
-                            (activity as MainActivity).navigateTo(OtherUserProfileMainFragment(), bundle, OtherUserProfileMainFragment::class.java.name, true)
+        connectionAdapter =
+            ConnectionAdapter(activity as MainActivity, object : ConnectionAdapter.OnItemClick {
+                override fun onClicklisneter(
+                    pos: Int,
+                    name: String,
+                    connectionData: FriendListData,
+                    v: View
+                ) {
+                    when (name) {
+                        "profile" -> {
+                            if (!userData?.userID?.equals(connectionData.userID)!!) {
+                                var bundle = Bundle()
+                                bundle.putString("userId", connectionData.userID)
+                                (activity as MainActivity).navigateTo(
+                                    OtherUserProfileMainFragment(),
+                                    bundle,
+                                    OtherUserProfileMainFragment::class.java.name,
+                                    true
+                                )
 
-                        } else {
-                            var bundle = Bundle()
-                            bundle.putString("userId", connection_list?.get(pos)?.userID)
-                            (activity as MainActivity).navigateTo(ProfileMainFragment(), bundle, ProfileMainFragment::class.java.name, true)
+                            } else {
+                                var bundle = Bundle()
+                                bundle.putString("userId", connectionData.userID)
+                                (activity as MainActivity).navigateTo(
+                                    ProfileMainFragment(),
+                                    bundle,
+                                    ProfileMainFragment::class.java.name,
+                                    true
+                                )
 
+                            }
                         }
+                        "connectionType" -> {
+                            displayFilter(v, connectionData.userID, pos)
+                        }
+                        else -> {
+                            getPrivacy()
+                            userId = connectionData.userID
+                            blockPos = pos
+                        }
+
                     }
-                    "connectionType" -> {
-                        displayFilter(v, connection_list?.get(0)?.userID!!, pos)
-                    }
-                    else -> {
-                        getPrivacy()
-                        userId = connectionData.userID
-                        blockPos = pos
-                    }
+
 
                 }
 
-
-            }
-
-        }, connection_list, tab_position, from)
+            }, connection_list, tab_position, from)
 
         recyclerview.layoutManager = linearLayoutManager
         recyclerview.adapter = connectionAdapter
 
-        recyclerview.addItemDecoration(DividerItemDecoration(activity as MainActivity, DividerItemDecoration.VERTICAL), Color.RED)
-        val divider = DividerItemDecoration(recyclerview.getContext(),
-            DividerItemDecoration.VERTICAL)
+        recyclerview.addItemDecoration(
+            DividerItemDecoration(
+                activity as MainActivity,
+                DividerItemDecoration.VERTICAL
+            ), Color.RED
+        )
+        val divider = DividerItemDecoration(
+            recyclerview.getContext(),
+            DividerItemDecoration.VERTICAL
+        )
         divider.setDrawable(
             context?.let { ContextCompat.getDrawable(it, R.drawable.line_layout) }!!
         )
         recyclerview.addItemDecoration(divider)
-        if(connection_list?.isNullOrEmpty()!!)
-        {
-            val sectionItemDecoration = RecyclerSectionItemDecoration(resources.getDimensionPixelSize(R.dimen._30sdp),
+        if (connection_list?.isNullOrEmpty()!!) {
+            val sectionItemDecoration = RecyclerSectionItemDecoration(
+                resources.getDimensionPixelSize(R.dimen._30sdp),
                 true,
-                getSectionCallback(connection_list!!))
+                getSectionCallback(connection_list!!)
+            )
             recyclerview.addItemDecoration(sectionItemDecoration)
         }
 
@@ -318,7 +378,7 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
                 }
             }
         })
-        btnRetry.setOnClickListener (this)
+        btnRetry.setOnClickListener(this)
         search_connection.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
 
@@ -336,8 +396,10 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
     }
 
     private fun setupViewModel() {
-         connectionModel = ViewModelProvider(this@ConnectionListFragment).get(FriendListModel::class.java)
-         blockUserListModel = ViewModelProvider(this@ConnectionListFragment).get(BlockUserListModel::class.java)
+        connectionModel =
+            ViewModelProvider(this@ConnectionListFragment).get(FriendListModel::class.java)
+        blockUserListModel =
+            ViewModelProvider(this@ConnectionListFragment).get(BlockUserListModel::class.java)
 
     }
 
@@ -352,16 +414,20 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
     private fun getSectionCallback(people: ArrayList<FriendListData?>): RecyclerSectionItemDecoration.SectionCallback {
         return object : RecyclerSectionItemDecoration.SectionCallback {
             override fun isSection(position: Int): Boolean {
-                return position == 0 || people?.get(position)?.userFirstName?.get(0)?.toUpperCase() != people?.get(position - 1)?.userFirstName?.get(0)?.toUpperCase()
-
+                return if (position > -1 && position < people.size)
+                    position == 0 || people[position]?.userFirstName?.get(0)
+                        ?.toUpperCase() != people[position - 1]?.userFirstName?.get(0)
+                        ?.toUpperCase()
+                else false
 
 //                return position == 0 || people[position]!!.userFirstName[0].toUpperCase() != people[position - 1]!!.userFirstName[0].toUpperCase()
             }
 
             override fun getSectionHeader(position: Int): CharSequence? {
-
+                if (position < 0) {
+                    return ""
+                }
                 return people?.get(position)?.userFirstName?.toUpperCase()?.subSequence(0, 1)
-
             }
         }
     }
@@ -369,10 +435,30 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
     private fun getPrivacy() {
         val privacyList: ArrayList<CreatePostPrivacyPojo> = ArrayList()
         privacyList.clear()
-        privacyList.add(CreatePostPrivacyPojo(resources.getString(R.string.send_message), R.drawable.popup_send_messages_icon))
-        privacyList.add(CreatePostPrivacyPojo(resources.getString(R.string.disconnect), +R.drawable.connection_popup_disconnect))
-        privacyList.add(CreatePostPrivacyPojo(resources.getString(R.string.block_this_user), R.drawable.connection_popup_block))
-        privacyList.add(CreatePostPrivacyPojo(resources.getString(R.string.report), R.drawable.popup_report_icon))
+        privacyList.add(
+            CreatePostPrivacyPojo(
+                resources.getString(R.string.send_message),
+                R.drawable.popup_send_messages_icon
+            )
+        )
+        privacyList.add(
+            CreatePostPrivacyPojo(
+                resources.getString(R.string.disconnect),
+                +R.drawable.connection_popup_disconnect
+            )
+        )
+        privacyList.add(
+            CreatePostPrivacyPojo(
+                resources.getString(R.string.block_this_user),
+                R.drawable.connection_popup_block
+            )
+        )
+        privacyList.add(
+            CreatePostPrivacyPojo(
+                resources.getString(R.string.report),
+                R.drawable.popup_report_icon
+            )
+        )
         openBottomSheet(privacyList)
     }
 
@@ -388,12 +474,12 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
     override fun setPrivacy(data: CreatePostPrivacyPojo, position: Int) {
         when (position) {
             0 -> {
-                var  userQuickBlockID =  if (!connection_list!![position]?.userQBoxID.isNullOrEmpty())
+                var userQuickBlockID = if (!connection_list!![position]?.userQBoxID.isNullOrEmpty())
                     connection_list!![position]?.userQBoxID!!
                 else
                     return
 
-                       addToChatList(userQuickBlockID,connection_list?.get(position)?.userID!!)
+                addToChatList(userQuickBlockID, connection_list?.get(position)?.userID!!)
             }
             1 -> {
                 disconnectUserApi(userId)
@@ -408,7 +494,11 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
                     putString("userfriendId", userId)
                     repostReasonFragment.arguments = this
                 }
-                (activity as MainActivity).navigateTo(repostReasonFragment, repostReasonFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    repostReasonFragment,
+                    repostReasonFragment::class.java.name,
+                    true
+                )
 
             }
 
@@ -425,8 +515,7 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
         val easyDialog: EasyDialog = menupopup.setMenuoption(mActivity, data, v)
         menupopup.setListener { pos, menuname ->
             easyDialog.dismiss()
-            when(menuname)
-            {
+            when (menuname) {
 
                 "Friends" -> {
                     setConnectionApi("3", userID, pos1, menuname)
@@ -460,23 +549,27 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
         }
         jsonArray.put(jsonObject)
         blockUserListModel.getBlockUserList(mActivity!!, false, jsonArray.toString())
-                .observe(this@ConnectionListFragment!!,
-                        androidx.lifecycle.Observer { disconnectUserpojo ->
-                            if (disconnectUserpojo != null && disconnectUserpojo.isNotEmpty()) {
-                                if (disconnectUserpojo[0].status.equals("true", false)) {
-                                    MyUtils.dismissProgressDialog()
-                                    pageNo = 0
-                                    setupObserver()
-                                } else {
-                                    MyUtils.dismissProgressDialog()
-                                    MyUtils.showSnackbar(mActivity!!, disconnectUserpojo[0].message, ll_mainConnectionList)
-                                }
+            .observe(this@ConnectionListFragment!!,
+                androidx.lifecycle.Observer { disconnectUserpojo ->
+                    if (disconnectUserpojo != null && disconnectUserpojo.isNotEmpty()) {
+                        if (disconnectUserpojo[0].status.equals("true", false)) {
+                            MyUtils.dismissProgressDialog()
+                            pageNo = 0
+                            setupObserver()
+                        } else {
+                            MyUtils.dismissProgressDialog()
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                disconnectUserpojo[0].message,
+                                ll_mainConnectionList
+                            )
+                        }
 
-                            } else {
-                                MyUtils.dismissProgressDialog()
-                                (activity as MainActivity).errorMethod()
-                            }
-                        })
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        (activity as MainActivity).errorMethod()
+                    }
+                })
     }
 
     private fun disconnectUserApi(userId: String) {
@@ -496,27 +589,31 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
         jsonArray.put(jsonObject)
 
         connectionModel.getFriendList(mActivity!!, jsonArray.toString(), "friend_list")
-                .observe(this@ConnectionListFragment!!,
-                    { disconnectUserpojo ->
-                        if (disconnectUserpojo != null && disconnectUserpojo.isNotEmpty()) {
-                            if (disconnectUserpojo[0].status.equals("true", false)) {
-                                MyUtils.dismissProgressDialog()
-                                pageNo = 0
-                                setupObserver()
-                            } else {
-                                MyUtils.dismissProgressDialog()
-                                MyUtils.showSnackbar(mActivity!!, disconnectUserpojo[0].message, ll_mainConnectionList)
-                            }
+            .observe(
+                this@ConnectionListFragment!!
+            ) { disconnectUserpojo ->
+                if (disconnectUserpojo != null && disconnectUserpojo.isNotEmpty()) {
+                    if (disconnectUserpojo[0].status.equals("true", false)) {
+                        MyUtils.dismissProgressDialog()
+                        pageNo = 0
+                        setupObserver()
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            disconnectUserpojo[0].message,
+                            ll_mainConnectionList
+                        )
+                    }
 
-                        } else {
-                            MyUtils.dismissProgressDialog()
-                            (activity as MainActivity).errorMethod()
-                        }
-                    })
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    (activity as MainActivity).errorMethod()
+                }
+            }
     }
 
-    private fun setConnectionApi(connectioniD: String, uesrId: String, pos: Int, menuname: String)
-    {
+    private fun setConnectionApi(connectioniD: String, uesrId: String, pos: Int, menuname: String) {
         MyUtils.showProgressDialog(mActivity!!, "Wait")
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
@@ -534,99 +631,137 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
         jsonArray.put(jsonObject)
 
         connectionModel.getFriendList(mActivity!!, jsonArray.toString(), "change_friendList")
-                .observe(this@ConnectionListFragment!!,
-                        androidx.lifecycle.Observer { connectionListpojo ->
-                            if (connectionListpojo != null && connectionListpojo.isNotEmpty()) {
+            .observe(this@ConnectionListFragment!!,
+                androidx.lifecycle.Observer { connectionListpojo ->
+                    if (connectionListpojo != null && connectionListpojo.isNotEmpty()) {
 
-                                if (connectionListpojo[0].status.equals("true", false)) {
-                                    MyUtils.dismissProgressDialog()
+                        if (connectionListpojo[0].status.equals("true", false)) {
+                            MyUtils.dismissProgressDialog()
+
+
+                            when (tab_position) {
+                                0 -> {
                                     if (parentFragment != null && parentFragment is ConnectionsFragment) {
-                                        (parentFragment as ConnectionsFragment?)?.setupTabIcons(connectionListpojo!![0]!!.counts!!.get(0).all!![0])
+                                        (parentFragment as ConnectionsFragment?)?.csetupTabIcons(
+                                            connectionListpojo[0].counts?.get(0)!!.all!![0]
+                                        )
                                     }
-                                    when (tab_position) {
-                                        0 -> {
-                                            connection_list?.get(pos)?.connectionType = connectionListpojo!![0].data!![0]!!.connectionType
-                                            connectionAdapter?.notifyItemChanged(pos)
-                                        }
-                                        1 -> {
-                                            if (connection_list?.get(pos)?.connectionType?.equals(connectionListpojo!![0].data!![0]!!.connectionType)!!) {
-                                                connection_list?.get(pos)?.connectionType = connectionListpojo!![0].data!![0]!!.connectionType
-                                                connectionAdapter?.notifyItemChanged(pos)
-
-
-                                            } else {
-                                                if (connection_list?.size!! > 1) {
-                                                    connection_list?.removeAt(pos);
-                                                    connectionAdapter?.notifyItemRemoved(pos);
-                                                    connectionAdapter?.notifyItemChanged(pos, connection_list?.size);
-
-                                                } else {
-                                                    pageNo = 0
-                                                    setupObserver()
-                                                }
-                                                if (parentFragment != null && parentFragment is ConnectionsFragment) {
-                                                    pageNo = 0
-                                                    (parentFragment as ConnectionsFragment).updateViewPager()
-                                                }
-                                            }
-
-
-                                        }
-                                        2 -> {
-                                            if (connection_list?.get(pos)?.connectionType?.equals(connectionListpojo!![0].data!![0]!!.connectionType)!!) {
-                                                connection_list?.get(pos)?.connectionType = connectionListpojo!![0].data!![0]!!.connectionType
-                                                connectionAdapter?.notifyItemChanged(pos)
-
-                                            } else {
-                                                if (connection_list?.size!! > 1) {
-                                                    connection_list?.removeAt(pos);
-                                                    connectionAdapter?.notifyItemRemoved(pos);
-                                                    connectionAdapter?.notifyItemChanged(pos, connection_list?.size);
-
-                                                } else {
-                                                    pageNo = 0
-                                                    setupObserver()
-                                                }
-                                                if (parentFragment != null && parentFragment is ConnectionsFragment) {
-                                                    pageNo = 0
-                                                    (parentFragment as ConnectionsFragment).updateViewPager()
-                                                }
-                                            }
-                                        }
-                                        3 -> {
-                                            if (connection_list?.get(pos)?.connectionType?.equals(connectionListpojo!![0].data!![0]!!.connectionType)!!) {
-                                                connection_list?.get(pos)?.connectionType = connectionListpojo!![0].data!![0]!!.connectionType
-                                                connectionAdapter?.notifyItemChanged(pos)
-
-                                            } else {
-                                                if (connection_list?.size!! > 1) {
-                                                    connection_list?.removeAt(pos);
-                                                    connectionAdapter?.notifyItemRemoved(pos);
-                                                    connectionAdapter?.notifyItemChanged(pos, connection_list?.size);
-
-                                                } else {
-                                                    pageNo = 0
-                                                    setupObserver()
-                                                }
-
-                                                if (parentFragment != null && parentFragment is ConnectionsFragment) {
-                                                    pageNo = 0
-                                                    (parentFragment as ConnectionsFragment).updateViewPager()
-                                                }
-                                            }
-                                        }
-                                    }
-
-
-                                } else {
-                                    MyUtils.dismissProgressDialog()
-                                    MyUtils.showSnackbar(mActivity!!, connectionListpojo[0].message, llRecevie)
+                                    connection_list?.get(pos)?.connectionType =
+                                        connectionListpojo!![0].data!![0]!!.connectionType
+                                    connectionAdapter?.notifyItemChanged(pos)
                                 }
-                            } else {
-                                MyUtils.dismissProgressDialog()
-                                (activity as MainActivity).errorMethod()
+                                else -> {
+                                    pageNo = 0
+                                    setupObserver()
+//                                    if (parentFragment != null && parentFragment is ConnectionsFragment) {
+//                                        pageNo = 0
+//                                        (parentFragment as ConnectionsFragment).updateViewPager()
+//                                    }
+                                }
+//                                1 -> {
+//                                    if (connection_list?.get(pos)?.connectionType?.equals(
+//                                            connectionListpojo!![0].data!![0]!!.connectionType
+//                                        )!!
+//                                    ) {
+//                                        connection_list?.get(pos)?.connectionType =
+//                                            connectionListpojo!![0].data!![0]!!.connectionType
+//                                        connectionAdapter?.notifyItemChanged(pos)
+//
+//
+//                                    } else {
+//                                        if (connection_list?.size!! > 1) {
+//                                            connection_list?.removeAt(pos);
+//                                            connectionAdapter?.notifyItemRemoved(pos);
+//                                            connectionAdapter?.notifyItemChanged(
+//                                                pos,
+//                                                connection_list?.size
+//                                            );
+//
+//                                        } else {
+//                                            pageNo = 0
+//                                            setupObserver()
+//                                        }
+//                                        if (parentFragment != null && parentFragment is ConnectionsFragment) {
+//                                            pageNo = 0
+//                                            (parentFragment as ConnectionsFragment).updateViewPager()
+//                                        }
+//                                    }
+//
+//
+//                                }
+//                                2 -> {
+//                                    if (connection_list?.get(pos)?.connectionType?.equals(
+//                                            connectionListpojo!![0].data!![0]!!.connectionType
+//                                        )!!
+//                                    ) {
+//                                        connection_list?.get(pos)?.connectionType =
+//                                            connectionListpojo!![0].data!![0]!!.connectionType
+//                                        connectionAdapter?.notifyItemChanged(pos)
+//
+//                                    } else {
+//                                        if (connection_list?.size!! > 1) {
+//                                            connection_list?.removeAt(pos);
+//                                            connectionAdapter?.notifyItemRemoved(pos);
+//                                            connectionAdapter?.notifyItemChanged(
+//                                                pos,
+//                                                connection_list?.size
+//                                            );
+//
+//                                        } else {
+//                                            pageNo = 0
+//                                            setupObserver()
+//                                        }
+//                                        if (parentFragment != null && parentFragment is ConnectionsFragment) {
+//                                            pageNo = 0
+//                                            (parentFragment as ConnectionsFragment).updateViewPager()
+//                                        }
+//                                    }
+//                                }
+//                                3 -> {
+//                                    if (connection_list?.get(pos)?.connectionType?.equals(
+//                                            connectionListpojo!![0].data!![0]!!.connectionType
+//                                        )!!
+//                                    ) {
+//                                        connection_list?.get(pos)?.connectionType =
+//                                            connectionListpojo!![0].data!![0]!!.connectionType
+//                                        connectionAdapter?.notifyItemChanged(pos)
+//
+//                                    } else {
+//                                        if (connection_list?.size!! > 1) {
+//                                            connection_list?.removeAt(pos);
+//                                            connectionAdapter?.notifyItemRemoved(pos);
+//                                            connectionAdapter?.notifyItemChanged(
+//                                                pos,
+//                                                connection_list?.size
+//                                            );
+//
+//                                        } else {
+//                                            pageNo = 0
+//                                            setupObserver()
+//                                        }
+//
+//                                        if (parentFragment != null && parentFragment is ConnectionsFragment) {
+//                                            pageNo = 0
+//                                            (parentFragment as ConnectionsFragment).updateViewPager()
+//                                        }
+//                                    }
+//                                }
                             }
-                        })
+
+
+                        } else {
+                            MyUtils.dismissProgressDialog()
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                connectionListpojo[0].message,
+                                llRecevie
+                            )
+                        }
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        (activity as MainActivity).errorMethod()
+                    }
+                })
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -643,7 +778,7 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
     }
 
     private fun addToChatList(userQuickBlockID: String, userID: String?) {
-        MyUtils.showProgressDialog(mActivity!!,"Please wait")
+        MyUtils.showProgressDialog(mActivity!!, "Please wait")
 
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
@@ -662,40 +797,51 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
             e.printStackTrace()
         }
 
-        var signupModel = ViewModelProviders.of(this@ConnectionListFragment).get(FriendListModel::class.java)
-        signupModel.getFriendList(mActivity!!, jsonArray.toString(), "chatTofriend").observe(this@ConnectionListFragment,
-            { loginPojo ->
+        var signupModel =
+            ViewModelProviders.of(this@ConnectionListFragment).get(FriendListModel::class.java)
+        signupModel.getFriendList(mActivity!!, jsonArray.toString(), "chatTofriend")
+            .observe(this@ConnectionListFragment
+            ) { loginPojo ->
                 MyUtils.dismissProgressDialog()
                 if (loginPojo != null) {
 
                     if (loginPojo[0].status.equals("true", true)) {
 
-                        if (sessionManager?.getYesNoQBUser()!!){
+                        if (sessionManager?.getYesNoQBUser()!!) {
 
-                            if (!MyUtils.isLoginForQuickBlock){
+                            if (!MyUtils.isLoginForQuickBlock) {
                                 if (!MyUtils.isLoginForQuickBlockChat)
-                                    (mActivity as MainActivity).loginForQuickBlockChat(sessionManager?.getQbUser()!!, userQuickBlockID)
+                                    (mActivity as MainActivity).loginForQuickBlockChat(
+                                        sessionManager?.getQbUser()!!,
+                                        userQuickBlockID
+                                    )
                                 else
                                     (mActivity as MainActivity).getQBUser(userQuickBlockID, 1)
-                            } else if(!MyUtils.isLoginForQuickBlockChat)
-                                (mActivity as MainActivity).loginForQuickBlockChat(sessionManager?.getQbUser()!!,userQuickBlockID)
+                            } else if (!MyUtils.isLoginForQuickBlockChat)
+                                (mActivity as MainActivity).loginForQuickBlockChat(
+                                    sessionManager?.getQbUser()!!,
+                                    userQuickBlockID
+                                )
                             else (mActivity as MainActivity).getQBUser(userQuickBlockID, 1)
                         }
                     } else {
-                        MyUtils.showSnackbar(mActivity!!,loginPojo[0].message,nointernetMainRelativelayout)
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            loginPojo[0].message,
+                            nointernetMainRelativelayout
+                        )
                     }
                 } else {
                     MyUtils.dismissProgressDialog()
                     ErrorUtil.errorMethod(nointernetMainRelativelayout)
                 }
-            })
+            }
 
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-            R.id.btnRetry->{
+        when (v?.id) {
+            R.id.btnRetry -> {
                 setupObserver()
             }
         }

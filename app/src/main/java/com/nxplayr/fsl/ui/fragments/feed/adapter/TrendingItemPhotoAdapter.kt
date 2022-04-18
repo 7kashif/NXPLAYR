@@ -18,9 +18,10 @@ import com.nxplayr.fsl.util.SessionManager
 /**
  * Created by ADMIN on 26/12/2017.
  */
-class TrendingItemPhotoAdapter(var context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
+class TrendingItemPhotoAdapter(var context: Context) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
     var lastPosition = -1
-    var trendingFeedDatum : CreatePostData? = null
+    var trendingFeedDatum: CreatePostData? = null
     var sessionManager: SessionManager? = null
     var postposition = 0
     var width = 0
@@ -47,27 +48,26 @@ class TrendingItemPhotoAdapter(var context: Context) : RecyclerView.Adapter<Recy
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == MyUtils.TYPE_FULL)
-        {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.feed_photo_adapter_one, parent, false)
+        return if (viewType == MyUtils.TYPE_FULL) {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.feed_photo_adapter_one, parent, false)
             /*val useruploadImageview = view.findViewById<View>(R.id.useruploadImageview) as WrapContentDraweeView
             useruploadImageview.post { useruploadImageview.layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, targetHeight.toInt()) }*/
             ImgHolder(view)
-        }
-        else if (viewType == MyUtils.TYPE_HALF) {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.feed_photo_adapter_two, parent, false)
+        } else if (viewType == MyUtils.TYPE_HALF) {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.feed_photo_adapter_two, parent, false)
             ImgHolder2(view)
-        }
-        else if (viewType == MyUtils.TYPE_HALF_H) {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.feed_photo_adapter_three, parent, false)
+        } else if (viewType == MyUtils.TYPE_HALF_H) {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.feed_photo_adapter_three, parent, false)
             ImgHolder3(view)
         }
         /*else if (viewType == MyUtils.TYPE_QUARTER) {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.feed_photo_adapter_four, parent, false)
             ImgHolder4(view)
         } */
-        else
-        {
+        else {
             null!!
         }
     }
@@ -84,21 +84,25 @@ class TrendingItemPhotoAdapter(var context: Context) : RecyclerView.Adapter<Recy
     @Throws(IndexOutOfBoundsException::class)
     fun getTypeView(position: Int): Int {
         var size = MyUtils.TEXT_TYPE
-         if(!trendingFeedDatum?.postSerializedData.isNullOrEmpty()) {
-             if (trendingFeedDatum!!.postSerializedData[0].albummedia.size >= 3)
-                 size= 3
-             else
-                 size=  trendingFeedDatum!!.postSerializedData[0].albummedia.size
-         }
+        if (!trendingFeedDatum?.postSerializedData.isNullOrEmpty()) {
+            if (trendingFeedDatum!!.postSerializedData[0].albummedia.size >= 3)
+                size = 3
+            else
+                size = trendingFeedDatum!!.postSerializedData[0].albummedia.size
+        }
 
         return when (size) {
             1 -> {
                 targetHeight = context.resources.getDimension(R.dimen._180sdp)
-                if (trendingFeedDatum!!.postSerializedData[0].albummedia.size == 1)
-                {
-                    if (trendingFeedDatum!!.postSerializedData[0].albummedia[0].albummediaFile.contains("*"))
-                    {
-                        val size = trendingFeedDatum!!.postSerializedData[0].albummedia[0].albummediaFile.split("\\*").toTypedArray()
+                if (trendingFeedDatum!!.postSerializedData[0].albummedia.size == 1) {
+                    if (trendingFeedDatum!!.postSerializedData[0].albummedia[0].albummediaFile.contains(
+                            "*"
+                        )
+                    ) {
+                        val size =
+                            trendingFeedDatum!!.postSerializedData[0].albummedia[0].albummediaFile.split(
+                                "\\*"
+                            ).toTypedArray()
                         val aspectRatio = size[1].toDouble() / size[0].toDouble()
                         targetHeight = (width * aspectRatio).toFloat()
                     }
@@ -107,7 +111,7 @@ class TrendingItemPhotoAdapter(var context: Context) : RecyclerView.Adapter<Recy
             }
             2 -> MyUtils.TYPE_HALF
             3 -> MyUtils.TYPE_HALF_H
-           // 4 -> MyUtils.TYPE_QUARTER
+            // 4 -> MyUtils.TYPE_QUARTER
             else -> MyUtils.TYPE_FULL
         }
     }
@@ -117,26 +121,34 @@ class TrendingItemPhotoAdapter(var context: Context) : RecyclerView.Adapter<Recy
     }
 
     inner class ImgHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
-        var useruploadImageview= itemView?.findViewById(R.id.useruploadImageview) as WrapContentDraweeView
+        var useruploadImageview =
+            itemView?.findViewById(R.id.useruploadImageview) as WrapContentDraweeView
     }
 
     inner class ImgHolder2(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
-        var useruploadImageview = itemView?.findViewById(R.id.useruploadImageview) as SimpleDraweeView
-        var useruploadImageviewTwo= itemView?.findViewById(R.id.useruploadImageview_two) as SimpleDraweeView
+        var useruploadImageview =
+            itemView?.findViewById(R.id.useruploadImageview) as SimpleDraweeView
+        var useruploadImageviewTwo =
+            itemView?.findViewById(R.id.useruploadImageview_two) as SimpleDraweeView
     }
 
     inner class ImgHolder3(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
-        var useruploadImageview = itemView?.findViewById(R.id.useruploadImageview) as SimpleDraweeView
-        var useruploadImageviewTwo= itemView?.findViewById(R.id.useruploadImageview_two) as SimpleDraweeView
-        var useruploadImageviewThree=itemView?.findViewById(R.id.useruploadImageview_three) as SimpleDraweeView
-       // var tvCount=itemView?.findViewById(R.id.tvCount) as TextView
+        var useruploadImageview =
+            itemView?.findViewById(R.id.useruploadImageview) as SimpleDraweeView
+        var useruploadImageviewTwo =
+            itemView?.findViewById(R.id.useruploadImageview_two) as SimpleDraweeView
+        var useruploadImageviewThree =
+            itemView?.findViewById(R.id.useruploadImageview_three) as SimpleDraweeView
+        // var tvCount=itemView?.findViewById(R.id.tvCount) as TextView
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ImgHolder) {
             val holder1 = holder
             try {
-                holder1.useruploadImageview?.setImageURI(RestClient.image_base_url_posts + trendingFeedDatum?.postSerializedData?.get(0)?.albummedia?.get(0)?.albummediaFile)
+                holder1.useruploadImageview?.setImageURI(
+                    RestClient.image_base_url_posts + trendingFeedDatum?.postSerializedData?.get(0)?.albummedia?.get(0)?.albummediaFile
+                )
                 holder1.itemView.setOnClickListener {
                     if (mClickListener != null) {
                         mClickListener!!.openPhotoDetails(0)
@@ -149,8 +161,16 @@ class TrendingItemPhotoAdapter(var context: Context) : RecyclerView.Adapter<Recy
         if (holder is ImgHolder2) {
             val holder2 = holder
 
-            holder2.useruploadImageview?.setImageURI(RestClient.image_base_url_posts + trendingFeedDatum?.postSerializedData?.get(0)?.albummedia?.get(0)?.albummediaFile)
-            holder2.useruploadImageviewTwo?.setImageURI(RestClient.image_base_url_posts + trendingFeedDatum?.postSerializedData?.get(0)?.albummedia?.get(1)?.albummediaFile)
+            holder2.useruploadImageview?.setImageURI(
+                RestClient.image_base_url_posts + trendingFeedDatum?.postSerializedData?.get(
+                    0
+                )?.albummedia?.get(0)?.albummediaFile
+            )
+            holder2.useruploadImageviewTwo?.setImageURI(
+                RestClient.image_base_url_posts + trendingFeedDatum?.postSerializedData?.get(
+                    0
+                )?.albummedia?.get(1)?.albummediaFile
+            )
 
             holder2.useruploadImageview!!.setOnClickListener {
                 if (mClickListener != null) {
@@ -165,9 +185,21 @@ class TrendingItemPhotoAdapter(var context: Context) : RecyclerView.Adapter<Recy
         }
         if (holder is ImgHolder3) {
             val holder3 = holder
-            holder3.useruploadImageview?.setImageURI(RestClient.image_base_url_posts + trendingFeedDatum?.postSerializedData?.get(0)?.albummedia?.get(0)?.albummediaFile)
-            holder3.useruploadImageviewTwo?.setImageURI(RestClient.image_base_url_posts + trendingFeedDatum?.postSerializedData?.get(0)?.albummedia?.get(1)?.albummediaFile)
-            holder3.useruploadImageviewThree?.setImageURI(RestClient.image_base_url_posts + trendingFeedDatum?.postSerializedData?.get(0)?.albummedia?.get(2)?.albummediaFile)
+            holder3.useruploadImageview?.setImageURI(
+                RestClient.image_base_url_posts + trendingFeedDatum?.postSerializedData?.get(
+                    0
+                )?.albummedia?.get(0)?.albummediaFile
+            )
+            holder3.useruploadImageviewTwo?.setImageURI(
+                RestClient.image_base_url_posts + trendingFeedDatum?.postSerializedData?.get(
+                    0
+                )?.albummedia?.get(1)?.albummediaFile
+            )
+            holder3.useruploadImageviewThree?.setImageURI(
+                RestClient.image_base_url_posts + trendingFeedDatum?.postSerializedData?.get(
+                    0
+                )?.albummedia?.get(2)?.albummediaFile
+            )
 
             holder3.useruploadImageview!!.setOnClickListener {
                 if (mClickListener != null) {

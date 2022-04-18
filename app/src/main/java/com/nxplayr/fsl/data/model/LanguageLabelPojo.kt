@@ -1693,5 +1693,20 @@ class LanguageLabelPojo : Serializable{
         @SerializedName("lngOK")
         @Expose
         val lngOK: String?=""
+        @SerializedName("lngValidPasswordInfo")
+        @Expose
+        val lngValidPasswordInfo: String?=""
+        @SerializedName("lngParentAggreementDetail")
+        @Expose
+        val lngParentAggreementDetail: String?=""
+        @SerializedName("lngSeeMore")
+        @Expose
+        val lngSeeMore: String?=""
+        @SerializedName("lngSeeLess")
+        @Expose
+        val lngSeeLess: String?=""
+        @SerializedName("lngDeclaration")
+        @Expose
+        val lngDeclaration: String?=""
     }
 }

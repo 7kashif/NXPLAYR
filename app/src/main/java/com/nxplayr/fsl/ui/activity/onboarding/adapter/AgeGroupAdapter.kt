@@ -22,7 +22,7 @@ class AgeGroupAdapter(
 
 ) :
 
-        RecyclerView.Adapter<RecyclerView.ViewHolder>(), SectionIndexer {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>(), SectionIndexer {
 
     var selectedIndex = -1
     var intent: Intent? = null
@@ -33,7 +33,8 @@ class AgeGroupAdapter(
             val view = LayoutInflater.from(parent.context).inflate(R.layout.loader, parent, false)
             return LoaderViewHolder(view)
         } else {
-            val v = LayoutInflater.from(parent.context).inflate(R.layout.item_select_age_group, parent, false)
+            val v = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_select_age_group, parent, false)
             return AgeGroupHolder(v)
         }
     }
@@ -43,7 +44,12 @@ class AgeGroupAdapter(
 
         } else if (holder is AgeGroupHolder) {
 
-            holder.bind(listData.get(position), holder.adapterPosition, onItemClick, selectModeType1)
+            holder.bind(
+                listData.get(position),
+                holder.adapterPosition,
+                onItemClick,
+                selectModeType1
+            )
 
         }
     }
@@ -65,50 +71,45 @@ class AgeGroupAdapter(
             ageListData: FootballAgeGroupListData?,
             adapterPosition: Int,
             onitemClick: OnItemClick,
-            selectModeType1: Int
+            selectModeType1: Int) =
 
-        ) =
+            with(itemView) {
+                age_select_item.text =
+                    ageListData?.agegroupFrom.toString() + "-" + ageListData?.agegroupTo
 
-                with(itemView) {
-                    age_select_item.text = ageListData?.agegroupFrom.toString()+"-"+ageListData?.agegroupTo
-
-                       if(selectModeType1 == 0) {
-                           if (ageListData?.status1!!) {
-                               age_select_item.setBackgroundResource(R.drawable.circle_fill_blue)
-                               age_select_item.setTextColor(resources.getColor(R.color.black))
-                           } else {
-                               age_select_item.setBackgroundResource(R.drawable.circle_border_blue)
-                               age_select_item.setTextColor(resources.getColor(R.color.white))
-                           }
-                       }
-                    if (selectModeType1 == 1) {
-                        if (ageListData!!.status1!!) {
-                            age_select_item.setBackgroundResource(R.drawable.circle_border_yellow_light)
-                            age_select_item.setTextColor(resources.getColor(R.color.yellow))
-                        } else {
-                            age_select_item.setBackgroundResource(R.drawable.circle_border_yellow)
-                            age_select_item.setTextColor(resources.getColor(R.color.white))
-                        }
+                if (selectModeType1 == 0) {
+                    if (ageListData?.status1!!) {
+                        age_select_item.setBackgroundResource(R.drawable.circle_fill_blue)
+                        age_select_item.setTextColor(resources.getColor(R.color.black))
+                    } else {
+                        age_select_item.setBackgroundResource(R.drawable.circle_border_blue)
+                        age_select_item.setTextColor(resources.getColor(R.color.white))
                     }
-
-                          if(selectModeType1 == 2) {
-                              if (ageListData!!.status1!!) {
-                                  age_select_item.setBackgroundResource(R.drawable.circle_border_accent_light)
-                                  age_select_item.setTextColor(resources.getColor(R.color.colorAccent))
-                              } else {
-                                  age_select_item.setBackgroundResource(R.drawable.circle_border_accent)
-                                  age_select_item.setTextColor(resources.getColor(R.color.white))
-                              }
-                          }
-
-                    age_select_item.tag = adapterPosition
-
-                    age_select_item.setOnClickListener {
-                        onitemClick.onClicklisneter(it.tag as Int, "")
-
-                    }
-
                 }
+                if (selectModeType1 == 1) {
+                    if (ageListData!!.status1!!) {
+                        age_select_item.setBackgroundResource(R.drawable.circle_border_yellow_light)
+                        age_select_item.setTextColor(resources.getColor(R.color.black))
+                    } else {
+                        age_select_item.setBackgroundResource(R.drawable.circle_border_yellow)
+                        age_select_item.setTextColor(resources.getColor(R.color.white))
+                    }
+                }
+
+                if (selectModeType1 == 2) {
+                    if (ageListData!!.status1) {
+                        age_select_item.setBackgroundResource(R.drawable.circle_border_accent_light)
+                        age_select_item.setTextColor(resources.getColor(R.color.black))
+                    } else {
+                        age_select_item.setBackgroundResource(R.drawable.circle_border_accent)
+                        age_select_item.setTextColor(resources.getColor(R.color.white))
+                    }
+                }
+                age_select_item.tag = adapterPosition
+                age_select_item.setOnClickListener {
+                    onitemClick.onClicklisneter(it.tag as Int, "")
+                }
+            }
     }
 
     override fun getSections(): Array<Any>? {

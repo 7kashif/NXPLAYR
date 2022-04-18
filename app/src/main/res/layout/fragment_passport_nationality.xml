@@ -17,12 +17,15 @@
         android:layout_below="@+id/toolbar"
         android:orientation="vertical">
 
+        <include layout="@layout/line_seperator" />
+
+
         <EditText
             android:id="@+id/search_nationality"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/_17sdp"
-            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginRight="@dimen/_17sdp"
             android:layout_marginBottom="@dimen/_10sdp"
             android:background="@drawable/round_search_box_bg"

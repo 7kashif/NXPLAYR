@@ -55,7 +55,6 @@ class LanguageDialog(
                         languageList!![i].status = i == position
                     }
                     languageId = languageList!![position].languageID
-                    sessionManager?.setSelectedLanguage(languageId)
                     sessionManager?.setSelectedLanguage(languageList!![position])
                     languageAdapter?.notifyDataSetChanged()
                     listener.onLanguageSelect(languageList!![position])

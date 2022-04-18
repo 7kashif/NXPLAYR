@@ -22,5 +22,10 @@ data class ClubListData(
         @SerializedName("clubRemarks")
         var clubRemarks: String,
         @SerializedName("clubStatus")
-        var clubStatus: String
+        var clubStatus: String,
+        @SerializedName("userID")
+        var userID: String,
+        @SerializedName("userclubID")
+        var userclubID: String,
+        var selected: Boolean
 ):Serializable

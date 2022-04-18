@@ -238,19 +238,19 @@ interface RestApi {
 
     @FormUrlEncoded
     @POST("userclubs/add-userclubs")
-    fun addClubList(@Field("json") json: String): Call<List<AddClubPojo>>
+    fun addClubList(@Field("json") json: String): Call<List<ClubListPojo>>
 
     @FormUrlEncoded
     @POST("userclubs/edit-userclubs")
-    fun editClubList(@Field("json") json: String): Call<List<AddClubPojo>>
+    fun editClubList(@Field("json") json: String): Call<List<ClubListPojo>>
 
     @FormUrlEncoded
     @POST("userclubs/delete-userclubs")
-    fun deleteClubList(@Field("json") json: String): Call<List<AddClubPojo>>
+    fun deleteClubList(@Field("json") json: String): Call<List<ClubListPojo>>
 
     @FormUrlEncoded
     @POST("userclubs/list-userclubs")
-    fun clubList(@Field("json") json: String): Call<List<AddClubPojo>>
+    fun clubList(@Field("json") json: String): Call<List<ClubListPojo>>
 
     @FormUrlEncoded
     @POST("footballagecategory/get-footballagecategory-list")

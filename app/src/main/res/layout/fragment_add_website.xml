@@ -27,8 +27,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/_30sdp"
-                android:layout_marginRight="@dimen/_30sdp"
                 android:layout_marginTop="@dimen/_50sdp"
+                android:layout_marginRight="@dimen/_30sdp"
                 android:orientation="vertical">
 
 
@@ -43,7 +43,9 @@
                     android:inputType="text"
                     android:textColorHint="@color/colorPrimary"
                     android:theme="@style/MyEditTextTheme"
-                    app:errorEnabled="false">
+                    app:errorEnabled="false"
+                    app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
+
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/title_edit_text"
@@ -51,12 +53,13 @@
                         android:layout_height="match_parent"
                         android:background="@android:color/transparent"
                         android:imeOptions="actionNext"
+                        android:inputType="text"
                         android:maxLines="1"
+                        android:paddingTop="@dimen/_35sdp"
                         android:singleLine="true"
                         android:textColor="@color/white"
                         android:textCursorDrawable="@null"
                         android:textSize="@dimen/_16ssp"
-                        android:inputType="text"
                         android:theme="@style/MyEditTextTheme" />
 
 
@@ -74,7 +77,9 @@
                     android:inputType="text"
                     android:textColorHint="@color/colorPrimary"
                     android:theme="@style/MyEditTextTheme"
-                    app:errorEnabled="false">
+                    app:errorEnabled="false"
+                    app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
+
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/url_edit_text"
@@ -82,12 +87,13 @@
                         android:layout_height="match_parent"
                         android:background="@android:color/transparent"
                         android:imeOptions="actionNext"
+                        android:inputType="text"
                         android:maxLines="1"
+                        android:paddingTop="@dimen/_35sdp"
                         android:singleLine="true"
                         android:textColor="@color/white"
                         android:textCursorDrawable="@null"
                         android:textSize="@dimen/_16ssp"
-                        android:inputType="text"
                         android:theme="@style/MyEditTextTheme" />
 
 

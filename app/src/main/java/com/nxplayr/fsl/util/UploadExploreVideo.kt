@@ -3,6 +3,7 @@ package com.nxplayr.fsl.util
 import android.app.Activity
 import android.app.Dialog
 import android.util.Log
+import com.google.gson.Gson
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.CreatePostPhotoPojo
@@ -48,7 +49,7 @@ class UploadExploreVideo {
         }
 
         compressedImage= File(imageList!![0]!!.imagePath)
-        Log.e("compressedImage",compressedImage.toString())
+        Log.e("jsonArray",compressedImage.toString())
 
         val filePart = MultipartBody.Part.createFormData(
                 "FileField", imageList!![0]!!.imageName,

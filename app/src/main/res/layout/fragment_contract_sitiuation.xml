@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/llycontract"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".ui.fragments.usercontractsituation.view.ContractSitiuationFragment">
+
     <include layout="@layout/toolbar2" />
 
-    <include layout="@layout/common_recyclerview"
-        android:layout_below="@+id/toolbar"
+    <include
+        android:id="@+id/line"
+        layout="@layout/line_seperator"
+        android:layout_width="match_parent"
+        android:layout_height="0.2dp"
+        android:layout_below="@+id/toolbar" />
+
+    <include
+        layout="@layout/common_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/btn_addNationality"
-       />
+        android:layout_below="@+id/line" />
+
     <com.chand.progressbutton.ProgressButton
         android:id="@+id/btn_addNationality"
         android:layout_width="match_parent"

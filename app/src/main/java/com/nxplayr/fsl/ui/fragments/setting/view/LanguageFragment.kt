@@ -49,6 +49,7 @@ class LanguageFragment : Fragment(), View.OnClickListener {
     var linearLayoutManager: LinearLayoutManager? = null
     var userData: SignupData? = null
     var sessionManager: SessionManager? = null
+    var language : LanguageListData? = null
     var languageId = ""
     private lateinit var lannguageModel: LanguageIntefaceListModel
     private lateinit var loginModel: SignupModel
@@ -104,6 +105,7 @@ class LanguageFragment : Fragment(), View.OnClickListener {
                             languageList!![i].status = i == position
                         }
                         languageId = languageList!![position].languageID
+                        language = languageList!![position]
                         languageAdapter?.notifyDataSetChanged()
                     }
                 }
@@ -218,7 +220,7 @@ class LanguageFragment : Fragment(), View.OnClickListener {
 
                             sessionManager?.LanguageLabel = languageLabel
                             loginPojo[0].data[0].languageID = this.languageId
-                            sessionManager?.setSelectedLanguage(this.languageId)
+                            sessionManager?.setSelectedLanguage(language)
                             StoreSessionManager(loginPojo[0].data[0])
                             //setLocalLanguage()
 
@@ -286,12 +288,12 @@ class LanguageFragment : Fragment(), View.OnClickListener {
     private fun setLocalLanguage() {
 
 
-        if (sessionManager?.getsetSelectedLanguage() == "2") {
-            LocaleUtils.updateConfig(activity!!, "fr")
-        } else {
-            LocaleUtils.updateConfig(activity!!, "en")
-        }
-        startMainActivity()
+//        if (sessionManager?.getsetSelectedLanguage() == "2") {
+//            LocaleUtils.updateConfig(activity!!, "fr")
+//        } else {
+//            LocaleUtils.updateConfig(activity!!, "en")
+//        }
+//        startMainActivity()
 
     }
 
@@ -313,12 +315,12 @@ class LanguageFragment : Fragment(), View.OnClickListener {
 
     fun startMainActivity() {
 
-        Intent(activity!!, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(this)
-        }
-        activity!!.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-        activity!!.finish()
+//        Intent(activity!!, MainActivity::class.java).apply {
+//            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//            startActivity(this)
+//        }
+//        activity!!.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+//        activity!!.finish()
     }
 
     override fun onClick(v: View?) {

@@ -13,11 +13,10 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:layout_marginLeft="@dimen/_20sdp"
         android:layout_marginRight="@dimen/_20sdp"
+        android:layout_weight="1"
         android:orientation="vertical">
-
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -26,7 +25,9 @@
             android:layout_gravity="center"
             android:hint="@string/height_cm"
             android:textColorHint="@color/colorPrimary"
-            android:theme="@style/MyEditTextTheme">
+            android:theme="@style/MyEditTextTheme"
+            app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
+
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edittext_height"
@@ -35,6 +36,7 @@
                 android:background="@android:color/transparent"
                 android:imeOptions="actionNext"
                 android:inputType="number"
+                android:paddingTop="@dimen/_35sdp"
                 android:singleLine="true"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_16ssp"
@@ -48,7 +50,9 @@
             android:layout_gravity="center"
             android:hint="@string/weight_kg"
             android:textColorHint="@color/colorPrimary"
-            android:theme="@style/MyEditTextTheme">
+            android:theme="@style/MyEditTextTheme"
+            app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
+
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edittext_weight"
@@ -57,6 +61,7 @@
                 android:background="@android:color/transparent"
                 android:imeOptions="actionDone"
                 android:inputType="number"
+                android:paddingTop="@dimen/_35sdp"
                 android:singleLine="true"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_16ssp"
@@ -72,8 +77,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_50sdp"
         android:layout_gravity="center|bottom"
-        android:layout_marginTop="@dimen/_30sdp"
         android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_30sdp"
         android:layout_marginEnd="@dimen/_20sdp"
         app:p_arrowVisible="false"
         app:p_backgroundTint="@android:color/transparent"
@@ -86,8 +91,6 @@
         app:p_text="@string/save"
         app:p_textColor="@color/colorPrimary"
         app:p_textSize="@dimen/_18ssp" />
-
-
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>

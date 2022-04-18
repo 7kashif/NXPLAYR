@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.gson.Gson
 import com.nxplayr.fsl.ui.activity.addstaticwebsite.view.AddStaticWebsiteActivity
 import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.R
@@ -32,7 +33,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.util.ArrayList
 
-class StaticWebsiteFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+class StaticWebsiteFragment : Fragment(), View.OnClickListener,
+    SwipeRefreshLayout.OnRefreshListener {
 
     private var v: View? = null
     var sessionManager: SessionManager? = null
@@ -41,13 +43,18 @@ class StaticWebsiteFragment : Fragment(), View.OnClickListener, SwipeRefreshLayo
     var swipeCount = 0
     var linearLayoutManager: LinearLayoutManager? = null
     var website_list: ArrayList<SiteList?>? = ArrayList()
+    var web_links: ArrayList<String> = ArrayList()
     var websiteListAdapter: StaticWebsiteAdapter? = null
-    var fromProfile=""
-    var userId=""
-    var otherUserData: SignupData?=null
-    private lateinit var  getLanguageModel: WebsiteListModel
+    var fromProfile = ""
+    var userId = ""
+    var otherUserData: SignupData? = null
+    private lateinit var getLanguageModel: WebsiteListModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         v = inflater.inflate(R.layout.fragment_static_website, container, false)
 
@@ -61,38 +68,29 @@ class StaticWebsiteFragment : Fragment(), View.OnClickListener, SwipeRefreshLayo
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-
-
         sessionManager = SessionManager(mActivity!!)
-        if(sessionManager?.get_Authenticate_User()!=null)
-        {
+        if (sessionManager?.get_Authenticate_User() != null) {
             userData = sessionManager?.get_Authenticate_User()
         }
 
         if (arguments != null) {
-            fromProfile = arguments!!.getString("fromProfile","")
-            userId = arguments!!.getString("userId","")
-            if(!userId.equals(userData?.userID,false))
-            {
-                imgAddWebsite.visibility=View.GONE
+            fromProfile = arguments!!.getString("fromProfile", "")
+            userId = arguments!!.getString("userId", "")
+            if (!userId.equals(userData?.userID, false)) {
+                imgAddWebsite.visibility = View.GONE
                 otherUserData = arguments!!.getSerializable("otherUserData") as SignupData?
-            }
-            else{
-                imgAddWebsite.visibility=View.VISIBLE
+            } else {
+                imgAddWebsite.visibility = View.VISIBLE
                 userData = sessionManager?.get_Authenticate_User()
-
             }
         }
         setupViewModel()
         setupUI()
-
-
     }
 
     private fun setupUI() {
         tvToolbarTitle.text = getString(R.string.static_website)
-        if(userId.equals(userData?.userID,false)) {
+        if (userId.equals(userData?.userID, false)) {
             imgAddWebsite.setOnClickListener(this)
         }
         imgBackWebsite.setOnClickListener(this)
@@ -101,15 +99,16 @@ class StaticWebsiteFragment : Fragment(), View.OnClickListener, SwipeRefreshLayo
     }
 
     private fun setupViewModel() {
-        getLanguageModel = ViewModelProvider(this@StaticWebsiteFragment).get(WebsiteListModel::class.java)
-
+        getLanguageModel =
+            ViewModelProvider(this@StaticWebsiteFragment).get(WebsiteListModel::class.java)
     }
 
     fun getWebsiteList() {
         linearLayoutManager = LinearLayoutManager(mActivity!!, LinearLayoutManager.VERTICAL, false)
 
-            rc_website.layoutManager = linearLayoutManager
-            websiteListAdapter = StaticWebsiteAdapter(mActivity!!, object : StaticWebsiteAdapter.OnItemClick {
+        rc_website.layoutManager = linearLayoutManager
+        websiteListAdapter =
+            StaticWebsiteAdapter(mActivity!!, object : StaticWebsiteAdapter.OnItemClick {
                 override fun setOnClickListener(pos: Int) {
 
                     val bottomSheet = WebsiteBottomSheet()
@@ -123,16 +122,15 @@ class StaticWebsiteFragment : Fragment(), View.OnClickListener, SwipeRefreshLayo
                     }
                     bottomSheet.setOnclickLisner(object : WebsiteBottomSheet.BottomSheetListener {
                         override fun onOptionClick(text: String) {
-                            when(text)
-                            {
-                                "Delete"->{
-                                    webSiteListApi("1",  if(userId.equals(userData?.userID,false))
-                                    {
-                                        userData?.userID!!
-                                    }else{
-                                        otherUserData?.userID
-                                    }!!
-                                            , RestClient.apiType, RestClient.apiVersion)
+                            when (text) {
+                                "Delete" -> {
+                                    webSiteListApi(
+                                        "1", if (userId.equals(userData?.userID, false)) {
+                                            userData?.userID!!
+                                        } else {
+                                            otherUserData?.userID
+                                        }!!, RestClient.apiType, RestClient.apiVersion
+                                    )
                                 }
                             }
                         }
@@ -145,30 +143,30 @@ class StaticWebsiteFragment : Fragment(), View.OnClickListener, SwipeRefreshLayo
         rc_website.setHasFixedSize(true)
         rc_website.adapter = websiteListAdapter
 
-        webSiteListApi("1",  if(userId.equals(userData?.userID,false))
-        {
-            userData?.userID!!
-        }else{
-            otherUserData?.userID
-             }!!
-                , RestClient.apiType, RestClient.apiVersion)
-
+        webSiteListApi(
+            "1", if (userId.equals(userData?.userID, false)) {
+                userData?.userID!!
+            } else {
+                otherUserData?.userID
+            }!!, RestClient.apiType, RestClient.apiVersion
+        )
     }
 
     override fun onRefresh() {
         swipeCount += 1
         if (swipeCount > 0) {
-
             websiteListAdapter!!.notifyDataSetChanged()
-
             swipe_website_layout.isRefreshing = false
-
             getWebsiteList()
-
         }
     }
 
-    private fun webSiteListApi(languageID: String, loginuserID: String, apiType: String, apiVersion: String) {
+    private fun webSiteListApi(
+        languageID: String,
+        loginuserID: String,
+        apiType: String,
+        apiVersion: String
+    ) {
 
         relativeprogressBar.visibility = View.VISIBLE
         ll_no_data_found.visibility = View.GONE
@@ -189,47 +187,56 @@ class StaticWebsiteFragment : Fragment(), View.OnClickListener, SwipeRefreshLayo
         }
         jsonArray.put(jsonObject)
         getLanguageModel.getWebsiteList(mActivity!!, false, jsonArray.toString())
-                .observe(this@StaticWebsiteFragment,
-                        Observer { websiteListPojo ->
+            .observe(viewLifecycleOwner,
+                Observer { websiteListPojo ->
 
-                            relativeprogressBar.visibility = View.GONE
+                    relativeprogressBar.visibility = View.GONE
 
-                            if (websiteListPojo != null && websiteListPojo.isNotEmpty()) {
+                    if (websiteListPojo != null && websiteListPojo.isNotEmpty()) {
 
-                                if (websiteListPojo[0].status.equals("true", true)) {
-                                    website_list?.clear()
-                                    website_list?.addAll(websiteListPojo[0].data!!)
-                                    websiteListAdapter?.notifyDataSetChanged()
-                                    if (website_list?.size == 0) {
-
-                                        ll_no_data_found.visibility = View.VISIBLE
-
-                                    } else {
-
-                                        ll_no_data_found.visibility = View.GONE
-                                    }
-                                } else {
-
-
-                                    if (website_list!!.size == 0) {
-
-                                        ll_no_data_found.visibility = View.VISIBLE
-
-                                    } else {
-
-                                        ll_no_data_found.visibility = View.GONE
-                                    }
-
-                                }
-
-                            } else {
-
-                                relativeprogressBar.visibility = View.GONE
-                                ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                        if (websiteListPojo[0].status.equals("true", true)) {
+                            website_list?.clear()
+                            website_list?.addAll(websiteListPojo[0].data!!)
+                            web_links.clear()
+                            for (i in 0 until websiteListPojo[0].data!!.size) {
+                                web_links.add(websiteListPojo[0].data!![i].userurlName!!)
                             }
+                           sessionManager?.setWebLinks(web_links.joinToString())
 
-                        })
+                            websiteListAdapter?.notifyDataSetChanged()
+                            if (website_list?.size == 0) {
+                                ll_no_data_found.visibility = View.VISIBLE
+                            } else {
+                                ll_no_data_found.visibility = View.GONE
+                            }
+                        } else {
+                            if (website_list!!.size == 0) {
+                                ll_no_data_found.visibility = View.VISIBLE
+                            } else {
+                                ll_no_data_found.visibility = View.GONE
+                            }
+                        }
+                    } else {
+                        relativeprogressBar.visibility = View.GONE
+                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                    }
+
+                })
     }
+
+
+    private fun StoreSessionManager(uesedata: SignupData?) {
+        val gson = Gson()
+        val json = gson.toJson(uesedata)
+        sessionManager?.create_login_session(
+            json,
+            uesedata!!.userMobile,
+            "",
+            true,
+            sessionManager!!.isEmailLogin()
+        )
+    }
+
 
     override fun onResume() {
         super.onResume()

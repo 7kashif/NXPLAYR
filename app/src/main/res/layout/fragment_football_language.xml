@@ -17,6 +17,8 @@
 
         <include layout="@layout/toolbar" />
 
+        <include layout="@layout/line_seperator" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rc_language"
             android:layout_width="match_parent"

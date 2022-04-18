@@ -24,7 +24,7 @@ class CommentAdapter(
     val onItemClick: OnItemClick,
     val type: String
 ) :
-        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var mSelection = -1
     var widthNew = 0
@@ -40,11 +40,15 @@ class CommentAdapter(
 
         } else {
             val v = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_comment_list, parent, false)
+                .inflate(R.layout.item_comment_list, parent, false)
             return ViewHolder(v, context)
         }
     }
 
+    fun addComment(comment: CommentData) {
+        arrayData.add(0, comment)
+        notifyItemChanged(0)
+    }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is LoaderViewHolder) {
@@ -59,26 +63,26 @@ class CommentAdapter(
             }
 
             holder1.bind(
-                    holder.adapterPosition,
-                    onItemClick,
-                    onItemClick,
-                    widthNew,
-                    heightNew,
-                    arrayData[holder1.adapterPosition]!!,
-                    userID,arrayData?.size
+                holder.adapterPosition,
+                onItemClick,
+                onItemClick,
+                widthNew,
+                heightNew,
+                arrayData[holder1.adapterPosition]!!,
+                userID, arrayData?.size
 
             )
         }
     }
 
     override fun getItemCount(): Int {
-        var size=arrayData.size
-        if(size==1){
-            size =1
-        }else if(size==2){
-            size =2
-        }else if(size>2){
-            size =2
+        var size = arrayData.size
+        if (size == 1) {
+            size = 1
+        } else if (size == 2) {
+            size = 2
+        } else if (size > 2) {
+            size = 2
         }
         return size
 
@@ -89,8 +93,9 @@ class CommentAdapter(
     }
 
     class ViewHolder(
-            itemView: View,
-            context: Activity) : RecyclerView.ViewHolder(itemView) {
+        itemView: View,
+        context: Activity
+    ) : RecyclerView.ViewHolder(itemView) {
 
         public var progressComment = itemView.progressComment
         public var tvCommenViewAll = itemView.tvCommenViewAll
@@ -104,81 +109,90 @@ class CommentAdapter(
             heightNew: Int,
             data: CommentData,
             userID: String,
-            size: Int) =
-                with(itemView) {
+            size: Int
+        ) =
+            with(itemView) {
 
-                    var imgUri = ""
-                    if (!data.userProfilePicture.isNullOrEmpty()) {
-                        imgUri = RestClient.image_base_url_users + data.userProfilePicture
-                    }
-                    imv_user_dp_comment.setImageURI(Uri.parse(imgUri))
+                var imgUri = ""
+                if (!data.userProfilePicture.isNullOrEmpty()) {
+                    imgUri = RestClient.image_base_url_users + data.userProfilePicture
+                }
+                imv_user_dp_comment.setImageURI(Uri.parse(imgUri))
 
-                    var userName = ""
+                var userName = ""
 
-                    if (!data?.userFirstName.isNullOrEmpty() && !data?.userLastName.isNullOrEmpty()) {
-                        userName = data?.userFirstName + " " + data?.userLastName
-                    } else if (!data?.userFirstName.isNullOrEmpty() && data?.userLastName.isNullOrEmpty()) {
-                        userName = data?.userFirstName + ""
-                    } else if (data?.userFirstName.isNullOrEmpty() && !data?.userLastName.isNullOrEmpty()) {
-                        userName = data?.userLastName + ""
-                    }
-                    tvCommentuserName.text = userName
+                if (!data?.userFirstName.isNullOrEmpty() && !data?.userLastName.isNullOrEmpty()) {
+                    userName = data?.userFirstName + " " + data?.userLastName
+                } else if (!data?.userFirstName.isNullOrEmpty() && data?.userLastName.isNullOrEmpty()) {
+                    userName = data?.userFirstName + ""
+                } else if (data?.userFirstName.isNullOrEmpty() && !data?.userLastName.isNullOrEmpty()) {
+                    userName = data?.userLastName + ""
+                }
+                tvCommentuserName.text = userName
 
-                    if (!data.minutesAgo.isNullOrEmpty()) {
-                        tvCommentTime.text = MyUtils.getDisplayableTimeComment(data.minutesAgo.toLong())
-                    }
+                if (!data.minutesAgo.isNullOrEmpty()) {
+                    tvCommentTime.text = MyUtils.getDisplayableTimeComment(data.minutesAgo.toLong())
+                }
 
-                    if (!data.commentComment.isNullOrEmpty()) {
-                        tvCommentuser.text = Constant.decode(data.commentComment)
-                    }
+                if (!data.commentComment.isNullOrEmpty()) {
+                    tvCommentuser.text = Constant.decode(data.commentComment)
+                }
 
 
-                    if (data.postcommentLike.isNullOrEmpty()) {
-                        tv_like_count.text = "0"
-                    } else {
-                        tv_like_count.text = java.lang.Integer.valueOf(data.postcommentLike).toString()
-                    }
-                    if (data.isCommentLiked.equals("Yes", false)) {
-                        img_like.setImageResource(R.drawable.comment_like_icon_selected)
-                    } else {
-                        img_like.setImageResource(R.drawable.comment_like_icon_unselected)
+                if (data.postcommentLike.isNullOrEmpty()) {
+                    tv_like_count.text = "0"
+                } else {
+                    tv_like_count.text = java.lang.Integer.valueOf(data.postcommentLike).toString()
+                }
+                if (data.isCommentLiked.equals("Yes", false)) {
+                    img_like.setImageResource(R.drawable.comment_like_icon_selected)
+                } else {
+                    img_like.setImageResource(R.drawable.comment_like_icon_unselected)
 
-                    }
-                    if (data.postcommentLike.toInt() > 0) {
-                        tv_like_count.visibility = View.VISIBLE
-                        tv_like_count.text = "${data.postcommentLike} Likes"
+                }
+                if (data.postcommentLike.toInt() > 0) {
+                    tv_like_count.visibility = View.VISIBLE
+                    tv_like_count.text = "${data.postcommentLike} Likes"
 
-                    } else {
-                        tv_like_count.visibility = View.GONE
+                } else {
+                    tv_like_count.visibility = View.GONE
 
-                    }
-                    if (data.postcommentreply.size > 0) {
-                        tv_reply_comment.visibility = View.VISIBLE
-                        tv_reply_comment.text = "${data.postcommentreply.size} Replies"
+                }
+                if (data.postcommentreply.size > 0) {
+                    tv_reply_comment.visibility = View.VISIBLE
+                    tv_reply_comment.text = "${data.postcommentreply.size} Replies"
 
-                    } else {
-                        tv_reply_comment.visibility = View.GONE
+                } else {
+                    tv_reply_comment.visibility = View.GONE
 
-                    }
+                }
 
+                if (!userID.isNullOrEmpty() && userID.equals(data.userID, true)) {
+                    ivlogoWaterMark.setImageResource(R.drawable.more_icon)
+                } else {
+                    ivlogoWaterMark.setImageResource(R.drawable.more_icon)
+                }
+
+                ivlogoWaterMark.setOnClickListener {
+
+                    onClickListner.onClickListner(position, "connectionType", data)
                     if (!userID.isNullOrEmpty() && userID.equals(data.userID, true)) {
-                        ivlogoWaterMark.setImageResource(R.drawable.more_icon)
+                        onitemClick.onClicklisneter(
+                            position,
+                            0,
+                            data,
+                            itemView,
+                            data.commentID,
+                            data.commentComment,
+                            -1
+                        )
                     } else {
-                        ivlogoWaterMark.setImageResource(R.drawable.more_icon)
-                    }
 
-                    ivlogoWaterMark.setOnClickListener {
+                        /*val wrapper = ContextThemeWrapper(context, R.style.popmenu_style)
+                        //init the popup
+                        val popup = PopupMenu(wrapper, itemView.ivlogoWaterMark)
 
-                        onClickListner.onClickListner(position, "connectionType",data)
-                        if (!userID.isNullOrEmpty() && userID.equals(data.userID, true)) {
-                            onitemClick.onClicklisneter(position, 0, data, itemView, data.commentID, data.commentComment, -1)
-                        } else {
-
-                            /*val wrapper = ContextThemeWrapper(context, R.style.popmenu_style)
-                            //init the popup
-                            val popup = PopupMenu(wrapper, itemView.ivlogoWaterMark)
-
-                            *//*  The below code in try catch is responsible to display icons*//*
+                        *//*  The below code in try catch is responsible to display icons*//*
                         if (true) {
                             try {
                                 val fields = popup.javaClass.declaredFields
@@ -217,89 +231,129 @@ class CommentAdapter(
                             true
                         }
                         popup.show()*/
-                        }
                     }
+                }
 
-                    img_like.setOnClickListener {
-                        if (position > -1)
-                            onitemClick.onClicklisneter(position, 3, data, img_like, data.commentID, data.commentComment, -1)
-                    }
-
-
-                    tv_reply_comment.setOnClickListener {
-                        if (position > -1)
-                            onitemClick.onClicklisneter(position, 4, data, img_like, data.commentID, data.commentComment, -1)
-                    }
-                    commentLikeImg.setOnClickListener {
-                        tv_reply_comment.performClick()
-                    }
-
-
-                   // if (data.isVisibleComment) {
-                           /* if (size > 2) {
-                                tvCommenViewAll.visibility = View.VISIBLE
-                                rvViewAllComment.visibility = View.VISIBLE
-                                line_bottom.visibility = View.GONE
-                            } else {
-                                tvCommenViewAll.visibility = View.GONE
-                                rvViewAllComment.visibility = View.GONE
-                                line_bottom.visibility = View.VISIBLE
-                            }*/
-                            /* var linearLayoutManager = LinearLayoutManager(context!!)
-                             subCommentsRecyclerView.layoutManager = linearLayoutManager
-                             subCommentsRecyclerView.visibility = View.VISIBLE
-                             topbaseline.visibility = View.VISIBLE
-
-                             var commentListAdapter = SubCommentsAdapter(
-                                     context, data?.postcommentreply,
-                                     object : SubCommentsAdapter.OnItemClick {
-                                         override fun onClicklisneter(
-                                                 pos: Int,
-                                                 actionType: String, v3: View, commentReplyId: String, comment: String
-                                         ) {
-                                             when (actionType) {
-
-                                                 "EditReply" -> {
-                                                     onitemClick.onClicklisneter(position, 7, data, v3, commentReplyId, comment, pos)
-                                                 }
-                                                 "DeleteReply" -> {
-                                                     onitemClick.onClicklisneter(position, 6, data, v3, commentReplyId, comment, pos)
-
-                                                 }
-                                             }
-                                         }
-
-                                     }, ""
-                             )
-                             subCommentsRecyclerView.adapter = commentListAdapter*/
-                    /* }
-                else {
-                         subCommentsRecyclerView.visibility = View.GONE
-                         topbaseline.visibility = View.GONE
-
-                     }*/
-
-                    tvCommenViewAll.setOnClickListener {
-                        tvCommenViewAll.visibility = View.GONE
-                        line_bottom.visibility = View.GONE
-                        onitemClick.onClicklisneter(position, 5, data, progressComment, data.commentID, data.commentComment, -1)
-
-                    }
-                    itemView.setOnClickListener {
-                        if (position > -1)
-                            onitemClick.onClicklisneter(position, 3, data, img_like, data.commentID, data.commentComment, -1)
-
-                    }
+                img_like.setOnClickListener {
+                    if (position > -1)
+                        onitemClick.onClicklisneter(
+                            position,
+                            3,
+                            data,
+                            img_like,
+                            data.commentID,
+                            data.commentComment,
+                            -1
+                        )
+                }
 
 
+                tv_reply_comment.setOnClickListener {
+                    if (position > -1)
+                        onitemClick.onClicklisneter(
+                            position,
+                            4,
+                            data,
+                            img_like,
+                            data.commentID,
+                            data.commentComment,
+                            -1
+                        )
+                }
+                commentLikeImg.setOnClickListener {
+                    tv_reply_comment.performClick()
+                }
+
+
+                // if (data.isVisibleComment) {
+                /* if (size > 2) {
+                     tvCommenViewAll.visibility = View.VISIBLE
+                     rvViewAllComment.visibility = View.VISIBLE
+                     line_bottom.visibility = View.GONE
+                 } else {
+                     tvCommenViewAll.visibility = View.GONE
+                     rvViewAllComment.visibility = View.GONE
+                     line_bottom.visibility = View.VISIBLE
+                 }*/
+                /* var linearLayoutManager = LinearLayoutManager(context!!)
+                 subCommentsRecyclerView.layoutManager = linearLayoutManager
+                 subCommentsRecyclerView.visibility = View.VISIBLE
+                 topbaseline.visibility = View.VISIBLE
+
+                 var commentListAdapter = SubCommentsAdapter(
+                         context, data?.postcommentreply,
+                         object : SubCommentsAdapter.OnItemClick {
+                             override fun onClicklisneter(
+                                     pos: Int,
+                                     actionType: String, v3: View, commentReplyId: String, comment: String
+                             ) {
+                                 when (actionType) {
+
+                                     "EditReply" -> {
+                                         onitemClick.onClicklisneter(position, 7, data, v3, commentReplyId, comment, pos)
+                                     }
+                                     "DeleteReply" -> {
+                                         onitemClick.onClicklisneter(position, 6, data, v3, commentReplyId, comment, pos)
+
+                                     }
+                                 }
+                             }
+
+                         }, ""
+                 )
+                 subCommentsRecyclerView.adapter = commentListAdapter*/
+                /* }
+            else {
+                     subCommentsRecyclerView.visibility = View.GONE
+                     topbaseline.visibility = View.GONE
+
+                 }*/
+
+                tvCommenViewAll.setOnClickListener {
+                    tvCommenViewAll.visibility = View.GONE
+                    line_bottom.visibility = View.GONE
+                    onitemClick.onClicklisneter(
+                        position,
+                        5,
+                        data,
+                        progressComment,
+                        data.commentID,
+                        data.commentComment,
+                        -1
+                    )
 
                 }
+                itemView.setOnClickListener {
+                    if (position > -1)
+                        onitemClick.onClicklisneter(
+                            position,
+                            3,
+                            data,
+                            img_like,
+                            data.commentID,
+                            data.commentComment,
+                            -1
+                        )
+
+                }
+
+
+            }
 
 
     }
 
     interface OnItemClick {
-        fun onClicklisneter(pos: Int, actionType: Int, comentObj: CommentData, v: View, commentId: String, comment: String, replyPos: Int)
+        fun onClicklisneter(
+            pos: Int,
+            actionType: Int,
+            comentObj: CommentData,
+            v: View,
+            commentId: String,
+            comment: String,
+            replyPos: Int
+        )
+
         fun onClickListner(position: Int, from: String, data: CommentData)
     }
 
