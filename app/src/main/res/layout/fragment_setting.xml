@@ -41,6 +41,8 @@
                 android:text="@string/my_account"
                 android:textSize="@dimen/_16ssp" />
 
+            <include layout="@layout/line_seperator" />
+
             <TextView
                 android:id="@+id/tv_privacy"
                 style="@style/Font.SubTitle"
@@ -54,6 +56,7 @@
                 android:paddingStart="@dimen/_10sdp"
                 android:text="@string/privacy"
                 android:textSize="@dimen/_16ssp" />
+            <include layout="@layout/line_seperator" />
 
             <TextView
                 android:id="@+id/tv_notification_setting"
@@ -68,6 +71,7 @@
                 android:paddingStart="@dimen/_10sdp"
                 android:text="@string/notification"
                 android:textSize="@dimen/_16ssp" />
+            <include layout="@layout/line_seperator" />
 
             <TextView
                 android:id="@+id/tv_saved_posts"
@@ -82,6 +86,7 @@
                 android:paddingStart="@dimen/_10sdp"
                 android:text="@string/saved_posts"
                 android:textSize="@dimen/_16ssp" />
+            <include layout="@layout/line_seperator" />
 
             <TextView
                 android:id="@+id/tv_hidden_posts"
@@ -96,6 +101,7 @@
                 android:paddingStart="@dimen/_10sdp"
                 android:text="@string/hidden_posts"
                 android:textSize="@dimen/_16ssp" />
+            <include layout="@layout/line_seperator" />
 
             <TextView
                 android:id="@+id/tv_block_users"
@@ -110,6 +116,7 @@
                 android:paddingStart="@dimen/_10sdp"
                 android:text="@string/blocked_users"
                 android:textSize="@dimen/_16ssp" />
+            <include layout="@layout/line_seperator" />
 
             <TextView
                 android:id="@+id/tv_language"
@@ -123,6 +130,7 @@
                 android:padding="@dimen/_10sdp"
                 android:text="@string/language"
                 android:textSize="@dimen/_16ssp" />
+            <include layout="@layout/line_seperator" />
 
             <TextView
                 android:id="@+id/tv_change_password"
@@ -137,6 +145,7 @@
                 android:text="@string/change_password"
                 android:textSize="@dimen/_16ssp" />
 
+            <include layout="@layout/line_seperator" />
 
             <TextView
                 android:id="@+id/tv_req_verification"
@@ -150,6 +159,7 @@
                 android:padding="@dimen/_10sdp"
                 android:text="Request Verification"
                 android:textSize="@dimen/_16ssp" />
+            <include layout="@layout/line_seperator" />
 
             <TextView
                 android:id="@+id/tv_rate_app"
@@ -162,7 +172,10 @@
                 android:drawableTint="@color/white"
                 android:padding="@dimen/_10sdp"
                 android:text="@string/rate_the_app"
+                android:visibility="gone"
                 android:textSize="@dimen/_16ssp" />
+            <include layout="@layout/line_seperator" />
+
             <TextView
                 android:id="@+id/tv_send_feedback"
                 style="@style/Font.SubTitle"
@@ -175,6 +188,8 @@
                 android:padding="@dimen/_10sdp"
                 android:text="@string/send_feedback"
                 android:textSize="@dimen/_16ssp" />
+            <include layout="@layout/line_seperator" />
+
             <TextView
                 android:id="@+id/tv_suggested_feature"
                 style="@style/Font.SubTitle"
@@ -187,6 +202,8 @@
                 android:padding="@dimen/_10sdp"
                 android:text="@string/suggested_feature"
                 android:textSize="@dimen/_16ssp" />
+            <include layout="@layout/line_seperator" />
+
             <TextView
                 android:id="@+id/tv_content_language"
                 style="@style/Font.SubTitle"
@@ -199,6 +216,7 @@
                 android:padding="@dimen/_10sdp"
                 android:text="@string/content_language"
                 android:textSize="@dimen/_16ssp" />
+            <include layout="@layout/line_seperator" />
 
             <TextView
                 android:id="@+id/tv_delete_account"

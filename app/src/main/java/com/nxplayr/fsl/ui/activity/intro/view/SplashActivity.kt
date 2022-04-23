@@ -125,7 +125,8 @@ class SplashActivity : AppCompatActivity() {
                                 LanguageListData(
                                     "20180213170741.png",
                                     "1",
-                                    "English"
+                                    "English",
+                                    "en"
                                 )
                             )
                         runSplash()

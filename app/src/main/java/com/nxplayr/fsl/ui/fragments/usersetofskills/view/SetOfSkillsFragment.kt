@@ -27,6 +27,8 @@ import com.nxplayr.fsl.data.model.ClubListData
 import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.data.model.SkillsPojo
 import com.nxplayr.fsl.data.model.UsersSkils
+import com.nxplayr.fsl.ui.fragments.dialogs.MessageDialog
+import com.nxplayr.fsl.ui.fragments.dialogs.PasswordInfoDialog
 import com.nxplayr.fsl.ui.fragments.usersetofskills.adapter.SetOfSkillAdapter
 import com.nxplayr.fsl.ui.fragments.usersetofskills.adapter.SkillListAdapter
 import com.nxplayr.fsl.ui.fragments.usersetofskills.viewmodel.SetOfSkillsListModel
@@ -47,7 +49,7 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
-class SetOfSkillsFragment : Fragment(),View.OnClickListener {
+class SetOfSkillsFragment : Fragment(), View.OnClickListener {
 
     private var v: View? = null
     var mActivity: AppCompatActivity? = null
@@ -55,7 +57,7 @@ class SetOfSkillsFragment : Fragment(),View.OnClickListener {
     var club_list: ArrayList<UsersSkils>? = ArrayList()
     var addSaveClubList: ArrayList<UsersSkils>? = ArrayList()
     var clubAdapter: SetOfSkillAdapter? = null
-    var addClubListAdapter: AddSkillListAdapter? = null
+//    var addClubListAdapter: AddSkillListAdapter? = null
 
     var sessionManager: SessionManager? = null
     var userData: SignupData? = null
@@ -65,16 +67,17 @@ class SetOfSkillsFragment : Fragment(),View.OnClickListener {
     var fromProfile = ""
     var userId = ""
     var otherUserData: SignupData? = null
-    private lateinit var  clubListModel: SetOfSkillsListModel
-    private lateinit var  addClubModel: SkillsEndorsementsModel
+    private lateinit var clubListModel: SetOfSkillsListModel
+    private lateinit var addClubModel: SkillsEndorsementsModel
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         if (v == null) {
             v = inflater.inflate(R.layout.fragment_set_of_skills, container, false)
-
         }
         return v
     }
@@ -156,36 +159,61 @@ class SetOfSkillsFragment : Fragment(),View.OnClickListener {
 
         })
 
-        btnRetry.setOnClickListener (this)
+        btnRetry.setOnClickListener(this)
+        info_skills.setOnClickListener(this)
     }
 
     private fun setupViewModel() {
-         clubListModel = ViewModelProvider(this@SetOfSkillsFragment).get(SetOfSkillsListModel::class.java)
-         addClubModel = ViewModelProvider(this@SetOfSkillsFragment).get(SkillsEndorsementsModel::class.java)
+        clubListModel =
+            ViewModelProvider(this@SetOfSkillsFragment).get(SetOfSkillsListModel::class.java)
+        addClubModel =
+            ViewModelProvider(this@SetOfSkillsFragment).get(SkillsEndorsementsModel::class.java)
 
     }
 
+    fun updateText() {
+        selected_skills.text =
+            getString(R.string.skills_added) + " (" + addSaveClubList?.size!! + ") "
+    }
 
     fun suggstedlist() {
-        clubAdapter = SetOfSkillAdapter(activity as MainActivity, club_list!!, object : SetOfSkillAdapter.OnItemClick {
+        clubAdapter = SetOfSkillAdapter(
+            activity as MainActivity,
+            club_list!!,
+            object : SetOfSkillAdapter.OnItemClick {
 
-            override fun onClicled(clubData: UsersSkils?, position: Int) {
-                if (userId.equals(userData?.userID, false)) {
-                    addClubList(clubData!!)
-                    club_list?.remove(clubData)
-                    edit_searchClub.text.clear()
-                    clubAdapter?.notifyDataSetChanged()
+                override fun onClicled(clubData: UsersSkils?, position: Int) {
+                    if (userId.equals(userData?.userID, false)) {
 
-                    if (addSaveClubList!!.size > 0) {
-                        btn_save_current_club.strokeColor = (resources.getColor(R.color.colorPrimary))
-                        btn_save_current_club.backgroundTint = (resources.getColor(R.color.colorPrimary))
-                        btn_save_current_club.textColor = resources.getColor(R.color.black)
+                        if (addSaveClubList?.size!! < 7) {
+                            clubID = clubData!!.skillID
+                            addSaveClubList!!.add(clubData)
+                            clubListAdapter?.notifyDataSetChanged()
+
+                            club_list?.remove(clubData)
+                            edit_searchClub.text.clear()
+                            clubAdapter?.notifyDataSetChanged()
+
+                            updateText()
+                        } else {
+                            val dialog = MessageDialog(0, activity!!,"You can select maximum 7 Skills.")
+                            dialog.show()
+                        }
+
+                        if (addSaveClubList!!.size > 0) {
+                            btn_save_current_club.strokeColor =
+                                (resources.getColor(R.color.colorPrimary))
+                            btn_save_current_club.backgroundTint =
+                                (resources.getColor(R.color.colorPrimary))
+                            btn_save_current_club.textColor = resources.getColor(R.color.black)
+                        }
                     }
+
                 }
 
-            }
-
-        }, userId)
+            },
+            userId
+        )
         recyclerview.layoutManager = LinearLayoutManager(mActivity)
         recyclerview.setHasFixedSize(true)
         recyclerview.adapter = clubAdapter
@@ -195,49 +223,50 @@ class SetOfSkillsFragment : Fragment(),View.OnClickListener {
 
     fun addClubList(club: UsersSkils) {
 //        ll_mainAddClubSetSkill.visibility = View.GONE
-        addClubListAdapter = AddSkillListAdapter(activity as MainActivity, addSaveClubList, object : AddSkillListAdapter.OnItemClick {
-            override fun onClicled(position: Int, from: String) {
-                when (from) {
-                    "removefromList" -> {
-//                        deleteClub(addSaveClubList!![position].userskillID, position)
-
-                        if (!addSaveClubList.isNullOrEmpty()) {
-                            club_list?.add(addSaveClubList!![position])
-                            clubAdapter?.notifyDataSetChanged()
-                            addSaveClubList!!.removeAt(position)
-                        }
-                        addClubListAdapter?.notifyDataSetChanged()
-                        if (addSaveClubList!!.size == 0) {
-                            btn_save_current_club.strokeColor = (resources.getColor(R.color.grayborder))
-                            btn_save_current_club.backgroundTint = (resources.getColor(R.color.transperent1))
-                            btn_save_current_club.textColor = resources.getColor(R.color.colorPrimary)
-                        }
-                    }
-                }
-            }
-        })
-
-        clubID = club!!.skillID
-        addSaveClubList!!.add(club)
-        Log.e("add", addSaveClubList!!.toString())
-        RV_selectedClubList.layoutManager = LinearLayoutManager(mActivity)
-        RV_selectedClubList.setHasFixedSize(true)
-        RV_selectedClubList.adapter = addClubListAdapter
-        addClubListAdapter?.notifyDataSetChanged()
+//        addClubListAdapter = AddSkillListAdapter(activity as MainActivity, addSaveClubList, object : AddSkillListAdapter.OnItemClick {
+//            override fun onClicled(position: Int, from: String) {
+//                when (from) {
+//                    "removefromList" -> {
+////                        deleteClub(addSaveClubList!![position].userskillID, position)
+//
+//                        if (!addSaveClubList.isNullOrEmpty()) {
+//                            club_list?.add(addSaveClubList!![position])
+//                            clubAdapter?.notifyDataSetChanged()
+//                            addSaveClubList!!.removeAt(position)
+//                        }
+//                        addClubListAdapter?.notifyDataSetChanged()
+//                        if (addSaveClubList!!.size == 0) {
+//                            btn_save_current_club.strokeColor = (resources.getColor(R.color.grayborder))
+//                            btn_save_current_club.backgroundTint = (resources.getColor(R.color.transperent1))
+//                            btn_save_current_club.textColor = resources.getColor(R.color.colorPrimary)
+//                        }
+//                    }
+//                }
+//            }
+//        })
+//
+//        clubID = club!!.skillID
+//        addSaveClubList!!.add(club)
+//        Log.e("add", addSaveClubList!!.toString())
+//        RV_selectedClubList.layoutManager = LinearLayoutManager(mActivity)
+//        RV_selectedClubList.setHasFixedSize(true)
+//        RV_selectedClubList.adapter = addClubListAdapter
+//        addClubListAdapter?.notifyDataSetChanged()
 
 
     }
 
     private fun setClubData() {
 
-        clubListAdapter = SkillListAdapter(mActivity!!, addSaveClubList!!, object : SkillListAdapter.OnItemClick {
-            override fun onClicled(position: Int, from: String) {
-                if (userId.equals(userData?.userID, false)) {
-                    deleteClub(addSaveClubList!![position].userskillID, position)
+        clubListAdapter =
+            SkillListAdapter(mActivity!!, addSaveClubList!!, object : SkillListAdapter.OnItemClick {
+                override fun onClicled(position: Int, from: String) {
+                    if (userId.equals(userData?.userID, false)) {
+                        deleteClub(addSaveClubList!![position].userskillID, position)
 
+                    }
                 }
-            }
-        }, userId)
+            }, userId)
 
         RV_addedClubList.layoutManager = LinearLayoutManager(mActivity)
         RV_addedClubList.setHasFixedSize(true)
@@ -266,56 +295,58 @@ class SetOfSkillsFragment : Fragment(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
         clubListModel.getSkillsList(mActivity!!, false, jsonArray.toString())
-                .observe(viewLifecycleOwner
-                ) { clubListpojo ->
-                    relativeprogressBar.visibility = View.GONE
-                    recyclerview.visibility = View.VISIBLE
-                    if (clubListpojo != null && clubListpojo.isNotEmpty()) {
+            .observe(
+                viewLifecycleOwner
+            ) { clubListpojo ->
+                relativeprogressBar.visibility = View.GONE
+                recyclerview.visibility = View.VISIBLE
+                if (clubListpojo != null && clubListpojo.isNotEmpty()) {
 
-                        if (clubListpojo[0].status.equals("true", false)) {
+                    if (clubListpojo[0].status.equals("true", false)) {
 
-                            club_list?.clear()
-                            if (!userId.equals(userData?.userID, false)) {
-                                if (!otherUserData!!.skills.isNullOrEmpty()) {
-                                    val firstListIds = otherUserData!!.skills?.map { it.skillID }
-                                    val new =
-                                        clubListpojo[0].data?.filter { it.skillID !in firstListIds!! }
-                                    club_list?.addAll((new))
-                                    clubAdapter?.notifyDataSetChanged()
-                                } else {
-                                    club_list?.addAll(clubListpojo[0].data)
-                                }
+                        club_list?.clear()
+                        if (!userId.equals(userData?.userID, false)) {
+                            if (!otherUserData!!.skills.isNullOrEmpty()) {
+                                val firstListIds = otherUserData!!.skills?.map { it.skillID }
+                                val new =
+                                    clubListpojo[0].data?.filter { it.skillID !in firstListIds!! }
+                                club_list?.addAll((new))
+                                clubAdapter?.notifyDataSetChanged()
                             } else {
-                                if (!userData!!.skills.isNullOrEmpty()) {
-                                    val firstListIds = userData!!.skills?.map { it.skillID }
-                                    val new =
-                                        clubListpojo[0].data?.filter { it.skillID !in firstListIds!! }
-                                    club_list?.addAll((new))
-                                    clubAdapter?.notifyDataSetChanged()
-                                } else {
-                                    club_list?.addAll(clubListpojo[0].data)
-                                }
+                                club_list?.addAll(clubListpojo[0].data)
                             }
-
-                            clubAdapter?.notifyDataSetChanged()
                         } else {
-
-                            if (club_list!!.size == 0) {
-                                ll_no_data_found.visibility = View.VISIBLE
-                                recyclerview.visibility = View.GONE
+                            if (!userData!!.skills.isNullOrEmpty()) {
+                                val firstListIds = userData!!.skills?.map { it.skillID }
+                                val new =
+                                    clubListpojo[0].data?.filter { it.skillID !in firstListIds!! }
+                                club_list?.addAll((new))
+                                clubAdapter?.notifyDataSetChanged()
                             } else {
-                                ll_no_data_found.visibility = View.GONE
-                                recyclerview.visibility = View.VISIBLE
+                                club_list?.addAll(clubListpojo[0].data)
                             }
                         }
+
+                        clubAdapter?.notifyDataSetChanged()
+                        updateText()
                     } else {
-                        btn_save_current_club.backgroundTint =
-                            (resources.getColor(R.color.transperent1))
-                        btn_save_current_club.textColor = resources.getColor(R.color.colorPrimary)
-                        btn_save_current_club.strokeColor = (resources.getColor(R.color.grayborder))
-                        errorMethod()
+
+                        if (club_list!!.size == 0) {
+                            ll_no_data_found.visibility = View.VISIBLE
+                            recyclerview.visibility = View.GONE
+                        } else {
+                            ll_no_data_found.visibility = View.GONE
+                            recyclerview.visibility = View.VISIBLE
+                        }
                     }
+                } else {
+                    btn_save_current_club.backgroundTint =
+                        (resources.getColor(R.color.transperent1))
+                    btn_save_current_club.textColor = resources.getColor(R.color.colorPrimary)
+                    btn_save_current_club.strokeColor = (resources.getColor(R.color.grayborder))
+                    errorMethod()
                 }
+            }
 
     }
 
@@ -352,32 +383,40 @@ class SetOfSkillsFragment : Fragment(),View.OnClickListener {
 
         jsonArray.put(jsonObject)
         addClubModel.getSkillsList(mActivity!!, false, jsonArray.toString(), "Add")
-                .observe(viewLifecycleOwner,
-                        androidx.lifecycle.Observer { clubListPojo ->
-                            if (clubListPojo != null) {
-                                btn_save_current_club.endAnimation()
-                                if (clubListPojo.get(0).status.equals("true", false)) {
-                                    try {
-                                        userData?.skills?.clear()
-                                        userData?.skills?.addAll(clubListPojo.get(0).data)
-                                        StoreSessionManager(userData)
-                                        Handler().postDelayed({
-                                            (activity as MainActivity).onBackPressed()
-                                        }, 1000)
-                                        MyUtils.showSnackbar(mActivity!!, clubListPojo.get(0).message, ll_mainClubDetails)
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
-                                    }
-
-                                } else {
-                                    MyUtils.showSnackbar(mActivity!!, clubListPojo.get(0).message, ll_mainClubDetails)
-                                }
-
-                            } else {
-                                btn_save_current_club.endAnimation()
-                                ErrorUtil.errorMethod(ll_mainClubDetails)
+            .observe(viewLifecycleOwner,
+                androidx.lifecycle.Observer { clubListPojo ->
+                    if (clubListPojo != null) {
+                        btn_save_current_club.endAnimation()
+                        if (clubListPojo.get(0).status.equals("true", false)) {
+                            try {
+                                userData?.skills?.clear()
+                                userData?.skills?.addAll(clubListPojo.get(0).data)
+                                StoreSessionManager(userData)
+                                Handler().postDelayed({
+                                    (activity as MainActivity).onBackPressed()
+                                }, 1000)
+                                MyUtils.showSnackbar(
+                                    mActivity!!,
+                                    clubListPojo.get(0).message,
+                                    ll_mainClubDetails
+                                )
+                            } catch (e: Exception) {
+                                e.printStackTrace()
                             }
-                        })
+
+                        } else {
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                clubListPojo.get(0).message,
+                                ll_mainClubDetails
+                            )
+                        }
+
+                    } else {
+                        btn_save_current_club.endAnimation()
+                        ErrorUtil.errorMethod(ll_mainClubDetails)
+                    }
+                })
 
 
     }
@@ -398,31 +437,34 @@ class SetOfSkillsFragment : Fragment(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
         addClubModel.getSkillsList(mActivity!!, false, jsonArray.toString(), "List")
-                .observe(viewLifecycleOwner,
-                        androidx.lifecycle.Observer { clubListPojo ->
-                            if (clubListPojo != null && clubListPojo.isNotEmpty()) {
+            .observe(viewLifecycleOwner,
+                androidx.lifecycle.Observer { clubListPojo ->
+                    if (clubListPojo != null && clubListPojo.isNotEmpty()) {
 
-                                if (clubListPojo[0].status.equals("true", false)) {
+                        if (clubListPojo[0].status.equals("true", false)) {
 //                                    MyUtils.dismissProgressDialog()
-                                    addSaveClubList!!.clear()
-                                    addSaveClubList!!.addAll(clubListPojo[0].data)
-                                    clubListAdapter?.notifyDataSetChanged()
+                            addSaveClubList!!.clear()
+                            addSaveClubList!!.addAll(clubListPojo[0].data)
+                            clubListAdapter?.notifyDataSetChanged()
 
-                                } else {
+                        } else {
 //                                    MyUtils.dismissProgressDialog()
-                                    MyUtils.showSnackbar(mActivity!!, clubListPojo[0].message, ll_mainClubDetails)
-                                }
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                clubListPojo[0].message,
+                                ll_mainClubDetails
+                            )
+                        }
 
-                            } else {
+                    } else {
 //                                MyUtils.dismissProgressDialog()
-                                errorMethod()
-                            }
-                        })
+                        errorMethod()
+                    }
+                })
 
     }
 
     private fun deleteClub(userclubID: String, position: Int) {
-        MyUtils.showProgressDialog(mActivity!!, "Please wait...")
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
         try {
@@ -432,49 +474,63 @@ class SetOfSkillsFragment : Fragment(),View.OnClickListener {
             jsonObject.put("apiType", RestClient.apiType)
             jsonObject.put("apiVersion", RestClient.apiVersion)
 
+            Log.e("deleteClub", "deleteClub() = ${Gson().toJson(jsonObject)}")
         } catch (e: JSONException) {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
 
-        addClubModel.getSkillsList(mActivity!!, false, jsonArray.toString(), "Delete")
-                .observe(this@SetOfSkillsFragment!!,
-                        androidx.lifecycle.Observer<List<SkillsPojo>> { clubListpojo ->
-                            MyUtils.dismissProgressDialog()
-                            if (clubListpojo != null && clubListpojo.isNotEmpty()) {
 
-                                if (clubListpojo[0].status.equals("true", false)) {
+        if (userclubID.isNullOrEmpty()) {
+            addSaveClubList!!.removeAt(position)
+            clubListAdapter!!.notifyDataSetChanged()
+            suggestedClubList()
+            clubAdapter?.notifyDataSetChanged()
+            return
+        }
+        MyUtils.showProgressDialog(mActivity!!, "Please wait...")
+
+        addClubModel.getSkillsList(mActivity!!, false, jsonArray.toString(), "Delete")
+            .observe(this@SetOfSkillsFragment!!,
+                androidx.lifecycle.Observer<List<SkillsPojo>> { clubListpojo ->
+                    MyUtils.dismissProgressDialog()
+                    if (clubListpojo != null && clubListpojo.isNotEmpty()) {
+
+                        if (clubListpojo[0].status.equals("true", false)) {
 
 //                                    val userData = sessionManager!!.userData
-                                    if (userData!!.skills!!.size > 0) {
-                                        deleteList?.add(addSaveClubList!![position])
-                                        Log.e("deletelist", deleteList.toString())
-                                        for (i in 0 until userData!!.skills!!.size) {
-                                            if (addSaveClubList!![position]!!.userskillID.equals(userData!!.skills!![i]!!.userskillID)) {
-                                                userData!!.skills!!.removeAt(i)
-                                                sessionManager!!.userData = userData
-                                                addSaveClubList!!.removeAt(position)
-                                                break
-                                            }
-                                        }
-                                        clubListAdapter!!.notifyDataSetChanged()
-
-                                        suggestedClubList()
-                                        clubAdapter?.notifyDataSetChanged()
-
+                            if (userData!!.skills!!.size > 0) {
+                                deleteList?.add(addSaveClubList!![position])
+                                Log.e("deletelist", deleteList.toString())
+                                for (i in 0 until userData!!.skills!!.size) {
+                                    if (addSaveClubList!![position]!!.userskillID.equals(userData!!.skills!![i]!!.userskillID)) {
+                                        userData!!.skills!!.removeAt(i)
+                                        sessionManager!!.userData = userData
+                                        addSaveClubList!!.removeAt(position)
+                                        break
                                     }
-
-
-                                } else {
-                                    if (activity != null && activity is MainActivity)
-                                        MyUtils.showSnackbar(mActivity!!, clubListpojo[0].message, ll_mainClubDetails)
                                 }
-
-                            } else {
-                                ErrorUtil.errorMethod(ll_mainClubDetails)
+                                clubListAdapter!!.notifyDataSetChanged()
+                                suggestedClubList()
+                                clubAdapter?.notifyDataSetChanged()
 
                             }
-                        })
+
+
+                        } else {
+                            if (activity != null && activity is MainActivity)
+                                MyUtils.showSnackbar(
+                                    mActivity!!,
+                                    clubListpojo[0].message,
+                                    ll_mainClubDetails
+                                )
+                        }
+
+                    } else {
+                        ErrorUtil.errorMethod(ll_mainClubDetails)
+
+                    }
+                })
 
 
     }
@@ -485,11 +541,11 @@ class SetOfSkillsFragment : Fragment(),View.OnClickListener {
 
         val json = gson.toJson(uesedata)
         sessionManager?.create_login_session(
-                json,
-                uesedata!!.userMobile,
-                "",
-                true,
-                sessionManager!!.isEmailLogin()
+            json,
+            uesedata!!.userMobile,
+            "",
+            true,
+            sessionManager!!.isEmailLogin()
         )
 
     }
@@ -516,9 +572,8 @@ class SetOfSkillsFragment : Fragment(),View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-            R.id.btn_save_current_club->{
+        when (v?.id) {
+            R.id.btn_save_current_club -> {
                 MyUtils.hideKeyboard1(mActivity!!)
 
                 if (!addSaveClubList?.isNullOrEmpty()!!) {
@@ -527,9 +582,13 @@ class SetOfSkillsFragment : Fragment(),View.OnClickListener {
                     MyUtils.showSnackbar(mActivity!!, "Please add skills", ll_mainClubDetails)
                 }
             }
-            R.id.btnRetry->{
+            R.id.btnRetry -> {
                 suggestedClubList()
                 clubListApi()
+            }
+            R.id.info_skills -> {
+                val dialog = MessageDialog(0, activity!!,"You can select maximum 7 Skills.")
+                dialog.show()
             }
         }
     }

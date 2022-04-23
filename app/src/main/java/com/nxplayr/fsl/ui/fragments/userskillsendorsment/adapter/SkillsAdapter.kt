@@ -9,15 +9,16 @@ import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.model.SkillList
+import com.nxplayr.fsl.data.model.UsersSkils
 import kotlinx.android.synthetic.main.item_skills_adapter.view.*
 
 class SkillsAdapter(
         val context: Activity,
-        val listData: ArrayList<SkillList>?
+        val listData: ArrayList<UsersSkils>?
         , val onItemClick: OnItemClick
 ) :
         RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filterable {
-    private var skillListFiltered: List<SkillList>
+    private var skillListFiltered: List<UsersSkils>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -27,23 +28,19 @@ class SkillsAdapter(
 
     override fun getItemCount(): Int {
 
-        return skillListFiltered!!.size
+        return skillListFiltered.size
     }
 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
         if (holder is SkillsHolder) {
-            holder.bind(skillListFiltered!![position], holder.adapterPosition, onItemClick)
-
+            holder.bind(skillListFiltered[position], holder.adapterPosition, onItemClick)
         }
-
-
     }
 
     class SkillsHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(listData: SkillList,
+        fun bind(listData: UsersSkils,
                  adapterPosition: Int,
                  onItemClick: OnItemClick
         ) = with(itemView) {
@@ -75,7 +72,7 @@ class SkillsAdapter(
                 skillListFiltered = if (charString.isEmpty()) {
                     listData!!
                 } else {
-                    val filteredList: MutableList<SkillList> = ArrayList<SkillList>()
+                    val filteredList: MutableList<UsersSkils> = ArrayList<UsersSkils>()
                     for (row in listData!!) {
 
                         if (row.skillName.toLowerCase().contains(charString.toLowerCase()) || row.skillName.contains(charSequence)) {
@@ -83,8 +80,6 @@ class SkillsAdapter(
                         }
                     }
                     filteredList
-
-
                 }
                 val filterResults = FilterResults()
                 filterResults.values = skillListFiltered
@@ -92,14 +87,14 @@ class SkillsAdapter(
             }
 
             override fun publishResults(charSequence: CharSequence, filterResults: FilterResults) {
-                skillListFiltered = filterResults.values as ArrayList<SkillList>
+                skillListFiltered = filterResults.values as ArrayList<UsersSkils>
                 notifyDataSetChanged()
             }
         }
     }
 
     interface OnItemClick {
-        fun onClicled(skillData: SkillList, from: String)
+        fun onClicled(skillData: UsersSkils, from: String)
     }
 
     init {

@@ -72,6 +72,7 @@
                         android:layout_height="@dimen/_40sdp"
                         android:layout_gravity="start"
                         android:layout_margin="@dimen/_5sdp"
+                        android:tint="@color/colorPrimary"
                         app:actualImageResource="@drawable/work_icon_selected"
                         app:actualImageScaleType="fitXY"
                         app:placeholderImage="@drawable/work_icon_selected"

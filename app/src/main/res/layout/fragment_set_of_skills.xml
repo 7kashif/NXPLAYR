@@ -19,8 +19,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:orientation="vertical">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -36,7 +36,7 @@
                 android:background="@drawable/round_search_box_bg"
                 android:drawableRight="@drawable/search_icon"
                 android:fontFamily="@font/brandon_reg"
-                android:hint="@string/search"
+                android:hint="@string/search_skill"
                 android:imeOptions="actionDone"
                 android:paddingHorizontal="@dimen/_10sdp"
                 android:paddingVertical="@dimen/_6sdp"
@@ -44,15 +44,32 @@
                 android:textColor="@color/gray_text_color"
                 android:textColorHint="@color/gray_text_color" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                style="@style/Font.SubTitle_blue"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/_5sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:background="@drawable/rounded_text2"
-                android:paddingStart="@dimen/_17sdp"
-                android:text="@string/selected_skill" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/selected_skills"
+                    style="@style/Font.SubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_5sdp"
+                    android:paddingStart="@dimen/_17sdp"
+                    android:text="@string/skills_added" />
+
+                <ImageView
+                    android:id="@+id/info_skills"
+                    android:layout_width="@dimen/_25sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:padding="@dimen/_5sdp"
+                    android:src="@drawable/menu_icon11_more_info"
+                    app:tint="@color/colorPrimary" />
+
+            </LinearLayout>
 
 
             <!--
@@ -109,7 +126,7 @@
 
             <TextView
                 android:id="@+id/tv_skill_added"
-                style="@style/Font.SubTitle_blue"
+                style="@style/Font.SubTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
@@ -117,8 +134,7 @@
                 android:fontFamily="@font/brandon_reg"
                 android:padding="@dimen/_5sdp"
                 android:paddingStart="@dimen/_17sdp"
-                android:text="@string/suggestions"
-                android:textColor="@color/colorPrimary"
+                android:text="@string/suggested_skills"
                 android:textSize="@dimen/_16ssp" />
 
             <!--<TextView

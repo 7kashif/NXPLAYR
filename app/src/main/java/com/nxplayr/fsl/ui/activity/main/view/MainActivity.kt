@@ -290,7 +290,8 @@ class MainActivity :  BaseActivity(), NotifyInterface, NavigationHost, NotifyAlb
                 LanguageListData(
                     "20180213170741.png",
                     "1",
-                    "English"
+                    "English",
+                    "en"
                 )
             )
         MyUtils.startActivity(

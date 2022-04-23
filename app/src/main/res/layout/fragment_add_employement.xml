@@ -13,6 +13,8 @@
 
     <include layout="@layout/toolbar" />
 
+    <include layout="@layout/line_seperator" />
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,7 +39,8 @@
                     android:layout_gravity="center"
                     android:hint="@string/job_title"
                     android:textColorHint="@color/colorPrimary"
-                    android:theme="@style/MyEditTextTheme">
+                    android:theme="@style/MyEditTextTheme"
+                    app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/jobTTitle_edit_text"
@@ -48,6 +51,7 @@
                         android:focusable="false"
                         android:imeOptions="actionNext"
                         android:inputType="text"
+                        android:paddingTop="@dimen/_35sdp"
                         android:singleLine="true"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_16ssp"
@@ -61,7 +65,8 @@
                     android:layout_gravity="center"
                     android:hint="@string/company_name"
                     android:textColorHint="@color/colorPrimary"
-                    android:theme="@style/MyEditTextTheme">
+                    android:theme="@style/MyEditTextTheme"
+                    app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/companyname_edit_text"
@@ -72,6 +77,7 @@
                         android:focusable="false"
                         android:imeOptions="actionNext"
                         android:inputType="text"
+                        android:paddingTop="@dimen/_35sdp"
                         android:singleLine="true"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_16ssp"
@@ -87,7 +93,9 @@
                     android:hint="@string/location"
                     android:imeOptions="actionNext"
                     android:textColorHint="@color/colorPrimary"
-                    android:theme="@style/MyEditTextTheme">
+                    android:theme="@style/MyEditTextTheme"
+                    app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
+
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/location_edit_text"
@@ -96,6 +104,7 @@
                         android:background="@android:color/transparent"
                         android:imeOptions="actionNext"
                         android:inputType="text"
+                        android:paddingTop="@dimen/_35sdp"
                         android:singleLine="true"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_16ssp"
@@ -203,7 +212,8 @@
                     android:layout_marginTop="@dimen/_10sdp"
                     android:hint="@string/description"
                     android:textColorHint="@color/colorPrimary"
-                    android:theme="@style/MyEditTextTheme">
+                    android:theme="@style/MyEditTextTheme"
+                    app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/txt_description"
@@ -212,6 +222,7 @@
                         android:background="@android:color/transparent"
                         android:imeOptions="actionNext"
                         android:inputType="text"
+                        android:paddingTop="@dimen/_35sdp"
                         android:singleLine="true"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_16ssp"
@@ -480,5 +491,5 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-    
+
 </LinearLayout>

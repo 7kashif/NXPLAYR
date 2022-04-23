@@ -188,9 +188,9 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
             layout_view_interests.visibility=View.VISIBLE
             tv_view_more_interests.visibility=View.GONE
 
-            llRecommendations.visibility=View.VISIBLE
-            layout_view_recommend.visibility=View.VISIBLE
-            layout_view_recommendation.visibility=View.VISIBLE
+            llRecommendations.visibility=View.GONE
+            layout_view_recommend.visibility=View.GONE
+            layout_view_recommendation.visibility=View.GONE
             tv_view_recommendation.visibility=View.GONE
 
             layout_view_workExp.isEnabled=true
@@ -203,8 +203,8 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
             layout_add_skills.isEnabled=true
             tv_add_hobbies.visibility=View.VISIBLE
             tv_add_interests.visibility=View.VISIBLE
-            tv_add_hashtags.visibility=View.VISIBLE
-            tv_add_recommendations.visibility=View.VISIBLE
+            tv_add_hashtags.visibility=View.GONE
+            tv_add_recommendations.visibility=View.GONE
             tv_add_contact_information.visibility=View.VISIBLE
 
             if (userData != null) {

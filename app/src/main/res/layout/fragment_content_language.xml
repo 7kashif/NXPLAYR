@@ -10,6 +10,7 @@
     tools:context=".ui.fragments.setting.view.SuggestedFeedbackFragment">
 
     <include layout="@layout/toolbar" />
+    <include layout="@layout/line_seperator" />
 
     <TextView
         android:layout_width="wrap_content"

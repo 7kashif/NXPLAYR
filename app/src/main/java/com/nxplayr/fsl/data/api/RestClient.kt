@@ -2,13 +2,18 @@ package com.nxplayr.fsl.data.api
 
 
 import android.provider.Settings
+import com.google.gson.GsonBuilder
 import com.nxplayr.fsl.BuildConfig
 import com.nxplayr.fsl.application.MyApplication
-import com.google.gson.GsonBuilder
+import com.nxplayr.fsl.util.SessionManager
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 class RestClient {
@@ -28,34 +33,39 @@ class RestClient {
         var base = ""
         var url = ""
         var image_base_url_users = ""
-        var image_base_url_banners =  ""
+        var image_base_url_banners = ""
         var image_base_url_flag = ""
-        var image_base_url_posts =""
-        var image_base_url_mediaEmp =""
-        var image_base_url_mediaEdu =  ""
+        var image_base_url_posts = ""
+        var image_base_url_mediaEmp = ""
+        var image_base_url_mediaEdu = ""
         var image_base_url_job = ""
         var sharingUrl = ""
 
-        internal var REST_CLIENT: RestApi? = null
-
-
+        private var REST_CLIENT: RestApi? = null
         private var restAdapter: Retrofit? = null
+        var sessionManager: SessionManager? = null
 
-        var uniqueDeviceId = Settings.System.getString(MyApplication.instance.contentResolver, Settings.Secure.ANDROID_ID)
+        var uniqueDeviceId = Settings.System.getString(
+            MyApplication.instance.contentResolver,
+            Settings.Secure.ANDROID_ID
+        )
 
         init {
-
+            sessionManager = SessionManager(MyApplication.instance)
             base = BuildConfig.BASE_URL
             url = BuildConfig.JOB_URL
             sharingUrl = "${url}frontend/web/"
 
             if (BuildConfig.FLAVOR == "staging") {
                 image_base_url_users = BuildConfig.BASE_URL + BuildConfig.BASE_ASSET_URL + "users/"
-                image_base_url_banners = BuildConfig.BASE_URL + BuildConfig.BASE_ASSET_URL + "banners/"
+                image_base_url_banners =
+                    BuildConfig.BASE_URL + BuildConfig.BASE_ASSET_URL + "banners/"
                 image_base_url_flag = BuildConfig.BASE_URL + BuildConfig.BASE_ASSET_URL + "flag/"
                 image_base_url_posts = BuildConfig.BASE_URL + BuildConfig.BASE_ASSET_URL + "post/"
-                image_base_url_mediaEmp = BuildConfig.BASE_URL + BuildConfig.BASE_ASSET_URL + "employment/"
-                image_base_url_mediaEdu = BuildConfig.BASE_URL + BuildConfig.BASE_ASSET_URL + "education/"
+                image_base_url_mediaEmp =
+                    BuildConfig.BASE_URL + BuildConfig.BASE_ASSET_URL + "employment/"
+                image_base_url_mediaEdu =
+                    BuildConfig.BASE_URL + BuildConfig.BASE_ASSET_URL + "education/"
                 image_base_url_job = BuildConfig.BASE_URL + BuildConfig.BASE_ASSET_URL + "company/"
             } else {
                 image_base_url_users = BuildConfig.BASE_ASSET_URL + "users/"
@@ -71,6 +81,20 @@ class RestClient {
         }
 
         fun setOkHttpClientBuilder(): OkHttpClient.Builder {
+            val builder = OkHttpClient.Builder()
+            builder.connectTimeout(300, TimeUnit.SECONDS)
+            builder.readTimeout(80, TimeUnit.SECONDS)
+            builder.writeTimeout(90, TimeUnit.SECONDS)
+            builder.addInterceptor(object : Interceptor {
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request = chain.request().newBuilder()
+                    sessionManager?.getSelectedLanguage()
+                        ?.let { request.addHeader("x-locale", it.languageCode) }
+                    request.addHeader("x-device-id", uniqueDeviceId)
+                    return chain.proceed(request.build())
+                }
+            })
+
             val loggingInterceptor = HttpLoggingInterceptor()
             if (BuildConfig.DEBUG) {
                 // development build
@@ -79,11 +103,7 @@ class RestClient {
                 // production build
                 loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC)
             }
-            val builder = OkHttpClient.Builder()
             builder.addInterceptor(loggingInterceptor)
-            builder.connectTimeout(300, TimeUnit.SECONDS)
-            builder.readTimeout(80, TimeUnit.SECONDS)
-            builder.writeTimeout(90, TimeUnit.SECONDS)
             return builder
         }
 
@@ -91,20 +111,20 @@ class RestClient {
 
             val gson = GsonBuilder().setLenient().create()
             restAdapter = Retrofit.Builder()
-                    .baseUrl(url)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .client(
-                            setOkHttpClientBuilder()
-                                    .build()
-                    )
-                    .build()
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(
+                    setOkHttpClientBuilder()
+                        .build()
+                )
+                .build()
         }
 
 
         fun get(): RestApi? {
             if (REST_CLIENT == null) {
                 REST_CLIENT = restAdapter!!.create(
-                        RestApi::class.java
+                    RestApi::class.java
                 )
 
             }

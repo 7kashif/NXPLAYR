@@ -8,6 +8,7 @@
     tools:context=".ui.fragments.cms.view.CmsFragment">
 
     <include layout="@layout/toolbar" />
+    <include layout="@layout/line_seperator" />
 
     <RelativeLayout
         android:layout_width="match_parent"

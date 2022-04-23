@@ -23,6 +23,7 @@
                 android:layout_height="@dimen/_40sdp"
                 android:layout_gravity="start"
                 android:layout_margin="@dimen/_5sdp"
+                android:tint="@color/colorPrimary"
                 app:actualImageResource="@drawable/education_icon_unselected"
                 app:actualImageScaleType="fitXY"
                 app:placeholderImage="@drawable/education_icon_unselected"

@@ -17,6 +17,7 @@
           android:background="@drawable/back_arrow_signup"
           android:padding="@dimen/_5sdp" />-->
     <include layout="@layout/toolbar" />
+    <include layout="@layout/line_seperator" />
 
     <TextView
         android:id="@+id/tv_verificationCode"

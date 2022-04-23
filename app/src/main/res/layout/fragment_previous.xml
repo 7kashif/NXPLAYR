@@ -11,6 +11,7 @@
     <include layout="@layout/toolbar" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -137,27 +138,24 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:orientation="vertical">
 
                 <include layout="@layout/common_recyclerview" />
 
-                <LinearLayout
-                    android:id="@+id/ll_mainlayoutClub"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-
-                </LinearLayout>
-
             </LinearLayout>
-
 
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <ProgressBar
+        android:id="@+id/pagination"
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="@dimen/_25sdp"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
     <com.chand.progressbutton.ProgressButton
         android:id="@+id/btn_previous_club"

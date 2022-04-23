@@ -7,6 +7,8 @@ import java.io.Serializable
 data class SkillsPojo(
     @SerializedName("data")
         var `data`: ArrayList<UsersSkils> = ArrayList(),
+    @SerializedName("businessskills")
+        var `businessskills`: ArrayList<UsersSkils> = ArrayList(),
     @SerializedName("message")
         var message: String,
     @SerializedName("status")
@@ -22,6 +24,8 @@ data class UsersSkils(
         var userID: String,
         @SerializedName("userskillCreatedDate")
         var userskillCreatedDate: String,
+        @SerializedName("skillType")
+        var skillType: String,
         @SerializedName("userskillID")
         var userskillID: String
 ):Serializable

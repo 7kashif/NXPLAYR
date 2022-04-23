@@ -7,6 +7,8 @@
     android:orientation="vertical"
     tools:context=".ui.activity.post.view.DocumentActivity">
     <include layout="@layout/toolbar" />
+    <include layout="@layout/line_seperator" />
+
     <WebView
         android:id="@+id/webViewTryForFree"
         android:layout_width="match_parent"

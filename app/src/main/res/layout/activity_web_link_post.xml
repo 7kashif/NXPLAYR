@@ -10,6 +10,7 @@
 
       <include layout="@layout/toolbar" />
 
+    <include layout="@layout/line_seperator" />
 
     <RelativeLayout
         android:id="@+id/web_relative_layout"

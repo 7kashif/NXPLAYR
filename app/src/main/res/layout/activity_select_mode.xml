@@ -11,6 +11,7 @@
     tools:context=".ui.activity.onboarding.view.SelectModeActivity">
 
     <include layout="@layout/toolbar" />
+    <include layout="@layout/line_seperator" />
 
     <LinearLayout
         android:layout_width="match_parent"

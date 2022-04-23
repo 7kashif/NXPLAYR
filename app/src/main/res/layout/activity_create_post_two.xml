@@ -11,6 +11,7 @@
     tools:context=".ui.activity.CreatePostActivityTwo">
 
     <include layout="@layout/toolbar" />
+    <include layout="@layout/line_seperator" />
 
     <LinearLayout
         android:id="@+id/createPostLinearLayoutTwo1"

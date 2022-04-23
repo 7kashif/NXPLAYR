@@ -7,33 +7,28 @@ import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.google.gson.Gson
 import com.nxplayr.fsl.R
+import com.nxplayr.fsl.data.api.RestClient
+import com.nxplayr.fsl.data.model.SignupData
+import com.nxplayr.fsl.data.model.UsersSkils
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.ui.fragments.userskillsendorsment.adapter.AddSkillsAdapter
 import com.nxplayr.fsl.ui.fragments.userskillsendorsment.adapter.SkillsAdapter
 import com.nxplayr.fsl.ui.fragments.userskillsendorsment.adapter.SkillsListAdapter
-import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.ui.fragments.userskillsendorsment.viewmodel.SkillsEndorsementsModel
-import com.nxplayr.fsl.ui.fragments.userskillsendorsment.viewmodel.SkillsListModel
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
-import com.google.gson.Gson
-import com.nxplayr.fsl.data.model.SignupData
-import com.nxplayr.fsl.data.model.SkillList
-import com.nxplayr.fsl.data.model.UsersSkils
-import kotlinx.android.synthetic.main.activity_add_hobbies_list.*
 import kotlinx.android.synthetic.main.common_recyclerview.*
-import kotlinx.android.synthetic.main.fragment_add_languages.*
 import kotlinx.android.synthetic.main.fragment_add_skills_endorsement.*
-import kotlinx.android.synthetic.main.fragment_skills_endorsements.*
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
@@ -47,9 +42,9 @@ class AddSkillsEndorsementsFragment : Fragment(),View.OnClickListener {
 
     private var v: View? = null
     var mActivity: AppCompatActivity? = null
-    var skill_list: ArrayList<SkillList>? = ArrayList()
+    var skill_list: ArrayList<UsersSkils>? = ArrayList()
     var skillList: ArrayList<UsersSkils?>? = ArrayList()
-    var addskillList: ArrayList<SkillList>? = ArrayList()
+    var addskillList: ArrayList<UsersSkils>? = ArrayList()
     var skillsAdapter: SkillsAdapter? = null
     var skillListAdapter: SkillsListAdapter? = null
     var addskillsAdapter: AddSkillsAdapter? = null
@@ -59,7 +54,6 @@ class AddSkillsEndorsementsFragment : Fragment(),View.OnClickListener {
     var skillId = ""
     var skillName = ""
     private var skillsUpdateListener: SkillsUpdateListener? = null
-    private lateinit var  skillsListModel: SkillsListModel
     private lateinit var  skillsEndorsementsModel: SkillsEndorsementsModel
 
    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -101,7 +95,7 @@ class AddSkillsEndorsementsFragment : Fragment(),View.OnClickListener {
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
         try {
-            jsonObject.put("loginuserID", "0")
+            jsonObject.put("loginuserID", userData?.userID)
             jsonObject.put("apiType", RestClient.apiType)
             jsonObject.put("apiVersion", RestClient.apiVersion)
             jsonObject.put("searchWord", "")
@@ -110,7 +104,7 @@ class AddSkillsEndorsementsFragment : Fragment(),View.OnClickListener {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        skillsListModel.getSkillsList(mActivity!!, false, jsonArray.toString())
+        skillsEndorsementsModel.getSkillsList(mActivity!!, false, jsonArray.toString(), "List")
             .observe(
                 viewLifecycleOwner
             ) { skillsListpojo ->
@@ -125,11 +119,11 @@ class AddSkillsEndorsementsFragment : Fragment(),View.OnClickListener {
                         skill_list?.clear()
                         if (!userData!!.skills.isNullOrEmpty()) {
                             val firstListIds = userData!!.skills.map { it.skillID }
-                            val new = skillsListpojo[0].data.filter { it.skillID !in firstListIds }
+                            val new = skillsListpojo[0].businessskills.filter { it.skillID !in firstListIds }
                             skill_list?.addAll((new))
                             skillsAdapter?.notifyDataSetChanged()
                         } else {
-                            skill_list?.addAll(skillsListpojo[0].data)
+                            skill_list?.addAll(skillsListpojo[0].businessskills)
                         }
                         skillsAdapter?.notifyDataSetChanged()
 
@@ -187,7 +181,7 @@ class AddSkillsEndorsementsFragment : Fragment(),View.OnClickListener {
 
         skillsAdapter = SkillsAdapter(mActivity!!, skill_list, object : SkillsAdapter.OnItemClick {
 
-            override fun onClicled(skillData: SkillList, from: String) {
+            override fun onClicled(skillData: UsersSkils, from: String) {
                 when (from) {
                     "add_skills" -> {
                         addtoskillList(skillData)
@@ -234,15 +228,12 @@ class AddSkillsEndorsementsFragment : Fragment(),View.OnClickListener {
     }
 
     private fun setupViewModel() {
-         skillsListModel = ViewModelProvider(this@AddSkillsEndorsementsFragment).get(SkillsListModel::class.java)
          skillsEndorsementsModel = ViewModelProvider(this@AddSkillsEndorsementsFragment).get(
              SkillsEndorsementsModel::class.java)
-
-
     }
 
 
-    private fun addtoskillList(skills: SkillList) {
+    private fun addtoskillList(skills: UsersSkils) {
 
         addskillsAdapter = AddSkillsAdapter(mActivity!!, addskillList, object : AddSkillsAdapter.OnItemClick {
             override fun onClicled(pos: Int, from: String) {
@@ -334,6 +325,7 @@ class AddSkillsEndorsementsFragment : Fragment(),View.OnClickListener {
             }
             jsonObject.put("skilldetails", jsonArrayskills)
 
+            Log.e("addSkills", "addSkills() ${Gson().toJson(jsonObject)}")
         } catch (e: JSONException) {
             e.printStackTrace()
         }
@@ -349,7 +341,7 @@ class AddSkillsEndorsementsFragment : Fragment(),View.OnClickListener {
                                     try {
 
                                         userData?.skills?.clear()
-                                        userData?.skills?.addAll(loginPojo.get(0).data)
+                                        userData?.skills?.addAll(loginPojo.get(0).businessskills)
                                         if (skillsUpdateListener != null)
                                             skillsUpdateListener!!.onSkillsUpdate()
 
@@ -398,12 +390,12 @@ class AddSkillsEndorsementsFragment : Fragment(),View.OnClickListener {
                     if (skillsListPojo != null && skillsListPojo.isNotEmpty()) {
                         if (skillsListPojo[0].status.equals("true", true)) {
                             skillList?.clear()
-                            skillList?.addAll(skillsListPojo[0].data)
-                            if (skillsListPojo[0].data.size > 0) {
+                            skillList?.addAll(skillsListPojo[0].businessskills)
+                            if (skillsListPojo[0].businessskills.size > 0) {
                                 if (addskillList!!.size >= 0 || userData!!.skills.size >= 0) {
                                     if (!userData?.skills.isNullOrEmpty()) {
                                         var count =
-                                            skillsListPojo[0].data.size + addskillList!!.size
+                                            skillsListPojo[0].businessskills.size + addskillList!!.size
                                         tv_skill_count.text = "Skills Added " + "(" + count + ")"
                                         skillListAdapter?.notifyDataSetChanged()
                                         addskillsAdapter?.notifyDataSetChanged()
@@ -457,56 +449,65 @@ class AddSkillsEndorsementsFragment : Fragment(),View.OnClickListener {
 
         jsonArray.put(jsonObject)
         skillsEndorsementsModel.getSkillsList(mActivity!!, false, jsonArray.toString(), "Delete")
-                .observe(this@AddSkillsEndorsementsFragment,
-                    { deleteSkillsPojo ->
-                        MyUtils.dismissProgressDialog()
+                .observe(this@AddSkillsEndorsementsFragment
+                ) { deleteSkillsPojo ->
+                    MyUtils.dismissProgressDialog()
 
-                        if (deleteSkillsPojo != null) {
+                    if (deleteSkillsPojo != null) {
 
-                            if (deleteSkillsPojo.get(0).status.equals("true", false)) {
-                                try {
+                        if (deleteSkillsPojo.get(0).status.equals("true", false)) {
+                            try {
 
-                                    if (userData!!.skills.size > 0) {
+                                if (userData!!.skills.size > 0) {
 
-                                        for (i in 0 until userData!!.skills.size) {
-                                            if (skillData.userskillID.equals(userData!!.skills[i].userskillID,false)) {
-                                                userData!!.skills.remove(skillData)
-                                                sessionManager!!.userData = userData
-                                                skillList?.remove(skillData)
-                                                break
-                                            }
+                                    for (i in 0 until userData!!.skills.size) {
+                                        if (skillData.userskillID.equals(
+                                                userData!!.skills[i].userskillID,
+                                                false
+                                            )
+                                        ) {
+                                            userData!!.skills.remove(skillData)
+                                            sessionManager!!.userData = userData
+                                            skillList?.remove(skillData)
+                                            break
                                         }
-                                        skillListAdapter?.notifyDataSetChanged()
+                                    }
+                                    skillListAdapter?.notifyDataSetChanged()
 
-                                        setupObserver()
-                                        skillsAdapter?.notifyDataSetChanged()
+                                    setupObserver()
+                                    skillsAdapter?.notifyDataSetChanged()
 
-                                        if (addskillList!!.size >= 0 || userData!!.skills.size >= 0) {
+                                    if (addskillList!!.size >= 0 || userData!!.skills.size >= 0) {
 
-                                            var count = deleteSkillsPojo[0].data.size + addskillList!!.size
-                                            tv_skill_count.text = "Skills Added " + "(" + count + ")"
+                                        var count =
+                                            deleteSkillsPojo[0].businessskills.size + addskillList!!.size
+                                        tv_skill_count.text = "Skills Added " + "(" + count + ")"
 
-                                        } else if (addskillList!!.size < 0 || deleteSkillsPojo[0].data.size < 0) {
-                                            tv_skill_count.text = "Skills Added "
-                                        }
-
-
+                                    } else if (addskillList!!.size < 0 || deleteSkillsPojo[0].businessskills.size < 0) {
+                                        tv_skill_count.text = "Skills Added "
                                     }
 
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
+
                                 }
 
-                            } else {
-                                MyUtils.dismissProgressDialog()
-                                MyUtils.showSnackbar(mActivity!!, deleteSkillsPojo.get(0).message, ll_mainSkillEndorsement)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
                             }
 
                         } else {
                             MyUtils.dismissProgressDialog()
-                            ErrorUtil.errorMethod(ll_mainSkillEndorsement)
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                deleteSkillsPojo.get(0).message,
+                                ll_mainSkillEndorsement
+                            )
                         }
-                    })
+
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        ErrorUtil.errorMethod(ll_mainSkillEndorsement)
+                    }
+                }
     }
 
     private fun StoreSessionManager(uesedata: SignupData?) {

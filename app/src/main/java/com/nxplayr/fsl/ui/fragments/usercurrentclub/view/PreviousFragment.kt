@@ -7,40 +7,35 @@ import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver.OnScrollChangedListener
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.google.gson.Gson
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.ui.fragments.usergeographical.viewmodel.UpdateResumeCallsViewModel
+import com.nxplayr.fsl.data.model.ClubListData
 import com.nxplayr.fsl.data.model.SignupData
-import com.nxplayr.fsl.util.ErrorUtil
-import com.nxplayr.fsl.util.MyUtils
-import com.nxplayr.fsl.util.SessionManager
-import com.google.gson.Gson
-import com.nxplayr.fsl.ui.fragments.usercurrentclub.adapter.AddClubListAdapter
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.ui.fragments.usercurrentclub.adapter.CurrentClubAdapter
-import com.nxplayr.fsl.ui.fragments.usercurrentclub.adapter.PreviousClubListAdapter
+import com.nxplayr.fsl.ui.fragments.usercurrentclub.adapter.SuggestedClubAdapter
 import com.nxplayr.fsl.ui.fragments.usercurrentclub.viewmodel.AddClubModel
 import com.nxplayr.fsl.ui.fragments.usercurrentclub.viewmodel.ClubListModel
-import com.nxplayr.fsl.data.model.ClubData
-import com.nxplayr.fsl.data.model.ClubListData
-import com.nxplayr.fsl.ui.fragments.usercurrentclub.adapter.SuggestedClubAdapter
+import com.nxplayr.fsl.ui.fragments.usergeographical.viewmodel.UpdateResumeCallsViewModel
+import com.nxplayr.fsl.util.ErrorUtil
+import com.nxplayr.fsl.util.MyUtils
+import com.nxplayr.fsl.util.PaginationScrollListener
+import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.common_recyclerview.*
-import kotlinx.android.synthetic.main.fragment_current_club.*
 import kotlinx.android.synthetic.main.fragment_previous.*
-import kotlinx.android.synthetic.main.fragment_previous.RV_selectedClubList
-import kotlinx.android.synthetic.main.fragment_previous.edit_searchClub
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
 import kotlinx.android.synthetic.main.toolbar.*
-import kotlinx.android.synthetic.main.toolbar.toolbar
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -64,6 +59,7 @@ class PreviousFragment : Fragment() {
 //    var deleteList: ArrayList<ClubData>? = ArrayList()
 //    var infaltorScheduleMode: LayoutInflater? = null
 
+    var linearLayout: LinearLayoutManager? = null
     var sessionManager: SessionManager? = null
     var userData: SignupData? = null
     var clubID = ""
@@ -71,7 +67,9 @@ class PreviousFragment : Fragment() {
     var fromProfile = ""
     var userId = ""
     var otherUserData: SignupData? = null
-
+    private var mIsLastPage = false
+    private var mIsLoading = false
+    private var mPage: Int = 1
     private lateinit var clubListModel: ClubListModel
     private lateinit var addClubModel: AddClubModel
     private lateinit var updateResumeCallsViewModel: UpdateResumeCallsViewModel
@@ -207,19 +205,40 @@ class PreviousFragment : Fragment() {
             },
             userId
         )
-        recyclerview.layoutManager = LinearLayoutManager(mActivity)
+        linearLayout = LinearLayoutManager(mActivity)
+        recyclerview.layoutManager = linearLayout
         recyclerview.setHasFixedSize(true)
         recyclerview.adapter = clubAdapter
         suggestedClubList()
         clubAdapter?.notifyDataSetChanged()
+
+        scrollView.viewTreeObserver
+            .addOnScrollChangedListener(OnScrollChangedListener {
+                if (scrollView != null) {
+                    if (scrollView.getChildAt(0).bottom
+                        <= scrollView.height + scrollView.scrollY
+                    ) {
+                        //scroll view is at bottom
+                        if (!mIsLoading && !mIsLastPage) {
+                            this@PreviousFragment.mIsLoading = true
+                            Log.e("TAG", "PAGE : $mPage")
+                            suggestedClubList()
+                        }
+                    }
+                }
+            })
+
     }
 
     private fun suggestedClubList() {
-        relativeprogressBar.visibility = View.VISIBLE
+        if (mPage == 1) {
+            relativeprogressBar.visibility = View.VISIBLE
+        } else {
+            pagination.visibility = View.VISIBLE
+        }
         ll_no_data_found.visibility = View.GONE
         nointernetMainRelativelayout.visibility = View.GONE
 
-//        MyUtils.showProgressDialog(mActivity!!, "Please wait...")
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
         try {
@@ -227,48 +246,54 @@ class PreviousFragment : Fragment() {
             jsonObject.put("apiType", RestClient.apiType)
             jsonObject.put("apiVersion", RestClient.apiVersion)
             jsonObject.put("searchWord", "")
+            jsonObject.put("page", mPage)
+            jsonObject.put("pageSize", 15)
 
         } catch (e: JSONException) {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-
         clubListModel.getClubList(mActivity!!, false, jsonArray.toString())
             .observe(
                 viewLifecycleOwner
             ) { clubListpojo ->
 
                 relativeprogressBar.visibility = View.GONE
+                pagination.visibility = View.GONE
                 recyclerview.visibility = View.VISIBLE
 
-
-                if (clubListpojo != null && clubListpojo.isNotEmpty()) {
-
-                    if (clubListpojo[0].status.equals("true", false)) {
-
-                        club_list?.clear()
+                mIsLoading = false
+                if (clubListpojo != null) {
+                    if (clubListpojo.status) {
+                        if (mPage == 1) {
+                            club_list?.clear()
+                        }
                         if (!userId.equals(userData?.userID, false)) {
                             if (!otherUserData!!.clubs.isNullOrEmpty()) {
-                                val firstListIds = otherUserData!!.clubs?.map { it.clubID }
+                                val firstListIds = otherUserData!!.clubs.map { it.clubID }
                                 val new =
-                                    clubListpojo[0].data?.filter { it.clubID !in firstListIds!! }
+                                    clubListpojo.data.filter { it.clubID !in firstListIds!! }
                                 club_list?.addAll((new))
                                 clubAdapter?.notifyDataSetChanged()
                             } else {
-                                club_list?.addAll(clubListpojo[0].data)
+                                club_list?.addAll(clubListpojo.data)
                             }
                         } else {
                             if (!userData!!.clubs.isNullOrEmpty()) {
-                                val firstListIds = userData!!.clubs?.map { it.clubID }
+                                val firstListIds = userData!!.clubs.map { it.clubID }
                                 val new =
-                                    clubListpojo[0].data?.filter { it.clubID !in firstListIds!! }
+                                    clubListpojo.data.filter { it.clubID !in firstListIds!! }
                                 club_list?.addAll((new))
                                 clubAdapter?.notifyDataSetChanged()
                             } else {
-                                club_list?.addAll(clubListpojo[0].data)
+                                club_list?.addAll(clubListpojo.data)
                             }
                         }
-                        clubListApi()
+                        if (mPage == 1) {
+                            clubListApi()
+                        }
+                        mPage++
+                        mIsLastPage = mPage == clubListpojo.totalPages
                         clubAdapter?.notifyDataSetChanged()
                     } else {
 
@@ -330,12 +355,14 @@ class PreviousFragment : Fragment() {
         myclub_list!!.clear()
         if (!userPreiviosClub.isNullOrEmpty()) {
             for (j in 0 until userPreiviosClub.size) {
-                for (i in 0 until club_list?.size!!) {
-                    if (club_list!![i].clubName == userPreiviosClub[j].trim()) {
-                        club_list!![i].selected = true
-                        myclub_list?.add(club_list!![i])
-                    }
-                }
+                club_list!![j].selected = true
+                myclub_list?.add(club_list!![j])
+//                for (i in 0 until club_list?.size!!) {
+//                    if (club_list!![i].clubName == userPreiviosClub[j].trim()) {
+//                        club_list!![i].selected = true
+//                        myclub_list?.add(club_list!![i])
+//                    }
+//                }
             }
 
         }
@@ -365,7 +392,7 @@ class PreviousFragment : Fragment() {
                 MyUtils.dismissProgressDialog()
                 if (clubListpojo != null && clubListpojo.isNotEmpty()) {
 
-                    if (clubListpojo[0].status.equals("true", false)) {
+                    if (clubListpojo[0].status) {
 
 //                                    val userData = sessionManager!!.userData
 //                        if (userData!!.clubs!!.size > 0) {

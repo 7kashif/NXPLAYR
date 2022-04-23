@@ -746,7 +746,7 @@
     <string name="msg_empty_last_name">Last Name should not be empty</string>
     <string name="msg_empty_known_as">Known as should not be empty</string>
     <string name="selected_skill">Selected Skill</string>
-    <string name="search_skill">Search Skill</string>
+    <string name="search_skill">Search Skills</string>
     <string name="referralCode">Referral code</string>
     <string name="copyright_policy">Copyright Policy</string>
     <string name="partner_invest_with_us">Partner/Invest with us</string>
@@ -776,6 +776,8 @@
     <string name="see_less"><![CDATA[...see less]]></string>
     <string name="user_role">User Role</string>
     <string name="write_text">Write text</string>
+    <string name="suggested_skills">Suggested Skills</string>
+    <string name="suggested_hobbies">Suggested Hobbies</string>
 
     <string-array name="animals">
         <item>Abyssinian</item>

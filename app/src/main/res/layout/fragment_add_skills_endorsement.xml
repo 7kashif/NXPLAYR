@@ -17,6 +17,7 @@
         android:visibility="visible">
 
         <include layout="@layout/toolbar" />
+        <include layout="@layout/line_seperator" />
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"

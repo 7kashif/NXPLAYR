@@ -10,6 +10,8 @@
 
     <include layout="@layout/toolbar" />
 
+    <include layout="@layout/line_seperator" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,7 +27,8 @@
             android:layout_gravity="center"
             android:hint="@string/language"
             android:textColorHint="@color/colorPrimary"
-            android:theme="@style/MyEditTextTheme">
+            android:theme="@style/MyEditTextTheme"
+            app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
 
 
             <com.google.android.material.textfield.TextInputEditText
@@ -37,6 +40,7 @@
                 android:focusable="false"
                 android:imeOptions="actionNext"
                 android:inputType="text"
+                android:paddingTop="@dimen/_35sdp"
                 android:singleLine="true"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_16ssp"
@@ -50,9 +54,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:hint="@string/proficiency"
-
             android:textColorHint="@color/colorPrimary"
-            android:theme="@style/MyEditTextTheme">
+            android:theme="@style/MyEditTextTheme"
+            app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
 
 
             <com.google.android.material.textfield.TextInputEditText
@@ -64,6 +68,7 @@
                 android:focusable="false"
                 android:imeOptions="actionDone"
                 android:inputType="text"
+                android:paddingTop="@dimen/_35sdp"
                 android:singleLine="true"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_16ssp"

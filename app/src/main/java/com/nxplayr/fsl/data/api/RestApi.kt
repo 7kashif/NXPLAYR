@@ -234,7 +234,7 @@ interface RestApi {
 
     @FormUrlEncoded
     @POST("club/get-club-list")
-    fun getClubList(@Field("json") json: String): Call<List<ClubListPojo>>
+    fun getClubList(@Field("json") json: String): Call<ClubListPojo>
 
     @FormUrlEncoded
     @POST("userclubs/add-userclubs")

@@ -20,5 +20,7 @@ data class LanguageListData(
         var languageID: String,
         @SerializedName("languageName")
         var languageName: String,
+        @SerializedName("languageCode")
+        var languageCode: String,
         var status: Boolean = false
 ) : Serializable

@@ -11,7 +11,7 @@ import retrofit2.Response
 
 class ClubListModel : ViewModel() {
 
-    lateinit var languageresponse: LiveData<List<ClubListPojo>>
+    lateinit var languageresponse: LiveData<ClubListPojo>
     lateinit var mContext: Context
     var json: String? = null
 
@@ -19,7 +19,7 @@ class ClubListModel : ViewModel() {
             context: Context,
             isShowing: Boolean,
             json: String
-    ): LiveData<List<ClubListPojo>> {
+    ): LiveData<ClubListPojo> {
         this.json = json
 
         this.mContext = context
@@ -29,12 +29,12 @@ class ClubListModel : ViewModel() {
         return languageresponse
     }
 
-    private fun getClubListApi(): LiveData<List<ClubListPojo>> {
-        val data = MutableLiveData<List<ClubListPojo>>()
+    private fun getClubListApi(): LiveData<ClubListPojo> {
+        val data = MutableLiveData<ClubListPojo>()
 
         var call = RestClient.get()!!.getClubList(json!!)
-        call.enqueue(object : RestCallback<List<ClubListPojo>>(mContext) {
-            override fun Success(response: Response<List<ClubListPojo>>) {
+        call.enqueue(object : RestCallback<ClubListPojo>(mContext) {
+            override fun Success(response: Response<ClubListPojo>) {
                 data.value = response.body()
             }
 

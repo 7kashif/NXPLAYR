@@ -7,11 +7,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.model.SkillList
+import com.nxplayr.fsl.data.model.UsersSkils
 import kotlinx.android.synthetic.main.item_skills_adapter.view.*
 
 class AddSkillsAdapter(
         val context: Activity,
-        val listData: ArrayList<SkillList>?
+        val listData: ArrayList<UsersSkils>?
         , val onItemClick: OnItemClick
 ) :
         RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -41,7 +42,7 @@ class AddSkillsAdapter(
 
     class SkillsHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(listData: SkillList,
+        fun bind(listData: UsersSkils,
                  adapterPosition: Int,
                  onItemClick: OnItemClick
         ) = with(itemView) {
