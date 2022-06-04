@@ -13,43 +13,36 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.google.android.material.tabs.TabLayout
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.ui.fragments.userfollowers.viewmodel.CommonStatusModel
-import com.nxplayr.fsl.ui.fragments.userconnection.viewmodel.ConnectionListModel
+import com.nxplayr.fsl.data.model.CommonPojo
+import com.nxplayr.fsl.data.model.ConnectionListData
+import com.nxplayr.fsl.data.model.SignupData
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModelV2
+import com.nxplayr.fsl.ui.fragments.explorepost.view.ExploreFragment
+import com.nxplayr.fsl.ui.fragments.feed.view.PostGridViewListFragment
 import com.nxplayr.fsl.ui.fragments.friendrequest.viewmodel.FriendListModel
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
+import com.nxplayr.fsl.ui.fragments.otheruserprofile.adapter.OtherUserDetailViewPagerAdapter
+import com.nxplayr.fsl.ui.fragments.ownprofile.view.UserFeedListsFragment
+import com.nxplayr.fsl.ui.fragments.userconnection.viewmodel.ChatListModel
+import com.nxplayr.fsl.ui.fragments.userfollowers.view.FollowersFragment
+import com.nxplayr.fsl.ui.fragments.userfollowers.viewmodel.CommonStatusModel
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.PopupMenu
 import com.nxplayr.fsl.util.SessionManager
-import com.google.android.material.tabs.TabLayout
-import com.nxplayr.fsl.data.model.CommonPojo
-import com.nxplayr.fsl.data.model.ConnectionListData
-import com.nxplayr.fsl.data.model.SignupData
-import com.nxplayr.fsl.ui.fragments.explorepost.view.ExploreFragment
-import com.nxplayr.fsl.ui.fragments.feed.view.PostGridViewListFragment
-import com.nxplayr.fsl.ui.fragments.otheruserprofile.adapter.OtherUserDetailViewPagerAdapter
-import com.nxplayr.fsl.ui.fragments.ownprofile.view.UserFeedListsFragment
-import com.nxplayr.fsl.ui.fragments.userfollowers.view.FollowersFragment
 import kotlinx.android.synthetic.main.fragment_other_user_profile.*
-import kotlinx.android.synthetic.main.fragment_other_user_profile.layout_connection
-import kotlinx.android.synthetic.main.fragment_other_user_profile.layout_followers
-import kotlinx.android.synthetic.main.fragment_other_user_profile.layout_following
-import kotlinx.android.synthetic.main.fragment_other_user_profile.tv_following
-import kotlinx.android.synthetic.main.fragment_other_user_profile.tv_friend
-import kotlinx.android.synthetic.main.fragment_other_user_profile.tv_unfriend
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.text.ParseException
-import java.util.*
 
 
-class OtherUserProfileFragment : Fragment(),View.OnClickListener {
+class OtherUserProfileFragment : Fragment(), View.OnClickListener {
 
     private var v: View? = null
     var mActivity: AppCompatActivity? = null
@@ -62,15 +55,17 @@ class OtherUserProfileFragment : Fragment(),View.OnClickListener {
     var connectionList: ArrayList<String>? = ArrayList()
     var tabPosition: Int = 0
     var connectionId = ""
-    var userQuickBlockID=""
+    var userQuickBlockID = ""
 
-    private lateinit var  signupModel: SignupModel
-    private lateinit var  friendListModel: FriendListModel
-    private lateinit var  connectionListModel: ConnectionListModel
-    private lateinit var  commonStatusModel: CommonStatusModel
+    private lateinit var signupModel: SignupModelV2
+    private lateinit var friendListModel: FriendListModel
+    private lateinit var connectionListModel: ChatListModel
+    private lateinit var commonStatusModel: CommonStatusModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         if (v == null) {
             v = inflater.inflate(R.layout.fragment_other_user_profile, container, false)
         }
@@ -109,8 +104,7 @@ class OtherUserProfileFragment : Fragment(),View.OnClickListener {
         getOtherUserProfileData()
         connectionListApi()
 
-        if (tabPosition == 0)
-        {
+        if (tabPosition == 0) {
             ll_mainOtherUserData.visibility = View.VISIBLE
             tv_ratingCount.visibility = View.GONE
             ll_mainConnect.visibility = View.VISIBLE
@@ -122,9 +116,7 @@ class OtherUserProfileFragment : Fragment(),View.OnClickListener {
             main_contentCoordinator.visibility = View.VISIBLE
             ll_mainGridLayout.visibility = View.VISIBLE
 
-        }
-        else if (tabPosition == 2)
-        {
+        } else if (tabPosition == 2) {
             ll_mainOtherUserData.visibility = View.VISIBLE
             tv_ratingCount.visibility = View.GONE
             ll_mainConnect.visibility = View.GONE
@@ -144,28 +136,31 @@ class OtherUserProfileFragment : Fragment(),View.OnClickListener {
         tablayout_OtherUserPro.tabMode = TabLayout.MODE_SCROLLABLE
 
         layout_connection.setOnClickListener(this)
-        layout_followers.setOnClickListener (this)
-        layout_following.setOnClickListener (this)
-        post_grid_Icon.setOnClickListener (this)
-        post_list_Icon.setOnClickListener (this)
-        tv_friend.setOnClickListener (this)
-        tv_unfriend.setOnClickListener (this)
-        tv_chat.setOnClickListener (this)
-        btnRetry.setOnClickListener (this)
-        tv_follow.setOnClickListener (this)
-        followingTV.setOnClickListener (this)
+        layout_followers.setOnClickListener(this)
+        layout_following.setOnClickListener(this)
+        post_grid_Icon.setOnClickListener(this)
+        post_list_Icon.setOnClickListener(this)
+        tv_friend.setOnClickListener(this)
+        tv_unfriend.setOnClickListener(this)
+        tv_chat.setOnClickListener(this)
+        btnRetry.setOnClickListener(this)
+        tv_follow.setOnClickListener(this)
+        followingTV.setOnClickListener(this)
     }
 
-    private fun setupViewModel()
-    {
-        signupModel = ViewModelProvider(this@OtherUserProfileFragment).get(SignupModel::class.java)
-        connectionListModel = ViewModelProvider(this@OtherUserProfileFragment).get(ConnectionListModel::class.java)
-        friendListModel = ViewModelProvider(this@OtherUserProfileFragment).get(FriendListModel::class.java)
-        commonStatusModel = ViewModelProvider(this@OtherUserProfileFragment).get(CommonStatusModel::class.java)
+    private fun setupViewModel() {
+        signupModel =
+            ViewModelProvider(this@OtherUserProfileFragment).get(SignupModelV2::class.java)
+        connectionListModel =
+            ViewModelProvider(this@OtherUserProfileFragment).get(ChatListModel::class.java)
+        friendListModel =
+            ViewModelProvider(this@OtherUserProfileFragment).get(FriendListModel::class.java)
+        commonStatusModel =
+            ViewModelProvider(this@OtherUserProfileFragment).get(CommonStatusModel::class.java)
     }
 
     private fun addToChatList(userQuickBlockID: String, userID: String?) {
-        MyUtils.showProgressDialog(mActivity!!,"Please wait")
+        MyUtils.showProgressDialog(mActivity!!, "Please wait")
 
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
@@ -183,32 +178,45 @@ class OtherUserProfileFragment : Fragment(),View.OnClickListener {
         } catch (e: ParseException) {
             e.printStackTrace()
         }
-        friendListModel.getFriendList(mActivity!!, jsonArray.toString(), "chatTofriend").observe(this@OtherUserProfileFragment,
-            { loginPojo ->
+        friendListModel.friendApi(jsonArray.toString(), "chatTofriend")
+        friendListModel.successFriend
+            .observe(
+                viewLifecycleOwner
+            ) { loginPojo ->
                 MyUtils.dismissProgressDialog()
                 if (loginPojo != null) {
 
                     if (loginPojo[0].status.equals("true", true)) {
 
-                        if (sessionManager?.getYesNoQBUser()!!){
+                        if (sessionManager?.getYesNoQBUser()!!) {
 
-                            if (!MyUtils.isLoginForQuickBlock){
+                            if (!MyUtils.isLoginForQuickBlock) {
                                 if (!MyUtils.isLoginForQuickBlockChat)
-                                    (mActivity as MainActivity).loginForQuickBlockChat(sessionManager?.getQbUser()!!, userQuickBlockID)
+                                    (mActivity as MainActivity).loginForQuickBlockChat(
+                                        sessionManager?.getQbUser()!!,
+                                        userQuickBlockID
+                                    )
                                 else
                                     (mActivity as MainActivity).getQBUser(userQuickBlockID, 1)
-                            } else if(!MyUtils.isLoginForQuickBlockChat)
-                                (mActivity as MainActivity).loginForQuickBlockChat(sessionManager?.getQbUser()!!, userQuickBlockID)
+                            } else if (!MyUtils.isLoginForQuickBlockChat)
+                                (mActivity as MainActivity).loginForQuickBlockChat(
+                                    sessionManager?.getQbUser()!!,
+                                    userQuickBlockID
+                                )
                             else (mActivity as MainActivity).getQBUser(userQuickBlockID, 1)
                         }
                     } else {
-                        MyUtils.showSnackbar(mActivity!!,loginPojo[0].message,nointernetMainRelativelayout)
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            loginPojo[0].message,
+                            nointernetMainRelativelayout
+                        )
                     }
                 } else {
                     MyUtils.dismissProgressDialog()
                     ErrorUtil.errorMethod(nointernetMainRelativelayout)
                 }
-            })
+            }
 
     }
 
@@ -230,34 +238,32 @@ class OtherUserProfileFragment : Fragment(),View.OnClickListener {
         } catch (e: ParseException) {
             e.printStackTrace()
         }
-        signupModel.userRegistration(mActivity!!, false, jsonArray.toString(), "other_userProfile").observe(viewLifecycleOwner,
-            { loginPojo ->
+        signupModel.otherUserProfile(jsonArray.toString())
+        signupModel.otherUserProfile.observe(viewLifecycleOwner) { loginPojo ->
+            if (loginPojo != null) {
+                if (loginPojo[0].status.equals("true", true)) {
+                    if (loginPojo[0].data.isNotEmpty()) {
+                        relativeprogressBar?.visibility = View.GONE
+                        main_contentCoordinator.visibility = View.VISIBLE
+                        otherUserData = loginPojo[0].data[0]
+                        if (otherUserData != null) {
 
-                if (loginPojo != null) {
-                    if (loginPojo[0].status.equals("true", true)) {
-                        if (loginPojo[0].data.isNotEmpty()) {
-                            relativeprogressBar?.visibility = View.GONE
-                            main_contentCoordinator.visibility = View.VISIBLE
-                            otherUserData = loginPojo[0].data[0]
-                            if (otherUserData != null) {
-
-                                setOtherUserData(otherUserData!!)
-                            }
+                            setOtherUserData(otherUserData!!)
                         }
                     }
-                } else {
-                    relativeprogressBar?.visibility = View.GONE
-                    main_contentCoordinator.visibility = View.GONE
-                    ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
                 }
-            })
+            } else {
+                relativeprogressBar?.visibility = View.GONE
+                main_contentCoordinator.visibility = View.GONE
+                ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+            }
+        }
 
     }
 
     private fun setupViewPager(viewpager: ViewPager, from: String) {
         adapter = OtherUserDetailViewPagerAdapter(childFragmentManager, userId, "OtherUserPro")
-        if (from.equals("Grid", false))
-        {
+        if (from.equals("Grid", false)) {
             adapter?.addFragment(PostGridViewListFragment(), "All")
             adapter?.addFragment(ExploreFragment(), "ProSkills")
             adapter?.addFragment(PostGridViewListFragment(), "Photos")
@@ -266,8 +272,7 @@ class OtherUserProfileFragment : Fragment(),View.OnClickListener {
             adapter?.addFragment(PostGridViewListFragment(), "Links")
             viewpager.adapter = adapter
             adapter?.notifyDataSetChanged()
-        }
-        else if (from.equals("List", false)) {
+        } else if (from.equals("List", false)) {
             adapter?.addFragment(UserFeedListsFragment(), "All")
             adapter?.addFragment(ExploreFragment(), "ProSkills")
             adapter?.addFragment(UserFeedListsFragment(), "Photos")
@@ -279,8 +284,8 @@ class OtherUserProfileFragment : Fragment(),View.OnClickListener {
         }
     }
 
-     @JvmName("setOtherUserData1")
-     private fun setOtherUserData(otherUserData: SignupData) {
+    @JvmName("setOtherUserData1")
+    private fun setOtherUserData(otherUserData: SignupData) {
 
         proflie_other_userName.text = otherUserData.userFirstName + " " + otherUserData.userLastName
         tv_userProile.text = otherUserData.userBio
@@ -295,18 +300,21 @@ class OtherUserProfileFragment : Fragment(),View.OnClickListener {
             userQuickBlockID = otherUserData?.userQBoxID!!
 
         var mDrawable = resources.getDrawable(R.drawable.friend_icon_big_connection)
-        mDrawable.setColorFilter(ContextCompat.getColor(mActivity!!, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
+        mDrawable.setColorFilter(
+            ContextCompat.getColor(mActivity!!, R.color.black),
+            android.graphics.PorterDuff.Mode.SRC_IN
+        )
         tv_friend.setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null)
         tv_unfriend.setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null)
 
-        if (otherUserData!!.isYourFriend == "Yes" ) {
+        if (otherUserData!!.isYourFriend == "Yes") {
             tv_unfriend.visibility = View.VISIBLE
             tv_friend.visibility = View.GONE
-            tv_chat.visibility=View.VISIBLE
+            tv_chat.visibility = View.VISIBLE
         } else {
             tv_unfriend.visibility = View.GONE
             tv_friend.visibility = View.VISIBLE
-            tv_chat.visibility=View.GONE
+            tv_chat.visibility = View.GONE
         }
         if (otherUserData.isYouFollowing == "Yes") {
             followingTV.visibility = View.VISIBLE
@@ -334,34 +342,33 @@ class OtherUserProfileFragment : Fragment(),View.OnClickListener {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        connectionListModel.getConnectionTypeList(mActivity!!, false, jsonArray.toString())
-                .observe(viewLifecycleOwner,
-                    { connectionListpojo ->
-                        if (connectionListpojo != null && connectionListpojo.isNotEmpty()) {
+        connectionListModel.connectionList(jsonArray.toString())
+        connectionListModel.connectionSuccess.observe(viewLifecycleOwner) { connectionListpojo ->
+                if (connectionListpojo != null && connectionListpojo.isNotEmpty()) {
 
-                            if (connectionListpojo[0].status.equals("true", false)) {
-                                conneTypeList!!.clear()
+                    if (connectionListpojo[0].status.equals("true", false)) {
+                        conneTypeList!!.clear()
 
-                                for (i in connectionListpojo[0].data.indices) {
-                                    if (connectionListpojo[0].data[i].conntypeName.equals("All")) {
-                                        conneTypeList!!.remove(connectionListpojo[0].data[i])
-                                    } else {
-                                        conneTypeList!!.add(connectionListpojo[0].data[i])
-                                        connectionList = ArrayList()
-                                        connectionList!!.clear()
-                                        for (i in 0 until conneTypeList!!.size) {
-                                            connectionList!!.add(conneTypeList!![i].conntypeName!!)
-                                        }
-                                    }
-
+                        for (i in connectionListpojo[0].data.indices) {
+                            if (connectionListpojo[0].data[i].conntypeName.equals("All")) {
+                                conneTypeList!!.remove(connectionListpojo[0].data[i])
+                            } else {
+                                conneTypeList!!.add(connectionListpojo[0].data[i])
+                                connectionList = ArrayList()
+                                connectionList!!.clear()
+                                for (i in 0 until conneTypeList!!.size) {
+                                    connectionList!!.add(conneTypeList!![i].conntypeName!!)
                                 }
-
                             }
 
-                        } else {
-                            ErrorUtil.errorMethod(ll_mainOtherUser)
                         }
-                    })
+
+                    }
+
+                } else {
+                    ErrorUtil.errorMethod(ll_mainOtherUser)
+                }
+            }
 
     }
 
@@ -382,25 +389,28 @@ class OtherUserProfileFragment : Fragment(),View.OnClickListener {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        friendListModel.getFriendList(mActivity!!, jsonArray.toString(), "friend_list")
-                .observe(this@OtherUserProfileFragment!!,
-                    { connectionListpojo ->
-                        if (connectionListpojo != null && connectionListpojo.isNotEmpty()) {
+        friendListModel.friendApi(jsonArray.toString(), "friend_list")
+        friendListModel.successFriend.observe(viewLifecycleOwner) { connectionListpojo ->
+                if (connectionListpojo != null && connectionListpojo.isNotEmpty()) {
 
-                            if (connectionListpojo[0].status.equals("true", false)) {
-                                MyUtils.dismissProgressDialog()
-                                tv_unfriend.visibility = View.VISIBLE
-                                tv_friend.visibility = View.GONE
+                    if (connectionListpojo[0].status.equals("true", false)) {
+                        MyUtils.dismissProgressDialog()
+                        tv_unfriend.visibility = View.VISIBLE
+                        tv_friend.visibility = View.GONE
 
-                            } else {
-                                MyUtils.dismissProgressDialog()
-                                MyUtils.showSnackbar(mActivity!!, connectionListpojo[0].message, ll_mainOtherUser)
-                            }
-                        } else {
-                            MyUtils.dismissProgressDialog()
-                            (activity as MainActivity).errorMethod()
-                        }
-                    })
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            connectionListpojo[0].message,
+                            ll_mainOtherUser
+                        )
+                    }
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    (activity as MainActivity).errorMethod()
+                }
+            }
     }
 
     private fun cancleRequestApi(userId: String) {
@@ -418,25 +428,28 @@ class OtherUserProfileFragment : Fragment(),View.OnClickListener {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        friendListModel.getFriendList(mActivity!!, jsonArray.toString(), "friend_list")
-                .observe(this@OtherUserProfileFragment!!,
-                    { cancleRequestpojo ->
-                        if (cancleRequestpojo != null && cancleRequestpojo.isNotEmpty()) {
-                            if (cancleRequestpojo[0].status.equals("true", false)) {
-                                MyUtils.dismissProgressDialog()
-                                tv_unfriend.visibility = View.GONE
-                                tv_friend.visibility = View.VISIBLE
+        friendListModel.friendApi(jsonArray.toString(), "friend_list")
+        friendListModel.successFriend.observe(viewLifecycleOwner) { cancleRequestpojo ->
+                if (cancleRequestpojo != null && cancleRequestpojo.isNotEmpty()) {
+                    if (cancleRequestpojo[0].status.equals("true", false)) {
+                        MyUtils.dismissProgressDialog()
+                        tv_unfriend.visibility = View.GONE
+                        tv_friend.visibility = View.VISIBLE
 
-                            } else {
-                                MyUtils.dismissProgressDialog()
-                                MyUtils.showSnackbar(mActivity!!, cancleRequestpojo[0].message, ll_mainOtherUser)
-                            }
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            cancleRequestpojo[0].message,
+                            ll_mainOtherUser
+                        )
+                    }
 
-                        } else {
-                            MyUtils.dismissProgressDialog()
-                            (activity as MainActivity).errorMethod()
-                        }
-                    })
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    (activity as MainActivity).errorMethod()
+                }
+            }
     }
 
     private fun followUserApi(userID: String) {
@@ -458,28 +471,36 @@ class OtherUserProfileFragment : Fragment(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
         commonStatusModel.getCommonStatus(mActivity!!, false, jsonArray.toString(), "userFollow")
-                .observe(this@OtherUserProfileFragment, Observer<List<CommonPojo>> { commonStatusPojo ->
+            .observe(this@OtherUserProfileFragment, Observer<List<CommonPojo>> { commonStatusPojo ->
 
-                    MyUtils.dismissProgressDialog()
+                MyUtils.dismissProgressDialog()
 
-                    if (commonStatusPojo != null && commonStatusPojo.isNotEmpty()) {
-                        if (commonStatusPojo[0].status.equals("true", true)) {
+                if (commonStatusPojo != null && commonStatusPojo.isNotEmpty()) {
+                    if (commonStatusPojo[0].status.equals("true", true)) {
 
-                            tv_follow.visibility = View.GONE
-                            followingTV.visibility = View.VISIBLE
+                        tv_follow.visibility = View.GONE
+                        followingTV.visibility = View.VISIBLE
 
-                            MyUtils.showSnackbar(mActivity!!, commonStatusPojo[0].message, ll_mainOtherUser)
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            commonStatusPojo[0].message,
+                            ll_mainOtherUser
+                        )
 
-                        } else {
-
-                            MyUtils.showSnackbar(mActivity!!, commonStatusPojo[0].message, ll_mainOtherUser)
-
-                        }
                     } else {
-                        MyUtils.dismissProgressDialog()
-                        ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            commonStatusPojo[0].message,
+                            ll_mainOtherUser
+                        )
+
                     }
-                })
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                }
+            })
 
     }
 
@@ -491,7 +512,7 @@ class OtherUserProfileFragment : Fragment(),View.OnClickListener {
         try {
             jsonObject.put("loginuserID", userData?.userID)
             jsonObject.put("action", "unfollow")
-            jsonObject.put("userfollowerFollowingID",userID)
+            jsonObject.put("userfollowerFollowingID", userID)
             jsonObject.put("userfollowerFollowerID", userData!!.userID)
             jsonObject.put("apiType", RestClient.apiType)
             jsonObject.put("apiVersion", RestClient.apiVersion)
@@ -501,70 +522,92 @@ class OtherUserProfileFragment : Fragment(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
         commonStatusModel.getCommonStatus(mActivity!!, false, jsonArray.toString(), "userFollow")
-                .observe(this@OtherUserProfileFragment, Observer { commonStatusPojo ->
+            .observe(this@OtherUserProfileFragment, Observer { commonStatusPojo ->
 
-                    MyUtils.dismissProgressDialog()
+                MyUtils.dismissProgressDialog()
 
-                    if (commonStatusPojo != null && commonStatusPojo.isNotEmpty()) {
-                        if (commonStatusPojo[0].status.equals("true", true)) {
+                if (commonStatusPojo != null && commonStatusPojo.isNotEmpty()) {
+                    if (commonStatusPojo[0].status.equals("true", true)) {
 
-                            followingTV.visibility = View.GONE
-                            tv_follow.visibility = View.VISIBLE
+                        followingTV.visibility = View.GONE
+                        tv_follow.visibility = View.VISIBLE
 
-                            MyUtils.showSnackbar(mActivity!!, commonStatusPojo[0].message, ll_mainOtherUser)
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            commonStatusPojo[0].message,
+                            ll_mainOtherUser
+                        )
 
-                        } else {
-
-                            MyUtils.showSnackbar(mActivity!!, commonStatusPojo[0].message, ll_mainOtherUser)
-
-                        }
                     } else {
-                        MyUtils.dismissProgressDialog()
-                        ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            commonStatusPojo[0].message,
+                            ll_mainOtherUser
+                        )
+
                     }
-                })
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                }
+            })
 
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-            R.id.layout_connection->{
+        when (v?.id) {
+            R.id.layout_connection -> {
                 if (otherUserData!!.isYourFriend == "Yes") {
                     var bundle = Bundle()
                     bundle.putString("fromData", "otherUser")
                     bundle.putString("userID", userId)
-                    (activity as MainActivity).navigateTo(OtherUserConnectionsFragment(), bundle, OtherUserConnectionsFragment::class.java.name, true)
+                    (activity as MainActivity).navigateTo(
+                        OtherUserConnectionsFragment(),
+                        bundle,
+                        OtherUserConnectionsFragment::class.java.name,
+                        true
+                    )
                 }
             }
-            R.id.layout_followers->{
+            R.id.layout_followers -> {
                 var bundle = Bundle()
                 bundle.putString("fromData", "otherUser")
                 bundle.putString("userID", userId)
-                (activity as MainActivity).navigateTo(FollowersFragment(), bundle, FollowersFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    FollowersFragment(),
+                    bundle,
+                    FollowersFragment::class.java.name,
+                    true
+                )
 
             }
-            R.id.layout_following->{
+            R.id.layout_following -> {
                 var bundle = Bundle()
                 bundle.putInt("tabposition", 1)
                 bundle.putString("fromData", "otherUser")
                 bundle.putString("userID", userId)
-                (activity as MainActivity).navigateTo(FollowersFragment(), bundle, FollowersFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    FollowersFragment(),
+                    bundle,
+                    FollowersFragment::class.java.name,
+                    true
+                )
 
             }
-            R.id.post_grid_Icon->{
+            R.id.post_grid_Icon -> {
                 setupViewPager(viewpagerOtherUser, "Grid")
                 post_grid_Icon.setImageResource(R.drawable.thumb_view_selected)
                 post_list_Icon.setImageResource(R.drawable.list_view_unselected)
 
             }
-            R.id.post_list_Icon->{
+            R.id.post_list_Icon -> {
                 setupViewPager(viewpagerOtherUser, "List")
                 post_grid_Icon.setImageResource(R.drawable.thumb_view_unselected)
                 post_list_Icon.setImageResource(R.drawable.list_view_selected)
 
             }
-            R.id.tv_friend->{
+            R.id.tv_friend -> {
 
                 PopupMenu(mActivity!!, tv_friend!!, connectionList!!).showPopUp(object :
                     PopupMenu.OnMenuSelectItemClickListener {
@@ -580,21 +623,21 @@ class OtherUserProfileFragment : Fragment(),View.OnClickListener {
                     }
                 })
             }
-            R.id.tv_unfriend->{
+            R.id.tv_unfriend -> {
                 cancleRequestApi(userId)
 
             }
-            R.id.tv_chat->{
-                addToChatList(userQuickBlockID,userId!!)
+            R.id.tv_chat -> {
+                addToChatList(userQuickBlockID, userId!!)
 
             }
-            R.id.btnRetry->{
+            R.id.btnRetry -> {
                 getOtherUserProfileData()
             }
-            R.id.tv_follow->{
+            R.id.tv_follow -> {
                 followUserApi(userId)
             }
-            R.id.followingTV->{
+            R.id.followingTV -> {
                 unfollowUserApi(userId)
             }
 

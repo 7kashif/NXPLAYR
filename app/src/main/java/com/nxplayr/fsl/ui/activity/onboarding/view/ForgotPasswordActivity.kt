@@ -11,28 +11,27 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.CountryListModel
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
 import com.nxplayr.fsl.data.model.CountryListData
+import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.CountryListModel
+import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModelV2
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.PopupMenu
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.activity_forgot_password.*
-import kotlinx.android.synthetic.main.activity_signin.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
 
-class ForgotPasswordActivity : AppCompatActivity(),View.OnClickListener {
+class ForgotPasswordActivity : AppCompatActivity(), View.OnClickListener {
 
     var mobile = true
     var countryListData: ArrayList<CountryListData>? = ArrayList()
     var countrylist: ArrayList<String>? = ArrayList()
-    private lateinit var  countryListModel: CountryListModel
-    private lateinit var  signup: SignupModel
+    private lateinit var countryListModel: CountryListModel
+    private lateinit var signup: SignupModelV2
     var sessionManager: SessionManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,12 +77,27 @@ class ForgotPasswordActivity : AppCompatActivity(),View.OnClickListener {
                 var loginType = TextUtils.isDigitsOnly(edit_mobile_text?.text.toString().trim())
                 if (loginType) {
                     tv_countryCodeForgotPass.visibility = View.VISIBLE
-                    edit_mobile_text.setPadding(resources.getDimensionPixelOffset(R.dimen._60sdp), resources.getDimensionPixelOffset(R.dimen._25sdp), resources.getDimensionPixelOffset(R.dimen._1sdp), resources.getDimensionPixelOffset(R.dimen._10sdp))
-                    tv_countryCodeForgotPass.setPadding(resources.getDimensionPixelOffset(R.dimen._10sdp), resources.getDimensionPixelOffset(R.dimen._25sdp), resources.getDimensionPixelOffset(R.dimen._80sdp), resources.getDimensionPixelOffset(R.dimen._10sdp))
+                    edit_mobile_text.setPadding(
+                        resources.getDimensionPixelOffset(R.dimen._60sdp),
+                        resources.getDimensionPixelOffset(R.dimen._25sdp),
+                        resources.getDimensionPixelOffset(R.dimen._1sdp),
+                        resources.getDimensionPixelOffset(R.dimen._10sdp)
+                    )
+                    tv_countryCodeForgotPass.setPadding(
+                        resources.getDimensionPixelOffset(R.dimen._10sdp),
+                        resources.getDimensionPixelOffset(R.dimen._25sdp),
+                        resources.getDimensionPixelOffset(R.dimen._80sdp),
+                        resources.getDimensionPixelOffset(R.dimen._10sdp)
+                    )
                     tv_countryCodeForgotPass.requestFocus()
                 } else {
                     tv_countryCodeForgotPass.visibility = View.GONE
-                    edit_mobile_text.setPadding(resources.getDimensionPixelOffset(R.dimen._10sdp), resources.getDimensionPixelOffset(R.dimen._25sdp), resources.getDimensionPixelOffset(R.dimen._1sdp), resources.getDimensionPixelOffset(R.dimen._10sdp))
+                    edit_mobile_text.setPadding(
+                        resources.getDimensionPixelOffset(R.dimen._10sdp),
+                        resources.getDimensionPixelOffset(R.dimen._25sdp),
+                        resources.getDimensionPixelOffset(R.dimen._1sdp),
+                        resources.getDimensionPixelOffset(R.dimen._10sdp)
+                    )
                     edit_mobile_text.requestFocus()
                 }
                 forgotContinueButton.strokeColor = (resources.getColor(R.color.colorPrimary))
@@ -92,7 +106,12 @@ class ForgotPasswordActivity : AppCompatActivity(),View.OnClickListener {
 
                 if (p0!!.isEmpty()) {
                     tv_countryCodeForgotPass.visibility = View.GONE
-                    edit_mobile_text.setPadding(resources.getDimensionPixelOffset(R.dimen._10sdp), resources.getDimensionPixelOffset(R.dimen._25sdp), resources.getDimensionPixelOffset(R.dimen._1sdp), resources.getDimensionPixelOffset(R.dimen._10sdp))
+                    edit_mobile_text.setPadding(
+                        resources.getDimensionPixelOffset(R.dimen._10sdp),
+                        resources.getDimensionPixelOffset(R.dimen._25sdp),
+                        resources.getDimensionPixelOffset(R.dimen._1sdp),
+                        resources.getDimensionPixelOffset(R.dimen._10sdp)
+                    )
 
                     forgotContinueButton.strokeColor = (resources.getColor(R.color.colorPrimary))
                     forgotContinueButton.backgroundTint = (resources.getColor(R.color.transperent1))
@@ -103,18 +122,27 @@ class ForgotPasswordActivity : AppCompatActivity(),View.OnClickListener {
         })
 
         var mDrawable = resources.getDrawable(R.drawable.dropdown_icon)
-        mDrawable.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), android.graphics.PorterDuff.Mode.SRC_IN)
-        tv_countryCodeForgotPass.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, mDrawable, null)
+        mDrawable.setColorFilter(
+            ContextCompat.getColor(this, R.color.colorPrimary),
+            android.graphics.PorterDuff.Mode.SRC_IN
+        )
+        tv_countryCodeForgotPass.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            null,
+            null,
+            mDrawable,
+            null
+        )
 
         getCounrtyList()
-        tv_countryCodeForgotPass.setOnClickListener (this)
-        forgotContinueButton.setOnClickListener (this)
+        tv_countryCodeForgotPass.setOnClickListener(this)
+        forgotContinueButton.setOnClickListener(this)
         forgotPasswordBackButtonIv.setOnClickListener(this)
     }
 
     private fun setupViewModel() {
-         countryListModel = ViewModelProvider(this@ForgotPasswordActivity).get(CountryListModel::class.java)
-         signup = ViewModelProvider(this@ForgotPasswordActivity).get(SignupModel::class.java)
+        countryListModel =
+            ViewModelProvider(this@ForgotPasswordActivity).get(CountryListModel::class.java)
+        signup = ViewModelProvider(this@ForgotPasswordActivity).get(SignupModelV2::class.java)
 
     }
 
@@ -126,18 +154,37 @@ class ForgotPasswordActivity : AppCompatActivity(),View.OnClickListener {
 
 
         if (TextUtils.isEmpty(edit_mobile_text.text.toString())) {
-            MyUtils.showSnackbar(this@ForgotPasswordActivity, getString(R.string.enter_email_mobile_msg), ll_main_forgotPass)
+            MyUtils.showSnackbar(
+                this@ForgotPasswordActivity,
+                getString(R.string.enter_email_mobile_msg),
+                ll_main_forgotPass
+            )
             checkFlag = false
         } else if (loginType && (edit_mobile_text.text.toString().length < 8 || edit_mobile_text.text.toString().length > 16)
         ) {
-            MyUtils.showSnackbar(this@ForgotPasswordActivity, getString(R.string.please_enter_valid_mobile_number), ll_main_forgotPass)
+            MyUtils.showSnackbar(
+                this@ForgotPasswordActivity,
+                getString(R.string.please_enter_valid_mobile_number),
+                ll_main_forgotPass
+            )
             checkFlag = false
-        } else if ((TextUtils.isDigitsOnly(edit_mobile_text.text.toString()) && TextUtils.isEmpty(tv_countryCodeForgotPass.text.toString()))) {
-            MyUtils.showSnackbar(this@ForgotPasswordActivity, getString(R.string.please_enter_country_code), ll_main_forgotPass)
+        } else if ((TextUtils.isDigitsOnly(edit_mobile_text.text.toString()) && TextUtils.isEmpty(
+                tv_countryCodeForgotPass.text.toString()
+            ))
+        ) {
+            MyUtils.showSnackbar(
+                this@ForgotPasswordActivity,
+                getString(R.string.please_enter_country_code),
+                ll_main_forgotPass
+            )
             checkFlag = false
         } else if (!loginType && !MyUtils.isValidEmail(edit_mobile_text.text.toString())
         ) {
-            MyUtils.showSnackbar(this@ForgotPasswordActivity, getString(R.string.valid_email), ll_main_forgotPass)
+            MyUtils.showSnackbar(
+                this@ForgotPasswordActivity,
+                getString(R.string.valid_email),
+                ll_main_forgotPass
+            )
             checkFlag = false
         } else {
             if (TextUtils.isDigitsOnly(edit_mobile_text.text.toString()))
@@ -155,7 +202,7 @@ class ForgotPasswordActivity : AppCompatActivity(),View.OnClickListener {
             jsonObject.put("loginuserID", "0")
             jsonObject.put("apiType", RestClient.apiType)
             jsonObject.put("apiVersion", RestClient.apiVersion)
-            jsonObject.put("blankCountryCode","No")
+            jsonObject.put("blankCountryCode", "No")
 
 
         } catch (e: JSONException) {
@@ -163,19 +210,19 @@ class ForgotPasswordActivity : AppCompatActivity(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
         countryListModel.getCountryList(this!!, false, jsonArray.toString())
-                .observe(this@ForgotPasswordActivity!!,
-                    { countryListPojo ->
-                        if (countryListPojo != null) {
-                            if (countryListPojo.get(0).status.equals("true", false)) {
-                                countryListData?.addAll(countryListPojo.get(0).data!!)
-                                countrylist = java.util.ArrayList()
-                                countrylist!!.clear()
-                                for (i in 0 until countryListData!!.size) {
-                                    countrylist!!.add(countryListData!![i].countryDialCode!!)
-                                }
+            .observe(this@ForgotPasswordActivity!!,
+                { countryListPojo ->
+                    if (countryListPojo != null) {
+                        if (countryListPojo.get(0).status.equals("true", false)) {
+                            countryListData?.addAll(countryListPojo.get(0).data!!)
+                            countrylist = java.util.ArrayList()
+                            countrylist!!.clear()
+                            for (i in 0 until countryListData!!.size) {
+                                countrylist!!.add(countryListData!![i].countryDialCode!!)
                             }
                         }
-                    })
+                    }
+                })
 
 
     }
@@ -206,41 +253,51 @@ class ForgotPasswordActivity : AppCompatActivity(),View.OnClickListener {
         var jsonArray = JSONArray()
         jsonArray.put(jsonObject)
 
-          signup.userRegistration(this!!, false, jsonArray.toString(), "forgot_pass")
-                .observe(this@ForgotPasswordActivity,
-                    { loginPojo ->
-                        if (loginPojo != null) {
-                            forgotContinueButton.endAnimation()
-                            if (loginPojo.get(0).status.equals("true")) {
+        signup.userForgetPass(jsonArray.toString())
+        signup.userForgetPass.observe(this@ForgotPasswordActivity) { loginPojo ->
+                if (loginPojo != null) {
+                    forgotContinueButton.endAnimation()
+                    if (loginPojo.get(0).status.equals("true")) {
 
-                                MyUtils.showSnackbar(this, loginPojo.get(0).message!!, ll_main_forgotPass)
-                                val mThread = Thread(Runnable {
-                                    try {
-                                        Thread.sleep(1000)
-                                        var i = Intent(this@ForgotPasswordActivity, OtpVerificationActivity::class.java)
-                                        i.putExtra("from", "ForgotPassword")
-                                        i.putExtra("userData", loginPojo[0].data!![0].userID!!)
-                                        i.putExtra("userMobile", loginPojo[0].data!![0].userMobile!!)
-                                        startActivity(i)
-                                        overridePendingTransition(
-                                                R.anim.slide_in_right,
-                                                R.anim.slide_out_left
-                                        )
+                        MyUtils.showSnackbar(
+                            this,
+                            loginPojo.get(0).message!!,
+                            ll_main_forgotPass
+                        )
+                        val mThread = Thread(Runnable {
+                            try {
+                                Thread.sleep(1000)
+                                var i = Intent(
+                                    this@ForgotPasswordActivity,
+                                    OtpVerificationActivity::class.java
+                                )
+                                i.putExtra("from", "ForgotPassword")
+                                i.putExtra("userData", loginPojo[0].data!![0].userID!!)
+                                i.putExtra("userMobile", loginPojo[0].data!![0].userMobile!!)
+                                startActivity(i)
+                                overridePendingTransition(
+                                    R.anim.slide_in_right,
+                                    R.anim.slide_out_left
+                                )
 
-                                    } catch (e: InterruptedException) {
-                                    }
-                                })
-                                mThread.start()
-
-                            } else {
-                                forgotContinueButton.endAnimation()
-                                MyUtils.showSnackbar(this, loginPojo.get(0).message!!, ll_main_forgotPass)
+                            } catch (e: InterruptedException) {
                             }
-                        } else {
-                            forgotContinueButton.endAnimation()
-                            ErrorUtil.errorMethod(ll_main_forgotPass)
-                        }
-                    })
+                        })
+                        mThread.start()
+
+                    } else {
+                        forgotContinueButton.endAnimation()
+                        MyUtils.showSnackbar(
+                            this,
+                            loginPojo.get(0).message!!,
+                            ll_main_forgotPass
+                        )
+                    }
+                } else {
+                    forgotContinueButton.endAnimation()
+                    ErrorUtil.errorMethod(ll_main_forgotPass)
+                }
+            }
 
     }
 
@@ -250,8 +307,8 @@ class ForgotPasswordActivity : AppCompatActivity(),View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v?.id){
-            R.id.tv_countryCodeForgotPass->{
+        when (v?.id) {
+            R.id.tv_countryCodeForgotPass -> {
                 PopupMenu(this@ForgotPasswordActivity!!, v!!, countrylist!!).showPopUp(object :
                     PopupMenu.OnMenuSelectItemClickListener {
                     override fun onItemClick(item: String, pos: Int) {
@@ -259,10 +316,10 @@ class ForgotPasswordActivity : AppCompatActivity(),View.OnClickListener {
                     }
                 })
             }
-            R.id.forgotContinueButton->{
+            R.id.forgotContinueButton -> {
                 chekValidation()
             }
-            R.id.forgotPasswordBackButtonIv->{
+            R.id.forgotPasswordBackButtonIv -> {
                 onBackPressed()
             }
 

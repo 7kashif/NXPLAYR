@@ -6,11 +6,13 @@ import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.os.AsyncTask
 import android.util.Log
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.ProgressHUD
 import id.zelory.compressor.Compressor
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

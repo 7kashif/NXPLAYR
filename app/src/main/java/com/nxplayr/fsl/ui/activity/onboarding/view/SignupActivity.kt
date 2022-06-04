@@ -26,10 +26,10 @@ import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.LanguageLabelPojo
 import com.nxplayr.fsl.data.model.LanguageListData
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
+import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModelV2
 import com.nxplayr.fsl.ui.fragments.dialogs.LanguageDialog
 import com.nxplayr.fsl.ui.fragments.setting.viewmodel.LanguageIntefaceListModel
-import com.nxplayr.fsl.ui.fragments.setting.viewmodel.LanguageLabelModel
+import com.nxplayr.fsl.ui.fragments.setting.viewmodel.LanguageLabelModelV2
 import com.nxplayr.fsl.util.LinkedinActivity
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
@@ -38,6 +38,7 @@ import kotlinx.android.synthetic.main.activity_signup.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.*
 
 
 class SignupActivity : AppCompatActivity(), View.OnClickListener {
@@ -48,9 +49,9 @@ class SignupActivity : AppCompatActivity(), View.OnClickListener {
     var user_Name = ""
     var user_Email = ""
     private lateinit var callbackManager: CallbackManager
-    private lateinit var signup: SignupModel
+    private lateinit var signup: SignupModelV2
     private lateinit var languageModel: LanguageIntefaceListModel
-    private lateinit var languageLabelModel: LanguageLabelModel
+    private lateinit var languageLabelModel: LanguageLabelModelV2
     var sessionManager: SessionManager? = null
     var languageList: ArrayList<LanguageListData>? = ArrayList()
 
@@ -285,8 +286,8 @@ class SignupActivity : AppCompatActivity(), View.OnClickListener {
         languageModel =
             ViewModelProvider(this@SignupActivity).get(LanguageIntefaceListModel::class.java)
         languageLabelModel =
-            ViewModelProvider(this@SignupActivity).get(LanguageLabelModel::class.java)
-        signup = ViewModelProvider(this@SignupActivity).get(SignupModel::class.java)
+            ViewModelProvider(this@SignupActivity).get(LanguageLabelModelV2::class.java)
+        signup = ViewModelProvider(this@SignupActivity).get(SignupModelV2::class.java)
         languagesApi()
     }
 
@@ -322,68 +323,61 @@ class SignupActivity : AppCompatActivity(), View.OnClickListener {
             e.printStackTrace()
         }
 
-        signup.userRegistration(
-            this@SignupActivity,
-            false,
-            jsonArray.toString(),
-            "checkDublication"
-        )
-            .observe(
-                this@SignupActivity
-            ) { response ->
-                if (!response.isNullOrEmpty()) {
-                    MyUtils.dismissProgressDialog()
-                    when (s) {
-                        "fb" -> {
-                            MyUtils.fbID = fbID
-                        }
-                        "linkedIN" -> {
-                            MyUtils.linkedID = fbID
-                        }
+        signup.checkDublication(jsonArray.toString())
+        signup.checkDublication.observe(this@SignupActivity) { response ->
+            if (!response.isNullOrEmpty()) {
+                MyUtils.dismissProgressDialog()
+                when (s) {
+                    "fb" -> {
+                        MyUtils.fbID = fbID
                     }
-                    MyUtils.user_Name = userName
-                    MyUtils.user_Email = userEmail
-                    if (response[0]?.status.equals("true", true)) {
-                        Handler().postDelayed({
-                            val i = Intent(this, SelectModeActivity::class.java)
-                            i.putExtra("userName", userName)
-                            i.putExtra("userEmail", userEmail)
-                            i.putExtra("socialID", fbID)
-                            startActivity(i)
-                            overridePendingTransition(
-                                R.anim.slide_in_right,
-                                R.anim.slide_out_left
-                            )
-                            finishAffinity()
-
-                        }, 500)
-
-                    } else {
-                        //No data and no internet
-                        isSocial = true
-                        MyUtils.showSnackbar(
-                            this@SignupActivity, response?.get(0)?.message!!,
-                            mainLL
-                        )
-                    }
-                } else {
-                    MyUtils.dismissProgressDialog()
-                    //No internet and somting went rong
-                    if (MyUtils.isInternetAvailable(this@SignupActivity)) {
-                        MyUtils.showSnackbar(
-                            this@SignupActivity,
-                            resources.getString(R.string.error_crash_error_message),
-                            mainLL
-                        )
-                    } else {
-                        MyUtils.showSnackbar(
-                            this@SignupActivity,
-                            resources.getString(R.string.error_common_network),
-                            mainLL
-                        )
+                    "linkedIN" -> {
+                        MyUtils.linkedID = fbID
                     }
                 }
+                MyUtils.user_Name = userName
+                MyUtils.user_Email = userEmail
+                if (response[0]?.status.equals("true", true)) {
+                    Handler().postDelayed({
+                        val i = Intent(this, SelectModeActivity::class.java)
+                        i.putExtra("userName", userName)
+                        i.putExtra("userEmail", userEmail)
+                        i.putExtra("socialID", fbID)
+                        startActivity(i)
+                        overridePendingTransition(
+                            R.anim.slide_in_right,
+                            R.anim.slide_out_left
+                        )
+                        finishAffinity()
+
+                    }, 500)
+
+                } else {
+                    //No data and no internet
+                    isSocial = true
+                    MyUtils.showSnackbar(
+                        this@SignupActivity, response?.get(0)?.message!!,
+                        mainLL
+                    )
+                }
+            } else {
+                MyUtils.dismissProgressDialog()
+                //No internet and somting went rong
+                if (MyUtils.isInternetAvailable(this@SignupActivity)) {
+                    MyUtils.showSnackbar(
+                        this@SignupActivity,
+                        resources.getString(R.string.error_crash_error_message),
+                        mainLL
+                    )
+                } else {
+                    MyUtils.showSnackbar(
+                        this@SignupActivity,
+                        resources.getString(R.string.error_common_network),
+                        mainLL
+                    )
+                }
             }
+        }
     }
 
     fun setOnClickListeners() {
@@ -471,8 +465,13 @@ class SignupActivity : AppCompatActivity(), View.OnClickListener {
                 MyUtils.startActivity(this@SignupActivity, TermsActivity::class.java, false)
             }
             R.id.language -> {
-                val dialog = LanguageDialog(this@SignupActivity, languageList, object : LanguageSelection {
+                val dialog =
+                    LanguageDialog(this@SignupActivity, languageList, object : LanguageSelection {
                         override fun onLanguageSelect(data: LanguageListData) {
+                            if (data.languageName.equals("Automatic", true)) {
+                                data.languageCode = Locale.getDefault().language
+                                sessionManager!!.setSelectedLanguage(data)
+                            }
                             updateLanguage()
                             getLanguageLabelList(data.languageID)
                         }
@@ -516,7 +515,8 @@ class SignupActivity : AppCompatActivity(), View.OnClickListener {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        languageLabelModel.getLanguageList(this@SignupActivity, false, jsonArray.toString())
+        languageLabelModel.getLabels(jsonArray.toString())
+        languageLabelModel.usersSuccessLiveData
             .observe(
                 this@SignupActivity
             ) { languageLabelPojo: List<LanguageLabelPojo>? ->

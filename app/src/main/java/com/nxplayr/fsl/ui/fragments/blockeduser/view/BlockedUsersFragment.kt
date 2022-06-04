@@ -26,6 +26,7 @@ import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.common_recyclerview.*
 import kotlinx.android.synthetic.main.fragment_blocked_users.*
+import kotlinx.android.synthetic.main.fragment_hide_posts.*
 import kotlinx.android.synthetic.main.fragment_saved_posts.*
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
@@ -36,7 +37,7 @@ import org.json.JSONException
 import org.json.JSONObject
 
 
-class BlockedUsersFragment : Fragment(),View.OnClickListener {
+class BlockedUsersFragment : Fragment(), View.OnClickListener {
 
     private var v: View? = null
     var list_block_user: ArrayList<BlockUserData?>? = null
@@ -56,8 +57,10 @@ class BlockedUsersFragment : Fragment(),View.OnClickListener {
     private lateinit var savePostListModel: BlockUserListModel
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_blocked_users, container, false)
 
@@ -69,6 +72,18 @@ class BlockedUsersFragment : Fragment(),View.OnClickListener {
 
         mActivity = context as AppCompatActivity
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngBlockedUsers.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngBlockedUsers
+            if (!sessionManager?.LanguageLabel?.lngNoDataFound.isNullOrEmpty())
+                nodatafoundtextview.text = sessionManager?.LanguageLabel?.lngNoDataFound
+            if (!sessionManager?.LanguageLabel?.lngCheckNoInternet.isNullOrEmpty())
+                nointernettextview.text = sessionManager?.LanguageLabel?.lngCheckNoInternet
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -115,7 +130,8 @@ class BlockedUsersFragment : Fragment(),View.OnClickListener {
         jsonArray.put(jsonObject)
 
         savePostListModel.getBlockUserList(
-            mActivity!!, false, jsonArray.toString())
+            mActivity!!, false, jsonArray.toString()
+        )
             .observe(viewLifecycleOwner, { blockUserListPojo ->
 
 
@@ -186,7 +202,8 @@ class BlockedUsersFragment : Fragment(),View.OnClickListener {
     }
 
     private fun setupViewModel() {
-         savePostListModel = ViewModelProvider(this@BlockedUsersFragment).get(BlockUserListModel::class.java)
+        savePostListModel =
+            ViewModelProvider(this@BlockedUsersFragment).get(BlockUserListModel::class.java)
 
     }
 
@@ -199,22 +216,27 @@ class BlockedUsersFragment : Fragment(),View.OnClickListener {
         linearLayoutManager = LinearLayoutManager(mActivity)
         if (list_block_user == null) {
             list_block_user = ArrayList()
-            blockUsersAdapter = BlockUsersAdapter(activity as MainActivity, list_block_user, object : BlockUsersAdapter.OnItemClick {
-                override fun onClicled(position: Int, from: String) {
-                    when (from) {
-                        "blockUser" -> {
-                            removeblockUserApi(list_block_user!![position]!!.userID, position)
+            blockUsersAdapter = BlockUsersAdapter(
+                activity as MainActivity,
+                list_block_user,
+                object : BlockUsersAdapter.OnItemClick {
+                    override fun onClicled(position: Int, from: String) {
+                        when (from) {
+                            "blockUser" -> {
+                                removeblockUserApi(list_block_user!![position]!!.userID, position)
+                            }
                         }
                     }
-                }
 
-            })
+                })
 
             recyclerview.layoutManager = LinearLayoutManager(mActivity)
             recyclerview.setHasFixedSize(true)
             recyclerview.adapter = blockUsersAdapter
-            val divider = DividerItemDecoration(recyclerview.context,
-                DividerItemDecoration.VERTICAL)
+            val divider = DividerItemDecoration(
+                recyclerview.context,
+                DividerItemDecoration.VERTICAL
+            )
             divider.setDrawable(
                 context?.let { ContextCompat.getDrawable(it, R.drawable.line_layout) }!!
             )
@@ -247,7 +269,7 @@ class BlockedUsersFragment : Fragment(),View.OnClickListener {
             }
         })
 
-        btnRetry.setOnClickListener (this)
+        btnRetry.setOnClickListener(this)
     }
 
     private fun removeblockUserApi(userID: String, position: Int) {
@@ -266,31 +288,34 @@ class BlockedUsersFragment : Fragment(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
         savePostListModel.getBlockUserList(mActivity!!, false, jsonArray.toString())
-                .observe(
-                    this@BlockedUsersFragment,
-                    { blockUserpojo ->
-                        if (blockUserpojo != null && blockUserpojo.isNotEmpty()) {
-                            if (blockUserpojo[0].status.equals("true", false)) {
-                                MyUtils.dismissProgressDialog()
-                                list_block_user?.removeAt(position)
-                                blockUsersAdapter?.notifyItemRemoved(position)
-                                blockUsersAdapter?.notifyItemChanged(position, list_block_user?.size)
-                            } else {
-                                MyUtils.dismissProgressDialog()
-                                MyUtils.showSnackbar(mActivity!!, blockUserpojo[0].message, ll_mainBlockUsers)
-                            }
-
+            .observe(
+                this@BlockedUsersFragment,
+                { blockUserpojo ->
+                    if (blockUserpojo != null && blockUserpojo.isNotEmpty()) {
+                        if (blockUserpojo[0].status.equals("true", false)) {
+                            MyUtils.dismissProgressDialog()
+                            list_block_user?.removeAt(position)
+                            blockUsersAdapter?.notifyItemRemoved(position)
+                            blockUsersAdapter?.notifyItemChanged(position, list_block_user?.size)
                         } else {
                             MyUtils.dismissProgressDialog()
-                            (activity as MainActivity).errorMethod()
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                blockUserpojo[0].message,
+                                ll_mainBlockUsers
+                            )
                         }
-                    })
+
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        (activity as MainActivity).errorMethod()
+                    }
+                })
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-            R.id.btnRetry->{
+        when (v?.id) {
+            R.id.btnRetry -> {
                 pageNo = 0
                 isLastpage = false
                 isLoading = false

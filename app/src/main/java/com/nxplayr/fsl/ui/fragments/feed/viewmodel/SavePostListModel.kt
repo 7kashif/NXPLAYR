@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.SavePostListPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
 
@@ -33,23 +36,24 @@ class SavePostListModel : ViewModel() {
 
     private fun getsavePostListApi(): LiveData<List<SavePostListPojo>> {
         val data = MutableLiveData<List<SavePostListPojo>>()
-
-        var call: Call<List<SavePostListPojo>>? = null
-        when (from) {
-            "savePostList" -> {
-                call = RestClient.get()!!.savePostList(json!!)
+        viewModelScope.launch(Dispatchers.IO) {
+            var call: Call<List<SavePostListPojo>>? = null
+            when (from) {
+                "savePostList" -> {
+                    call = RestClient.get()!!.savePostList(json!!)
+                }
             }
+            call!!.enqueue(object : RestCallback<List<SavePostListPojo>>(mContext) {
+                override fun Success(response: Response<List<SavePostListPojo>>) {
+                    data.value = response.body()
+                }
+
+                override fun failure() {
+                    data.value = null
+                }
+
+            })
         }
-        call!!.enqueue(object : RestCallback<List<SavePostListPojo>>(mContext) {
-            override fun Success(response: Response<List<SavePostListPojo>>) {
-                data.value = response.body()
-            }
-
-            override fun failure() {
-                data.value = null
-            }
-
-        })
 
         return data
     }

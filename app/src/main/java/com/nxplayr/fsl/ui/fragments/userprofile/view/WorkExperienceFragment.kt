@@ -36,7 +36,7 @@ import org.json.JSONException
 import org.json.JSONObject
 
 
-class WorkExperienceFragment : Fragment(),View.OnClickListener {
+class WorkExperienceFragment : Fragment(), View.OnClickListener {
 
     private var v: View? = null
     var mActivity: Activity? = null
@@ -48,12 +48,14 @@ class WorkExperienceFragment : Fragment(),View.OnClickListener {
     private var y: Int = 0
     var pageNo = 0
     var list: java.util.ArrayList<String>? = null
-    var userId:String=""
-    private lateinit var  getEmployementModel: EmployementModel
+    var userId: String = ""
+    private lateinit var getEmployementModel: EmployementModel
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         if (v == null) {
             v = inflater.inflate(R.layout.fragment_work_experience, container, false)
         }
@@ -76,16 +78,16 @@ class WorkExperienceFragment : Fragment(),View.OnClickListener {
         if (sessionManager?.get_Authenticate_User() != null) {
             userData = sessionManager?.get_Authenticate_User()
         }
-        if(arguments!=null)
-        {
-            userId=arguments?.getString("userId","")!!
+        if (arguments != null) {
+            userId = arguments?.getString("userId", "")!!
         }
         setupViewModel()
         setupUI()
     }
 
     private fun setupViewModel() {
-         getEmployementModel = ViewModelProvider(this@WorkExperienceFragment).get(EmployementModel::class.java)
+        getEmployementModel =
+            ViewModelProvider(this@WorkExperienceFragment).get(EmployementModel::class.java)
     }
 
     private fun setupUI() {
@@ -95,52 +97,76 @@ class WorkExperienceFragment : Fragment(),View.OnClickListener {
             (activity as MainActivity).onBackPressed()
         }
 
-        if(userId.equals(userData?.userID))
-        {
-            add_icon_connection.visibility=View.VISIBLE
-        }else{
-            add_icon_connection.visibility=View.GONE
+        if (userId.equals(userData?.userID)) {
+            add_icon_connection.visibility = View.VISIBLE
+        } else {
+            add_icon_connection.visibility = View.GONE
 
         }
 
         add_icon_connection.setOnClickListener(this)
         btnRetry.setOnClickListener(this)
 
-        workExperienceAdapter = WorkExperienceAdapter(mActivity!!, employementList!!, object : WorkExperienceAdapter.OnItemClick {
-            override fun onClicled(position: Int, from: String, v: View, empData: EmploymentData?) {
-                when (from) {
-                    "delete" -> {
-                        list = java.util.ArrayList()
-                        list!!.add("Edit")
-                        list!!.add("Delete")
+        workExperienceAdapter = WorkExperienceAdapter(
+            mActivity!!,
+            employementList!!,
+            object : WorkExperienceAdapter.OnItemClick {
+                override fun onClicled(
+                    position: Int,
+                    from: String,
+                    v: View,
+                    empData: EmploymentData?
+                ) {
+                    when (from) {
+                        "delete" -> {
+                            list = java.util.ArrayList()
+                            list!!.add("Edit")
+                            list!!.add("Delete")
 
-                        PopupMenu(mActivity!!, v!!, list!!).showPopUp(object : PopupMenu.OnMenuSelectItemClickListener {
-                            override fun onItemClick(item: String, pos: Int) {
-                                when (pos) {
-                                    0 -> {
-                                        var bundle = Bundle()
-                                        bundle.putString("from", "edit")
-                                        bundle.putInt("pos", position)
-                                        bundle.putSerializable("userEmpData", employementList!![position]!!)
-                                        (activity as MainActivity).navigateTo(AddEmployementFragment(), bundle, AddEmployementFragment::class.java.name, true)
-                                    }
-                                    1 -> {
-                                        MyUtils.showMessageYesNo(mActivity!!, activity!!.resources.getString(R.string.experience_remove_dialog),
-                                            "", DialogInterface.OnClickListener { dialogInterface, i ->
-                                                deleteWorkExp(employementList!![position]!!.useremployementID, position)
+                            PopupMenu(mActivity!!, v!!, list!!).showPopUp(object :
+                                PopupMenu.OnMenuSelectItemClickListener {
+                                override fun onItemClick(item: String, pos: Int) {
+                                    when (pos) {
+                                        0 -> {
+                                            var bundle = Bundle()
+                                            bundle.putString("from", "edit")
+                                            bundle.putInt("pos", position)
+                                            bundle.putSerializable(
+                                                "userEmpData",
+                                                employementList!![position]!!
+                                            )
+                                            (activity as MainActivity).navigateTo(
+                                                AddEmployementFragment(),
+                                                bundle,
+                                                AddEmployementFragment::class.java.name,
+                                                true
+                                            )
+                                        }
+                                        1 -> {
+                                            MyUtils.showMessageYesNo(mActivity!!,
+                                                activity!!.resources.getString(R.string.experience_remove_dialog),
+                                                "",
+                                                DialogInterface.OnClickListener { dialogInterface, i ->
+                                                    deleteWorkExp(
+                                                        employementList!![position]!!.useremployementID,
+                                                        position
+                                                    )
 
-                                            })
+                                                })
+                                        }
                                     }
                                 }
-                            }
 
 
-                        })
+                            })
+                        }
                     }
                 }
-            }
 
-        }, "emp_list",userId)
+            },
+            "emp_list",
+            userId
+        )
         recyclerview.layoutManager = LinearLayoutManager(activity)
         recyclerview.setHasFixedSize(true)
         recyclerview.adapter = workExperienceAdapter
@@ -160,11 +186,9 @@ class WorkExperienceFragment : Fragment(),View.OnClickListener {
 
         try {
 
-            if(userId.equals(userData?.userID))
-            {
+            if (userId.equals(userData?.userID)) {
                 jsonObject.put("loginuserID", userData?.userID)
-            }
-            else{
+            } else {
                 jsonObject.put("loginuserID", userId)
             }
             jsonObject.put("languageID", userData?.languageID)
@@ -178,37 +202,36 @@ class WorkExperienceFragment : Fragment(),View.OnClickListener {
         }
 
         jsonArray.put(jsonObject)
-        getEmployementModel.getEmployement(mActivity!!, false, jsonArray.toString(), "List")
-                .observe(viewLifecycleOwner,
-                    { employementPojo ->
+        getEmployementModel.employeeApi(jsonArray.toString(), "List")
+        getEmployementModel.successEmployee
+            .observe(viewLifecycleOwner) { employementPojo ->
+                relativeprogressBar.visibility = View.GONE
+                recyclerview.visibility = View.VISIBLE
 
-                        relativeprogressBar.visibility = View.GONE
-                        recyclerview.visibility = View.VISIBLE
-
-                        if (employementPojo != null && employementPojo.isNotEmpty()) {
-                            if (employementPojo[0].status.equals("true", true)) {
-                                employementList?.clear()
-                                employementList?.addAll(employementPojo!![0]!!.data!!)
+                if (employementPojo != null && employementPojo.isNotEmpty()) {
+                    if (employementPojo[0].status.equals("true", true)) {
+                        employementList?.clear()
+                        employementList?.addAll(employementPojo!![0]!!.data!!)
 //                                    StoreSessionManager(userData!!)
-                                workExperienceAdapter?.notifyDataSetChanged()
+                        workExperienceAdapter?.notifyDataSetChanged()
 
 
-                            } else {
+                    } else {
 
-                                if (employementList!!.size == 0) {
-                                    ll_no_data_found.visibility = View.VISIBLE
-                                    recyclerview.visibility = View.GONE
+                        if (employementList!!.size == 0) {
+                            ll_no_data_found.visibility = View.VISIBLE
+                            recyclerview.visibility = View.GONE
 
-                                } else {
-                                    ll_no_data_found.visibility = View.GONE
-                                    recyclerview.visibility = View.VISIBLE
-                                }
-                            }
                         } else {
-                            relativeprogressBar.visibility = View.GONE
-                            ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                            ll_no_data_found.visibility = View.GONE
+                            recyclerview.visibility = View.VISIBLE
                         }
-                    })
+                    }
+                } else {
+                    relativeprogressBar.visibility = View.GONE
+                    ErrorUtil.errorView(requireActivity(), nointernetMainRelativelayout)
+                }
+            }
 
     }
 
@@ -229,48 +252,58 @@ class WorkExperienceFragment : Fragment(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
         Log.e("data", jsonArray.toString())
-        getEmployementModel.getEmployement(mActivity!!, false, jsonArray.toString(), "Delete")
-                .observe(this@WorkExperienceFragment,
-                        androidx.lifecycle.Observer<List<Employmentpojo>> { employementpojo ->
-                            MyUtils.dismissProgressDialog()
-                            if (employementpojo != null && employementpojo.isNotEmpty()) {
+        getEmployementModel.employeeApi(jsonArray.toString(), "Delete")
+        getEmployementModel.successEmployee
+            .observe(viewLifecycleOwner) { employementpojo ->
+                MyUtils.dismissProgressDialog()
+                if (employementpojo != null && employementpojo.isNotEmpty()) {
 
-                                if (employementpojo[0].status.equals("true", false)) {
+                    if (employementpojo[0].status.equals("true", false)) {
 
-                                    val userData = sessionManager!!.userData
-                                    if (userData!!.employement!!.size > 0) {
-                                        for (i in 0 until userData!!.employement!!.size) {
-                                            if (employementList!![position]!!.useremployementID.equals(userData!!.employement!![i]!!.useremployementID)) {
-                                                userData.employement!!.removeAt(i)
-                                                sessionManager!!.userData = userData
-                                                employementList!!.removeAt(position)
-                                                break
-                                            }
-                                        }
-                                        workExperienceAdapter!!.notifyDataSetChanged()
-                                    }
-
-                                } else {
-                                    if (activity != null && activity is MainActivity)
-                                        MyUtils.showSnackbar(mActivity!!, employementpojo[0].message, ll_mainWorkExpe)
+                        val userData = sessionManager!!.userData
+                        if (userData!!.employement!!.size > 0) {
+                            for (i in 0 until userData!!.employement!!.size) {
+                                if (employementList!![position]!!.useremployementID.equals(
+                                        userData!!.employement!![i]!!.useremployementID
+                                    )
+                                ) {
+                                    userData.employement!!.removeAt(i)
+                                    sessionManager!!.userData = userData
+                                    employementList!!.removeAt(position)
+                                    break
                                 }
-
-                            } else {
-                                ErrorUtil.errorMethod(ll_mainHashtagsList)
                             }
-                        })
+                            workExperienceAdapter!!.notifyDataSetChanged()
+                        }
+
+                    } else {
+                        if (activity != null && activity is MainActivity)
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                employementpojo[0].message,
+                                ll_mainWorkExpe
+                            )
+                    }
+
+                } else {
+                    ErrorUtil.errorMethod(ll_mainHashtagsList)
+                }
+            }
 
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-            R.id.btnRetry->{
+        when (v?.id) {
+            R.id.btnRetry -> {
                 getEmploymentList()
 
             }
-            R.id.add_icon_connection->{
-                (activity as MainActivity).navigateTo(AddEmployementFragment(), AddEmployementFragment::class.java.name, true)
+            R.id.add_icon_connection -> {
+                (activity as MainActivity).navigateTo(
+                    AddEmployementFragment(),
+                    AddEmployementFragment::class.java.name,
+                    true
+                )
             }
         }
     }

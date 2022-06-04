@@ -22,6 +22,7 @@ import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
 import com.google.gson.Gson
 import com.nxplayr.fsl.ui.fragments.bottomsheet.CountryListBottomSheetFragment
+import kotlinx.android.synthetic.main.fragment_basic_detail.*
 import kotlinx.android.synthetic.main.fragment_jerusy_number.*
 import kotlinx.android.synthetic.main.fragment_national_team.*
 import kotlinx.android.synthetic.main.fragment_national_team.btnUpdateBasicDetail
@@ -32,37 +33,55 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
-class NationalTeamFragment : Fragment(),View.OnClickListener {
+class NationalTeamFragment : Fragment(), View.OnClickListener {
 
     private var v: View? = null
     var mActivity: AppCompatActivity? = null
     var pageNo = 0
     var sessionManager: SessionManager? = null
     var userData: SignupData? = null
-    var userNationalCountryID=""
-    var teamcountryName=""
-    var userNationalCap=""
-    var useNationalGoals=""
+    var userNationalCountryID = ""
+    var teamcountryName = ""
+    var userNationalCap = ""
+    var useNationalGoals = ""
     var countryListData: ArrayList<CountryListData>? = ArrayList()
-    var fromProfile=""
-    var userId=""
-    var otherUserData: SignupData?=null
-    private lateinit var  countryListModel: CountryListModel
-    private lateinit var  passportNationalityModel: UpdateResumeCallsViewModel
+    var fromProfile = ""
+    var userId = ""
+    var otherUserData: SignupData? = null
+    private lateinit var countryListModel: CountryListModel
+    private lateinit var passportNationalityModel: UpdateResumeCallsViewModel
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
-        if(v==null){
-            v=inflater.inflate(R.layout.fragment_national_team, container, false)
+        if (v == null) {
+            v = inflater.inflate(R.layout.fragment_national_team, container, false)
         }
         return v
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngNationalTeam.isNullOrEmpty())
+                tvToolbarTitle1.text = sessionManager?.LanguageLabel?.lngNationalTeam
+            if (!sessionManager?.LanguageLabel?.lngCountry.isNullOrEmpty())
+                tv_edit_country.hint = sessionManager?.LanguageLabel?.lngCountry
+            if (!sessionManager?.LanguageLabel?.lngCaps.isNullOrEmpty())
+                tv_edit_caps.hint = sessionManager?.LanguageLabel?.lngCaps
+            if (!sessionManager?.LanguageLabel?.lngGoals.isNullOrEmpty())
+                tv_edit_goals.hint = sessionManager?.LanguageLabel?.lngGoals
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btnUpdateBasicDetail.progressText = sessionManager?.LanguageLabel?.lngSave
+        }
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        mActivity=context as AppCompatActivity
+        mActivity = context as AppCompatActivity
 
     }
 
@@ -72,10 +91,9 @@ class NationalTeamFragment : Fragment(),View.OnClickListener {
 
         sessionManager = SessionManager(mActivity!!)
         if (arguments != null) {
-            fromProfile = arguments!!.getString("fromProfile","")
-            userId = arguments!!.getString("userId","")
-            if(!userId.equals(userData?.userID,false))
-            {
+            fromProfile = arguments!!.getString("fromProfile", "")
+            userId = arguments!!.getString("userId", "")
+            if (!userId.equals(userData?.userID, false)) {
                 otherUserData = arguments!!.getSerializable("otherUserData") as SignupData?
             }
         }
@@ -89,14 +107,12 @@ class NationalTeamFragment : Fragment(),View.OnClickListener {
     }
 
     private fun setupUI() {
-        if (sessionManager?.get_Authenticate_User() != null)
-        {
+        if (sessionManager?.get_Authenticate_User() != null) {
             userData = sessionManager?.get_Authenticate_User()
-            if(!userId.equals(userData?.userID,false))
-            {
-                btnUpdateBasicDetail.visibility=View.GONE
-                edit_caps.isEnabled=false
-                edit_goals.isEnabled=false
+            if (!userId.equals(userData?.userID, false)) {
+                btnUpdateBasicDetail.visibility = View.GONE
+                edit_caps.isEnabled = false
+                edit_goals.isEnabled = false
                 if (!otherUserData?.userNationalCountryID.isNullOrEmpty() && !otherUserData?.teamcountryName.isNullOrEmpty()) {
 
                     userNationalCountryID = otherUserData?.userNationalCountryID!!
@@ -112,12 +128,10 @@ class NationalTeamFragment : Fragment(),View.OnClickListener {
                     useNationalGoals = otherUserData?.useNationalGoals!!
                     edit_goals.setText(otherUserData?.useNationalGoals)
                 }
-            }
-            else
-            {
-                btnUpdateBasicDetail.visibility=View.VISIBLE
-                edit_caps.isEnabled=true
-                edit_goals.isEnabled=true
+            } else {
+                btnUpdateBasicDetail.visibility = View.VISIBLE
+                edit_caps.isEnabled = true
+                edit_goals.isEnabled = true
                 if (!userData?.userNationalCountryID.isNullOrEmpty() && !userData?.teamcountryName.isNullOrEmpty()) {
 
                     userNationalCountryID = userData?.userNationalCountryID!!
@@ -136,7 +150,7 @@ class NationalTeamFragment : Fragment(),View.OnClickListener {
             }
 
         }
-        add_icon_connection.visibility=View.GONE
+        add_icon_connection.visibility = View.GONE
         toolbar.setNavigationOnClickListener {
             (activity as MainActivity).onBackPressed()
         }
@@ -147,18 +161,20 @@ class NationalTeamFragment : Fragment(),View.OnClickListener {
     }
 
     private fun setupViewModel() {
-         countryListModel = ViewModelProvider(this@NationalTeamFragment).get(CountryListModel::class.java)
-         passportNationalityModel = ViewModelProvider(this@NationalTeamFragment).get(UpdateResumeCallsViewModel::class.java)
+        countryListModel =
+            ViewModelProvider(this@NationalTeamFragment).get(CountryListModel::class.java)
+        passportNationalityModel =
+            ViewModelProvider(this@NationalTeamFragment).get(UpdateResumeCallsViewModel::class.java)
     }
 
     private fun getCounrtyList(s: String) {
-       MyUtils.showProgressDialog(mActivity!!, "Please wait...")
+        MyUtils.showProgressDialog(mActivity!!, "Please wait...")
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
         try {
             jsonObject.put("loginuserID", "0")
             jsonObject.put("apiType", RestClient.apiType)
-            jsonObject.put("blankCountryCode","No")
+            jsonObject.put("blankCountryCode", "No")
 
             jsonObject.put("apiVersion", RestClient.apiVersion)
 
@@ -168,44 +184,44 @@ class NationalTeamFragment : Fragment(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
         countryListModel.getCountryList(mActivity!!, false, jsonArray.toString())
-                .observe(viewLifecycleOwner,
-                    { countryListPojo ->
-                        if (countryListPojo != null) {
-                            MyUtils.dismissProgressDialog()
-                            if (countryListPojo.get(0).status.equals("true", false)) {
-                                countryListData?.clear()
-                                countryListData?.addAll(countryListPojo.get(0).data!!)
-                                when(s){
-                                    "click"->{
-                                        openBottomSheet(countryListData!!)
-                                    }
+            .observe(viewLifecycleOwner,
+                { countryListPojo ->
+                    if (countryListPojo != null) {
+                        MyUtils.dismissProgressDialog()
+                        if (countryListPojo.get(0).status.equals("true", false)) {
+                            countryListData?.clear()
+                            countryListData?.addAll(countryListPojo.get(0).data!!)
+                            when (s) {
+                                "click" -> {
+                                    openBottomSheet(countryListData!!)
                                 }
-                            } else {
-                                MyUtils.showSnackbar(
-                                        mActivity!!,
-                                        countryListPojo.get(0).message,
-                                        ll_nationteam
-                                )
                             }
-
                         } else {
-                            MyUtils.dismissProgressDialog()
-                            //No internet and somting went rong
-                            if (MyUtils.isInternetAvailable(mActivity!!)) {
-                                MyUtils.showSnackbar(
-                                        mActivity!!,
-                                        resources.getString(R.string.error_crash_error_message),
-                                        ll_nationteam
-                                )
-                            } else {
-                                MyUtils.showSnackbar(
-                                        mActivity!!,
-                                        resources.getString(R.string.error_common_network),
-                                        ll_nationteam
-                                )
-                            }
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                countryListPojo.get(0).message,
+                                ll_nationteam
+                            )
                         }
-                    })
+
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        //No internet and somting went rong
+                        if (MyUtils.isInternetAvailable(mActivity!!)) {
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                resources.getString(R.string.error_crash_error_message),
+                                ll_nationteam
+                            )
+                        } else {
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                resources.getString(R.string.error_common_network),
+                                ll_nationteam
+                            )
+                        }
+                    }
+                })
 
 
     }
@@ -284,41 +300,42 @@ class NationalTeamFragment : Fragment(),View.OnClickListener {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        Log.e("team_OBJECT",jsonObject.toString())
+        Log.e("team_OBJECT", jsonObject.toString())
         passportNationalityModel.getUpdateResume(mActivity!!, s, jsonArray?.toString())
-                .observe(this@NationalTeamFragment!!
-                ) { countryListPojo ->
-                    if (countryListPojo != null) {
-                        btnUpdateBasicDetail.endAnimation()
-                        if (countryListPojo.get(0).status.equals("true", false)) {
-                            try {
-                                MyUtils.hideKeyboard1(mActivity!!)
-                                StoreSessionManager(countryListPojo.get(0).data[0])
-                                Handler().postDelayed({
-                                    (activity as MainActivity).onBackPressed()
-                                }, 1000)
-                                MyUtils.showSnackbar(
-                                    mActivity!!,
-                                    countryListPojo.get(0).message,
-                                    ll_nationteam
-                                )
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-
-                        } else {
+            .observe(
+                this@NationalTeamFragment!!
+            ) { countryListPojo ->
+                if (countryListPojo != null) {
+                    btnUpdateBasicDetail.endAnimation()
+                    if (countryListPojo.get(0).status.equals("true", false)) {
+                        try {
+                            MyUtils.hideKeyboard1(mActivity!!)
+                            StoreSessionManager(countryListPojo.get(0).data[0])
+                            Handler().postDelayed({
+                                (activity as MainActivity).onBackPressed()
+                            }, 1000)
                             MyUtils.showSnackbar(
                                 mActivity!!,
                                 countryListPojo.get(0).message,
                                 ll_nationteam
                             )
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
 
                     } else {
-                        btnUpdateBasicDetail.endAnimation()
-                        ErrorUtil.errorMethod(ll_nationteam)
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            countryListPojo.get(0).message,
+                            ll_nationteam
+                        )
                     }
+
+                } else {
+                    btnUpdateBasicDetail.endAnimation()
+                    ErrorUtil.errorMethod(ll_nationteam)
                 }
+            }
     }
 
     private fun StoreSessionManager(uesedata: SignupData?) {
@@ -327,11 +344,11 @@ class NationalTeamFragment : Fragment(),View.OnClickListener {
 
         val json = gson.toJson(uesedata)
         sessionManager?.create_login_session(
-                json,
-                uesedata!!.userMobile,
-                "",
-                true,
-                sessionManager!!.isEmailLogin()
+            json,
+            uesedata!!.userMobile,
+            "",
+            true,
+            sessionManager!!.isEmailLogin()
         )
 
     }
@@ -346,7 +363,7 @@ class NationalTeamFragment : Fragment(),View.OnClickListener {
             override fun onOptionSelect(value: Int, from: String, Id: String) {
                 bottomSheet.dismiss()
                 userNationalCountryID = Id
-                teamcountryName =from
+                teamcountryName = from
                 edit_country.setText(teamcountryName)
 
             }
@@ -355,22 +372,17 @@ class NationalTeamFragment : Fragment(),View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-            R.id.edit_country->{
-                if(userId.equals(userData?.userID,false))
-                {
-                    if(countryListData.isNullOrEmpty())
-                    {
+        when (v?.id) {
+            R.id.edit_country -> {
+                if (userId.equals(userData?.userID, false)) {
+                    if (countryListData.isNullOrEmpty()) {
                         getCounrtyList("click")
-                    }
-                    else
-                    {
+                    } else {
                         openBottomSheet(countryListData)
                     }
                 }
             }
-            R.id.btnUpdateBasicDetail->{
+            R.id.btnUpdateBasicDetail -> {
                 getUpadte("Add")
             }
         }

@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/ll_main_explore"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -53,16 +52,7 @@
                     android:layout_width="@dimen/_25sdp"
                     android:layout_height="@dimen/_25sdp"
                     android:padding="@dimen/_3sdp"
-                    android:src="@drawable/list_icon_selected" />
-
-<!--                <androidx.appcompat.widget.AppCompatImageView-->
-<!--                    android:id="@+id/img_list_2"-->
-<!--                    android:layout_width="@dimen/_25sdp"-->
-<!--                    android:layout_height="@dimen/_25sdp"-->
-<!--                    android:layout_marginLeft="@dimen/_5sdp"-->
-<!--                    android:padding="@dimen/_3sdp"-->
-<!--                    android:src="@drawable/list_selected"-->
-<!--                    android:visibility="gone" />-->
+                    android:src="@drawable/list_icon_unselected" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/img_grid"
@@ -72,14 +62,6 @@
                     android:padding="@dimen/_3sdp"
                     android:src="@drawable/thumb_view_selected" />
 
-<!--                <androidx.appcompat.widget.AppCompatImageView-->
-<!--                    android:id="@+id/img_grid_2"-->
-<!--                    android:layout_width="@dimen/_25sdp"-->
-<!--                    android:layout_height="@dimen/_25sdp"-->
-<!--                    android:layout_marginLeft="@dimen/_5sdp"-->
-<!--                    android:padding="@dimen/_3sdp"-->
-<!--                    android:src="@drawable/thumb_view_unselected"-->
-<!--                    android:visibility="gone" />-->
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/img_Filter"

@@ -6,15 +6,10 @@ import android.media.MediaMetadataRetriever
 import android.os.AsyncTask
 import android.util.Log
 import com.nxplayr.fsl.R
-import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.CreatePostPhotoPojo
 import com.nxplayr.fsl.data.model.UploadImagePojo
+import com.nxplayr.fsl.util.aws.S3Uploader
 import com.vincent.videocompressor.VideoController
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Response
 import java.io.File
 import java.util.*
 
@@ -32,15 +27,22 @@ class UploadVideo {
     var json: String = ""
     var isImage:Boolean=true
     var imageList: List<CreatePostPhotoPojo?>? = java.util.ArrayList()
+    var thumbList: List<CreatePostPhotoPojo?>? = java.util.ArrayList()
+    var s3uploaderObj: S3Uploader? = null
 
     fun uploadFileVideo(
         context: Activity,
-        json: String, folderName: String, file: ArrayList<CreatePostPhotoPojo>, isShowPb: Boolean, onUploadFileListener: OnUploadFileListener
+        json: String, folderName: String,
+        file: ArrayList<CreatePostPhotoPojo>,
+        thumb: ArrayList<CreatePostPhotoPojo>,
+        isShowPb: Boolean,
+        onUploadFileListener: OnUploadFileListener
     ) {
         this.mActivity = context
         this.onUploadFileListener = onUploadFileListener
         this.json=json
         this.imageList = file
+        this.thumbList = thumb
         this.folderName = folderName
         this.isShowPb = isShowPb
         if (isShowPb) {
@@ -48,6 +50,7 @@ class UploadVideo {
                 ProgressHUD(mActivity!!, R.style.CustomBottomSheetDialogTheme, "")
             pbDialog?.show()
         }
+        s3uploaderObj = S3Uploader(context)
 
         MyAsyncTask().execute()
     }
@@ -91,6 +94,7 @@ class UploadVideo {
                                 height, width)
                 imageList!![0]!!.imageName=(fileName1!!)
                 imageList!![0]!!.imagePath = file.absolutePath
+                imageList!![0]!!.videoThumnailName = imageList!![0]!!.imageName.replace(".mp4","_thumb.jpg")
             }
 
 
@@ -99,56 +103,87 @@ class UploadVideo {
 
             compressedImage= File(imageList!![0]!!.imagePath)
 
-            val filePart = MultipartBody.Part.createFormData(
-                    "FileField", imageList!![0]!!.imageName,
-                    RequestBody.create("video*//*".toMediaTypeOrNull(), compressedImage!!)
+            val file_size = (file.length() / 1024).toString().toInt()
 
-            )
-            val call = RestClient.get()!!.uploadAttachment(filePart, RequestBody.create("text/plain".toMediaTypeOrNull(), "post"), RequestBody.create("text/plain".toMediaTypeOrNull(), json))
+            val folderName = "post/" + imageList!![0]!!.imageName
 
-            call.enqueue(object : retrofit2.Callback<List<UploadImagePojo>> {
-                override fun onFailure(call: Call<List<UploadImagePojo>>, t: Throwable) {
-                    dismissPb()
+            s3uploaderObj!!.initUpload(imageList!![0]!!.imagePath, folderName, "video")
+            s3uploaderObj!!.setOns3UploadDone(object : S3Uploader.S3UploadInterface {
+                override fun onUploadSuccess(response: String?) {
+                    Log.e("setOns3UploadDone", "==========================")
+                    Log.d("setOns3UploadDone", "VIDEO = $folderName")
+                    Log.d("setOns3UploadDone", "VIDEO = $response")
+
                     if (compressedImage != null)
                         compressedImage!!.delete()
-                    if (mActivity != null)
-                        onUploadFileListener?.onFailureUpload("", null)
+                    dismissPb()
+                    if (response.equals("Success", ignoreCase = true)) {
+                        var data = UploadImagePojo()
+                        data.fileName = imageList!![0]!!.videoThumnailName
+                        data.fileSize = file_size.toString()
+                        data.status = response
+                        onUploadFileListener!!.onSuccessUpload(data)
+                    }
                 }
 
-                override fun onResponse(call: Call<List<UploadImagePojo>>, response: Response<List<UploadImagePojo>>) {
-                    Log.e("response", "data" + response.body().toString())
+                override fun onUploadError(response: String?) {
                     if (compressedImage != null)
                         compressedImage!!.delete()
                     dismissPb()
-
-                    if (response.body() != null && response.body()!!.isNotEmpty()) {
-
-//                        if (response.body()!![0].status.toString().equals("true",true)) {
-                        if (response.body()!![0].status.toString().equals("true", true)) {
-
-                            if (onUploadFileListener != null) {
-                                // pbDialog.dismiss();
-
-                                onUploadFileListener!!.onSuccessUpload(response.body()!!.get(0))
-                            }
-                        } else {
-
-                            //   MyUtils.closeProgress();
-
-                            if (onUploadFileListener != null) {
-                                onUploadFileListener!!.onFailureUpload(response.body()!![0].message!!, response.body())
-                            }
-                        }
-                    } else {
-
-
-                        if (onUploadFileListener != null)
-                            onUploadFileListener!!.onFailureUpload("", null)
-                    }
-
+                    Log.e("S3Uploader", "Error: $response")
+                    onUploadFileListener!!.onFailureUpload(response!!, null)
 
                 }
             })
+
+
+
+//            val call = RestClient.get()!!.uploadAttachment(filePart, RequestBody.create("text/plain".toMediaTypeOrNull(), "post"), RequestBody.create("text/plain".toMediaTypeOrNull(), json))
+//            call.enqueue(object : retrofit2.Callback<List<UploadImagePojo>> {
+//                override fun onFailure(call: Call<List<UploadImagePojo>>, t: Throwable) {
+//                    dismissPb()
+//                    if (compressedImage != null)
+//                        compressedImage!!.delete()
+//                    if (mActivity != null)
+//                        onUploadFileListener?.onFailureUpload("", null)
+//                }
+//
+//                override fun onResponse(call: Call<List<UploadImagePojo>>, response: Response<List<UploadImagePojo>>) {
+//                    Log.e("response", "data" + response.body().toString())
+//                    if (compressedImage != null)
+//                        compressedImage!!.delete()
+//                    dismissPb()
+//
+//                    if (response.body() != null && response.body()!!.isNotEmpty()) {
+//
+////                        if (response.body()!![0].status.toString().equals("true",true)) {
+//                        if (response.body()!![0].status.toString().equals("true", true)) {
+//
+//                            if (onUploadFileListener != null) {
+//                                // pbDialog.dismiss();
+//                                var data = UploadImagePojo()
+//                                data.fileName = filePart!![it].imageName
+//                                data.status = response
+//                                onUploadFileListener!!.onSuccessUpload(data)
+//                            }
+//                        } else {
+//
+//                            //   MyUtils.closeProgress();
+//
+//                            if (onUploadFileListener != null) {
+//                                onUploadFileListener!!.onFailureUpload(response.body()!![0].message!!, response.body())
+//                            }
+//                        }
+//                    } else {
+//
+//
+//                        if (onUploadFileListener != null)
+//                            onUploadFileListener!!.onFailureUpload("", null)
+//                    }
+//
+//
+//                }
+//            })
             return true
         }
     }

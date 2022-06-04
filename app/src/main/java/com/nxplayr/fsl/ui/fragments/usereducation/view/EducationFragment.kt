@@ -38,7 +38,7 @@ import org.json.JSONException
 import org.json.JSONObject
 
 
-class EducationFragment : Fragment(),View.OnClickListener {
+class EducationFragment : Fragment(), View.OnClickListener {
 
     private var v: View? = null
     var education_list: ArrayList<EducationData?>? = ArrayList()
@@ -50,10 +50,12 @@ class EducationFragment : Fragment(),View.OnClickListener {
     var linearLayoutManager: LinearLayoutManager? = null
     var pageNo = 0
     var list: java.util.ArrayList<String>? = null
-    private lateinit var  getEducationModel: EducationModel
+    private lateinit var getEducationModel: EducationModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         if (v == null) {
             v = inflater.inflate(R.layout.fragment_education, container, false)
@@ -97,7 +99,8 @@ class EducationFragment : Fragment(),View.OnClickListener {
 
         jsonArray.put(jsonObject)
 
-        getEducationModel.getEducation(mActivity!!, false, jsonArray.toString(), "List")
+        getEducationModel.educationApi(jsonArray.toString(), "List")
+        getEducationModel.successEducation
             .observe(viewLifecycleOwner,
                 Observer { educationPojo ->
 
@@ -137,46 +140,58 @@ class EducationFragment : Fragment(),View.OnClickListener {
         }
 
         add_icon_connection.setOnClickListener(this)
-        btnRetry!!.setOnClickListener (this)
+        btnRetry!!.setOnClickListener(this)
 
-        educationAdapter = EducationAdapter(mActivity!!, education_list, object : EducationAdapter.OnItemClick {
+        educationAdapter =
+            EducationAdapter(mActivity!!, education_list, object : EducationAdapter.OnItemClick {
 
-            override fun onClicled(position: Int, from: String, v: View) {
-                when (from) {
-                    "delete" -> {
-                        list = java.util.ArrayList()
-                        list!!.add("Edit")
-                        list!!.add("Delete")
+                override fun onClicled(position: Int, from: String, v: View) {
+                    when (from) {
+                        "delete" -> {
+                            list = java.util.ArrayList()
+                            list!!.add("Edit")
+                            list!!.add("Delete")
 
-                        PopupMenu(mActivity!!, v!!, list!!).showPopUp(object : PopupMenu.OnMenuSelectItemClickListener {
-                            override fun onItemClick(item: String, pos: Int) {
-                                when (pos) {
-                                    0 -> {
-                                        var bundle = Bundle()
-                                        bundle.putString("from", "edit")
-                                        bundle.putSerializable("usereduData", education_list!![position]!!)
-                                        bundle.putInt("pos", position)
-                                        (activity as MainActivity).navigateTo(AddEducationFragment(), bundle, AddEducationFragment::class.java.name, true)
-                                    }
-                                    1 -> {
-                                        MyUtils.showMessageYesNo(mActivity!!, activity!!.resources.getString(R.string.education_remove_dialog),
-                                            ""
-                                        ) { dialogInterface, i ->
-                                            deleteEducation(
-                                                education_list!![position]!!.usereducationID,
-                                                position
+                            PopupMenu(mActivity!!, v!!, list!!).showPopUp(object :
+                                PopupMenu.OnMenuSelectItemClickListener {
+                                override fun onItemClick(item: String, pos: Int) {
+                                    when (pos) {
+                                        0 -> {
+                                            var bundle = Bundle()
+                                            bundle.putString("from", "edit")
+                                            bundle.putSerializable(
+                                                "usereduData",
+                                                education_list!![position]!!
                                             )
+                                            bundle.putInt("pos", position)
+                                            (activity as MainActivity).navigateTo(
+                                                AddEducationFragment(),
+                                                bundle,
+                                                AddEducationFragment::class.java.name,
+                                                true
+                                            )
+                                        }
+                                        1 -> {
+                                            MyUtils.showMessageYesNo(
+                                                mActivity!!,
+                                                activity!!.resources.getString(R.string.education_remove_dialog),
+                                                ""
+                                            ) { dialogInterface, i ->
+                                                deleteEducation(
+                                                    education_list!![position]!!.usereducationID,
+                                                    position
+                                                )
 
+                                            }
                                         }
                                     }
                                 }
-                            }
 
-                        })
+                            })
+                        }
                     }
                 }
-            }
-        }, "education_list")
+            }, "education_list")
         recyclerview.layoutManager = LinearLayoutManager(activity)
         recyclerview.adapter = educationAdapter
         recyclerview.setHasFixedSize(true)
@@ -185,7 +200,8 @@ class EducationFragment : Fragment(),View.OnClickListener {
     }
 
     private fun setupViewModel() {
-        getEducationModel = ViewModelProvider(this@EducationFragment).get(EducationModel::class.java)
+        getEducationModel =
+            ViewModelProvider(this@EducationFragment).get(EducationModel::class.java)
 
     }
 
@@ -205,49 +221,58 @@ class EducationFragment : Fragment(),View.OnClickListener {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        getEducationModel.getEducation(mActivity!!, false, jsonArray.toString(), "Delete")
-                .observe(this@EducationFragment,
-                        androidx.lifecycle.Observer { educationtpojo ->
-                            MyUtils.dismissProgressDialog()
-                            if (educationtpojo != null && educationtpojo.isNotEmpty()) {
+        getEducationModel.educationApi(jsonArray.toString(), "Delete")
+        getEducationModel.successEducation
+            .observe(
+                this@EducationFragment
+            ) { educationtpojo ->
+                MyUtils.dismissProgressDialog()
+                if (educationtpojo != null && educationtpojo.isNotEmpty()) {
 
-                                if (educationtpojo[0].status.equals("true", false)) {
+                    if (educationtpojo[0].status.equals("true", false)) {
 
-                                    val userData = sessionManager!!.userData
-                                    if (userData!!.education!!.size > 0) {
-                                        for (i in 0 until userData.education!!.size) {
-                                            if (education_list!![position]!!.usereducationID.equals(userData.education!![i]!!.usereducationID)) {
-                                                userData.education!!.removeAt(i)
-                                                sessionManager!!.userData = userData
-                                                education_list!!.removeAt(position)
-                                                break
-                                            }
-                                        }
-                                        educationAdapter!!.notifyDataSetChanged()
-                                    }
-
-                                } else {
-                                    if (activity != null && activity is MainActivity)
-                                        MyUtils.showSnackbar(mActivity!!, educationtpojo[0].message, ll_mainEducation)
+                        val userData = sessionManager!!.userData
+                        if (userData!!.education!!.size > 0) {
+                            for (i in 0 until userData.education!!.size) {
+                                if (education_list!![position]!!.usereducationID.equals(userData.education!![i]!!.usereducationID)) {
+                                    userData.education!!.removeAt(i)
+                                    sessionManager!!.userData = userData
+                                    education_list!!.removeAt(position)
+                                    break
                                 }
-
-                            } else {
-                                ErrorUtil.errorMethod(ll_mainHashtagsList)
-
-
                             }
-                        })
+                            educationAdapter!!.notifyDataSetChanged()
+                        }
+
+                    } else {
+                        if (activity != null && activity is MainActivity)
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                educationtpojo[0].message,
+                                ll_mainEducation
+                            )
+                    }
+
+                } else {
+                    ErrorUtil.errorMethod(ll_mainHashtagsList)
+
+
+                }
+            }
 
 
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-           R.id.add_icon_connection->{
-               (activity as MainActivity).navigateTo(AddEducationFragment(), AddEducationFragment::class.java.name, true)
-           }
-            R.id.btnRetry->{
+        when (v?.id) {
+            R.id.add_icon_connection -> {
+                (activity as MainActivity).navigateTo(
+                    AddEducationFragment(),
+                    AddEducationFragment::class.java.name,
+                    true
+                )
+            }
+            R.id.btnRetry -> {
                 pageNo = 0
                 setupObserver()
             }

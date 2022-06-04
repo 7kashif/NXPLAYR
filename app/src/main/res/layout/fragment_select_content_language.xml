@@ -5,53 +5,55 @@
     android:id="@+id/ll_main_suggestion"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@drawable/appbg"
+    android:orientation="vertical"
     tools:context=".ui.fragments.setting.view.SuggestedFeedbackFragment">
 
     <include layout="@layout/toolbar" />
+
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/nestedScrollView"
         android:layout_above="@+id/btn_update_language"
         android:layout_below="@+id/toolbar"
         android:fillViewport="true">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/ll_sub_content_language"
-        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/ll_sub_content_language"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:layout_marginEnd="@dimen/_10sdp"
-        android:fontFamily="@font/brandon_reg"
-        android:text="@string/select_the_language_you_want_content_on_linkedin_translated_into_we_ll_show_options_to_translate_content_such_as_posts_and_comments_to_this_language_and_use_this_information_to_improve_your_overall_fsl_experience"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_14ssp" />
+            <TextView
+                android:id="@+id/content_preferred"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:fontFamily="@font/brandon_reg"
+                android:text="@string/select_the_language_you_want_content_on_linkedin_translated_into_we_ll_show_options_to_translate_content_such_as_posts_and_comments_to_this_language_and_use_this_information_to_improve_your_overall_fsl_experience"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_14ssp" />
 
-    <com.google.android.material.internal.BaselineLayout
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:layout_marginBottom="@dimen/_10sdp"
-        android:background="@color/white"/>
+            <com.google.android.material.internal.BaselineLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:background="@color/white" />
 
-    <include layout="@layout/common_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_weight="1"
-        android:layout_marginEnd="@dimen/_10sdp"
-        />
+            <include
+                layout="@layout/common_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_weight="1" />
 
 
-    </LinearLayout>
+        </LinearLayout>
 
 
     </androidx.core.widget.NestedScrollView>
@@ -60,14 +62,14 @@
         android:id="@+id/btn_update_language"
         android:layout_width="@dimen/_140sdp"
         android:layout_height="@dimen/_50sdp"
-        android:layout_gravity="center|bottom"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_gravity="center|bottom"
         android:layout_marginLeft="@dimen/_20sdp"
         android:layout_marginTop="@dimen/_20sdp"
         android:layout_marginRight="@dimen/_20sdp"
         android:layout_marginBottom="@dimen/_10sdp"
         app:p_arrowVisible="false"
-        android:layout_alignParentBottom="true"
         app:p_backgroundTint="@color/colorPrimary"
         app:p_cornerRadius="@dimen/_100sdp"
         app:p_fontFamily="brandon_reg"

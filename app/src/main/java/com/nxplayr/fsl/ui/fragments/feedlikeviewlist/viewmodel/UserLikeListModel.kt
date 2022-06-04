@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.LikeListPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
 
@@ -34,7 +37,7 @@ class UserLikeListModel : ViewModel() {
 
     private fun getContactListApi(): LiveData<List<LikeListPojo>> {
         val data = MutableLiveData<List<LikeListPojo>>()
-
+        viewModelScope.launch(Dispatchers.IO) {
         var call: Call<List<LikeListPojo>>? = null
         when (from) {
             "user_likeList" -> {
@@ -52,7 +55,7 @@ class UserLikeListModel : ViewModel() {
                 data.value = null
             }
 
-        })
+        })}
 
         return data
     }

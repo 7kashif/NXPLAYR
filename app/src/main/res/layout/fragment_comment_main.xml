@@ -2,11 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".fragment.HomeMainFragment">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -67,6 +65,7 @@
                     android:padding="@dimen/_4sdp"
                     android:src="@drawable/filter_icon_explore_unselected"
                     />
+
                 <ImageView
                     android:id="@+id/menu_icon"
                     android:layout_width="wrap_content"
@@ -74,8 +73,7 @@
                     android:layout_gravity="right|center"
                     android:backgroundTint="@android:color/transparent"
                     android:padding="@dimen/_4sdp"
-                    android:src="@drawable/menu_icon_navigation_"
-                     />
+                    android:src="@drawable/menu_icon_navigation_" />
 
             </LinearLayout>
 
@@ -110,6 +108,7 @@
                     android:src="@drawable/home_notification_unselected_"
                     android:textColor="@color/white" />
             </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout

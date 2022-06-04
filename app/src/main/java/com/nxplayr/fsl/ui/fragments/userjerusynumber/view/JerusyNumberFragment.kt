@@ -22,6 +22,7 @@ import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_jerusy_number.*
 import kotlinx.android.synthetic.main.fragment_jerusy_number.btnUpdateBasicDetail
 import kotlinx.android.synthetic.main.fragment_jerusy_number.ll_nationteam
+import kotlinx.android.synthetic.main.fragment_national_team.*
 import kotlinx.android.synthetic.main.fragment_trophy_honors.*
 import kotlinx.android.synthetic.main.toolbar2.*
 import org.json.JSONArray
@@ -44,6 +45,19 @@ class JerusyNumberFragment : Fragment(),View.OnClickListener {
         }
         return v
     }
+
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngJersey.isNullOrEmpty())
+                tvToolbarTitle1.text = sessionManager?.LanguageLabel?.lngJersey
+            if (!sessionManager?.LanguageLabel?.lngJersey.isNullOrEmpty())
+                tv_edit_jersey.hint = sessionManager?.LanguageLabel?.lngJersey
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btnUpdateBasicDetail.progressText = sessionManager?.LanguageLabel?.lngSave
+        }
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mActivity=context as AppCompatActivity

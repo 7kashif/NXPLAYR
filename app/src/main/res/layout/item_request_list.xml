@@ -73,7 +73,6 @@
                         android:gravity="start|center"
                         android:hint="@string/pending"
                         android:textColor="@color/white"
-
                         android:textColorHint="@color/white"
                         android:textSize="@dimen/_12ssp" />
 
@@ -87,7 +86,6 @@
                         android:fontFamily="@font/brandon_reg"
                         android:gravity="start|center"
                         android:hint="@string/undo"
-
                         android:textColor="@color/colorPrimary"
                         android:textColorHint="@color/colorPrimary"
                         android:textSize="@dimen/_13ssp" />

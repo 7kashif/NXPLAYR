@@ -18,6 +18,7 @@ import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.fragment_add_website.*
 import kotlinx.android.synthetic.main.progressbar.*
 import kotlinx.android.synthetic.main.toolbar.*
+import kotlinx.android.synthetic.main.toolbar.toolbar
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -37,6 +38,24 @@ class AddStaticWebsiteActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var addWebsieModel: AddWebSiteModel
     private lateinit var editWebsieModel: EditWebsiteModel
 
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (FRNSTR.equals("Add")) {
+                if (!sessionManager?.LanguageLabel?.lngLinkWebsite.isNullOrEmpty())
+                    tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngLinkWebsite
+            } else {
+                if (!sessionManager?.LanguageLabel?.lngEditLink.isNullOrEmpty())
+                    tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngEditLink
+            }
+            if (!sessionManager?.LanguageLabel?.lngTitle.isNullOrEmpty())
+                title_textInputLayout.hint = sessionManager?.LanguageLabel?.lngTitle
+            if (!sessionManager?.LanguageLabel?.lngTicketURL.isNullOrEmpty())
+                url_textInputLayout.hint = sessionManager?.LanguageLabel?.lngTicketURL
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                savee.text = sessionManager?.LanguageLabel?.lngSave
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,9 +64,6 @@ class AddStaticWebsiteActivity : AppCompatActivity(), View.OnClickListener {
         sessionManager = SessionManager(this@AddStaticWebsiteActivity)
         if (sessionManager?.get_Authenticate_User() != null) {
             userData = sessionManager?.get_Authenticate_User()
-            if (userData?.userWebsite.isNullOrEmpty()) {
-
-            }
         }
         FRNSTR = intent.getStringExtra("frmString")
         URL_TITLE = intent.getStringExtra("urlTitle")

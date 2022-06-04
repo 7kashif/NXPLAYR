@@ -18,6 +18,7 @@ import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
+import kotlinx.android.synthetic.main.fragment_delete_account.*
 import kotlinx.android.synthetic.main.fragment_suggested_feedback.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.json.JSONArray
@@ -40,6 +41,18 @@ class SuggestedFeedbackFragment : Fragment(),View.OnClickListener {
             v=inflater.inflate(R.layout.fragment_suggested_feedback, container, false)
         }
         return v
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngSuggestFeature.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngSuggestFeature
+            if (!sessionManager?.LanguageLabel?.lngSuggestAFeaturePlaceholder.isNullOrEmpty())
+                edittext_suggestion_feature.hint = sessionManager?.LanguageLabel?.lngSuggestAFeaturePlaceholder
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_save.progressText = sessionManager?.LanguageLabel?.lngSave
+        }
     }
 
     override fun onAttach(context: Context) {

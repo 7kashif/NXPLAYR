@@ -60,17 +60,20 @@ class SuggestedClubAdapter(
 
             tv_club_name.text = listData.clubName.trim()
             if (userId == userData?.userID) {
-                if (listData.selected) {
-//                    item_club_main.visibility = View.GONE
-                    icon_Addclub.visibility = View.GONE
-                    icon_close.visibility = View.VISIBLE
-                } else {
-//                    item_club_main.visibility = View.VISIBLE
-                    icon_Addclub.visibility = View.VISIBLE
-                    icon_close.visibility = View.GONE
-                }
+                icon_Addclub.visibility = View.VISIBLE
+                icon_close.visibility = View.GONE
+//                if (listData.selected) {
+////                    item_club_main.visibility = View.GONE
+//                    icon_Addclub.visibility = View.GONE
+//                    icon_close.visibility = View.VISIBLE
+//                } else {
+////                    item_club_main.visibility = View.VISIBLE
+//                    icon_Addclub.visibility = View.VISIBLE
+//                    icon_close.visibility = View.GONE
+//                }
             } else {
                 icon_Addclub.visibility = View.GONE
+                icon_close.visibility = View.GONE
             }
             icon_Addclub.setOnClickListener {
                 if (userId == userData?.userID) {

@@ -19,6 +19,7 @@ import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.ui.fragments.cms.view.CmsFragment
 import com.nxplayr.fsl.ui.fragments.cms.view.ContactUsFragment
+import com.nxplayr.fsl.ui.fragments.cms.view.FAQTopicsFragment
 import com.nxplayr.fsl.ui.fragments.invite.view.InviteMainFragment
 import com.nxplayr.fsl.ui.fragments.userconnection.view.AddConnectionsFragment
 import com.nxplayr.fsl.ui.fragments.notification.view.NotificationFragment
@@ -27,6 +28,7 @@ import com.nxplayr.fsl.ui.fragments.userprofile.view.ProfileFragment
 import com.nxplayr.fsl.ui.fragments.ownprofile.view.ProfileMainFragment
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
+import kotlinx.android.synthetic.main.activity_successfully_registered.*
 import kotlinx.android.synthetic.main.fragment_menu.*
 
 
@@ -64,6 +66,61 @@ class MenuFragment : Fragment(), View.OnClickListener {
         setupUI()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngViewProfile.isNullOrEmpty())
+                tv_view_profile.text = sessionManager?.LanguageLabel?.lngViewProfile
+            if (!sessionManager?.LanguageLabel?.lngHome.isNullOrEmpty())
+                ivHome.text = sessionManager?.LanguageLabel?.lngHome
+            if (!sessionManager?.LanguageLabel?.lngChat.isNullOrEmpty())
+                ivChat.text = sessionManager?.LanguageLabel?.lngChat
+            if (!sessionManager?.LanguageLabel?.lngNotification.isNullOrEmpty())
+                ivNotify.text = sessionManager?.LanguageLabel?.lngNotification
+            if (!sessionManager?.LanguageLabel?.lngSetting.isNullOrEmpty())
+                ivSettings.text = sessionManager?.LanguageLabel?.lngSetting
+            if (!sessionManager?.LanguageLabel?.lngMenuGetVIP.isNullOrEmpty())
+                tv_get_VIP.text = sessionManager?.LanguageLabel?.lngMenuGetVIP
+            if (!sessionManager?.LanguageLabel?.lngAddConnections.isNullOrEmpty())
+                tv_add_connections.text = sessionManager?.LanguageLabel?.lngAddConnections
+            if (!sessionManager?.LanguageLabel?.lngInviteContacts.isNullOrEmpty())
+                tv_invite_contact.text = sessionManager?.LanguageLabel?.lngInviteContacts
+            if (!sessionManager?.LanguageLabel?.lngEvent.isNullOrEmpty())
+                tv_events.text = sessionManager?.LanguageLabel?.lngEvent
+            if (!sessionManager?.LanguageLabel?.lngGroups.isNullOrEmpty())
+                tv_groups.text = sessionManager?.LanguageLabel?.lngGroups
+            if (!sessionManager?.LanguageLabel?.lngRankings.isNullOrEmpty())
+                tv_ranking.text = sessionManager?.LanguageLabel?.lngRankings
+            if (!sessionManager?.LanguageLabel?.lngDonate.isNullOrEmpty())
+                tv_donate.text = sessionManager?.LanguageLabel?.lngDonate
+            if (!sessionManager?.LanguageLabel?.lngChannel.isNullOrEmpty())
+                tv_channels.text = sessionManager?.LanguageLabel?.lngChannel
+            if (!sessionManager?.LanguageLabel?.lngInfo.isNullOrEmpty())
+                tv_more_info.text = sessionManager?.LanguageLabel?.lngInfo
+            if (!sessionManager?.LanguageLabel?.lngAboutUs.isNullOrEmpty())
+                layout_aboutUs.text = sessionManager?.LanguageLabel?.lngAboutUs
+            if (!sessionManager?.LanguageLabel?.lngContactUs.isNullOrEmpty())
+                layout_contactUs.text = sessionManager?.LanguageLabel?.lngContactUs
+            if (!sessionManager?.LanguageLabel?.lngTC.isNullOrEmpty())
+                layout_termsConditions.text = sessionManager?.LanguageLabel?.lngTC
+            if (!sessionManager?.LanguageLabel?.lngPrivacyPolicy.isNullOrEmpty())
+                layout_privacy.text = sessionManager?.LanguageLabel?.lngPrivacyPolicy
+            if (!sessionManager?.LanguageLabel?.lngCopyrightPolicy.isNullOrEmpty())
+                layout_copyrightprivacy.text = sessionManager?.LanguageLabel?.lngCopyrightPolicy
+            if (!sessionManager?.LanguageLabel?.lngInviteContacts.isNullOrEmpty())
+                layout_invite_Contacts.text = sessionManager?.LanguageLabel?.lngInviteContacts
+            if (!sessionManager?.LanguageLabel?.lngCommunityGuidelines.isNullOrEmpty())
+                layout_community_guidelines.text = sessionManager?.LanguageLabel?.lngCommunityGuidelines
+            if (!sessionManager?.LanguageLabel?.lngPartnerWithUs.isNullOrEmpty())
+                layout_partner_invest.text = sessionManager?.LanguageLabel?.lngPartnerWithUs
+            if (!sessionManager?.LanguageLabel?.lngFAQ.isNullOrEmpty())
+                layout_faq.text = sessionManager?.LanguageLabel?.lngFAQ
+            if (!sessionManager?.LanguageLabel?.lngLogout.isNullOrEmpty())
+                tv_logout.text = sessionManager?.LanguageLabel?.lngLogout
+        }
+    }
+
     private fun setUserData() {
         image_profile.setImageURI(RestClient.image_base_url_users + userData?.userProfilePicture)
         tv_name.text = userData?.userFirstName + " " + userData?.userLastName
@@ -71,10 +128,10 @@ class MenuFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setupUI() {
-        tv_view_profile.setOnClickListener(this)
+        viewProfile.setOnClickListener(this)
         close_icon.setOnClickListener(this)
         tv_get_VIP.setOnClickListener(this)
-        tv_add_connections.setOnClickListener(this)
+//        tv_add_connections.setOnClickListener(this)
         tv_events.setOnClickListener(this)
         tv_groups.setOnClickListener(this)
         tv_ranking.setOnClickListener(this)
@@ -95,12 +152,27 @@ class MenuFragment : Fragment(), View.OnClickListener {
         layout_community_guidelines.setOnClickListener(this)
         layout_copyrightprivacy.setOnClickListener(this)
         layout_partner_invest.setOnClickListener(this)
-
+        layout_faq.setOnClickListener(this)
+        inviteContacts.setOnClickListener(this)
+        addConnection.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
 
+            R.id.layout_faq -> {
+                var bundle = Bundle()
+                bundle.putInt("tab_position", 0)
+                (activity as MainActivity).navigateTo(
+                    FAQTopicsFragment(),
+                    FAQTopicsFragment::class.java.name,
+                    true
+                )            }
+            R.id.inviteContacts -> {
+                var bundle = Bundle()
+                bundle.putInt("tab_position", 0)
+                (activity as MainActivity).navigateTo(InviteMainFragment(), bundle, InviteMainFragment::class.java.name, true)
+            }
             R.id.ll_mainHome -> {
                 var bundle = Bundle()
                 bundle.putInt("tab_position", 0)
@@ -127,13 +199,12 @@ class MenuFragment : Fragment(), View.OnClickListener {
             R.id.tv_events -> {
                // (activity as MainActivity).navigateTo(EventMainFragment(), EventMainFragment::class.java.name, true)
             }
-            R.id.tv_add_connections -> {
+            R.id.addConnection -> {
                 (activity as MainActivity).navigateTo(AddConnectionsFragment(), AddConnectionsFragment::class.java.name, true)
 //                (activity as MainActivity).navigateTo(WriteReviewFragment(), WriteReviewFragment::class.java.name, true)
 //                MyUtils.startActivity(mActivity!!, AddEmploymenyActivity()::class.java, true)
             }
-            R.id.tv_view_profile -> {
-
+            R.id.viewProfile -> {
                 (activity as MainActivity).navigateTo(ProfileMainFragment(), ProfileMainFragment::class.java.name, true)
             }
             R.id.ll_main_menu_profile -> {
@@ -170,32 +241,37 @@ class MenuFragment : Fragment(), View.OnClickListener {
             }
             R.id.layout_aboutUs -> {
                 val bundle = Bundle()
-                bundle.putString("title", getString(R.string.about_us))
+                if (!sessionManager?.LanguageLabel?.lngViewProfile.isNullOrEmpty())
+                    bundle.putString("title", sessionManager?.LanguageLabel?.lngAboutUs)
                 bundle.putString("cmsparameter", "About Us")
                 (activity as MainActivity).navigateTo(CmsFragment(), bundle, CmsFragment::class.java.name, true)
             }
             R.id.layout_termsConditions -> {
                 val bundle = Bundle()
-                bundle.putString("title", getString(R.string.terms_condition))
+                if (!sessionManager?.LanguageLabel?.lngViewProfile.isNullOrEmpty())
+                    bundle.putString("title", sessionManager?.LanguageLabel?.lngTC)
                 bundle.putString("cmsparameter", "Terms and Conditions")
                 (activity as MainActivity).navigateTo(CmsFragment(), bundle, CmsFragment::class.java.name, true)
 
             }
             R.id.layout_privacy -> {
                 val bundle = Bundle()
-                bundle.putString("title", getString(R.string.privacy_policy))
+                if (!sessionManager?.LanguageLabel?.lngViewProfile.isNullOrEmpty())
+                    bundle.putString("title", sessionManager?.LanguageLabel?.lngPrivacyPolicy)
                 bundle.putString("cmsparameter", "Privacy Policy")
                 (activity as MainActivity).navigateTo(CmsFragment(), bundle, CmsFragment::class.java.name, true)
             }
             R.id.layout_community_guidelines -> {
                 val bundle = Bundle()
-                bundle.putString("title", getString(R.string.community_guidelines))
+                if (!sessionManager?.LanguageLabel?.lngViewProfile.isNullOrEmpty())
+                    bundle.putString("title", sessionManager?.LanguageLabel?.lngCommunityGuidelines)
                 bundle.putString("cmsparameter", "Community Guidelines")
                 (activity as MainActivity).navigateTo(CmsFragment(), bundle, CmsFragment::class.java.name, true)
             }
             R.id.layout_copyrightprivacy -> {
                 val bundle = Bundle()
-                bundle.putString("title", getString(R.string.copyright_policy))
+                if (!sessionManager?.LanguageLabel?.lngViewProfile.isNullOrEmpty())
+                    bundle.putString("title", sessionManager?.LanguageLabel?.lngCopyrightPolicy)
                 bundle.putString("cmsparameter", "Copyright Policy")
                 (activity as MainActivity).navigateTo(CmsFragment(), bundle, CmsFragment::class.java.name, true)
             }

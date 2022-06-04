@@ -16,34 +16,33 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.nxplayr.fsl.*
-import com.nxplayr.fsl.ui.fragments.feed.adapter.HomeFeedListAdapter
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
+import com.nxplayr.fsl.data.model.CreatePostData
+import com.nxplayr.fsl.data.model.SignupData
+import com.nxplayr.fsl.data.model.ThreedotsBottomPojo
+import com.nxplayr.fsl.data.model.UploadImagePojo
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.activity.post.view.CreatePostActivity
+import com.nxplayr.fsl.ui.activity.post.view.CreatePostActivityTwo
+import com.nxplayr.fsl.ui.activity.post.view.ReportCopyRightActivity
+import com.nxplayr.fsl.ui.activity.post.view.ReportPostActivity
+import com.nxplayr.fsl.ui.fragments.bottomsheet.ThreeDotsBottomSheetFragment
+import com.nxplayr.fsl.ui.fragments.feed.adapter.HomeFeedListAdapter
+import com.nxplayr.fsl.ui.fragments.feed.viewmodel.CreatePostModelV2
+import com.nxplayr.fsl.ui.fragments.feedlikeviewlist.view.LikeViewFragment
+import com.nxplayr.fsl.ui.fragments.otheruserprofile.view.OtherUserProfileMainFragment
+import com.nxplayr.fsl.ui.fragments.ownprofile.view.ProfileMainFragment
 import com.nxplayr.fsl.ui.fragments.postcomment.viewmodel.CommentModel
 import com.nxplayr.fsl.ui.fragments.userfollowers.viewmodel.CommonStatusModel
-import com.nxplayr.fsl.ui.fragments.feed.viewmodel.CreatePostModel
 import com.nxplayr.fsl.util.Constant
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.nxplayr.fsl.ui.activity.post.view.CreatePostActivityTwo
-import com.nxplayr.fsl.data.model.*
-import com.nxplayr.fsl.ui.fragments.feedlikeviewlist.view.LikeViewFragment
-import com.nxplayr.fsl.ui.fragments.otheruserprofile.view.OtherUserProfileMainFragment
-import com.nxplayr.fsl.ui.fragments.bottomsheet.ThreeDotsBottomSheetFragment
-import com.nxplayr.fsl.ui.activity.*
-import com.nxplayr.fsl.ui.activity.post.view.CreatePostActivity
-import com.nxplayr.fsl.ui.activity.post.view.ReportCopyRightActivity
-import com.nxplayr.fsl.ui.activity.post.view.ReportPostActivity
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
-import com.nxplayr.fsl.ui.fragments.ownprofile.view.ProfileMainFragment
 import kotlinx.android.synthetic.main.common_recyclerview.*
 import kotlinx.android.synthetic.main.custom_alert_dialog.view.*
 import kotlinx.android.synthetic.main.fragment_comment_like_list.*
-import kotlinx.android.synthetic.main.fragment_comment_like_list.swiperefresh
-import kotlinx.android.synthetic.main.fragment_hash_tag_post_list.*
-import kotlinx.android.synthetic.main.fragment_postcomment_list.*
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
@@ -52,7 +51,7 @@ import org.json.JSONException
 import org.json.JSONObject
 
 
-class HomeFeedListFragment : Fragment(),View.OnClickListener {
+class HomeFeedListFragment : Fragment(), View.OnClickListener {
 
     private var v: View? = null
     var postList: ArrayList<CreatePostData?>? = null
@@ -77,26 +76,28 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
     var recentlyHidePos: Int = 0
     var recentlyHideItem: CreatePostData? = null
     var isLastPage1 = false
-    var footballLevel=""
-    var countryID=""
-    var postType=""
-    var sortby=""
-    var pitchPosition=""
-    var gender=""
-    var footballagecatID=""
-    var footballType=""
-    var publicationTime=""
-    var searchKeyword=""
+    var footballLevel = ""
+    var countryID = ""
+    var postType = ""
+    var sortby = ""
+    var pitchPosition = ""
+    var gender = ""
+    var footballagecatID = ""
+    var footballType = ""
+    var publicationTime = ""
+    var searchKeyword = ""
 
-    private lateinit var createPostModel: CreatePostModel
-    private lateinit var apiCall : CommentModel
-    private lateinit var reportPostModel : CommonStatusModel
+    private lateinit var createPostModel: CreatePostModelV2
+    private lateinit var apiCall: CommentModel
+    private lateinit var reportPostModel: CommonStatusModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-      //  if (v == null) {
-            v = inflater.inflate(R.layout.fragment_comment_like_list, container, false)
-       // }
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        //  if (v == null) {
+        v = inflater.inflate(R.layout.fragment_comment_like_list, container, false)
+        // }
         return v
     }
 
@@ -105,24 +106,121 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
         mActivity = context as Activity
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         sessionManager = SessionManager(mActivity!!)
         if (sessionManager?.get_Authenticate_User() != null) {
             userData = sessionManager?.get_Authenticate_User()
         }
         setupViewModel()
         setupUI()
+        apiObserver()
+    }
+
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
+//        sessionManager = SessionManager(mActivity!!)
+//        if (sessionManager?.get_Authenticate_User() != null) {
+//            userData = sessionManager?.get_Authenticate_User()
+//        }
+//        setupViewModel()
+//        setupUI()
+//        apiObserver()
+//    }
+
+    private fun apiObserver() {
+        createPostModel.postSuccessLiveData.observe(viewLifecycleOwner) { it ->
+
+            if (it != null && it.isNotEmpty()) {
+                isLoading = false
+                ll_no_data_found.visibility = View.GONE
+                nointernetMainRelativelayout.visibility = View.GONE
+                relativeprogressBar.visibility = View.GONE
+                if (pageNo > 0) {
+                    postList!!.removeAt(postList!!.size - 1)
+                    homeFeedListAdapter!!.notifyItemRemoved(postList!!.size)
+                }
+                if (it[0].status.equals("true", false)) {
+
+                    recyclerview.visibility = View.VISIBLE
+
+                    if (pageNo == 0) {
+                        postList?.clear()
+                    }
+                    postList?.addAll(it[0].data!!)
+                    homeFeedListAdapter?.notifyDataSetChanged()
+                    pageNo += 1
+
+                    if (it[0].data!!.size < 10) {
+                        isLastpage = true
+                    }
+                    if (it[0].data!!.isNullOrEmpty()) {
+                        ll_no_data_found.visibility = View.VISIBLE
+                        recyclerview.visibility = View.GONE
+                    } else {
+                        ll_no_data_found.visibility = View.GONE
+                        recyclerview.visibility = View.VISIBLE
+                    }
+
+                } else {
+                    relativeprogressBar.visibility = View.GONE
+
+                    if (postList!!.isNullOrEmpty()) {
+                        ll_no_data_found.visibility = View.VISIBLE
+                        recyclerview.visibility = View.GONE
+
+                    } else {
+                        ll_no_data_found.visibility = View.GONE
+                        recyclerview.visibility = View.VISIBLE
+                    }
+                }
+            } else {
+                if (mActivity != null) {
+                    relativeprogressBar.visibility = View.GONE
+                    recyclerview.visibility = View.GONE
+                    ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                }
+            }
+
+
+
+//            isLoading = false
+//            if (trendingFeedlistpojos != null && trendingFeedlistpojos.isNotEmpty()) {
+//                if (trendingFeedlistpojos[0].status.equals("true", false)) {
+//                    pageNo = 0
+//                    if (pageNo == 0) {
+//                        postList?.clear()
+//                    }
+//                    postList?.addAll(trendingFeedlistpojos[0].data!!)
+//                    homeFeedListAdapter?.notifyDataSetChanged()
+//                    recyclerview.scrollToPosition(0)
+//                } else {
+//                }
+//                if (postList == null && postList!!.size == 0) {
+//                    ll_no_data_found.visibility = View.VISIBLE
+//                } else {
+//                    ll_no_data_found.visibility = View.GONE
+//                }
+//            }
+            swiperefresh.isRefreshing = false
+        }
+        createPostModel.postFailureLiveData.observe(
+            viewLifecycleOwner
+        ) {
+            isLoading = false
+            swiperefresh.isRefreshing = false
+        }
     }
 
     private fun setupViewModel() {
-        createPostModel = ViewModelProvider(this@HomeFeedListFragment).get(CreatePostModel::class.java)
+        createPostModel =
+            ViewModelProvider(this@HomeFeedListFragment).get(CreatePostModelV2::class.java)
         apiCall = ViewModelProvider(this@HomeFeedListFragment).get(CommentModel::class.java)
-        reportPostModel = ViewModelProvider(this@HomeFeedListFragment).get(CommonStatusModel::class.java)
-
+        reportPostModel =
+            ViewModelProvider(this@HomeFeedListFragment).get(CommonStatusModel::class.java)
     }
 
-     fun setupObserver() {
+    fun setupObserver() {
         ll_no_data_found.visibility = View.GONE
         nointernetMainRelativelayout.visibility = View.GONE
         if (pageNo == 0) {
@@ -153,87 +251,81 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
             jsonObject.put("sortby", sortby)
             jsonObject.put("pagesize", "10")
             jsonObject.put("postType", "Social")
-            when(postType)
-            {
-                "All"->{
+            when (postType) {
+                "All" -> {
                     jsonObject.put("postMediaType", "")
 
-                }else->{
-                jsonObject.put("postMediaType", postType)
-              }
+                }
+                else -> {
+                    jsonObject.put("postMediaType", postType)
+                }
             }
             jsonObject.put("tabname", "trending")
             jsonObject.put("searchKeyword", searchKeyword)
             jsonObject.put("apiType", RestClient.apiType)
             jsonObject.put("apiVersion", RestClient.apiVersion)
 
-        }
-        catch (e: JSONException) {
+        } catch (e: JSONException) {
             e.printStackTrace()
         }
 
         jsonArray.put(jsonObject)
-        createPostModel.apiFunction(mActivity!!, jsonArray.toString(), "getPostList")
-            .observe(viewLifecycleOwner, { postListPojo ->
-                if (postListPojo != null && postListPojo.isNotEmpty())
-                {
-                    isLoading = false
-                    ll_no_data_found.visibility = View.GONE
-                    nointernetMainRelativelayout.visibility = View.GONE
-                    relativeprogressBar.visibility = View.GONE
-                    if (pageNo > 0) {
-                        postList!!.removeAt(postList!!.size - 1)
-                        homeFeedListAdapter!!.notifyItemRemoved(postList!!.size)
-                    }
-                    if (postListPojo[0].status.equals("true",false))
-                    {
-
-                        recyclerview.visibility = View.VISIBLE
-
-                        if (pageNo == 0) {
-                            postList?.clear()
-                        }
-                        postList?.addAll(postListPojo[0].data!!)
-                        homeFeedListAdapter?.notifyDataSetChanged()
-                        pageNo += 1
-
-                        if (postListPojo[0].data!!.size < 10) {
-                            isLastpage = true
-                        }
-                        if (postListPojo[0].data!!.isNullOrEmpty()) {
-                            ll_no_data_found.visibility = View.VISIBLE
-                            recyclerview.visibility = View.GONE
-                        } else {
-                            ll_no_data_found.visibility = View.GONE
-                            recyclerview.visibility = View.VISIBLE
-                        }
-
-                    }
-                    else
-                    {
-                        relativeprogressBar.visibility = View.GONE
-
-                        if (postList!!.isNullOrEmpty()) {
-                            ll_no_data_found.visibility = View.VISIBLE
-                            recyclerview.visibility = View.GONE
-
-                        } else {
-                            ll_no_data_found.visibility = View.GONE
-                            recyclerview.visibility = View.VISIBLE
-                        }
-                    }
-                }
-                else
-                {
-                    if (mActivity != null)
-                    {
-                        relativeprogressBar.visibility = View.GONE
-                        recyclerview.visibility = View.GONE
-                        ErrorUtil.errorView(mActivity!!,nointernetMainRelativelayout)
-                    }
-                }
-            })
-
+        createPostModel.postFunction(jsonArray.toString(), "getPostList")
+//        createPostModel.postSuccessLiveData.observe(viewLifecycleOwner, Observer {
+//            if (it != null && it.isNotEmpty()) {
+//                isLoading = false
+//                ll_no_data_found.visibility = View.GONE
+//                nointernetMainRelativelayout.visibility = View.GONE
+//                relativeprogressBar.visibility = View.GONE
+//                if (pageNo > 0) {
+//                    postList!!.removeAt(postList!!.size - 1)
+//                    homeFeedListAdapter!!.notifyItemRemoved(postList!!.size)
+//                }
+//                if (it[0].status.equals("true", false)) {
+//
+//                    recyclerview.visibility = View.VISIBLE
+//
+//                    if (pageNo == 0) {
+//                        postList?.clear()
+//                    }
+//                    postList?.addAll(it[0].data!!)
+//                    homeFeedListAdapter?.notifyDataSetChanged()
+//                    pageNo += 1
+//
+//                    if (it[0].data!!.size < 10) {
+//                        isLastpage = true
+//                    }
+//                    if (it[0].data!!.isNullOrEmpty()) {
+//                        ll_no_data_found.visibility = View.VISIBLE
+//                        recyclerview.visibility = View.GONE
+//                    } else {
+//                        ll_no_data_found.visibility = View.GONE
+//                        recyclerview.visibility = View.VISIBLE
+//                    }
+//
+//                } else {
+//                    relativeprogressBar.visibility = View.GONE
+//
+//                    if (postList!!.isNullOrEmpty()) {
+//                        ll_no_data_found.visibility = View.VISIBLE
+//                        recyclerview.visibility = View.GONE
+//
+//                    } else {
+//                        ll_no_data_found.visibility = View.GONE
+//                        recyclerview.visibility = View.VISIBLE
+//                    }
+//                }
+//            } else {
+//                if (mActivity != null) {
+//                    relativeprogressBar.visibility = View.GONE
+//                    recyclerview.visibility = View.GONE
+//                    ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+//                }
+//            }
+//        })
+//        createPostModel.postFailureLiveData.observe(viewLifecycleOwner, Observer {
+//
+//        })
     }
 
 
@@ -242,9 +334,7 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
         floating_btn_createpost?.setOnClickListener(this)
         floating_btn_scroll?.setOnClickListener(this)
 
-       swiperefresh.setOnRefreshListener {
-            // This method performs the actual data-refresh operation.
-            // The method calls setRefreshing(false) when it's finished.
+        swiperefresh.setOnRefreshListener {
             refreshItems()
         }
         mBottomSheetDialog = BottomSheetDialog(mActivity!!)
@@ -252,206 +342,432 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
         linearLayoutManager = LinearLayoutManager(mActivity!!)
         if (postList == null) {
             postList = ArrayList()
-            homeFeedListAdapter = HomeFeedListAdapter(mActivity!!, postList!!, object : HomeFeedListAdapter.OnItemClick {
-                override fun onClicled(position: Int, from: String, createData: CreatePostData, sendComment: String, view1: View) {
+            homeFeedListAdapter = HomeFeedListAdapter(
+                mActivity!!,
+                postList!!,
+                object : HomeFeedListAdapter.OnItemClick {
+                    override fun onClicled(
+                        position: Int,
+                        from: String,
+                        createData: CreatePostData,
+                        sendComment: String,
+                        view1: View
+                    ) {
 
-                    when (from) {
-                        "like_unlike" -> {
-                            //postLikeApi("user_Like")
-                            (activity as MainActivity).navigateTo(LikeViewFragment(), LikeViewFragment::class.java.name, true)
-                        }
-                        "views" -> {
-                            (context as MainActivity).navigateTo(LikeViewFragment(), LikeViewFragment::class.java.name, true)
-                        }
-                        "from_more_icon" -> {
-                            list_bottomsheet = ArrayList()
-                            list_bottomsheet?.clear()
-
-                            list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_share_via_icon, resources.getString(R.string.share_via)))
-                            list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_hide_post_icon, resources.getString(R.string.hide_this_post)))
-
-                            if (!userData?.userID.equals(postList!![position]!!.userID)) {
-                                if (postList?.get(position)?.isYouFollowing.equals("Yes", false)) {
-                                    list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_unfollow_icon, resources.getString(R.string.unfollow)))
-                                } else if (postList?.get(position)?.isYouFollowing.equals("No", false)) {
-                                    list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_unfollow_icon, resources.getString(R.string.follow)))
-                                }
-                                list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_report_icon, resources.getString(R.string.report_this_Post_ad)))
-                                list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_copyright_icon, resources.getString(R.string.report_copyright_infringement)))
-                                list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_save_post_icon, resources.getString(R.string.save_this_post)))
-                            } else {
-                                list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_edit_icon, resources.getString(R.string.edit)))
-                                list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_delete_icon, "Delete"))
+                        when (from) {
+                            "like_unlike" -> {
+                                //postLikeApi("user_Like")
+                                (activity as MainActivity).navigateTo(
+                                    LikeViewFragment(),
+                                    LikeViewFragment::class.java.name,
+                                    true
+                                )
                             }
+                            "views" -> {
+                                (context as MainActivity).navigateTo(
+                                    LikeViewFragment(),
+                                    LikeViewFragment::class.java.name,
+                                    true
+                                )
+                            }
+                            "from_more_icon" -> {
+                                list_bottomsheet = ArrayList()
+                                list_bottomsheet?.clear()
 
-                            openBottomSheet(list_bottomsheet!!, position, postList!![position]!!.postID)
+                                list_bottomsheet!!.add(
+                                    ThreedotsBottomPojo(
+                                        R.drawable.popup_share_via_icon,
+                                        resources.getString(R.string.share_via)
+                                    )
+                                )
+                                list_bottomsheet!!.add(
+                                    ThreedotsBottomPojo(
+                                        R.drawable.popup_hide_post_icon,
+                                        resources.getString(R.string.hide_this_post)
+                                    )
+                                )
 
-                        }
-                        "list_share" -> {
-                            openBottomSheetForShare(position)
-                        }
-                        "OtherUserProfile" -> {
-                            if (!userData?.userID?.equals(postList?.get(position)?.userID)!!) {
-                                var bundle = Bundle()
-                                if (postList?.get(position)!!.postShared == "1") {
-                                    bundle.putString("userId", postList?.get(position)?.originaluserID)
+                                if (!userData?.userID.equals(postList!![position]!!.userID)) {
+                                    if (postList?.get(position)?.isYouFollowing.equals(
+                                            "Yes",
+                                            false
+                                        )
+                                    ) {
+                                        list_bottomsheet!!.add(
+                                            ThreedotsBottomPojo(
+                                                R.drawable.popup_unfollow_icon,
+                                                resources.getString(R.string.unfollow)
+                                            )
+                                        )
+                                    } else if (postList?.get(position)?.isYouFollowing.equals(
+                                            "No",
+                                            false
+                                        )
+                                    ) {
+                                        list_bottomsheet!!.add(
+                                            ThreedotsBottomPojo(
+                                                R.drawable.popup_unfollow_icon,
+                                                resources.getString(R.string.follow)
+                                            )
+                                        )
+                                    }
+                                    list_bottomsheet!!.add(
+                                        ThreedotsBottomPojo(
+                                            R.drawable.popup_report_icon,
+                                            resources.getString(R.string.report_this_Post_ad)
+                                        )
+                                    )
+                                    list_bottomsheet!!.add(
+                                        ThreedotsBottomPojo(
+                                            R.drawable.popup_copyright_icon,
+                                            resources.getString(R.string.report_copyright_infringement)
+                                        )
+                                    )
+                                    list_bottomsheet!!.add(
+                                        ThreedotsBottomPojo(
+                                            R.drawable.popup_save_post_icon,
+                                            resources.getString(R.string.save_this_post)
+                                        )
+                                    )
                                 } else {
-                                    bundle.putString("userId", postList?.get(position)?.userID)
+                                    list_bottomsheet!!.add(
+                                        ThreedotsBottomPojo(
+                                            R.drawable.popup_edit_icon,
+                                            resources.getString(R.string.edit)
+                                        )
+                                    )
+                                    list_bottomsheet!!.add(
+                                        ThreedotsBottomPojo(
+                                            R.drawable.popup_delete_icon,
+                                            "Delete"
+                                        )
+                                    )
                                 }
-                                (activity as MainActivity).navigateTo(OtherUserProfileMainFragment(), bundle, OtherUserProfileMainFragment::class.java.name, true)
 
-                            } else {
-                                var bundle = Bundle()
-                                if (postList?.get(position)!!.postShared == "1") {
-                                    bundle.putString("userId", postList?.get(position)?.originaluserID)
-                                } else {
-                                    bundle.putString("userId", postList?.get(position)?.userID)
-                                }
-                                (activity as MainActivity).navigateTo(ProfileMainFragment(), bundle, ProfileMainFragment::class.java.name, true)
+                                openBottomSheet(
+                                    list_bottomsheet!!,
+                                    position,
+                                    postList!![position]!!.postID
+                                )
 
                             }
+                            "list_share" -> {
+                                openBottomSheetForShare(position)
+                            }
+                            "OtherUserProfile" -> {
+                                if (!userData?.userID?.equals(postList?.get(position)?.userID)!!) {
+                                    var bundle = Bundle()
+                                    if (postList?.get(position)!!.postShared == "1") {
+                                        bundle.putString(
+                                            "userId",
+                                            postList?.get(position)?.originaluserID
+                                        )
+                                    } else {
+                                        bundle.putString("userId", postList?.get(position)?.userID)
+                                    }
+                                    (activity as MainActivity).navigateTo(
+                                        OtherUserProfileMainFragment(),
+                                        bundle,
+                                        OtherUserProfileMainFragment::class.java.name,
+                                        true
+                                    )
 
-                        }
-                        "other_user_profile" -> {
-                            if (!userData?.userID?.equals(postList?.get(position)?.userID)!!) {
-                                var bundle = Bundle()
-                                if (postList?.get(position)!!.postShared == "1") {
-                                    bundle.putString("userId", postList?.get(position)?.originaluserID)
                                 } else {
-                                    bundle.putString("userId", postList?.get(position)?.userID)
-                                }
-                                (activity as MainActivity).navigateTo(OtherUserProfileMainFragment(), bundle, OtherUserProfileMainFragment::class.java.name, true)
+                                    var bundle = Bundle()
+                                    if (postList?.get(position)!!.postShared == "1") {
+                                        bundle.putString(
+                                            "userId",
+                                            postList?.get(position)?.originaluserID
+                                        )
+                                    } else {
+                                        bundle.putString("userId", postList?.get(position)?.userID)
+                                    }
+                                    (activity as MainActivity).navigateTo(
+                                        ProfileMainFragment(),
+                                        bundle,
+                                        ProfileMainFragment::class.java.name,
+                                        true
+                                    )
 
-                            } else {
-                                var bundle = Bundle()
-                                if (postList?.get(position)!!.postShared == "1") {
-                                    bundle.putString("userId", postList?.get(position)?.originaluserID)
-                                } else {
-                                    bundle.putString("userId", postList?.get(position)?.userID)
                                 }
-                                bundle.putSerializable("postData", postList?.get(position))
-                                (activity as MainActivity).navigateTo(ProfileMainFragment(), bundle, ProfileMainFragment::class.java.name, true)
 
                             }
-                        }
-                        "sendComment" -> {
-                            MyUtils.hideKeyboard1(mActivity!!)
-                            if((view1 as EditText).text.toString().trim().isNullOrEmpty())
-                            {
-                                MyUtils.showSnackbar(mActivity!!,"Please enter your comment",mainRootRv)
+                            "other_user_profile" -> {
+                                if (!userData?.userID?.equals(postList?.get(position)?.userID)!!) {
+                                    var bundle = Bundle()
+                                    if (postList?.get(position)!!.postShared == "1") {
+                                        bundle.putString(
+                                            "userId",
+                                            postList?.get(position)?.originaluserID
+                                        )
+                                    } else {
+                                        bundle.putString("userId", postList?.get(position)?.userID)
+                                    }
+                                    (activity as MainActivity).navigateTo(
+                                        OtherUserProfileMainFragment(),
+                                        bundle,
+                                        OtherUserProfileMainFragment::class.java.name,
+                                        true
+                                    )
+
+                                } else {
+                                    var bundle = Bundle()
+                                    if (postList?.get(position)!!.postShared == "1") {
+                                        bundle.putString(
+                                            "userId",
+                                            postList?.get(position)?.originaluserID
+                                        )
+                                    } else {
+                                        bundle.putString("userId", postList?.get(position)?.userID)
+                                    }
+                                    bundle.putSerializable("postData", postList?.get(position))
+                                    (activity as MainActivity).navigateTo(
+                                        ProfileMainFragment(),
+                                        bundle,
+                                        ProfileMainFragment::class.java.name,
+                                        true
+                                    )
+
+                                }
                             }
-                            else{
-                                sendPostComment(postList!![position]!!.postID, postList!![position]!!.postMediaType, sendComment, position, view1 as EditText)
+                            "sendComment" -> {
+                                MyUtils.hideKeyboard1(mActivity!!)
+                                if ((view1 as EditText).text.toString().trim().isNullOrEmpty()) {
+                                    MyUtils.showSnackbar(
+                                        mActivity!!,
+                                        "Please enter your comment",
+                                        mainRootRv
+                                    )
+                                } else {
+                                    sendPostComment(
+                                        postList!![position]!!.postID,
+                                        postList!![position]!!.postMediaType,
+                                        sendComment,
+                                        position,
+                                        view1 as EditText
+                                    )
+                                }
                             }
                         }
                     }
-                }
-            })
+                })
             recyclerview.layoutManager = linearLayoutManager
-            recyclerview.isNestedScrollingEnabled=true
+            recyclerview.isNestedScrollingEnabled = true
             recyclerview.adapter = homeFeedListAdapter
             setupObserver()
 
-        }
-        else
-        {
-            homeFeedListAdapter = HomeFeedListAdapter(mActivity!!, postList!!, object : HomeFeedListAdapter.OnItemClick {
-                override fun onClicled(position: Int, from: String, createData: CreatePostData, sendComment: String, view1: View) {
+        } else {
+            homeFeedListAdapter = HomeFeedListAdapter(
+                mActivity!!,
+                postList!!,
+                object : HomeFeedListAdapter.OnItemClick {
+                    override fun onClicled(
+                        position: Int,
+                        from: String,
+                        createData: CreatePostData,
+                        sendComment: String,
+                        view1: View
+                    ) {
 
-                    when (from) {
-                        "like_unlike" -> {
-                            //postLikeApi("user_Like")
-                            (activity as MainActivity).navigateTo(LikeViewFragment(), LikeViewFragment::class.java.name, true)
-                        }
-                        "views" -> {
-                            (context as MainActivity).navigateTo(LikeViewFragment(), LikeViewFragment::class.java.name, true)
-                        }
-                        "from_more_icon" -> {
-                            list_bottomsheet = ArrayList()
-                            list_bottomsheet?.clear()
-
-                            list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_share_via_icon, resources.getString(R.string.share_via)))
-                            list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_hide_post_icon, resources.getString(R.string.hide_this_post)))
-
-                            if (!userData?.userID.equals(postList!![position]!!.userID)) {
-                                if (postList?.get(position)?.isYouFollowing.equals("Yes", false)) {
-                                    list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_unfollow_icon, resources.getString(R.string.unfollow)))
-                                } else if (postList?.get(position)?.isYouFollowing.equals("No", false)) {
-                                    list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_unfollow_icon, resources.getString(R.string.follow)))
-                                }
-                                list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_report_icon, resources.getString(R.string.report_this_Post_ad)))
-                                list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_copyright_icon, resources.getString(R.string.report_copyright_infringement)))
-                                list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_save_post_icon, resources.getString(R.string.save_this_post)))
-                            } else {
-                                list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_edit_icon, resources.getString(R.string.edit)))
-                                list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_delete_icon, "Delete"))
+                        when (from) {
+                            "like_unlike" -> {
+                                //postLikeApi("user_Like")
+                                (activity as MainActivity).navigateTo(
+                                    LikeViewFragment(),
+                                    LikeViewFragment::class.java.name,
+                                    true
+                                )
                             }
+                            "views" -> {
+                                (context as MainActivity).navigateTo(
+                                    LikeViewFragment(),
+                                    LikeViewFragment::class.java.name,
+                                    true
+                                )
+                            }
+                            "from_more_icon" -> {
+                                list_bottomsheet = ArrayList()
+                                list_bottomsheet?.clear()
 
-                            openBottomSheet(list_bottomsheet!!, position, postList!![position]!!.postID)
+                                list_bottomsheet!!.add(
+                                    ThreedotsBottomPojo(
+                                        R.drawable.popup_share_via_icon,
+                                        resources.getString(R.string.share_via)
+                                    )
+                                )
+                                list_bottomsheet!!.add(
+                                    ThreedotsBottomPojo(
+                                        R.drawable.popup_hide_post_icon,
+                                        resources.getString(R.string.hide_this_post)
+                                    )
+                                )
 
-                        }
-                        "list_share" -> {
-                            openBottomSheetForShare(position)
-                        }
-                        "OtherUserProfile" -> {
-                            if (!userData?.userID?.equals(postList?.get(position)?.userID)!!) {
-                                var bundle = Bundle()
-                                if (postList?.get(position)!!.postShared == "1") {
-                                    bundle.putString("userId", postList?.get(position)?.originaluserID)
+                                if (!userData?.userID.equals(postList!![position]!!.userID)) {
+                                    if (postList?.get(position)?.isYouFollowing.equals(
+                                            "Yes",
+                                            false
+                                        )
+                                    ) {
+                                        list_bottomsheet!!.add(
+                                            ThreedotsBottomPojo(
+                                                R.drawable.popup_unfollow_icon,
+                                                resources.getString(R.string.unfollow)
+                                            )
+                                        )
+                                    } else if (postList?.get(position)?.isYouFollowing.equals(
+                                            "No",
+                                            false
+                                        )
+                                    ) {
+                                        list_bottomsheet!!.add(
+                                            ThreedotsBottomPojo(
+                                                R.drawable.popup_unfollow_icon,
+                                                resources.getString(R.string.follow)
+                                            )
+                                        )
+                                    }
+                                    list_bottomsheet!!.add(
+                                        ThreedotsBottomPojo(
+                                            R.drawable.popup_report_icon,
+                                            resources.getString(R.string.report_this_Post_ad)
+                                        )
+                                    )
+                                    list_bottomsheet!!.add(
+                                        ThreedotsBottomPojo(
+                                            R.drawable.popup_copyright_icon,
+                                            resources.getString(R.string.report_copyright_infringement)
+                                        )
+                                    )
+                                    list_bottomsheet!!.add(
+                                        ThreedotsBottomPojo(
+                                            R.drawable.popup_save_post_icon,
+                                            resources.getString(R.string.save_this_post)
+                                        )
+                                    )
                                 } else {
-                                    bundle.putString("userId", postList?.get(position)?.userID)
+                                    list_bottomsheet!!.add(
+                                        ThreedotsBottomPojo(
+                                            R.drawable.popup_edit_icon,
+                                            resources.getString(R.string.edit)
+                                        )
+                                    )
+                                    list_bottomsheet!!.add(
+                                        ThreedotsBottomPojo(
+                                            R.drawable.popup_delete_icon,
+                                            "Delete"
+                                        )
+                                    )
                                 }
-                                (activity as MainActivity).navigateTo(OtherUserProfileMainFragment(), bundle, OtherUserProfileMainFragment::class.java.name, true)
 
-                            } else {
-                                var bundle = Bundle()
-                                if (postList?.get(position)!!.postShared == "1") {
-                                    bundle.putString("userId", postList?.get(position)?.originaluserID)
-                                } else {
-                                    bundle.putString("userId", postList?.get(position)?.userID)
-                                }
-                                (activity as MainActivity).navigateTo(ProfileMainFragment(), bundle, ProfileMainFragment::class.java.name, true)
+                                openBottomSheet(
+                                    list_bottomsheet!!,
+                                    position,
+                                    postList!![position]!!.postID
+                                )
 
                             }
+                            "list_share" -> {
+                                openBottomSheetForShare(position)
+                            }
+                            "OtherUserProfile" -> {
+                                if (!userData?.userID?.equals(postList?.get(position)?.userID)!!) {
+                                    var bundle = Bundle()
+                                    if (postList?.get(position)!!.postShared == "1") {
+                                        bundle.putString(
+                                            "userId",
+                                            postList?.get(position)?.originaluserID
+                                        )
+                                    } else {
+                                        bundle.putString("userId", postList?.get(position)?.userID)
+                                    }
+                                    (activity as MainActivity).navigateTo(
+                                        OtherUserProfileMainFragment(),
+                                        bundle,
+                                        OtherUserProfileMainFragment::class.java.name,
+                                        true
+                                    )
 
-                        }
-                        "other_user_profile" -> {
-                            if (!userData?.userID?.equals(postList?.get(position)?.userID)!!) {
-                                var bundle = Bundle()
-                                if (postList?.get(position)!!.postShared == "1") {
-                                    bundle.putString("userId", postList?.get(position)?.originaluserID)
                                 } else {
-                                    bundle.putString("userId", postList?.get(position)?.userID)
-                                }
-                                (activity as MainActivity).navigateTo(OtherUserProfileMainFragment(), bundle, OtherUserProfileMainFragment::class.java.name, true)
+                                    var bundle = Bundle()
+                                    if (postList?.get(position)!!.postShared == "1") {
+                                        bundle.putString(
+                                            "userId",
+                                            postList?.get(position)?.originaluserID
+                                        )
+                                    } else {
+                                        bundle.putString("userId", postList?.get(position)?.userID)
+                                    }
+                                    (activity as MainActivity).navigateTo(
+                                        ProfileMainFragment(),
+                                        bundle,
+                                        ProfileMainFragment::class.java.name,
+                                        true
+                                    )
 
-                            } else {
-                                var bundle = Bundle()
-                                if (postList?.get(position)!!.postShared == "1") {
-                                    bundle.putString("userId", postList?.get(position)?.originaluserID)
-                                } else {
-                                    bundle.putString("userId", postList?.get(position)?.userID)
                                 }
-                                bundle.putSerializable("postData", postList?.get(position))
-                                (activity as MainActivity).navigateTo(ProfileMainFragment(), bundle, ProfileMainFragment::class.java.name, true)
 
                             }
-                        }
-                        "sendComment" -> {
-                            MyUtils.hideKeyboard1(mActivity!!)
-                            if((view1 as EditText).text.toString().trim().isNullOrEmpty())
-                            {
-                                MyUtils.showSnackbar(mActivity!!,"Please enter your comment",mainRootRv)
+                            "other_user_profile" -> {
+                                if (!userData?.userID?.equals(postList?.get(position)?.userID)!!) {
+                                    var bundle = Bundle()
+                                    if (postList?.get(position)!!.postShared == "1") {
+                                        bundle.putString(
+                                            "userId",
+                                            postList?.get(position)?.originaluserID
+                                        )
+                                    } else {
+                                        bundle.putString("userId", postList?.get(position)?.userID)
+                                    }
+                                    (activity as MainActivity).navigateTo(
+                                        OtherUserProfileMainFragment(),
+                                        bundle,
+                                        OtherUserProfileMainFragment::class.java.name,
+                                        true
+                                    )
+
+                                } else {
+                                    var bundle = Bundle()
+                                    if (postList?.get(position)!!.postShared == "1") {
+                                        bundle.putString(
+                                            "userId",
+                                            postList?.get(position)?.originaluserID
+                                        )
+                                    } else {
+                                        bundle.putString("userId", postList?.get(position)?.userID)
+                                    }
+                                    bundle.putSerializable("postData", postList?.get(position))
+                                    (activity as MainActivity).navigateTo(
+                                        ProfileMainFragment(),
+                                        bundle,
+                                        ProfileMainFragment::class.java.name,
+                                        true
+                                    )
+
+                                }
                             }
-                            else{
-                                sendPostComment(postList!![position]!!.postID, postList!![position]!!.postMediaType, sendComment, position, view1 as EditText)
+                            "sendComment" -> {
+                                MyUtils.hideKeyboard1(mActivity!!)
+                                if ((view1 as EditText).text.toString().trim().isNullOrEmpty()) {
+                                    MyUtils.showSnackbar(
+                                        mActivity!!,
+                                        "Please enter your comment",
+                                        mainRootRv
+                                    )
+                                } else {
+                                    sendPostComment(
+                                        postList!![position]!!.postID,
+                                        postList!![position]!!.postMediaType,
+                                        sendComment,
+                                        position,
+                                        view1 as EditText
+                                    )
+                                }
                             }
                         }
                     }
-                }
-            })
+                })
             recyclerview.layoutManager = linearLayoutManager
-            recyclerview.isNestedScrollingEnabled=true
+            recyclerview.isNestedScrollingEnabled = true
             recyclerview.adapter = homeFeedListAdapter
 
         }
@@ -474,7 +790,7 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
                     if (RecyclerView.SCROLL_STATE_IDLE === newState) {
-                        floating_btn_scroll.visibility=View.VISIBLE
+                        floating_btn_scroll.visibility = View.VISIBLE
                         homeFeedListAdapter?.playAvailableVideos(newState, recyclerview)
                         val firstPos = linearLayoutManager!!.findFirstVisibleItemPosition()
                         val lastPos = linearLayoutManager!!.findLastVisibleItemPosition()
@@ -485,7 +801,13 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
             })
     }
 
-    private fun sendPostComment(postID: String, postMediaType: String, commentComment: String, position: Int, view1: EditText) {
+    private fun sendPostComment(
+        postID: String,
+        postMediaType: String,
+        commentComment: String,
+        position: Int,
+        view1: EditText
+    ) {
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
         try {
@@ -493,12 +815,9 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
             jsonObject.put("languageID", userData?.languageID)
             jsonObject.put("postID", postID)
             jsonObject.put("action", "Add")
-            if(postMediaType.equals("Photo"))
-            {
+            if (postMediaType.equals("Photo")) {
                 jsonObject.put("commentMediaType", "Image")
-            }
-            else
-            {
+            } else {
                 jsonObject.put("commentMediaType", postMediaType)
             }
             jsonObject.put("commentType", "Upload")
@@ -511,35 +830,40 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
             e.printStackTrace()
         }
         apiCall.apiFunction(mActivity!!, true, jsonArray.toString(), 1)
-            .observe(this@HomeFeedListFragment,
-                { response ->
+            .observe(
+                this@HomeFeedListFragment
+            ) { response ->
 
-                    if (!response.isNullOrEmpty()) {
-                        if (response[0].status.equals("true")) {
-                            if (!response[0].data.isNullOrEmpty()) {
-                                postList!![position]!!.postCommentList?.add(0, response[0].data[0])
-                                postList!![position]!!.postComment = (postList!![position]!!.postComment.toInt() + 1).toString()
-                            }
-                            if(!postList!![position]!!.postMediaType.equals("video",false))
-                            {
-                                homeFeedListAdapter?.notifyItemChanged(position)
-                            }
-                            view1.text.clear()
-                        } else {
-                            //data not find
-                            MyUtils.showSnackbar(
-                                mActivity!!,
-                                response[0].message,
-                                mainRootRv!!
-                            )
+                if (!response.isNullOrEmpty()) {
+                    if (response[0].status.equals("true")) {
+                        if (!response[0].data.isNullOrEmpty()) {
+                            postList!![position]!!.postCommentList?.add(0, response[0].data[0])
+                            postList!![position]!!.postComment =
+                                (postList!![position]!!.postComment.toInt() + 1).toString()
                         }
+                        if (!postList!![position]!!.postMediaType.equals("video", false)) {
+                            homeFeedListAdapter?.notifyItemChanged(position)
+                        }
+                        view1.text.clear()
                     } else {
-                        ErrorUtil.errorMethod(mainRootRv)
+                        //data not find
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            response[0].message,
+                            mainRootRv!!
+                        )
                     }
-                })
+                } else {
+                    ErrorUtil.errorMethod(mainRootRv)
+                }
+            }
     }
 
-    private fun openBottomSheet(data: ArrayList<ThreedotsBottomPojo>, position: Int, postID: String) {
+    private fun openBottomSheet(
+        data: ArrayList<ThreedotsBottomPojo>,
+        position: Int,
+        postID: String
+    ) {
 
         val bottomSheet = ThreeDotsBottomSheetFragment()
         val bundle = Bundle()
@@ -553,12 +877,20 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
                 when (from) {
                     resources.getString(R.string.share_via) -> {
                         var uri =
-                                Uri.parse("https://play.google.com/store/apps/details?id=" + mActivity?.getPackageName());
+                            Uri.parse("https://play.google.com/store/apps/details?id=" + mActivity?.getPackageName());
                         val shareIntent = Intent()
                         shareIntent.action = Intent.ACTION_SEND
                         shareIntent.type = "text/plain"
-                        shareIntent.putExtra(Intent.EXTRA_TEXT, "Download the app now - " + uri + "\n\n");
-                        startActivity(Intent.createChooser(shareIntent, getString(R.string.send_to)))
+                        shareIntent.putExtra(
+                            Intent.EXTRA_TEXT,
+                            "Download the app now - " + uri + "\n\n"
+                        );
+                        startActivity(
+                            Intent.createChooser(
+                                shareIntent,
+                                getString(R.string.send_to)
+                            )
+                        )
                     }
                     resources.getString(R.string.hide_this_post) -> {
 
@@ -588,7 +920,10 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
                         intent.putExtra("PostId", postList?.get(position)?.postID)
                         intent.putExtra("postList", postList)
                         startActivity(intent)
-                        mActivity!!.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                        mActivity!!.overridePendingTransition(
+                            R.anim.slide_in_up,
+                            R.anim.slide_out_up
+                        )
                     }
                     resources.getString(R.string.report_copyright_infringement) -> {
                         val intent = Intent(mActivity!!, ReportCopyRightActivity::class.java)
@@ -597,7 +932,10 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
                         intent.putExtra("postList", postList)
                         intent.putExtra("postListData", postList?.get(position))
                         startActivity(intent)
-                        mActivity!!.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                        mActivity!!.overridePendingTransition(
+                            R.anim.slide_in_up,
+                            R.anim.slide_out_up
+                        )
                     }
                     resources.getString(R.string.save_this_post) -> {
                         getSavePost(position)
@@ -636,27 +974,27 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
         reportPostModel.getCommonStatus(mActivity!!, false, jsonArray.toString(), "savePost")
-                .observe(this@HomeFeedListFragment, Observer { it ->
-                    if (it != null && it.isNotEmpty()) {
-                        MyUtils.dismissProgressDialog()
-                        if (it[0].status.equals("true", true)) {
-                            if (it[0].message.isNullOrEmpty()) {
-                                (activity as MainActivity).showSnackBar("Post has been saved")
+            .observe(this@HomeFeedListFragment, Observer { it ->
+                if (it != null && it.isNotEmpty()) {
+                    MyUtils.dismissProgressDialog()
+                    if (it[0].status.equals("true", true)) {
+                        if (it[0].message.isNullOrEmpty()) {
+                            (activity as MainActivity).showSnackBar("Post has been saved")
 
-                            } else {
-                                (activity as MainActivity).showSnackBar(it[0].message!!)
-
-                            }
                         } else {
-
                             (activity as MainActivity).showSnackBar(it[0].message!!)
-                        }
 
+                        }
                     } else {
-                        MyUtils.dismissProgressDialog()
-                        ErrorUtil.errorMethod(mainRootRv)
+
+                        (activity as MainActivity).showSnackBar(it[0].message!!)
                     }
-                })
+
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    ErrorUtil.errorMethod(mainRootRv)
+                }
+            })
 
 
     }
@@ -694,7 +1032,8 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        reportPostModel.getCommonStatus(mActivity!!, false, jsonArray.toString(), fromUser).observe(this@HomeFeedListFragment,
+        reportPostModel.getCommonStatus(mActivity!!, false, jsonArray.toString(), fromUser)
+            .observe(this@HomeFeedListFragment,
                 Observer
                 { trendingFeedDatum ->
                     if (trendingFeedDatum != null && trendingFeedDatum.isNotEmpty()) {
@@ -713,17 +1052,47 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
                                     postList?.get(position)?.isYouFollowing = "No"
                                     list_bottomsheet = ArrayList()
                                     list_bottomsheet?.clear()
-                                    list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_share_via_icon, resources.getString(R.string.share_via)))
-                                    list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_hide_post_icon, resources.getString(R.string.hide_this_post)))
+                                    list_bottomsheet!!.add(
+                                        ThreedotsBottomPojo(
+                                            R.drawable.popup_share_via_icon,
+                                            resources.getString(R.string.share_via)
+                                        )
+                                    )
+                                    list_bottomsheet!!.add(
+                                        ThreedotsBottomPojo(
+                                            R.drawable.popup_hide_post_icon,
+                                            resources.getString(R.string.hide_this_post)
+                                        )
+                                    )
                                     if (!userData?.userID.equals(postList!![position]!!.userID)) {
-                                        list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_unfollow_icon, resources.getString(R.string.follow)))
+                                        list_bottomsheet!!.add(
+                                            ThreedotsBottomPojo(
+                                                R.drawable.popup_unfollow_icon,
+                                                resources.getString(R.string.follow)
+                                            )
+                                        )
                                     }
                                     if (!userData?.userID.equals(postList!![position]!!.userID)) {
-                                        list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_report_icon, resources.getString(R.string.report_this_Post_ad)))
-                                        list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_copyright_icon, resources.getString(R.string.report_copyright_infringement)))
+                                        list_bottomsheet!!.add(
+                                            ThreedotsBottomPojo(
+                                                R.drawable.popup_report_icon,
+                                                resources.getString(R.string.report_this_Post_ad)
+                                            )
+                                        )
+                                        list_bottomsheet!!.add(
+                                            ThreedotsBottomPojo(
+                                                R.drawable.popup_copyright_icon,
+                                                resources.getString(R.string.report_copyright_infringement)
+                                            )
+                                        )
 
                                     }
-                                    list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_save_post_icon, resources.getString(R.string.save_this_post)))
+                                    list_bottomsheet!!.add(
+                                        ThreedotsBottomPojo(
+                                            R.drawable.popup_save_post_icon,
+                                            resources.getString(R.string.save_this_post)
+                                        )
+                                    )
 
                                 }
                                 "userFollow" -> {
@@ -737,17 +1106,47 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
                                     postList?.get(position)?.isYouFollowing = "Yes"
                                     list_bottomsheet = ArrayList()
                                     list_bottomsheet?.clear()
-                                    list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_share_via_icon, resources.getString(R.string.share_via)))
-                                    list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_hide_post_icon, resources.getString(R.string.hide_this_post)))
+                                    list_bottomsheet!!.add(
+                                        ThreedotsBottomPojo(
+                                            R.drawable.popup_share_via_icon,
+                                            resources.getString(R.string.share_via)
+                                        )
+                                    )
+                                    list_bottomsheet!!.add(
+                                        ThreedotsBottomPojo(
+                                            R.drawable.popup_hide_post_icon,
+                                            resources.getString(R.string.hide_this_post)
+                                        )
+                                    )
                                     if (!userData?.userID.equals(postList!![position]!!.userID)) {
-                                        list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_unfollow_icon, resources.getString(R.string.unfollow)))
+                                        list_bottomsheet!!.add(
+                                            ThreedotsBottomPojo(
+                                                R.drawable.popup_unfollow_icon,
+                                                resources.getString(R.string.unfollow)
+                                            )
+                                        )
                                     }
                                     if (!userData?.userID.equals(postList!![position]!!.userID)) {
-                                        list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_report_icon, resources.getString(R.string.report_this_Post_ad)))
-                                        list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_copyright_icon, resources.getString(R.string.report_copyright_infringement)))
+                                        list_bottomsheet!!.add(
+                                            ThreedotsBottomPojo(
+                                                R.drawable.popup_report_icon,
+                                                resources.getString(R.string.report_this_Post_ad)
+                                            )
+                                        )
+                                        list_bottomsheet!!.add(
+                                            ThreedotsBottomPojo(
+                                                R.drawable.popup_copyright_icon,
+                                                resources.getString(R.string.report_copyright_infringement)
+                                            )
+                                        )
 
                                     }
-                                    list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_save_post_icon, resources.getString(R.string.save_this_post)))
+                                    list_bottomsheet!!.add(
+                                        ThreedotsBottomPojo(
+                                            R.drawable.popup_save_post_icon,
+                                            resources.getString(R.string.save_this_post)
+                                        )
+                                    )
 
                                 }
                             }
@@ -768,7 +1167,8 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
 
     private fun openBottomSheetDialog(postID: String?, position: Int) {
 
-        val sheetView = activity!!.layoutInflater.inflate(com.nxplayr.fsl.R.layout.custom_alert_dialog, null)
+        val sheetView =
+            activity!!.layoutInflater.inflate(com.nxplayr.fsl.R.layout.custom_alert_dialog, null)
         mBottomSheetDialog!!.setContentView(sheetView)
         mBottomSheetDialog!!.show()
 
@@ -793,54 +1193,54 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
         reportPostModel.getCommonStatus(mActivity!!, false, jsonArray.toString(), "hidePost")
-                .observe(this@HomeFeedListFragment, Observer { it ->
-                    //            MyUtils.closeProgress()
+            .observe(this@HomeFeedListFragment, Observer { it ->
+                //            MyUtils.closeProgress()
 
-                    if (it != null && it.isNotEmpty()) {
-                        MyUtils.dismissProgressDialog()
+                if (it != null && it.isNotEmpty()) {
+                    MyUtils.dismissProgressDialog()
 
-                        if (it[0].status.equals("true", true)) {
-                            recentlyHidePos = position
-                            recentlyHideItem = postList?.get(position)
-                            postId = postList!!.get(position)!!.postID
+                    if (it[0].status.equals("true", true)) {
+                        recentlyHidePos = position
+                        recentlyHideItem = postList?.get(position)
+                        postId = postList!!.get(position)!!.postID
 
-                            for (i in 0 until postList?.size!!) {
-                                if (postList?.get(i)?.postID.equals(postID, false)) {
-                                    postList?.removeAt(i)
-                                    homeFeedListAdapter?.notifyItemRemoved(postList!!.size)
-                                    homeFeedListAdapter?.notifyDataSetChanged()
-                                    if (postList?.size == 0) {
-                                        isLastPage1 = true
-                                    }
-                                    break
+                        for (i in 0 until postList?.size!!) {
+                            if (postList?.get(i)?.postID.equals(postID, false)) {
+                                postList?.removeAt(i)
+                                homeFeedListAdapter?.notifyItemRemoved(postList!!.size)
+                                homeFeedListAdapter?.notifyDataSetChanged()
+                                if (postList?.size == 0) {
+                                    isLastPage1 = true
                                 }
+                                break
                             }
-
-                            if (isLastPage1) {
-                                postList?.clear()
-                                pageNo = 0
-                                setupObserver()
-                            }
-
-                            Handler().postDelayed({
-                                openBottomSheetDialog(postId, position)
-                                Handler().postDelayed({
-                                    mBottomSheetDialog?.dismiss()
-                                }, 5000)
-
-                            }, 1000)
-
-
-                        } else {
-
-                            (activity as MainActivity).showSnackBar(it[0].message!!)
                         }
 
+                        if (isLastPage1) {
+                            postList?.clear()
+                            pageNo = 0
+                            setupObserver()
+                        }
+
+                        Handler().postDelayed({
+                            openBottomSheetDialog(postId, position)
+                            Handler().postDelayed({
+                                mBottomSheetDialog?.dismiss()
+                            }, 5000)
+
+                        }, 1000)
+
+
                     } else {
-                        MyUtils.dismissProgressDialog()
-                        ErrorUtil.errorMethod(mainRootRv)
+
+                        (activity as MainActivity).showSnackBar(it[0].message!!)
                     }
-                })
+
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    ErrorUtil.errorMethod(mainRootRv)
+                }
+            })
 
     }
 
@@ -860,27 +1260,31 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
         jsonArray.put(jsonObject)
 
         reportPostModel.getCommonStatus(mActivity!!, false, jsonArray.toString(), "removehidePost")
-                .observe(this@HomeFeedListFragment!!,
-                        androidx.lifecycle.Observer { commonStatuspojo ->
-                            if (commonStatuspojo != null && commonStatuspojo.isNotEmpty()) {
-                                if (commonStatuspojo[0].status.equals("true", false)) {
+            .observe(this@HomeFeedListFragment!!,
+                androidx.lifecycle.Observer { commonStatuspojo ->
+                    if (commonStatuspojo != null && commonStatuspojo.isNotEmpty()) {
+                        if (commonStatuspojo[0].status.equals("true", false)) {
 
-                                    MyUtils.dismissProgressDialog()
-                                    mBottomSheetDialog!!.dismiss()
+                            MyUtils.dismissProgressDialog()
+                            mBottomSheetDialog!!.dismiss()
 
-                                    postList?.add(recentlyHidePos, recentlyHideItem)
-                                    homeFeedListAdapter?.notifyItemInserted(recentlyHidePos)
+                            postList?.add(recentlyHidePos, recentlyHideItem)
+                            homeFeedListAdapter?.notifyItemInserted(recentlyHidePos)
 
-                                } else {
-                                    MyUtils.dismissProgressDialog()
-                                    MyUtils.showSnackbar(mActivity!!, commonStatuspojo[0].message, mainRootRv)
-                                }
+                        } else {
+                            MyUtils.dismissProgressDialog()
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                commonStatuspojo[0].message,
+                                mainRootRv
+                            )
+                        }
 
-                            } else {
-                                MyUtils.dismissProgressDialog()
-                                (activity as MainActivity).errorMethod()
-                            }
-                        })
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        (activity as MainActivity).errorMethod()
+                    }
+                })
     }
 
     private fun getDeletePost(position: Int) {
@@ -898,44 +1302,54 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
         reportPostModel.getCommonStatus(mActivity!!, false, jsonArray.toString(), "deletePostList")
-                .observe(this@HomeFeedListFragment, Observer { it ->
-                    //            MyUtils.closeProgress()
+            .observe(this@HomeFeedListFragment, Observer { it ->
+                //            MyUtils.closeProgress()
 
-                    if (it != null && it.isNotEmpty()) {
-                        MyUtils.dismissProgressDialog()
+                if (it != null && it.isNotEmpty()) {
+                    MyUtils.dismissProgressDialog()
 
-                        if (it[0].status.equals("true", true)) {
-                            (activity as MainActivity).showSnackBar(it[0].message!!)
-                            postList?.removeAt(position)
-                            homeFeedListAdapter?.notifyItemRemoved(postList!!.size)
-                            homeFeedListAdapter?.notifyDataSetChanged()
-                            /*if (postList?.size == 0) {
-                                isLastPage1 = true
-                            }*/
+                    if (it[0].status.equals("true", true)) {
+                        (activity as MainActivity).showSnackBar(it[0].message!!)
+                        postList?.removeAt(position)
+                        homeFeedListAdapter?.notifyItemRemoved(postList!!.size)
+                        homeFeedListAdapter?.notifyDataSetChanged()
+                        /*if (postList?.size == 0) {
+                            isLastPage1 = true
+                        }*/
 
-                            /* if (isLastPage1) {
-                                feedList?.clear()
-                                pageNo = 0
-                                getPostList()
-                            }*/
-                        } else {
-
-                            (activity as MainActivity).showSnackBar(it[0].message!!)
-                        }
-
+                        /* if (isLastPage1) {
+                            feedList?.clear()
+                            pageNo = 0
+                            getPostList()
+                        }*/
                     } else {
-                        MyUtils.dismissProgressDialog()
-                        ErrorUtil.errorMethod(mainRootRv)
+
+                        (activity as MainActivity).showSnackBar(it[0].message!!)
                     }
-                })
+
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    ErrorUtil.errorMethod(mainRootRv)
+                }
+            })
 
     }
 
     private fun openBottomSheetForShare(position: Int) {
         list_bottomsheet = ArrayList()
         list_bottomsheet!!.clear()
-        list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_share_in_post_icon, resources.getString(R.string.share_in_a_post)))
-        list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_send_messages_icon, resources.getString(R.string.send_in_a_private_message)))
+        list_bottomsheet!!.add(
+            ThreedotsBottomPojo(
+                R.drawable.popup_share_in_post_icon,
+                resources.getString(R.string.share_in_a_post)
+            )
+        )
+        list_bottomsheet!!.add(
+            ThreedotsBottomPojo(
+                R.drawable.popup_send_messages_icon,
+                resources.getString(R.string.send_in_a_private_message)
+            )
+        )
         val bottomSheet = ThreeDotsBottomSheetFragment()
         val bundle = Bundle()
         bundle.putSerializable("data", list_bottomsheet)
@@ -963,7 +1377,12 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
 
     }
 
-    fun createPost(from: String, datumList: List<CreatePostData?>?, stringExtraDes: String, stringExtraPrivcy: String) {
+    fun createPost(
+        from: String,
+        datumList: List<CreatePostData?>?,
+        stringExtraDes: String,
+        stringExtraPrivcy: String
+    ) {
         postList?.add(0, datumList!![0])
         homeFeedListAdapter?.notifyDataSetChanged()
     }
@@ -978,7 +1397,7 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
 
     fun refreshField() {
         val positionView =
-                (recyclerview.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+            (recyclerview.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
         if (positionView == 0) {
             (activity as MainActivity?)!!.showexit()
         } else {
@@ -988,6 +1407,7 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
     }
 
     fun refreshItems() {
+        pageNo = 0
         swiperefresh.isRefreshing = true
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
@@ -1008,15 +1428,13 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
             jsonObject.put("countryID", countryID)
             jsonObject.put("footballagecatID", footballagecatID)
             jsonObject.put("sortby", sortby)
-            when(postType)
-            {
-                "All"->{
+            when (postType) {
+                "All" -> {
                     jsonObject.put("postMediaType", "")
-
-                }else->{
-                jsonObject.put("postMediaType", postType)
-
-            }
+                }
+                else -> {
+                    jsonObject.put("postMediaType", postType)
+                }
             }
             jsonObject.put("tabname", "trending")
             jsonObject.put("searchKeyword", searchKeyword)
@@ -1027,29 +1445,7 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
         }
 
         jsonArray.put(jsonObject)
-        createPostModel.apiFunction(mActivity!!, jsonArray.toString(), "getPostList")
-                .observe(viewLifecycleOwner, { trendingFeedlistpojos ->
-                    isLoading = false
-                    if (trendingFeedlistpojos != null && trendingFeedlistpojos.isNotEmpty()) {
-                        if (trendingFeedlistpojos[0]!!.status.equals("true", false)) {
-                            pageNo = 0
-                            if (pageNo == 0) {
-                                postList?.clear()
-                            }
-                            postList?.addAll(trendingFeedlistpojos[0].data!!)
-                            homeFeedListAdapter?.notifyDataSetChanged()
-                            recyclerview.scrollToPosition(0)
-                        } else {
-                        }
-                        if (postList == null && postList!!.size == 0) {
-                            ll_no_data_found.visibility = View.VISIBLE
-                        } else {
-                            ll_no_data_found.visibility = View.GONE
-                        }
-                    }
-                    swiperefresh.isRefreshing = false
-                }
-                )
+        createPostModel.postFunction(jsonArray.toString(), "getPostList")
     }
 
     fun getPostListApi() {
@@ -1057,12 +1453,11 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
         setupObserver()
     }
 
-    fun applyFilter( postType: String, sortby: String,gender: String, publicationTime: String) {
-
-        this.postType= postType
-        this. sortby = sortby
-        this. gender = gender
-        this. publicationTime = publicationTime
+    fun applyFilter(postType: String, sortby: String, gender: String, publicationTime: String) {
+        this.postType = postType
+        this.sortby = sortby
+        this.gender = gender
+        this.publicationTime = publicationTime
         pageNo = 0
         isLastpage = false
         isLoading = false
@@ -1070,7 +1465,7 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
     }
 
     fun applySearch(searchKeyword: String) {
-        this.searchKeyword=searchKeyword
+        this.searchKeyword = searchKeyword
         pageNo = 0
         isLastpage = false
         isLoading = false
@@ -1095,21 +1490,20 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-            R.id.btnRetry->{
+        when (v?.id) {
+            R.id.btnRetry -> {
                 pageNo = 0
                 setupObserver()
 
             }
-            R.id.floating_btn_createpost->{
+            R.id.floating_btn_createpost -> {
                 var intent = Intent(mActivity!!, CreatePostActivity::class.java)
                 startActivity(intent)
                 mActivity?.overridePendingTransition(R.anim.slide_up, R.anim.stay)
             }
-            R.id.floating_btn_scroll->{
+            R.id.floating_btn_scroll -> {
                 linearLayoutManager?.scrollToPosition(0)
-                floating_btn_scroll.visibility=View.GONE
+                floating_btn_scroll.visibility = View.GONE
             }
         }
     }
@@ -1119,16 +1513,14 @@ class HomeFeedListFragment : Fragment(),View.OnClickListener {
         delete: Boolean,
         deleteComment: Boolean,
         postComment: String?,
-        commentId:String?
+        commentId: String?
     ) {
-        for(i in 0 until postList?.size!!)
-        {
-            if(postList!![i]!!.postID.equals(feedDatum!!.postID,false))
-            {
+        for (i in 0 until postList?.size!!) {
+            if (postList!![i]!!.postID.equals(feedDatum!!.postID, false)) {
 
-                    postList?.set(i,feedDatum)
-                    homeFeedListAdapter?.notifyItemChanged(i)
-                    break
+                postList?.set(i, feedDatum)
+                homeFeedListAdapter?.notifyItemChanged(i)
+                break
             }
         }
 

@@ -20,22 +20,26 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
+            android:id="@+id/txt_edit_full_name"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:hint="@string/full_name"
             android:textColorHint="@color/colorPrimary"
-            android:theme="@style/MyEditTextTheme">
+            android:theme="@style/MyEditTextTheme"
+            app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
+
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_full_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:imeOptions="actionNext"
-                android:inputType="text"
-                android:singleLine="true"
                 android:clickable="false"
                 android:focusable="false"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:paddingTop="@dimen/_35sdp"
+                android:singleLine="true"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_16ssp"
                 android:theme="@style/MyEditTextTheme" />
@@ -46,19 +50,22 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:hint="@string/email"
+            android:id="@+id/txt_edit_emailId"
             android:textColorHint="@color/colorPrimary"
-            android:theme="@style/MyEditTextTheme">
+            android:theme="@style/MyEditTextTheme"
+            app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_emailId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:imeOptions="actionNext"
-                android:inputType="text"
-                android:singleLine="true"
                 android:clickable="false"
                 android:focusable="false"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:paddingTop="@dimen/_35sdp"
+                android:singleLine="true"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_16ssp"
                 android:theme="@style/MyEditTextTheme" />
@@ -69,20 +76,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:id="@+id/txt_edit_mobileNumber"
             android:hint="@string/mobile_number"
             android:textColorHint="@color/colorPrimary"
-            android:theme="@style/MyEditTextTheme">
+            android:theme="@style/MyEditTextTheme"
+            app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_mobileNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:imeOptions="actionNext"
-                android:inputType="text"
-                android:singleLine="true"
                 android:clickable="false"
                 android:focusable="false"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:paddingTop="@dimen/_35sdp"
+                android:singleLine="true"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_16ssp"
                 android:theme="@style/MyEditTextTheme" />

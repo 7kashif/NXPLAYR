@@ -21,7 +21,7 @@ import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.CountryListData
 import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.CountryListModel
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
+import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModelV2
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.PopupMenu
@@ -42,7 +42,7 @@ class ParentInfoActivity : AppCompatActivity(), View.OnClickListener {
     var countryCode: String = ""
     var sessionManager: SessionManager? = null
     private lateinit var countryListModel: CountryListModel
-    private lateinit var signup: SignupModel
+    private lateinit var signup: SignupModelV2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -142,7 +142,7 @@ class ParentInfoActivity : AppCompatActivity(), View.OnClickListener {
     private fun setupViewModel() {
         countryListModel =
             ViewModelProvider(this@ParentInfoActivity).get(CountryListModel::class.java)
-        signup = ViewModelProvider(this@ParentInfoActivity).get(SignupModel::class.java)
+        signup = ViewModelProvider(this@ParentInfoActivity).get(SignupModelV2::class.java)
 
 
     }
@@ -399,8 +399,8 @@ class ParentInfoActivity : AppCompatActivity(), View.OnClickListener {
 
 
             jsonArray.put(jsonObject)
-            signup.userRegistration(this, false, jsonArray.toString(), "parents_Profile")
-                .observe(this@ParentInfoActivity,
+            signup.profileParents(jsonArray.toString())
+            signup.profileParents.observe(this@ParentInfoActivity,
                     Observer { loginPojo ->
                         if (loginPojo != null) {
                             btnSubmit.endAnimation()

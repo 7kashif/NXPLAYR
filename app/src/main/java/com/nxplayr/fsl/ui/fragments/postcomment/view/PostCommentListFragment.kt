@@ -35,9 +35,11 @@ import com.nxplayr.fsl.ui.fragments.postcomment.viewmodel.CommentModel
 import com.nxplayr.fsl.ui.fragments.postcomment.viewmodel.PostSubCommentLikeModel
 import com.nxplayr.fsl.ui.fragments.postcomment.viewmodel.ReasonModel
 import com.nxplayr.fsl.ui.fragments.postcomment.viewmodel.ReplyCommentModel
-import com.nxplayr.fsl.ui.fragments.userconnection.viewmodel.ConnectionListModel
-import com.nxplayr.fsl.util.*
-import com.nxplayr.fsl.viewmodel.*
+import com.nxplayr.fsl.ui.fragments.userconnection.viewmodel.ChatListModel
+import com.nxplayr.fsl.util.Constant
+import com.nxplayr.fsl.util.ErrorUtil
+import com.nxplayr.fsl.util.MyUtils
+import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.common_recyclerview.*
 import kotlinx.android.synthetic.main.fragment_postcomment_list.*
 import kotlinx.android.synthetic.main.nodafound.*
@@ -96,7 +98,7 @@ class PostCommentListFragment : Fragment(), PrivacyBottomSheetFragment.selectPri
     private lateinit var postSubCommentLikeModel: PostSubCommentLikeModel
     private lateinit var replyApiCall: ReplyCommentModel
     private lateinit var reasonModel: ReasonModel
-    private lateinit var connectionListModel: ConnectionListModel
+    private lateinit var connectionListModel: ChatListModel
     private lateinit var friendListModel: FriendListModel
 
     override fun onCreateView(
@@ -194,7 +196,7 @@ class PostCommentListFragment : Fragment(), PrivacyBottomSheetFragment.selectPri
         replyApiCall =
             ViewModelProvider(this@PostCommentListFragment).get(ReplyCommentModel::class.java)
         connectionListModel =
-            ViewModelProvider(this@PostCommentListFragment).get(ConnectionListModel::class.java)
+            ViewModelProvider(this@PostCommentListFragment).get(ChatListModel::class.java)
         friendListModel =
             ViewModelProvider(this@PostCommentListFragment).get(FriendListModel::class.java)
     }
@@ -423,24 +425,34 @@ class PostCommentListFragment : Fragment(), PrivacyBottomSheetFragment.selectPri
                         when (action) {
                             "LikePostCommnet" -> {
                                 arrayComment?.get(feedPosition)!!.isCommentLiked = "Yes"
-                                for(j in 0 until feedData?.postCommentList?.size!!)
-                                {
-                                    if(feedData?.postCommentList!![j].commentID.equals(arrayComment?.get(feedPosition)!!.commentID))
-                                    {
-                                        feedData?.postCommentList!![j].isCommentLiked= arrayComment?.get(feedPosition)!!.isCommentLiked
-                                        feedData?.postCommentList!![j].postcommentLike=(feedData?.postCommentList!![j].postcommentLike.toInt()+1).toString()
+                                for (j in 0 until feedData?.postCommentList?.size!!) {
+                                    if (feedData?.postCommentList!![j].commentID.equals(
+                                            arrayComment?.get(
+                                                feedPosition
+                                            )!!.commentID
+                                        )
+                                    ) {
+                                        feedData?.postCommentList!![j].isCommentLiked =
+                                            arrayComment?.get(feedPosition)!!.isCommentLiked
+                                        feedData?.postCommentList!![j].postcommentLike =
+                                            (feedData?.postCommentList!![j].postcommentLike.toInt() + 1).toString()
                                         break
                                     }
                                 }
                             }
                             "RemoveLikePostCommnet" -> {
                                 arrayComment?.get(feedPosition)!!.isCommentLiked = "No"
-                                for(j in 0 until feedData?.postCommentList?.size!!)
-                                {
-                                    if(feedData?.postCommentList!![j].commentID.equals(arrayComment?.get(feedPosition)!!.commentID))
-                                    {
-                                        feedData?.postCommentList!![j].isCommentLiked= arrayComment?.get(feedPosition)!!.isCommentLiked
-                                        feedData?.postCommentList!![j].postcommentLike=(feedData?.postCommentList!![j].postcommentLike.toInt()-1).toString()
+                                for (j in 0 until feedData?.postCommentList?.size!!) {
+                                    if (feedData?.postCommentList!![j].commentID.equals(
+                                            arrayComment?.get(
+                                                feedPosition
+                                            )!!.commentID
+                                        )
+                                    ) {
+                                        feedData?.postCommentList!![j].isCommentLiked =
+                                            arrayComment?.get(feedPosition)!!.isCommentLiked
+                                        feedData?.postCommentList!![j].postcommentLike =
+                                            (feedData?.postCommentList!![j].postcommentLike.toInt() - 1).toString()
                                         break
                                     }
                                 }
@@ -578,7 +590,7 @@ class PostCommentListFragment : Fragment(), PrivacyBottomSheetFragment.selectPri
                                 false,
                                 false,
                                 feedData?.postComment,
-                              ""
+                                ""
                             )
                         }
                         // (activity as MainActivity).showSnackBar(postlikePojos?.get(0)?.message!!)
@@ -758,7 +770,7 @@ class PostCommentListFragment : Fragment(), PrivacyBottomSheetFragment.selectPri
                                     feedData,
                                     false,
                                     false,
-                                    feedData?.postComment,""
+                                    feedData?.postComment, ""
                                 )
                             }
                         } else {
@@ -1341,39 +1353,38 @@ class PostCommentListFragment : Fragment(), PrivacyBottomSheetFragment.selectPri
         }
         jsonArray.put(jsonObject)
 
-        connectionListModel.getConnectionTypeList(mActivity!!, false, jsonArray.toString())
-            .observe(this@PostCommentListFragment!!,
-                { connectionListpojo ->
-                    if (connectionListpojo != null && connectionListpojo.isNotEmpty()) {
+        connectionListModel.connectionList(jsonArray.toString())
+        connectionListModel.connectionSuccess.observe(viewLifecycleOwner) { connectionListpojo ->
+            if (connectionListpojo != null && connectionListpojo.isNotEmpty()) {
 
-                        if (connectionListpojo[0].status.equals("true", false)) {
-                            MyUtils.dismissProgressDialog()
+                if (connectionListpojo[0].status.equals("true", false)) {
+                    MyUtils.dismissProgressDialog()
 
-                            conneTypeList!!.clear()
+                    conneTypeList!!.clear()
 
-                            for (i in connectionListpojo[0].data.indices) {
-                                if (connectionListpojo[0].data[i].conntypeName.equals("All")) {
-                                    conneTypeList!!.remove(connectionListpojo[0].data[i])
-                                } else {
-                                    conneTypeList!!.add(connectionListpojo[0].data[i])
-                                }
-                            }
-                            openConnectionList(conneTypeList!!)
-
+                    for (i in connectionListpojo[0].data.indices) {
+                        if (connectionListpojo[0].data[i].conntypeName.equals("All")) {
+                            conneTypeList!!.remove(connectionListpojo[0].data[i])
                         } else {
-                            MyUtils.dismissProgressDialog()
-                            MyUtils.showSnackbar(
-                                mActivity!!,
-                                connectionListpojo[0].message,
-                                commentLayoutMain
-                            )
+                            conneTypeList!!.add(connectionListpojo[0].data[i])
                         }
-
-                    } else {
-                        MyUtils.dismissProgressDialog()
-                        ErrorUtil.errorMethod(commentLayoutMain)
                     }
-                })
+                    openConnectionList(conneTypeList!!)
+
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    MyUtils.showSnackbar(
+                        mActivity!!,
+                        connectionListpojo[0].message,
+                        commentLayoutMain
+                    )
+                }
+
+            } else {
+                MyUtils.dismissProgressDialog()
+                ErrorUtil.errorMethod(commentLayoutMain)
+            }
+        }
 
 
     }
@@ -1462,28 +1473,27 @@ class PostCommentListFragment : Fragment(), PrivacyBottomSheetFragment.selectPri
         }
         jsonArray.put(jsonObject)
 
-        friendListModel.getFriendList(mActivity!!, jsonArray.toString(), "friend_list")
-            .observe(this@PostCommentListFragment!!,
-                { connectionListpojo ->
-                    if (connectionListpojo != null && connectionListpojo.isNotEmpty()) {
+        friendListModel.friendApi(jsonArray.toString(), "friend_list")
+        friendListModel.successFriend.observe(viewLifecycleOwner) { connectionListpojo ->
+            if (connectionListpojo != null && connectionListpojo.isNotEmpty()) {
 
-                        if (connectionListpojo[0].status.equals("true", false)) {
-                            MyUtils.dismissProgressDialog()
-                            commentListAdapter?.notifyDataSetChanged()
+                if (connectionListpojo[0].status.equals("true", false)) {
+                    MyUtils.dismissProgressDialog()
+                    commentListAdapter?.notifyDataSetChanged()
 
-                        } else {
-                            MyUtils.dismissProgressDialog()
-                            MyUtils.showSnackbar(
-                                mActivity!!,
-                                connectionListpojo[0].message,
-                                commentLayoutMain
-                            )
-                        }
-                    } else {
-                        MyUtils.dismissProgressDialog()
-                        (activity as MainActivity).errorMethod()
-                    }
-                })
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    MyUtils.showSnackbar(
+                        mActivity!!,
+                        connectionListpojo[0].message,
+                        commentLayoutMain
+                    )
+                }
+            } else {
+                MyUtils.dismissProgressDialog()
+                (activity as MainActivity).errorMethod()
+            }
+        }
     }
 
     private fun cancleRequestApi(userId: String) {
@@ -1502,29 +1512,28 @@ class PostCommentListFragment : Fragment(), PrivacyBottomSheetFragment.selectPri
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        friendListModel.getFriendList(mActivity!!, jsonArray.toString(), "friend_list")
-            .observe(this@PostCommentListFragment!!,
-                androidx.lifecycle.Observer { cancleRequestpojo ->
-                    if (cancleRequestpojo != null && cancleRequestpojo.isNotEmpty()) {
-                        if (cancleRequestpojo[0].status.equals("true", false)) {
-                            MyUtils.dismissProgressDialog()
+        friendListModel.friendApi(jsonArray.toString(), "friend_list")
+        friendListModel.successFriend.observe(viewLifecycleOwner) { cancleRequestpojo ->
+            if (cancleRequestpojo != null && cancleRequestpojo.isNotEmpty()) {
+                if (cancleRequestpojo[0].status.equals("true", false)) {
+                    MyUtils.dismissProgressDialog()
 
-                            commentListAdapter?.notifyDataSetChanged()
+                    commentListAdapter?.notifyDataSetChanged()
 
-                        } else {
-                            MyUtils.dismissProgressDialog()
-                            MyUtils.showSnackbar(
-                                mActivity!!,
-                                cancleRequestpojo[0].message,
-                                commentLayoutMain
-                            )
-                        }
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    MyUtils.showSnackbar(
+                        mActivity!!,
+                        cancleRequestpojo[0].message,
+                        commentLayoutMain
+                    )
+                }
 
-                    } else {
-                        MyUtils.dismissProgressDialog()
-                        (activity as MainActivity).errorMethod()
-                    }
-                })
+            } else {
+                MyUtils.dismissProgressDialog()
+                (activity as MainActivity).errorMethod()
+            }
+        }
     }
 
     private fun shareData() {
@@ -1594,44 +1603,43 @@ class PostCommentListFragment : Fragment(), PrivacyBottomSheetFragment.selectPri
         } catch (e: ParseException) {
             e.printStackTrace()
         }
-        friendListModel.getFriendList(mActivity!!, jsonArray.toString(), "chatTofriend")
-            .observe(this@PostCommentListFragment,
-                { loginPojo ->
-                    MyUtils.dismissProgressDialog()
-                    if (loginPojo != null) {
+        friendListModel.friendApi(jsonArray.toString(), "chatTofriend")
+        friendListModel.successFriend.observe(viewLifecycleOwner) { loginPojo ->
+            MyUtils.dismissProgressDialog()
+            if (loginPojo != null) {
 
-                        if (loginPojo[0].status.equals("true", true)) {
+                if (loginPojo[0].status.equals("true", true)) {
 
-                            if (sessionManager?.getYesNoQBUser()!!) {
+                    if (sessionManager?.getYesNoQBUser()!!) {
 
-                                if (!MyUtils.isLoginForQuickBlock) {
-                                    if (!MyUtils.isLoginForQuickBlockChat)
-                                        (mActivity as MainActivity).loginForQuickBlockChat(
-                                            sessionManager?.getQbUser()!!,
-                                            userQuickBlockID
-                                        )
-                                    else
-                                        (mActivity as MainActivity).getQBUser(userQuickBlockID, 1)
-                                } else if (!MyUtils.isLoginForQuickBlockChat)
-                                    (mActivity as MainActivity).loginForQuickBlockChat(
-                                        sessionManager?.getQbUser()!!,
-                                        userQuickBlockID
-                                    )
-                                else (mActivity as MainActivity).getQBUser(userQuickBlockID, 1)
-                            }
-
-                        } else {
-                            MyUtils.showSnackbar(
-                                mActivity!!,
-                                loginPojo[0].message,
-                                nointernetMainRelativelayout
+                        if (!MyUtils.isLoginForQuickBlock) {
+                            if (!MyUtils.isLoginForQuickBlockChat)
+                                (mActivity as MainActivity).loginForQuickBlockChat(
+                                    sessionManager?.getQbUser()!!,
+                                    userQuickBlockID
+                                )
+                            else
+                                (mActivity as MainActivity).getQBUser(userQuickBlockID, 1)
+                        } else if (!MyUtils.isLoginForQuickBlockChat)
+                            (mActivity as MainActivity).loginForQuickBlockChat(
+                                sessionManager?.getQbUser()!!,
+                                userQuickBlockID
                             )
-                        }
-                    } else {
-                        MyUtils.dismissProgressDialog()
-                        ErrorUtil.errorMethod(nointernetMainRelativelayout)
+                        else (mActivity as MainActivity).getQBUser(userQuickBlockID, 1)
                     }
-                })
+
+                } else {
+                    MyUtils.showSnackbar(
+                        mActivity!!,
+                        loginPojo[0].message,
+                        nointernetMainRelativelayout
+                    )
+                }
+            } else {
+                MyUtils.dismissProgressDialog()
+                ErrorUtil.errorMethod(nointernetMainRelativelayout)
+            }
+        }
 
     }
 

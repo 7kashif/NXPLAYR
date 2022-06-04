@@ -11,25 +11,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
+import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModelV2
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
-import kotlinx.android.synthetic.main.activity_forgot_password.*
-import kotlinx.android.synthetic.main.activity_otp_verification.*
 import kotlinx.android.synthetic.main.activity_reset_pass.*
-import kotlinx.android.synthetic.main.activity_signin.*
-import kotlinx.android.synthetic.main.activity_signup_selection.*
-import kotlinx.android.synthetic.main.layout_introduce_yourself.*
 import org.json.JSONArray
 import org.json.JSONObject
 
-class ResetPassActivity : AppCompatActivity(),View.OnClickListener {
+class ResetPassActivity : AppCompatActivity(), View.OnClickListener {
 
     var sessionManager: SessionManager? = null
     var loginuserID: String = ""
 
-    private lateinit var  resetPasswordModel: SignupModel
+    private lateinit var resetPasswordModel: SignupModelV2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,12 +48,13 @@ class ResetPassActivity : AppCompatActivity(),View.OnClickListener {
             if (!sessionManager?.LanguageLabel?.lngNewPassword.isNullOrEmpty())
                 new_password_textInput.hint = sessionManager?.LanguageLabel?.lngNewPassword
             if (!sessionManager?.LanguageLabel?.lngConfirmPassword.isNullOrEmpty())
-                retypenew_password_textInput.hint = sessionManager?.LanguageLabel?.lngConfirmPassword
+                retypenew_password_textInput.hint =
+                    sessionManager?.LanguageLabel?.lngConfirmPassword
             if (!sessionManager?.LanguageLabel?.lngResetPassword.isNullOrEmpty())
                 btn_resetPass.progressText = sessionManager?.LanguageLabel?.lngResetPassword
         }
 
-        btn_resetPass.setOnClickListener (this)
+        btn_resetPass.setOnClickListener(this)
 
         new_password_textInput.isHintAnimationEnabled = false
         retypenew_password_textInput.isHintAnimationEnabled = false
@@ -67,7 +63,9 @@ class ResetPassActivity : AppCompatActivity(),View.OnClickListener {
                 val DRAWABLE_RIGHT = 2
 
                 if (event.action == MotionEvent.ACTION_UP) {
-                    if (event.rawX >= new_password_edit_text.getRight() - new_password_edit_text.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()) {
+                    if (event.rawX >= new_password_edit_text.getRight() - new_password_edit_text.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds()
+                            .width()
+                    ) {
                         // your action here
                         new_password_edit_text.tooglePassWord()
 
@@ -82,7 +80,9 @@ class ResetPassActivity : AppCompatActivity(),View.OnClickListener {
                 val DRAWABLE_RIGHT = 2
 
                 if (event.action == MotionEvent.ACTION_UP) {
-                    if (event.rawX >= reenter_password_edit_text.getRight() - reenter_password_edit_text.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()) {
+                    if (event.rawX >= reenter_password_edit_text.getRight() - reenter_password_edit_text.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds()
+                            .width()
+                    ) {
                         // your action here
                         reenter_password_edit_text.tooglePassWordReenter()
 
@@ -96,7 +96,8 @@ class ResetPassActivity : AppCompatActivity(),View.OnClickListener {
     }
 
     private fun setupViewModel() {
-        resetPasswordModel=ViewModelProvider(this@ResetPassActivity).get(SignupModel::class.java)
+        resetPasswordModel =
+            ViewModelProvider(this@ResetPassActivity).get(SignupModelV2::class.java)
 
     }
 
@@ -108,9 +109,19 @@ class ResetPassActivity : AppCompatActivity(),View.OnClickListener {
             (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
 
         if (this.tag as Boolean) {
-            new_password_edit_text.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.hide_icon_login, 0)
+            new_password_edit_text.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                R.drawable.hide_icon_login,
+                0
+            )
         } else {
-            new_password_edit_text.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.show_icon_login, 0)
+            new_password_edit_text.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                R.drawable.show_icon_login,
+                0
+            )
         }
 
         this.setSelection(this.length())
@@ -124,9 +135,19 @@ class ResetPassActivity : AppCompatActivity(),View.OnClickListener {
             (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
 
         if (this.tag as Boolean) {
-            reenter_password_edit_text.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.hide_icon_login, 0)
+            reenter_password_edit_text.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                R.drawable.hide_icon_login,
+                0
+            )
         } else {
-            reenter_password_edit_text.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.show_icon_login, 0)
+            reenter_password_edit_text.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                R.drawable.show_icon_login,
+                0
+            )
         }
 
         this.setSelection(this.length())
@@ -137,19 +158,41 @@ class ResetPassActivity : AppCompatActivity(),View.OnClickListener {
 
         MyUtils.hideKeyboard1(this!!)
         if (TextUtils.isEmpty(new_password_edit_text.text.toString())) {
-            MyUtils.showSnackbar(this@ResetPassActivity, getString(R.string.psswordnewmsg), ll_main_resetPass)
+            MyUtils.showSnackbar(
+                this@ResetPassActivity,
+                getString(R.string.psswordnewmsg),
+                ll_main_resetPass
+            )
 
         } else if (!MyUtils.isValidPassword(new_password_edit_text.text.toString().trim())) {
-            MyUtils.showSnackbar(this@ResetPassActivity, getString(R.string.passwordValidation), ll_main_resetPass)
+            MyUtils.showSnackbar(
+                this@ResetPassActivity,
+                getString(R.string.passwordValidation),
+                ll_main_resetPass
+            )
 
         } else if (TextUtils.isEmpty(reenter_password_edit_text.text.toString())) {
-            MyUtils.showSnackbar(this@ResetPassActivity, getString(R.string.psswordresetpemsg), ll_main_resetPass)
+            MyUtils.showSnackbar(
+                this@ResetPassActivity,
+                getString(R.string.psswordresetpemsg),
+                ll_main_resetPass
+            )
 
         } else if (!MyUtils.isValidPassword(reenter_password_edit_text.text.toString().trim())) {
-            MyUtils.showSnackbar(this@ResetPassActivity, getString(R.string.passwordValidation), ll_main_resetPass)
+            MyUtils.showSnackbar(
+                this@ResetPassActivity,
+                getString(R.string.passwordValidation),
+                ll_main_resetPass
+            )
 
-        } else if (!new_password_edit_text.text.toString().trim().equals(reenter_password_edit_text.text.toString().trim())) {
-            MyUtils.showSnackbar(this@ResetPassActivity, getString(R.string.resetpassword_does_not_match), ll_main_resetPass)
+        } else if (!new_password_edit_text.text.toString().trim()
+                .equals(reenter_password_edit_text.text.toString().trim())
+        ) {
+            MyUtils.showSnackbar(
+                this@ResetPassActivity,
+                getString(R.string.resetpassword_does_not_match),
+                ll_main_resetPass
+            )
 
         } else {
             resetPassApi()
@@ -170,60 +213,60 @@ class ResetPassActivity : AppCompatActivity(),View.OnClickListener {
 
 
         jsonArray.put(jsonObject)
-        resetPasswordModel.userRegistration(this!!, false, "" + jsonArray.toString(), "resetPassword")
-                .observe(this, androidx.lifecycle.Observer { loginPojo ->
+        resetPasswordModel.userResetPass("" + jsonArray.toString())
+        resetPasswordModel.userResetPass.observe(this) { loginPojo ->
 
-                    if (loginPojo != null && loginPojo.isNotEmpty()) {
+                if (loginPojo != null && loginPojo.isNotEmpty()) {
 
-                        if (loginPojo[0].status.equals("true", true)) {
-                            btn_resetPass.endAnimation()
+                    if (loginPojo[0].status.equals("true", true)) {
+                        btn_resetPass.endAnimation()
 
-                            MyUtils.showSnackbar(
-                                    this@ResetPassActivity,
-                                    loginPojo[0].message!!,
-                                    ll_main_resetPass
-                            )
+                        MyUtils.showSnackbar(
+                            this@ResetPassActivity,
+                            loginPojo[0].message!!,
+                            ll_main_resetPass
+                        )
 
-                            val mThread = Thread(Runnable {
-                                try {
-                                    Thread.sleep(1000)
-                                    val i = Intent(this, SignInActivity::class.java)
-                                    startActivity(i)
-                                    finish()
-                                    overridePendingTransition(
-                                            R.anim.slide_in_right,
-                                            R.anim.slide_out_left
-                                    )
+                        val mThread = Thread(Runnable {
+                            try {
+                                Thread.sleep(1000)
+                                val i = Intent(this, SignInActivity::class.java)
+                                startActivity(i)
+                                finish()
+                                overridePendingTransition(
+                                    R.anim.slide_in_right,
+                                    R.anim.slide_out_left
+                                )
 
-                                } catch (e: InterruptedException) {
-                                }
-                            })
-                            mThread.start()
-
-                        } else {
-                            btn_resetPass.endAnimation()
-                            MyUtils.showSnackbar(
-                                    this@ResetPassActivity,
-                                    loginPojo[0].message!!,
-                                    ll_main_resetPass
-                            )
-                        }
-
+                            } catch (e: InterruptedException) {
+                            }
+                        })
+                        mThread.start()
 
                     } else {
                         btn_resetPass.endAnimation()
-                        ErrorUtil.errorMethod(ll_main_resetPass)
-
+                        MyUtils.showSnackbar(
+                            this@ResetPassActivity,
+                            loginPojo[0].message!!,
+                            ll_main_resetPass
+                        )
                     }
 
 
-                })
+                } else {
+                    btn_resetPass.endAnimation()
+                    ErrorUtil.errorMethod(ll_main_resetPass)
+
+                }
+
+
+            }
 
     }
 
     override fun onClick(v: View?) {
-        when(v?.id){
-            R.id.btn_resetPass->{
+        when (v?.id) {
+            R.id.btn_resetPass -> {
                 resetPassValidation()
 
 

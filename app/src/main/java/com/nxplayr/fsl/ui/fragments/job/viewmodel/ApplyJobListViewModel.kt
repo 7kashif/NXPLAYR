@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.ApplyJoblist
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
 
@@ -29,7 +32,7 @@ class ApplyJobListViewModel:ViewModel() {
 
     private fun getJobListApi(): LiveData<List<ApplyJoblist>> {
         val data = MutableLiveData<List<ApplyJoblist>>()
-
+        viewModelScope.launch(Dispatchers.IO) {
         var call : Call<List<ApplyJoblist>>?=null
             when(from){
 
@@ -50,7 +53,7 @@ class ApplyJobListViewModel:ViewModel() {
                 data.value = null
             }
 
-        })
+        })}
 
         return data
     }

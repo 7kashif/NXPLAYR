@@ -15,8 +15,12 @@ data class FaqPojo(
 data class FaqData(
         @SerializedName("faqAnswer")
         var faqAnswer: String,
+        @SerializedName("faqAnswerFrench")
+        var faqAnswerFrench: String,
         @SerializedName("faqID")
         var faqID: String,
         @SerializedName("faqQuestion")
-        var faqQuestion: String
+        var faqQuestion: String,
+        @SerializedName("faqQuestionFrench")
+        var faqQuestionFrench: String
 )

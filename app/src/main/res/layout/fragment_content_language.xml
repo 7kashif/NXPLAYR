@@ -5,14 +5,16 @@
     android:id="@+id/ll_main_suggestion"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@drawable/appbg"
+    android:orientation="vertical"
     tools:context=".ui.fragments.setting.view.SuggestedFeedbackFragment">
 
     <include layout="@layout/toolbar" />
+
     <include layout="@layout/line_seperator" />
 
     <TextView
+        android:id="@+id/select_lang"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_10sdp"
@@ -24,6 +26,7 @@
         android:textSize="@dimen/_16ssp" />
 
     <TextView
+        android:id="@+id/select_lang_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_10sdp"
@@ -37,26 +40,28 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_10sdp"
         android:layout_marginTop="@dimen/_20sdp"
-        android:layout_marginStart="@dimen/_10sdp">
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:orientation="horizontal">
+
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:text="English"
             android:id="@+id/tv_content_language"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_14ssp" />
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/change"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_14ssp"
+            tools:text="English" />
+
+        <TextView
             android:id="@+id/tv_content_language_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="right"
+            android:layout_weight="1"
             android:gravity="right"
+            android:text="@string/change"
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/_14ssp" />
     </LinearLayout>

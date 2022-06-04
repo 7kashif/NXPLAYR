@@ -19,37 +19,37 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.google.gson.JsonParseException
 import com.nxplayr.fsl.R
-import com.nxplayr.fsl.ui.activity.main.managers.NotifyAlbumInterface
-import com.nxplayr.fsl.ui.fragments.collection.adapter.CreateSubAlbumAdapter
-import com.nxplayr.fsl.ui.fragments.explorepost.adapter.OldExploreVideoAdapater
-import com.nxplayr.fsl.ui.fragments.explorepost.adapter.ExploreVideoListAdapater
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.CreatePostData
 import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.data.model.SubAlbum
+import com.nxplayr.fsl.ui.activity.main.managers.NotifyAlbumInterface
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.fragments.collection.adapter.CreateSubAlbumAdapter
+import com.nxplayr.fsl.ui.fragments.collection.view.AssignPostAlbumFragment
+import com.nxplayr.fsl.ui.fragments.collection.viewmodel.*
+import com.nxplayr.fsl.ui.fragments.explorepost.adapter.ExploreVideoListAdapater
+import com.nxplayr.fsl.ui.fragments.explorepost.adapter.OldExploreVideoAdapater
+import com.nxplayr.fsl.ui.fragments.explorepost.view.ExploreVideoDetailFragment
+import com.nxplayr.fsl.ui.fragments.explorepost.viewmodel.ExploreVideoModelV2
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
-import com.google.gson.JsonParseException
-import com.nxplayr.fsl.ui.fragments.collection.view.AssignPostAlbumFragment
-import com.nxplayr.fsl.ui.fragments.collection.viewmodel.*
-import com.nxplayr.fsl.ui.fragments.explorepost.view.ExploreVideoDetailFragment
-import com.nxplayr.fsl.ui.fragments.explorepost.viewmodel.ExploreVideoModel
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
 import kotlinx.android.synthetic.main.sub_album_activity.*
 import org.json.JSONArray
 import org.json.JSONObject
-import kotlin.collections.ArrayList
 
 
-class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
+class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener {
 
     private var v: View? = null
     var sessionManager: SessionManager? = null
@@ -75,7 +75,7 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
     var explore_video_list: ArrayList<CreatePostData?>? = ArrayList()
     var oldExploreVideo_adapter: OldExploreVideoAdapater? = null
     var exploreVideoListadapter: ExploreVideoListAdapater? = null
-    var Add=""
+    var Add = ""
     var explore_video_list1: ArrayList<CreatePostData?>? = ArrayList()
 
     private var linearLayoutManager: LinearLayoutManager? = null
@@ -85,18 +85,19 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
     private var firstVisibleItemPosition: Int = 0
     private var isLoading = false
     private var isLastpage = false
-    var postType=""
+    var postType = ""
     var notifyInterface: NotifyAlbumInterface? = null
-    var OldSubAlbumID=""
-    var fromCome=""
-    var OldAlbumID=""
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-       if(v==null)
-       {
-           v = inflater.inflate(R.layout.sub_album_activity, container, false)
+    var OldSubAlbumID = ""
+    var fromCome = ""
+    var OldAlbumID = ""
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        if (v == null) {
+            v = inflater.inflate(R.layout.sub_album_activity, container, false)
 
-       }
+        }
         return v
     }
 
@@ -107,8 +108,8 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
             notifyInterface = activity as NotifyAlbumInterface
         } catch (e: ClassCastException) {
             throw ClassCastException(
-                    activity.toString()
-                            + " must implement TextClicked"
+                activity.toString()
+                        + " must implement TextClicked"
             )
         }
     }
@@ -121,26 +122,25 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
             userData = sessionManager?.get_Authenticate_User()
         }
 
-        if (arguments != null){
+        if (arguments != null) {
 
             AlbumID = arguments?.getString("albumId", "")!!
             AlbumName = arguments?.getString("albumName", "")!!
             postId = arguments?.getString("postId", "")!!
             SubAlbumPostion = arguments?.getInt("albumPosition", 0)!!
             globalView = arguments?.getString("subAlbum", "")!!
-            Add=arguments?.getString("Add","")!!
-            when(Add)
-            {
-                "addToCollection"->{
-                    explore_video_list1= arguments?.getSerializable("explore_video_list") as ArrayList<CreatePostData?>?
-                    postType=arguments?.getString("postType")!!
+            Add = arguments?.getString("Add", "")!!
+            when (Add) {
+                "addToCollection" -> {
+                    explore_video_list1 =
+                        arguments?.getSerializable("explore_video_list") as ArrayList<CreatePostData?>?
+                    postType = arguments?.getString("postType")!!
                 }
             }
 
-            if(!arguments?.getString("fromCome").isNullOrEmpty())
-            {
-                fromCome=arguments?.getString("fromCome")!!
-                if(fromCome.equals("MoveToOther")) {
+            if (!arguments?.getString("fromCome").isNullOrEmpty()) {
+                fromCome = arguments?.getString("fromCome")!!
+                if (fromCome.equals("MoveToOther")) {
                     OldSubAlbumID = arguments?.getString("SubAlbumID")!!
                     OldAlbumID = arguments?.getString("AlbumID")!!
                 }
@@ -172,12 +172,11 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
         lylSelectedSubAlbum.setOnClickListener(this)
         btnRetry.setOnClickListener(this)
 
-        when(fromCome)
-        {
-            "MoveToOther"->{
+        when (fromCome) {
+            "MoveToOther" -> {
                 txtSelectName.text = "Move to " + AlbumName
             }
-            else->{
+            else -> {
                 txtSelectName.text = "Add to " + AlbumName
             }
         }
@@ -194,13 +193,14 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
     private fun getSubAblumList() {
         linearLayoutManager = LinearLayoutManager(mActivity!!)
 
-        if (create_album_list==null) {
-            create_album_list= ArrayList()
-            create_album_adapter = CreateSubAlbumAdapter(mActivity!!, object : CreateSubAlbumAdapter.OnItemClick {
+        if (create_album_list == null) {
+            create_album_list = ArrayList()
+            create_album_adapter =
+                CreateSubAlbumAdapter(mActivity!!, object : CreateSubAlbumAdapter.OnItemClick {
 
-                override fun onDeleteClickListner(pos: Int) {
+                    override fun onDeleteClickListner(pos: Int) {
 
-                    MyUtils.showMessageOKCancel(mActivity!!,
+                        MyUtils.showMessageOKCancel(mActivity!!,
                             "Are you sure want to delete album ?",
                             "Album Delete ",
                             DialogInterface.OnClickListener { dialogInterface, i ->
@@ -210,79 +210,88 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
                                 create_album_list!!.removeAt(pos)
                                 create_album_adapter!!.notifyDataSetChanged()
 
-                                getDeleteSubAlbum(userData?.userID, AlbumID, SubAlbumId, RestClient.apiVersion, RestClient.apiType)
+                                getDeleteSubAlbum(
+                                    userData?.userID,
+                                    AlbumID,
+                                    SubAlbumId,
+                                    RestClient.apiVersion,
+                                    RestClient.apiType
+                                )
                             })
 
-                }
-
-                override fun onSubAlbumClick(pos: Int) {
-                    val bottomSheet = SubAlbumBottumSheetFragment()
-                    bottomSheet.show(getFragmentManager()!!, "SubAlbumBottumSheetFragment")
-                    Bundle().apply {
-                        putString("subExalbumID", create_album_list!!.get(pos)?.exsubalbumID)
-                        putString("AlbumID", AlbumID)
-                        putString("SubAlbumName", create_album_list!!.get(pos)?.exsubalbumName)
-                        putString("AlbumName", AlbumName)
-                        putString("postId", postId)
-                        putString("globalView", globalView)
-                        putInt("albumPosition", SubAlbumPostion!!)
-                        bottomSheet.arguments = this
                     }
-                    bottomSheet.setOnclickLisner(object :
-                        SubAlbumBottumSheetFragment.BottomSheetListenerAlbum {
-                        override fun onOptionClick(text: String) {
-                            when(text){
-                                "Edit"->{
-                                    bottomSheet.dismiss()
-                                    pageNo=0
-                                    getCreatSubAlbumList()
-                                }
-                                "Delete"->{
-                                    bottomSheet.dismiss()
-                                    pageNo=0
-                                    getCreatSubAlbumList()
+
+                    override fun onSubAlbumClick(pos: Int) {
+                        val bottomSheet = SubAlbumBottumSheetFragment()
+                        bottomSheet.show(requireFragmentManager(), "SubAlbumBottumSheetFragment")
+                        Bundle().apply {
+                            putString("subExalbumID", create_album_list!!.get(pos)?.exsubalbumID)
+                            putString("AlbumID", AlbumID)
+                            putString("SubAlbumName", create_album_list!!.get(pos)?.exsubalbumName)
+                            putString("AlbumName", AlbumName)
+                            putString("postId", postId)
+                            putString("globalView", globalView)
+                            putInt("albumPosition", SubAlbumPostion!!)
+                            bottomSheet.arguments = this
+                        }
+                        bottomSheet.setOnclickLisner(object :
+                            SubAlbumBottumSheetFragment.BottomSheetListenerAlbum {
+                            override fun onOptionClick(text: String) {
+                                when (text) {
+                                    "Edit" -> {
+                                        bottomSheet.dismiss()
+                                        pageNo = 0
+                                        getCreatSubAlbumList()
+                                    }
+                                    "Delete" -> {
+                                        bottomSheet.dismiss()
+                                        pageNo = 0
+                                        getCreatSubAlbumList()
+                                    }
                                 }
                             }
+
+                        })
+                    }
+
+                    override fun onEditClickListner(pos: Int) {
+
+                        SubAlbumName = create_album_list!!.get(pos).exsubalbumName
+                        showEditAlbums()
+                    }
+
+                    override fun onClicklisneter(pos: Int) {
+
+                        if (globalView.equals("SubAlbumShow")) {
+                            txtSelectName.text = "Add to " + create_album_list!![pos].exsubalbumName
+                            SubAlbumId = create_album_list!![pos].exsubalbumID
+                            clicked = true
+                        } else {
+
+                            val assignPostAlbumFragment = AssignPostAlbumFragment()
+                            Bundle().apply {
+                                putString("albumId", AlbumID)
+                                putString("albumName", AlbumName)
+                                putString("subAlbumId", create_album_list!![pos].exsubalbumID)
+                                putString("subAlbumName", create_album_list!![pos].exsubalbumName)
+                                putString("postId", "0")
+                                assignPostAlbumFragment.arguments = this
+                            }
+                            (activity as MainActivity).navigateTo(
+                                assignPostAlbumFragment,
+                                assignPostAlbumFragment::class.java.name,
+                                true
+                            )
+
                         }
-
-                    })
-                }
-
-                override fun onEditClickListner(pos: Int) {
-
-                    SubAlbumName = create_album_list!!.get(pos).exsubalbumName
-                    showEditAlbums()
-                }
-
-                override fun onClicklisneter(pos: Int) {
-
-                    if (globalView.equals("SubAlbumShow")) {
-
-                        txtSelectName.text = "Add to " + create_album_list!![pos].exsubalbumName
-                        SubAlbumId = create_album_list!![pos].exsubalbumID
-                        clicked = true
-                    } else {
-
-                        val assignPostAlbumFragment = AssignPostAlbumFragment()
-                         Bundle().apply {
-                            putString("albumId", AlbumID)
-                            putString("albumName", AlbumName)
-                            putString("subAlbumId", create_album_list!![pos].exsubalbumID)
-                            putString("subAlbumName", create_album_list!![pos].exsubalbumName)
-                            putString("postId", "0")
-                            assignPostAlbumFragment.arguments = this
-                        }
-                        (activity as MainActivity).navigateTo(assignPostAlbumFragment,assignPostAlbumFragment::class.java.name,true)
 
                     }
 
-                }
-
-            }, create_album_list!!, false, globalView)
+                }, create_album_list!!, false, globalView)
             rc_subalbum_create.setHasFixedSize(true)
-            rc_subalbum_create.layoutManager=linearLayoutManager
+            rc_subalbum_create.layoutManager = linearLayoutManager
             rc_subalbum_create.adapter = create_album_adapter
-            pageNo=0
+            pageNo = 0
             getCreatSubAlbumList()
         }
 
@@ -292,9 +301,72 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
         rc_subalbum_list.layoutManager = GridLayoutManager(mActivity!!, 2)
         if (explore_video_list.isNullOrEmpty()) {
 
-            oldExploreVideo_adapter = OldExploreVideoAdapater(mActivity!!, object : OldExploreVideoAdapater.OnItemClick {
-                override fun onClicklisneter(pos: Int) {
+            oldExploreVideo_adapter =
+                OldExploreVideoAdapater(mActivity!!, object : OldExploreVideoAdapater.OnItemClick {
+                    override fun onClicklisneter(pos: Int) {
 
+                        val exploreDetailFragment = ExploreVideoDetailFragment()
+                        Bundle().apply {
+                            putString("user_ID", explore_video_list!!.get(pos)?.userID)
+                            putInt("pos", pos)
+                            putString("username", explore_video_list!!.get(pos)?.userFirstName)
+                            putString("like", explore_video_list!!.get(pos)?.postLike)
+                            putString("view", explore_video_list!!.get(pos)?.postViews)
+                            putString(
+                                "userProfile",
+                                explore_video_list!!.get(pos)?.userProfilePicture
+                            )
+                            putString("postID", explore_video_list!!.get(pos)?.postID)
+                            putString("postLike", explore_video_list!!.get(pos)?.youpostLiked)
+                            putString("posthashtag", explore_video_list!!.get(pos)?.posthashtag)
+                            putString(
+                                "exploreVideo",
+                                explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaFile
+                            )
+                            putString(
+                                "exploreThumbnail",
+                                explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaThumbnail
+                            )
+                            putString(
+                                "albumID",
+                                explore_video_list!!.get(pos)?.postAlbum!![0].exalbumID
+                            )
+                            putString(
+                                "subAlbumAId",
+                                explore_video_list!!.get(pos)?.postAlbum!![0].exsubalbumID
+                            )
+                            putString("collection", "Remove")
+                            putSerializable("explore_video_list", explore_video_list)
+                            putString("postType", explore_video_list?.get(pos)?.postType)
+                            exploreDetailFragment.arguments = this
+                        }
+                        (activity as MainActivity).navigateTo(
+                            exploreDetailFragment,
+                            exploreDetailFragment::class.java.name,
+                            true
+                        )
+
+                    }
+
+                }, explore_video_list!!, false)
+        }
+        rc_subalbum_list.setHasFixedSize(true)
+        rc_subalbum_list.adapter = oldExploreVideo_adapter
+
+        getAssignPostAlbumData(
+            userData?.userID!!, pageNo, "Album", "", "", "", "", RestClient.apiVersion, "10",
+            "", "", "", "", "0", "", "",
+            "Video", "0", AlbumID!!, "0", RestClient.apiType
+        )
+    }
+
+    private fun getViewListExploreData() {
+        rc_subalbum_list.layoutManager =
+            LinearLayoutManager(mActivity!!, LinearLayoutManager.VERTICAL, false)
+
+        exploreVideoListadapter =
+            ExploreVideoListAdapater(mActivity!!, object : ExploreVideoListAdapater.OnItemClick {
+                override fun onClicklisneter(pos: Int) {
                     val exploreDetailFragment = ExploreVideoDetailFragment()
                     Bundle().apply {
                         putString("user_ID", explore_video_list!!.get(pos)?.userID)
@@ -302,64 +374,41 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
                         putString("username", explore_video_list!!.get(pos)?.userFirstName)
                         putString("like", explore_video_list!!.get(pos)?.postLike)
                         putString("view", explore_video_list!!.get(pos)?.postViews)
+                        putString("postDescription", explore_video_list!!.get(pos)?.postDescription)
                         putString("userProfile", explore_video_list!!.get(pos)?.userProfilePicture)
                         putString("postID", explore_video_list!!.get(pos)?.postID)
                         putString("postLike", explore_video_list!!.get(pos)?.youpostLiked)
                         putString("posthashtag", explore_video_list!!.get(pos)?.posthashtag)
-                        putString("exploreVideo", explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaFile)
-                        putString("exploreThumbnail", explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaThumbnail)
-                        putString("albumID", explore_video_list!!.get(pos)?.postAlbum!![0].exalbumID)
-                        putString("subAlbumAId", explore_video_list!!.get(pos)?.postAlbum!![0].exsubalbumID)
+                        putString(
+                            "exploreVideo",
+                            explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaFile
+                        )
+                        putString(
+                            "exploreThumbnail",
+                            explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaThumbnail
+                        )
+                        putString(
+                            "albumID",
+                            explore_video_list!!.get(pos)?.postAlbum!![0].exalbumID
+                        )
+                        putString(
+                            "subAlbumAId",
+                            explore_video_list!!.get(pos)?.postAlbum!![0].exsubalbumID
+                        )
                         putString("collection", "Remove")
-                        putSerializable("explore_video_list",explore_video_list)
-                        putString("postType",explore_video_list?.get(pos)?.postType)
+                        putSerializable("explore_video_list", explore_video_list)
+                        putSerializable("postType", explore_video_list!![pos]!!.postType)
                         exploreDetailFragment.arguments = this
                     }
-                    (activity as MainActivity).navigateTo(exploreDetailFragment,exploreDetailFragment::class.java.name,true)
+                    (activity as MainActivity).navigateTo(
+                        exploreDetailFragment,
+                        exploreDetailFragment::class.java.name,
+                        true
+                    )
 
                 }
 
             }, explore_video_list!!, false)
-        }
-        rc_subalbum_list.setHasFixedSize(true)
-        rc_subalbum_list.adapter = oldExploreVideo_adapter
-
-        getAssignPostAlbumData(userData?.userID!!, pageNo, "Album", "", "", "", "", RestClient.apiVersion, "10",
-                "", "", "", "", "0", "", "",
-                "Video", "0", AlbumID!!, "0", RestClient.apiType)
-    }
-
-    private fun getViewListExploreData() {
-        rc_subalbum_list.layoutManager = LinearLayoutManager(mActivity!!, LinearLayoutManager.VERTICAL, false)
-
-        exploreVideoListadapter = ExploreVideoListAdapater(mActivity!!, object : ExploreVideoListAdapater.OnItemClick {
-            override fun onClicklisneter(pos: Int) {
-                val exploreDetailFragment = ExploreVideoDetailFragment()
-                Bundle().apply {
-                    putString("user_ID", explore_video_list!!.get(pos)?.userID)
-                    putInt("pos", pos)
-                    putString("username", explore_video_list!!.get(pos)?.userFirstName)
-                    putString("like", explore_video_list!!.get(pos)?.postLike)
-                    putString("view", explore_video_list!!.get(pos)?.postViews)
-                    putString("postDescription", explore_video_list!!.get(pos)?.postDescription)
-                    putString("userProfile", explore_video_list!!.get(pos)?.userProfilePicture)
-                    putString("postID", explore_video_list!!.get(pos)?.postID)
-                    putString("postLike", explore_video_list!!.get(pos)?.youpostLiked)
-                    putString("posthashtag", explore_video_list!!.get(pos)?.posthashtag)
-                    putString("exploreVideo", explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaFile)
-                    putString("exploreThumbnail", explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaThumbnail)
-                    putString("albumID", explore_video_list!!.get(pos)?.postAlbum!![0].exalbumID)
-                    putString("subAlbumAId", explore_video_list!!.get(pos)?.postAlbum!![0].exsubalbumID)
-                    putString("collection", "Remove")
-                    putSerializable("explore_video_list",explore_video_list)
-                    putSerializable("postType",explore_video_list!![pos]!!.postType)
-                    exploreDetailFragment.arguments = this
-                }
-                (activity as MainActivity).navigateTo(exploreDetailFragment,exploreDetailFragment::class.java.name,true)
-
-            }
-
-        }, explore_video_list!!, false)
 
         rc_subalbum_list.setHasFixedSize(true)
         rc_subalbum_list.adapter = exploreVideoListadapter
@@ -380,7 +429,8 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
 
             R.id.lylSelectSubAlbum -> {
 
-                Toast.makeText(mActivity!!, "Please Select Any Sub-Album", Toast.LENGTH_SHORT).show()
+                Toast.makeText(mActivity!!, "Please Select Any Sub-Album", Toast.LENGTH_SHORT)
+                    .show()
 
             }
 
@@ -388,10 +438,24 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
 
                 if (clicked == true) {
 
-                    getAssignPostAlbum(userData?.userID, SubAlbumId!!, AlbumID, postId, RestClient.apiVersion, RestClient.apiType)
+                    getAssignPostAlbum(
+                        userData?.userID,
+                        SubAlbumId!!,
+                        AlbumID,
+                        postId,
+                        RestClient.apiVersion,
+                        RestClient.apiType
+                    )
                 } else {
 
-                    getAssignPostAlbum(userData?.userID, "0", AlbumID, postId, RestClient.apiVersion, RestClient.apiType)
+                    getAssignPostAlbum(
+                        userData?.userID,
+                        "0",
+                        AlbumID,
+                        postId,
+                        RestClient.apiVersion,
+                        RestClient.apiType
+                    )
                 }
 
             }
@@ -410,9 +474,29 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
 
                 if (explore_video_list.isNullOrEmpty()) {
 
-                    getAssignPostAlbumData(userData?.userID!!, pageNo, "Album", "", "", "", "", RestClient.apiVersion, "10",
-                            "", "", "", "", "0", "", "",
-                            "Video", "0", AlbumID!!, "0", RestClient.apiType)
+                    getAssignPostAlbumData(
+                        userData?.userID!!,
+                        pageNo,
+                        "Album",
+                        "",
+                        "",
+                        "",
+                        "",
+                        RestClient.apiVersion,
+                        "10",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "0",
+                        "",
+                        "",
+                        "Video",
+                        "0",
+                        AlbumID!!,
+                        "0",
+                        RestClient.apiType
+                    )
 
                 } else {
 
@@ -428,9 +512,29 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
 
                 if (explore_video_list.isNullOrEmpty()) {
 
-                    getAssignPostAlbumData(userData?.userID!!, pageNo, "Album", "", "", "", "", RestClient.apiVersion, "10",
-                            "", "", "", "", "0", "", "",
-                            "Video", "0", AlbumID!!, "0", RestClient.apiType)
+                    getAssignPostAlbumData(
+                        userData?.userID!!,
+                        pageNo,
+                        "Album",
+                        "",
+                        "",
+                        "",
+                        "",
+                        RestClient.apiVersion,
+                        "10",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "0",
+                        "",
+                        "",
+                        "Video",
+                        "0",
+                        AlbumID!!,
+                        "0",
+                        RestClient.apiType
+                    )
 
                 } else {
 
@@ -440,6 +544,7 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
         }
 
     }
+
     //Popup
     private fun getAlbumCreate() {
         val dialogBuilder = AlertDialog.Builder(context)
@@ -462,11 +567,17 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
 
             if (subAlbumName.equals("")) {
 
-                Toast.makeText(context!!, "Please Enter SubAlbum Name", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Please Enter SubAlbum Name", Toast.LENGTH_SHORT).show()
 
             } else {
 
-                createSubAlbumName(userData?.userID, subAlbumName, AlbumID, RestClient.apiType, RestClient.apiVersion)
+                createSubAlbumName(
+                    userData?.userID,
+                    subAlbumName,
+                    AlbumID,
+                    RestClient.apiType,
+                    RestClient.apiVersion
+                )
             }
 
         }
@@ -485,7 +596,7 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
     }
 
     private fun showEditAlbums() {
-        val dialogBuilder = AlertDialog.Builder(context!!)
+        val dialogBuilder = AlertDialog.Builder(requireContext())
         val inflater = (context as AppCompatActivity).layoutInflater
 
         @SuppressLint("InflateParams")
@@ -508,7 +619,14 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
                 Toast.makeText(context, "Please Enter SubAlbum Name", Toast.LENGTH_SHORT).show()
             } else {
 
-                editAlbumName(userData?.userID, SubAlbumName!!, AlbumID, SubAlbumId, RestClient.apiType, RestClient.apiVersion)
+                editAlbumName(
+                    userData?.userID,
+                    SubAlbumName!!,
+                    AlbumID,
+                    SubAlbumId,
+                    RestClient.apiType,
+                    RestClient.apiVersion
+                )
             }
 
         }
@@ -549,44 +667,51 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
         Log.d("SUBALBUM_LIST", jsonObject.toString())
         jsonArray.put(jsonObject)
         var getEmployementModel =
-                ViewModelProviders.of(this@SubAlbumFragment).get(CteateAlbumListModel::class.java)
-        getEmployementModel.getAlbumDataList(mActivity!!, false, jsonArray.toString())
-                .observe(viewLifecycleOwner,
-                        Observer { albumListpojo ->
+            ViewModelProvider(this@SubAlbumFragment).get(CollectionViewModel::class.java)
+        getEmployementModel.createAlbumList(jsonArray.toString())
+        getEmployementModel.createAlbumList
+            .observe(viewLifecycleOwner,
+                Observer { albumListpojo ->
 
-                            relativeprogressBar.visibility = View.GONE
+                    relativeprogressBar.visibility = View.GONE
 
-                            if (albumListpojo != null && albumListpojo.isNotEmpty()) {
+                    if (albumListpojo != null && albumListpojo.isNotEmpty()) {
 
-                                if (albumListpojo[0].status.equals("true", true)) {
+                        if (albumListpojo[0].status.equals("true", true)) {
 
-                                    create_album_list?.clear()
-                                    create_album_list?.addAll(albumListpojo[0].data.get(SubAlbumPostion!!).subAlbums)
-                                    create_album_adapter?.notifyDataSetChanged()
+                            create_album_list?.clear()
+                            create_album_list?.addAll(albumListpojo[0].data.get(SubAlbumPostion!!).subAlbums)
+                            create_album_adapter?.notifyDataSetChanged()
 
-                                } else {
+                        } else {
 
-                                    if (create_album_list!!.size == 0) {
+                            if (create_album_list!!.size == 0) {
 
-                                        ll_no_data_found.visibility = View.VISIBLE
-
-                                    } else {
-
-                                        ll_no_data_found.visibility = View.GONE
-                                    }
-
-                                }
+                                ll_no_data_found.visibility = View.VISIBLE
 
                             } else {
 
-                                relativeprogressBar.visibility = View.GONE
-                                ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                                ll_no_data_found.visibility = View.GONE
                             }
 
-                        })
+                        }
+
+                    } else {
+
+                        relativeprogressBar.visibility = View.GONE
+                        ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                    }
+
+                })
     }
 
-    private fun createSubAlbumName(useriD: String?, subalbumName: String, albumID: String?, apiType: String, apiVersion: String) {
+    private fun createSubAlbumName(
+        useriD: String?,
+        subalbumName: String,
+        albumID: String?,
+        apiType: String,
+        apiVersion: String
+    ) {
         relativeprogressBar.visibility = View.VISIBLE
         val jsonObject = JSONObject()
         val jsonArray = JSONArray()
@@ -606,32 +731,47 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
         }
         Log.d("CreatSubAlbumObject", jsonObject.toString())
         var getSubAlbumModel =
-                ViewModelProviders.of(this@SubAlbumFragment).get(CreateSubAlbumModel::class.java)
+            ViewModelProviders.of(this@SubAlbumFragment).get(CreateSubAlbumModel::class.java)
         getSubAlbumModel.apiSubCreateAlbum(mActivity!!, false, jsonArray.toString())
-                .observe(mActivity!!,
-                        Observer { subAlbumCreatepojo ->
+            .observe(mActivity!!,
+                Observer { subAlbumCreatepojo ->
 
-                            relativeprogressBar.visibility = View.GONE
-                            if (subAlbumCreatepojo != null && subAlbumCreatepojo.isNotEmpty()) {
+                    relativeprogressBar.visibility = View.GONE
+                    if (subAlbumCreatepojo != null && subAlbumCreatepojo.isNotEmpty()) {
 
-                                if (subAlbumCreatepojo[0].status.equals("true", true)) {
+                        if (subAlbumCreatepojo[0].status.equals("true", true)) {
 
-                                    Toast.makeText(context, subAlbumCreatepojo[0].message, Toast.LENGTH_SHORT).show()
-                                    b!!.dismiss()
-                                    pageNo=0
-                                    getCreatSubAlbumList()
-                                } else {
+                            Toast.makeText(
+                                context,
+                                subAlbumCreatepojo[0].message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            b!!.dismiss()
+                            pageNo = 0
+                            getCreatSubAlbumList()
+                        } else {
 
-                                    Toast.makeText(context, subAlbumCreatepojo[0].message, Toast.LENGTH_SHORT).show()
-                                }
+                            Toast.makeText(
+                                context,
+                                subAlbumCreatepojo[0].message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
 
-                            } else {
-                                relativeprogressBar.visibility = View.GONE
-                            }
-                        })
+                    } else {
+                        relativeprogressBar.visibility = View.GONE
+                    }
+                })
     }
 
-    private fun editAlbumName(userID: String?, albumName: String, albumID: String?, subAlbumID: String?, apiType: String, apiVersion: String) {
+    private fun editAlbumName(
+        userID: String?,
+        albumName: String,
+        albumID: String?,
+        subAlbumID: String?,
+        apiType: String,
+        apiVersion: String
+    ) {
 
         relativeprogressBar.visibility = View.VISIBLE
         val jsonObject = JSONObject()
@@ -654,35 +794,43 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
         }
         Log.d("EditSubAlbumObject", jsonObject.toString())
         var geteditSubAlbumModel =
-                ViewModelProviders.of(this@SubAlbumFragment).get(EditSubAlbumModel::class.java)
+            ViewModelProviders.of(this@SubAlbumFragment).get(EditSubAlbumModel::class.java)
         geteditSubAlbumModel.apiSubEditAlbumDelete(mActivity!!, false, jsonArray.toString())
-                .observe(mActivity!!,
-                        Observer { albumEditpojo ->
+            .observe(mActivity!!,
+                Observer { albumEditpojo ->
 
-                            relativeprogressBar.visibility = View.GONE
-                            if (albumEditpojo != null && albumEditpojo.isNotEmpty()) {
-                                MyUtils.dismissProgressDialog()
-                                if (albumEditpojo[0].status.equals("true", true)) {
+                    relativeprogressBar.visibility = View.GONE
+                    if (albumEditpojo != null && albumEditpojo.isNotEmpty()) {
+                        MyUtils.dismissProgressDialog()
+                        if (albumEditpojo[0].status.equals("true", true)) {
 
-                                    Toast.makeText(context!!, albumEditpojo[0].message, Toast.LENGTH_SHORT).show()
-                                    b!!.dismiss()
-                                    pageNo=0
-                                    getCreatSubAlbumList()
-                                } else {
+                            Toast.makeText(requireContext(), albumEditpojo[0].message, Toast.LENGTH_SHORT)
+                                .show()
+                            b!!.dismiss()
+                            pageNo = 0
+                            getCreatSubAlbumList()
+                        } else {
 
-                                    Toast.makeText(context!!, albumEditpojo[0].message, Toast.LENGTH_SHORT).show()
-                                }
+                            Toast.makeText(requireContext(), albumEditpojo[0].message, Toast.LENGTH_SHORT)
+                                .show()
+                        }
 
-                            } else {
+                    } else {
 
-                                relativeprogressBar.visibility = View.GONE
+                        relativeprogressBar.visibility = View.GONE
 
-                            }
+                    }
 
-                        })
+                })
     }
 
-    private fun getDeleteSubAlbum(userID: String?, albumID: String?, exsubalbumID: String?, apiVersion: String, apiType: String) {
+    private fun getDeleteSubAlbum(
+        userID: String?,
+        albumID: String?,
+        exsubalbumID: String?,
+        apiVersion: String,
+        apiType: String
+    ) {
 
         relativeprogressBar.visibility = View.VISIBLE
         val jsonArray = JSONArray()
@@ -702,43 +850,58 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
         Log.d("SUB_ALBUM_DELETE_LIST", jsonObject.toString())
         jsonArray.put(jsonObject)
         var getDeleteSubAlbumModel =
-                ViewModelProviders.of(this@SubAlbumFragment).get(DeleteSubAlbumModel::class.java)
+            ViewModelProviders.of(this@SubAlbumFragment).get(DeleteSubAlbumModel::class.java)
         getDeleteSubAlbumModel.apiDeleteSubAlbum(mActivity!!, false, jsonArray.toString())
-                .observe(mActivity!!,
-                        Observer { albumDeletepojo ->
+            .observe(mActivity!!,
+                Observer { albumDeletepojo ->
 
-                            relativeprogressBar.visibility = View.GONE
+                    relativeprogressBar.visibility = View.GONE
 
-                            if (albumDeletepojo != null && albumDeletepojo.isNotEmpty()) {
+                    if (albumDeletepojo != null && albumDeletepojo.isNotEmpty()) {
 
-                                if (albumDeletepojo[0].status.equals("true", true)) {
+                        if (albumDeletepojo[0].status.equals("true", true)) {
 
-                                    if (create_album_list!!.size == 0) {
+                            if (create_album_list!!.size == 0) {
 
-                                        ll_no_data_found.visibility = View.VISIBLE
-                                        Toast.makeText(context!!, albumDeletepojo[0].message, Toast.LENGTH_SHORT).show()
-                                        create_album_adapter!!.notifyDataSetChanged()
-
-                                    } else {
-
-                                        ll_no_data_found.visibility = View.GONE
-                                    }
-
-                                } else {
-
-                                    Toast.makeText(context!!, albumDeletepojo[0].message, Toast.LENGTH_SHORT).show()
-                                }
+                                ll_no_data_found.visibility = View.VISIBLE
+                                Toast.makeText(
+                                    requireContext(),
+                                    albumDeletepojo[0].message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                create_album_adapter!!.notifyDataSetChanged()
 
                             } else {
 
-                                relativeprogressBar.visibility = View.GONE
-                                ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                                ll_no_data_found.visibility = View.GONE
                             }
 
-                        })
+                        } else {
+
+                            Toast.makeText(
+                                requireContext(),
+                                albumDeletepojo[0].message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                    } else {
+
+                        relativeprogressBar.visibility = View.GONE
+                        ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                    }
+
+                })
     }
 
-    private fun getAssignPostAlbum(userID: String?, exsubalbumID: String, albumID: String?, postId: String?, apiVersion: String, apiType: String) {
+    private fun getAssignPostAlbum(
+        userID: String?,
+        exsubalbumID: String,
+        albumID: String?,
+        postId: String?,
+        apiVersion: String,
+        apiType: String
+    ) {
 
         relativeprogressBar.visibility = View.VISIBLE
         ll_no_data_found.visibility = View.GONE
@@ -749,15 +912,15 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
 
         try {
             jsonObject.put("loginuserID", userID)
-            if(OldAlbumID.isNullOrEmpty()){
+            if (OldAlbumID.isNullOrEmpty()) {
                 jsonObject.put("exalbumID", albumID)
-            }else{
+            } else {
                 jsonObject.put("exalbumID", OldAlbumID)
                 jsonObject.put("newexalbumID", albumID)
             }
-            if(OldSubAlbumID.isNullOrEmpty()){
+            if (OldSubAlbumID.isNullOrEmpty()) {
                 jsonObject.put("exsubalbumID", exsubalbumID)
-            }else{
+            } else {
                 jsonObject.put("exsubalbumID", OldSubAlbumID)
                 jsonObject.put("newexsubalbumID", exsubalbumID)
             }
@@ -772,48 +935,84 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
         Log.d("ASSING_POST", jsonObject.toString())
         jsonArray.put(jsonObject)
         var getAssignAlbumModel =
-                ViewModelProviders.of(this@SubAlbumFragment).get(AssignPostAlbumModel::class.java)
-        getAssignAlbumModel.getAssignPostAlbum(mActivity!!, false, jsonArray.toString())
-                .observe(this@SubAlbumFragment!!,
-                        Observer { assignalbumpojo ->
+            ViewModelProviders.of(this@SubAlbumFragment).get(CollectionViewModel::class.java)
+        getAssignAlbumModel.assignPostAlbum(jsonArray.toString())
+        getAssignAlbumModel.assignPostAlbumCreated
+            .observe(viewLifecycleOwner,
+                Observer { assignalbumpojo ->
 
-                            relativeprogressBar.visibility = View.GONE
-                            if (assignalbumpojo != null && assignalbumpojo.isNotEmpty()) {
+                    relativeprogressBar.visibility = View.GONE
+                    if (assignalbumpojo != null && assignalbumpojo.isNotEmpty()) {
 
-                                if (assignalbumpojo[0].status.equals("true", true)) {
-                                    if (notifyInterface != null)
-                                    {
+                        if (assignalbumpojo[0].status.equals("true", true)) {
+                            if (notifyInterface != null) {
 
-                                        notifyInterface?.AlbumNotifyData(postId!!,userID!!,"AddSubAlbum",explore_video_list1,postType)
-                                    }
-
-                                    Toast.makeText(context!!, assignalbumpojo[0].message, Toast.LENGTH_SHORT).show()
-                                    sharedPreferences = mActivity!!.getSharedPreferences(MyUtils.GlobarViewSubData, Context.MODE_PRIVATE)
-                                    val editor = sharedPreferences!!.edit()
-                                    editor.putString(MyUtils.CollecationData, "ShowData")
-                                    editor.apply()
-                                    editor.commit()
-//                                    finish()
-
-                                } else {
-
-                                    Toast.makeText(context!!, assignalbumpojo[0].message, Toast.LENGTH_SHORT).show()
-                                }
-
-                            } else {
-
-                                relativeprogressBar.visibility = View.GONE
-
+                                notifyInterface?.AlbumNotifyData(
+                                    postId!!,
+                                    userID!!,
+                                    "AddSubAlbum",
+                                    explore_video_list1,
+                                    postType
+                                )
                             }
 
-                        })
+                            Toast.makeText(
+                                requireContext(),
+                                assignalbumpojo[0].message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            sharedPreferences = mActivity!!.getSharedPreferences(
+                                MyUtils.GlobarViewSubData,
+                                Context.MODE_PRIVATE
+                            )
+                            val editor = sharedPreferences!!.edit()
+                            editor.putString(MyUtils.CollecationData, "ShowData")
+                            editor.apply()
+                            editor.commit()
+//                                    finish()
+
+                        } else {
+
+                            Toast.makeText(
+                                requireContext(),
+                                assignalbumpojo[0].message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                    } else {
+
+                        relativeprogressBar.visibility = View.GONE
+
+                    }
+
+                })
     }
 
-    private fun getAssignPostAlbumData(userid: String, page: Int, tabname: String, sortby: String, publicationTime: String, tag: String,
-                                       gender: String, apiVersion: String, pagesize: String, footballType: String, footballLevel: String, pitchPosition: String,
-                                       footballagecatID: String, exsubalbumID: String, countryID: String, postType: String,
-                                       postMediaType: String, loginuserID: String?, exalbumID:
-                                       String, postID: String, apiType: String) {
+    private fun getAssignPostAlbumData(
+        userid: String,
+        page: Int,
+        tabname: String,
+        sortby: String,
+        publicationTime: String,
+        tag: String,
+        gender: String,
+        apiVersion: String,
+        pagesize: String,
+        footballType: String,
+        footballLevel: String,
+        pitchPosition: String,
+        footballagecatID: String,
+        exsubalbumID: String,
+        countryID: String,
+        postType: String,
+        postMediaType: String,
+        loginuserID: String?,
+        exalbumID:
+        String,
+        postID: String,
+        apiType: String
+    ) {
 
         relativeprogressBar.visibility = View.VISIBLE
 
@@ -864,65 +1063,66 @@ class SubAlbumFragment : androidx.fragment.app.Fragment(), View.OnClickListener{
         Log.d("SubAssignPost_List", jsonObject.toString())
         jsonArray.put(jsonObject)
         var getAssignPostAlbumModel =
-                ViewModelProviders.of(this@SubAlbumFragment).get(ExploreVideoModel::class.java)
-        getAssignPostAlbumModel.getExploreVList(mActivity!!, false, jsonArray.toString())
-                .observe(mActivity!!,
-                        Observer { exploreVidelistpojo ->
+            ViewModelProviders.of(this@SubAlbumFragment).get(ExploreVideoModelV2::class.java)
+        getAssignPostAlbumModel.getVideos(jsonArray.toString())
+        getAssignPostAlbumModel.exploreSuccessLiveData
+            .observe(mActivity!!,
+                Observer { exploreVidelistpojo ->
 
-                            if (exploreVidelistpojo != null && exploreVidelistpojo.isNotEmpty()) {
+                    if (exploreVidelistpojo != null && exploreVidelistpojo.isNotEmpty()) {
 
-                                isLoading = false
-                                relativeprogressBar.visibility = View.GONE
+                        isLoading = false
+                        relativeprogressBar.visibility = View.GONE
 
-                                if (pageNo > 0) {
+                        if (pageNo > 0) {
 
-                                    explore_video_list?.removeAt(explore_video_list!!.size - 1)
-                                    oldExploreVideo_adapter?.notifyItemRemoved(explore_video_list!!.size)
-                                }
+                            explore_video_list?.removeAt(explore_video_list!!.size - 1)
+                            oldExploreVideo_adapter?.notifyItemRemoved(explore_video_list!!.size)
+                        }
 
-                                if (exploreVidelistpojo[0].status.equals("true", true)) {
+                        if (exploreVidelistpojo[0].status.equals("true", true)) {
 
-                                    rc_subalbum_list.visibility = View.VISIBLE
-                                    if (pageNo == 0) {
-                                        explore_video_list?.clear()
-                                    }
+                            rc_subalbum_list.visibility = View.VISIBLE
+                            if (pageNo == 0) {
+                                explore_video_list?.clear()
+                            }
 
-                                    explore_video_list?.addAll(exploreVidelistpojo[0].data!!)
-                                    oldExploreVideo_adapter?.notifyDataSetChanged()
-                                    exploreVideoListadapter?.notifyDataSetChanged()
-                                    pageNo += 1
-                                    if (exploreVidelistpojo[0].data!!.size < 10) {
-                                        isLastpage = true
-                                    }
-                                    if (explore_video_list.isNullOrEmpty()) {
-                                            ll_no_data_found.visibility = View.GONE
-                                            rc_subalbum_list.visibility = View.GONE
-                                            lylSubAlbumListShow.visibility=View.GONE
-                                    } else {
-
-                                            rc_subalbum_list.visibility = View.VISIBLE
-                                               lylSubAlbumListShow.visibility=View.VISIBLE
-                                     }
-
-                                } else {
-
-                                    if (explore_video_list.isNullOrEmpty()) {
-                                        ll_no_data_found.visibility = View.GONE
-                                        rc_subalbum_list.visibility = View.GONE
-                                        lylSubAlbumListShow.visibility=View.GONE
-                                    } else {
-                                        rc_subalbum_list.visibility = View.VISIBLE
-                                        lylSubAlbumListShow.visibility=View.VISIBLE
-                                    }
-
-                                }
-
+                            explore_video_list?.addAll(exploreVidelistpojo[0].data!!)
+                            oldExploreVideo_adapter?.notifyDataSetChanged()
+                            exploreVideoListadapter?.notifyDataSetChanged()
+                            pageNo += 1
+                            if (exploreVidelistpojo[0].data!!.size < 10) {
+                                isLastpage = true
+                            }
+                            if (explore_video_list.isNullOrEmpty()) {
+                                ll_no_data_found.visibility = View.GONE
+                                rc_subalbum_list.visibility = View.GONE
+                                lylSubAlbumListShow.visibility = View.GONE
                             } else {
 
-                                relativeprogressBar.visibility = View.GONE
-//                                ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                                rc_subalbum_list.visibility = View.VISIBLE
+                                lylSubAlbumListShow.visibility = View.VISIBLE
                             }
-                        })
+
+                        } else {
+
+                            if (explore_video_list.isNullOrEmpty()) {
+                                ll_no_data_found.visibility = View.GONE
+                                rc_subalbum_list.visibility = View.GONE
+                                lylSubAlbumListShow.visibility = View.GONE
+                            } else {
+                                rc_subalbum_list.visibility = View.VISIBLE
+                                lylSubAlbumListShow.visibility = View.VISIBLE
+                            }
+
+                        }
+
+                    } else {
+
+                        relativeprogressBar.visibility = View.GONE
+//                                ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                    }
+                })
     }
 
     override fun onDestroyView() {

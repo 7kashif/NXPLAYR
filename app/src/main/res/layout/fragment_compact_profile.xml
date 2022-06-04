@@ -32,6 +32,8 @@
                 android:layout_gravity="center"
                 android:padding="@dimen/_3sdp"
                 app:roundAsCircle="true"
+                app:roundingBorderColor="@color/text_secondary"
+                app:roundingBorderWidth="1dp"
                 fresco:actualImageResource="@drawable/profile_pic_placeholder"
                 fresco:actualImageScaleType="fitXY"
                 fresco:placeholderImage="@drawable/profile_pic_placeholder"
@@ -47,6 +49,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_basic_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/brandon_reg"
@@ -98,6 +101,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_passport_nationality"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/brandon_reg"
@@ -150,6 +154,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_current_country"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/brandon_reg"
@@ -202,6 +207,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_football_age_category"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/brandon_reg"
@@ -254,6 +260,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_height_weight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/brandon_reg"
@@ -306,6 +313,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_football_level"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/brandon_reg"
@@ -358,6 +366,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_football_league"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/brandon_reg"
@@ -410,6 +419,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_current_club"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/brandon_reg"
@@ -471,6 +481,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_contract_situation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/brandon_reg"
@@ -524,6 +535,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_prev_club"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/brandon_reg"
@@ -577,6 +589,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_pitch_position"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/brandon_reg"
@@ -629,6 +642,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_best_foot"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/brandon_reg"
@@ -681,6 +695,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_nationalTeam"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/brandon_reg"
@@ -734,6 +749,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_jerseyNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/brandon_reg"
@@ -787,6 +803,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_preferred_outfit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/brandon_reg"
@@ -840,6 +857,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_set_of_skills"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/brandon_reg"
@@ -946,6 +964,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_trophy_honor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/brandon_reg"
@@ -999,6 +1018,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_geographical_mob"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/brandon_reg"

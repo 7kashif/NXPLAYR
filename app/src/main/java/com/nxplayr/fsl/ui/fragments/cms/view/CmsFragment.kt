@@ -16,10 +16,13 @@ import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.fragment_cms.*
+import kotlinx.android.synthetic.main.fragment_cms.logo
+import kotlinx.android.synthetic.main.fragment_webview.*
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
 import kotlinx.android.synthetic.main.toolbar.*
+import kotlinx.coroutines.Dispatchers
 
 
 class CmsFragment : Fragment() {
@@ -32,8 +35,10 @@ class CmsFragment : Fragment() {
     var userData: SignupData? = null
     private lateinit var cmsPageModel: CmsPageModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         if (v == null) {
             v = inflater.inflate(R.layout.fragment_cms, container, false)
         }
@@ -47,7 +52,7 @@ class CmsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        sessionManager = SessionManager(activity!!)
+        sessionManager = SessionManager(requireActivity())
         if (sessionManager?.get_Authenticate_User() != null) {
             userData = sessionManager?.get_Authenticate_User()
         }
@@ -55,6 +60,9 @@ class CmsFragment : Fragment() {
         if (arguments != null) {
             cmsTitle = arguments!!.getString("title", "")
             cmsCode = arguments!!.getString("cmsparameter", "")
+            if (cmsCode == "About Us") {
+                logo.visibility = View.VISIBLE
+            }
         }
         setupViewModel()
         setupUI()
@@ -72,8 +80,8 @@ class CmsFragment : Fragment() {
         webView.visibility = View.GONE
         relativeprogressBar.visibility = View.VISIBLE
 
-        cmsPageModel?.getCmsPage(activity!!, userData!!.userID, cmsCode)
-            ?.observe(activity!!, { it ->
+        cmsPageModel?.getCmsPage(requireActivity(), userData!!.userID, cmsCode)
+            .observe(requireActivity()) { it ->
                 if (it != null && it.isNotEmpty() && it[0].status.equals("true")) {
 
                     ll_no_data_found.visibility = View.GONE
@@ -81,16 +89,8 @@ class CmsFragment : Fragment() {
                     relativeprogressBar.visibility = View.GONE
 
                     webView.visibility = View.VISIBLE
-
-                    var text = ("<html><head>"
-                            + "<style type=\"text/css\">body{color: #FFFFFF}"
-                            + "</style></head>"
-                            + "<body>"
-                            + it[0].data!![0]!!.cmspageContents
-                            + "</body></html>")
-                    text = "<font color='white'>" + text + "</font>";
-                    webView.loadDataWithBaseURL(null, text, "text/html", "UTF-8", null);
-                    webView.setBackgroundColor(0);
+                    webView.loadUrl(it[0].data[0].url)
+                    webView.setBackgroundColor(0)
 
                 } else {
 
@@ -100,11 +100,20 @@ class CmsFragment : Fragment() {
 
                         try {
                             nointernetMainRelativelayout.visibility = View.VISIBLE
-                            if (MyUtils.isInternetAvailable(activity!!)) {
-                                nointernetImageview.setImageDrawable(activity!!.getDrawable(R.drawable.ic_warning_black_24dp))
-                                nointernettextview.text = (this!!.getString(R.string.error_crash_error_message))
+                            if (MyUtils.isInternetAvailable(requireActivity())) {
+                                nointernetImageview.setImageDrawable(
+                                    requireActivity().getDrawable(
+                                        R.drawable.ic_warning_black_24dp
+                                    )
+                                )
+                                nointernettextview.text =
+                                    (this!!.getString(R.string.error_crash_error_message))
                             } else {
-                                nointernetImageview.setImageDrawable(activity!!.getDrawable(R.drawable.ic_signal_wifi_off_black_24dp))
+                                nointernetImageview.setImageDrawable(
+                                    requireActivity().getDrawable(
+                                        R.drawable.ic_signal_wifi_off_black_24dp
+                                    )
+                                )
 
                                 nointernettextview.text =
                                     (this!!.getString(R.string.error_common_network))
@@ -116,7 +125,8 @@ class CmsFragment : Fragment() {
                     }
 
                 }
-            })
+            }
+
     }
 
     private fun setupUI() {

@@ -244,6 +244,7 @@ class NotificationFragment : Fragment(),View.OnClickListener {
         val bottomSheet = ThreeDotsBottomSheetFragment()
         val bundle = Bundle()
         bundle.putSerializable("data", data)
+        bundle.putString("search", "hide")
         bundle.putString("from", "MenuList")
         bundle.putString("userId",notificationID)
         bottomSheet.arguments = bundle

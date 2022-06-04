@@ -4,28 +4,25 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.text.*
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.gson.Gson
+import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.ui.fragments.userfollowers.viewmodel.CommonStatusModel
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
 import com.nxplayr.fsl.data.model.SignupData
+import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModelV2
+import com.nxplayr.fsl.ui.fragments.userfollowers.viewmodel.CommonStatusModel
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
-import com.google.gson.Gson
-import com.nxplayr.fsl.R
 import kotlinx.android.synthetic.main.activity_otp_verification.*
-import kotlinx.android.synthetic.main.activity_signin.*
-import kotlinx.android.synthetic.main.fragment_select_gender.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -41,7 +38,7 @@ class OtpVerificationActivity : AppCompatActivity(), View.OnClickListener {
     var usersId = ""
     var userMobile = ""
     var inte: Intent? = null
-    private lateinit var signup: SignupModel
+    private lateinit var signup: SignupModelV2
     private lateinit var commonStatusModel: CommonStatusModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -195,7 +192,7 @@ class OtpVerificationActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setupViewModel() {
-        signup = ViewModelProvider(this@OtpVerificationActivity).get(SignupModel::class.java)
+        signup = ViewModelProvider(this@OtpVerificationActivity).get(SignupModelV2::class.java)
         commonStatusModel =
             ViewModelProvider(this@OtpVerificationActivity).get(CommonStatusModel::class.java)
 
@@ -247,7 +244,8 @@ class OtpVerificationActivity : AppCompatActivity(), View.OnClickListener {
                 }
                 val jsonArray = JSONArray()
                 jsonArray.put(jsonObject)
-                signup.userRegistration(this!!, false, jsonArray.toString(), "otp_verify")
+                signup.userVerifyOtp(jsonArray.toString())
+                signup.userVerifyOtp
                     .observe(this@OtpVerificationActivity!!
                     ) { loginPojo ->
                         if (loginPojo != null) {

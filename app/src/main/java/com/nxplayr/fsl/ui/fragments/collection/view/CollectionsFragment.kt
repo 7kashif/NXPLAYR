@@ -1,7 +1,6 @@
 package com.nxplayr.fsl.ui.fragments.collection.view
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
@@ -20,34 +19,28 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.nxplayr.fsl.R
-import com.nxplayr.fsl.ui.fragments.collection.viewmodel.CreateAlbumDeleteModel
-import com.nxplayr.fsl.ui.fragments.collection.viewmodel.CreateAlbumModel
-import com.nxplayr.fsl.ui.fragments.collection.viewmodel.CteateAlbumListModel
-import com.nxplayr.fsl.ui.fragments.collection.viewmodel.EditAlbumModel
-import com.nxplayr.fsl.util.ErrorUtil
-import com.nxplayr.fsl.util.MyUtils
-import com.nxplayr.fsl.util.SessionManager
 import com.google.gson.JsonParseException
+import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.AlbumDatum
 import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.ui.fragments.collection.adapter.CreateAlbumAdapater
+import com.nxplayr.fsl.ui.fragments.collection.viewmodel.CollectionViewModel
 import com.nxplayr.fsl.ui.fragments.postalbum.SubAlbumFragment
+import com.nxplayr.fsl.util.ErrorUtil
+import com.nxplayr.fsl.util.MyUtils
+import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.fragment_collection.*
-import kotlinx.android.synthetic.main.fragment_explore_main.*
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.*
 
 
 class CollectionsFragment : androidx.fragment.app.Fragment(), SwipeRefreshLayout.OnRefreshListener {
@@ -75,11 +68,13 @@ class CollectionsFragment : androidx.fragment.app.Fragment(), SwipeRefreshLayout
     var AlbumID: String? = null
     var AlbumName: String? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    var collectionViewModel = CollectionViewModel()
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         v = inflater.inflate(R.layout.fragment_collection, container, false)
-
         return v
     }
 
@@ -88,19 +83,23 @@ class CollectionsFragment : androidx.fragment.app.Fragment(), SwipeRefreshLayout
         mActivity = context as AppCompatActivity
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+//    }
+//
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
 
-        sessionManager = SessionManager(context!!)
+        sessionManager = SessionManager(requireContext())
         if (sessionManager?.get_Authenticate_User() != null) {
             userData = sessionManager?.get_Authenticate_User()
         }
 
         txt_add_albums.setOnClickListener {
-
             showAddAlbums()
         }
 
+        initModels()
         getAblumList()
 
         btnRetry.setOnClickListener { getAblumList() }
@@ -116,17 +115,28 @@ class CollectionsFragment : androidx.fragment.app.Fragment(), SwipeRefreshLayout
                 firstVisibleItemPosition = linearLayoutManager!!.findFirstVisibleItemPosition()
                 if (!isLoading && !isLastpage) {
                     if (visibleItemCount + firstVisibleItemPosition >= totalItemCount
-                            && firstVisibleItemPosition >= 0
-                            && totalItemCount >= 10
+                        && firstVisibleItemPosition >= 0
+                        && totalItemCount >= 10
                     ) {
 
                         isLoading = true
 
-                        getCreatAlbumList(userData?.userID, pageNo, "10", RestClient.apiType, RestClient.apiVersion)
+                        getCreatAlbumList(
+                            userData?.userID,
+                            pageNo,
+                            "10",
+                            RestClient.apiType,
+                            RestClient.apiVersion
+                        )
                     }
                 }
             }
         })
+    }
+
+    private fun initModels() {
+        collectionViewModel =
+            ViewModelProvider(this@CollectionsFragment).get(CollectionViewModel::class.java)
     }
 
     private fun getAblumList() {
@@ -134,63 +144,82 @@ class CollectionsFragment : androidx.fragment.app.Fragment(), SwipeRefreshLayout
         linearLayoutManager = LinearLayoutManager(mActivity)
         if (create_album_list.isNullOrEmpty() || pageNo == 0) {
 
-            create_album_adapter = CreateAlbumAdapater(mActivity!!, create_album_list, object : CreateAlbumAdapater.OnItemClick {
+            create_album_adapter = CreateAlbumAdapater(
+                mActivity!!,
+                create_album_list,
+                object : CreateAlbumAdapater.OnItemClick {
 
-                override fun onSubAlbum(posistion: Int) {
+                    override fun onSubAlbum(posistion: Int) {
 
-                    val subFragment = SubAlbumFragment()
-                    Bundle().apply {
-                        putString("albumName", create_album_list!!.get(posistion)?.exalbumName)
-                        putInt("albumPosition", posistion)
-                        putString("albumId", create_album_list!!.get(posistion)?.exalbumID)
-                        putString("subAlbum", "SubAlbumHide")
-                        subFragment.arguments = this
+                        val subFragment = SubAlbumFragment()
+                        Bundle().apply {
+                            putString("albumName", create_album_list!!.get(posistion)?.exalbumName)
+                            putInt("albumPosition", posistion)
+                            putString("albumId", create_album_list!!.get(posistion)?.exalbumID)
+                            putString("subAlbum", "SubAlbumHide")
+                            subFragment.arguments = this
+                        }
+                        (activity as MainActivity).navigateTo(
+                            subFragment,
+                            subFragment::class.java.name,
+                            true
+                        )
+
+
                     }
-                    (activity as MainActivity).navigateTo(subFragment,subFragment::class.java.name,true)
 
-
-                }
-
-                override fun onAlbumOption(pos: Int) {
-                    val bottomSheet = AlbumBottumSheetFragment()
-                    bottomSheet.show(getFragmentManager()!!, "AlbumBottumSheetFragment")
-                    Bundle().apply {
-                        putString("exalbumID", create_album_list!!.get(pos)?.exalbumID)
-                        putString("AlbumID", create_album_list!!.get(pos)?.exalbumID)
-                        putString("AlbumName", create_album_list!!.get(pos)?.exalbumName)
-                        bottomSheet.arguments = this
-                    }
-                    bottomSheet.setOnclickLisner(object :
-                        AlbumBottumSheetFragment.BottomSheetListenerAlbum {
-                        override fun onOptionClick(text: String) {
-                            when(text){
-                                "Edit"->{
-                                    bottomSheet.dismiss()
-                                    pageNo=0
-                                    getCreatAlbumList(userData?.userID, pageNo, "10", RestClient.apiType, RestClient.apiVersion)
-                                }
-                                "Delete"->{
-                                    bottomSheet.dismiss()
-                                    pageNo=0
-                                    getCreatAlbumList(userData?.userID, pageNo, "10", RestClient.apiType, RestClient.apiVersion)
+                    override fun onAlbumOption(pos: Int) {
+                        val bottomSheet = AlbumBottumSheetFragment()
+                        bottomSheet.show(requireFragmentManager(), "AlbumBottumSheetFragment")
+                        Bundle().apply {
+                            putString("exalbumID", create_album_list!!.get(pos)?.exalbumID)
+                            putString("AlbumID", create_album_list!!.get(pos)?.exalbumID)
+                            putString("AlbumName", create_album_list!!.get(pos)?.exalbumName)
+                            bottomSheet.arguments = this
+                        }
+                        bottomSheet.setOnclickLisner(object :
+                            AlbumBottumSheetFragment.BottomSheetListenerAlbum {
+                            override fun onOptionClick(text: String) {
+                                when (text) {
+                                    "Edit" -> {
+                                        bottomSheet.dismiss()
+                                        pageNo = 0
+                                        getCreatAlbumList(
+                                            userData?.userID,
+                                            pageNo,
+                                            "10",
+                                            RestClient.apiType,
+                                            RestClient.apiVersion
+                                        )
+                                    }
+                                    "Delete" -> {
+                                        bottomSheet.dismiss()
+                                        pageNo = 0
+                                        getCreatAlbumList(
+                                            userData?.userID,
+                                            pageNo,
+                                            "10",
+                                            RestClient.apiType,
+                                            RestClient.apiVersion
+                                        )
+                                    }
                                 }
                             }
-                        }
-                    })
-                }
+                        })
+                    }
 
-                override fun onEditAlbum(pos: Int) {
+                    override fun onEditAlbum(pos: Int) {
 
-                    AlbumID = create_album_list!!.get(pos)?.exalbumID
-                    AlbumName = create_album_list!!.get(pos)?.exalbumName
+                        AlbumID = create_album_list!!.get(pos)?.exalbumID
+                        AlbumName = create_album_list!!.get(pos)?.exalbumName
 
-                    showEditAlbums()
+                        showEditAlbums()
 
-                }
+                    }
 
-                override fun onClicklisneter(pos: Int) {
+                    override fun onClicklisneter(pos: Int) {
 
-                    MyUtils.showMessageOKCancel(mActivity!!,
+                        MyUtils.showMessageOKCancel(mActivity!!,
                             "Are you sure want to delete album ?",
                             "Album Delete ",
                             DialogInterface.OnClickListener { dialogInterface, i ->
@@ -199,12 +228,20 @@ class CollectionsFragment : androidx.fragment.app.Fragment(), SwipeRefreshLayout
 
                                 create_album_list!!.removeAt(pos);
                                 create_album_adapter!!.notifyDataSetChanged();
-                                getCreateAblumDelete(userData?.userID, exalbumID, RestClient.apiVersion, RestClient.apiType)
+                                getCreateAblumDelete(
+                                    userData?.userID,
+                                    exalbumID,
+                                    RestClient.apiVersion,
+                                    RestClient.apiType
+                                )
                             })
 
-                }
+                    }
 
-            }, false, MyUtils.GlobarViewData)
+                },
+                false,
+                MyUtils.GlobarViewData
+            )
         }
 
         rc_album_create.layoutManager = linearLayoutManager
@@ -215,13 +252,19 @@ class CollectionsFragment : androidx.fragment.app.Fragment(), SwipeRefreshLayout
     }
 
     override fun onRefresh() {
-        swipeCount += 1;
+        swipeCount += 1
         if (swipeCount > 0) {
 
             create_album_adapter!!.notifyDataSetChanged()
             swipeAlbumlayout.isRefreshing = false
             pageNo = 0
-            getCreatAlbumList(userData?.userID, pageNo, "10", RestClient.apiType, RestClient.apiVersion)
+            getCreatAlbumList(
+                userData?.userID,
+                pageNo,
+                "10",
+                RestClient.apiType,
+                RestClient.apiVersion
+            )
 
         }
     }
@@ -231,6 +274,7 @@ class CollectionsFragment : androidx.fragment.app.Fragment(), SwipeRefreshLayout
 
         val dialogBuilder = AlertDialog.Builder(context)
         val inflater = (context as AppCompatActivity).getLayoutInflater()
+
         @SuppressLint("InflateParams")
         val rv = inflater.inflate(R.layout.custom_dialog_add_ablums_collection, null)
         dialogBuilder.setView(rv)
@@ -246,10 +290,16 @@ class CollectionsFragment : androidx.fragment.app.Fragment(), SwipeRefreshLayout
 
             if (albumName.equals("")) {
 
-                Toast.makeText(context!!, "Please Enter Album Name", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Please Enter Album Name", Toast.LENGTH_SHORT)
+                    .show()
             } else {
 
-                createAlbumName(userData?.userID, albumName, RestClient.apiType, RestClient.apiVersion)
+                createAlbumName(
+                    userData?.userID,
+                    albumName,
+                    RestClient.apiType,
+                    RestClient.apiVersion
+                )
             }
 
         }
@@ -271,6 +321,7 @@ class CollectionsFragment : androidx.fragment.app.Fragment(), SwipeRefreshLayout
     private fun showEditAlbums() {
         val dialogBuilder = AlertDialog.Builder(context)
         val inflater = (context as AppCompatActivity).getLayoutInflater()
+
         @SuppressLint("InflateParams")
         val rv = inflater.inflate(R.layout.custom_dialog_add_ablums_collection, null)
         dialogBuilder.setView(rv)
@@ -287,10 +338,17 @@ class CollectionsFragment : androidx.fragment.app.Fragment(), SwipeRefreshLayout
 
             if (AlbumName.equals("")) {
 
-                Toast.makeText(context!!, "Please Enter SubAlbum Name", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Please Enter SubAlbum Name", Toast.LENGTH_SHORT)
+                    .show()
             } else {
 
-                editAlbumName(userData?.userID, AlbumID, AlbumName, RestClient.apiType, RestClient.apiVersion)
+                editAlbumName(
+                    userData?.userID,
+                    AlbumID,
+                    AlbumName,
+                    RestClient.apiType,
+                    RestClient.apiVersion
+                )
             }
 
         }
@@ -309,7 +367,12 @@ class CollectionsFragment : androidx.fragment.app.Fragment(), SwipeRefreshLayout
     }
 
     //Api Calling Funcation
-    private fun createAlbumName(useriD: String?, albumName: String, apiType: String, apiVersion: String) {
+    private fun createAlbumName(
+        useriD: String?,
+        albumName: String,
+        apiType: String,
+        apiVersion: String
+    ) {
         relativeprogressBar.visibility = View.VISIBLE
         val jsonObject = JSONObject()
         val jsonArray = JSONArray()
@@ -327,37 +390,51 @@ class CollectionsFragment : androidx.fragment.app.Fragment(), SwipeRefreshLayout
             e.printStackTrace()
         }
         Log.d("CreatAlbumObject", jsonObject.toString())
-        var getEmployementModel =
-                ViewModelProviders.of(this@CollectionsFragment).get(CreateAlbumModel::class.java)
-        getEmployementModel.apiCreateAlbum(mActivity!!, false, jsonArray.toString())
-                .observe(viewLifecycleOwner,
-                        Observer { albumCreatepojo ->
+        collectionViewModel.createAlbum(jsonArray.toString())
+        collectionViewModel.createAlbum
+            .observe(viewLifecycleOwner,
+                Observer { albumCreatepojo ->
 
-                            relativeprogressBar.visibility = View.GONE
+                    relativeprogressBar.visibility = View.GONE
 
-                            if (albumCreatepojo != null && albumCreatepojo.isNotEmpty()) {
+                    if (albumCreatepojo != null && albumCreatepojo.isNotEmpty()) {
 
-                                if (albumCreatepojo[0].status.equals("true", true)) {
+                        if (albumCreatepojo[0].status.equals("true", true)) {
 
-                                    Toast.makeText(context, albumCreatepojo[0].message, Toast.LENGTH_SHORT).show()
-                                    b!!.dismiss()
-                                    pageNo = 0
-                                    getCreatAlbumList(userData?.userID, pageNo, "10", RestClient.apiType, RestClient.apiVersion)
-                                } else {
+                            Toast.makeText(context, albumCreatepojo[0].message, Toast.LENGTH_SHORT)
+                                .show()
+                            b!!.dismiss()
+                            pageNo = 0
+                            getCreatAlbumList(
+                                userData?.userID,
+                                pageNo,
+                                "10",
+                                RestClient.apiType,
+                                RestClient.apiVersion
+                            )
+                        } else {
 
-                                    Toast.makeText(context, albumCreatepojo[0].message, Toast.LENGTH_SHORT).show()
-                                }
+                            Toast.makeText(context, albumCreatepojo[0].message, Toast.LENGTH_SHORT)
+                                .show()
+                        }
 
-                            } else {
+                    } else {
 
-                                relativeprogressBar.visibility = View.GONE
+                        relativeprogressBar.visibility = View.GONE
 
-                            }
+                    }
 
-                        })
+                })
     }
 
-    private fun getCreatAlbumList(userID: String?, pageno: Int?, pagesize: String?, apiType: String?, apiVersion: String?, searchKeyword: String="") {
+    private fun getCreatAlbumList(
+        userID: String?,
+        pageno: Int?,
+        pagesize: String?,
+        apiType: String?,
+        apiVersion: String?,
+        searchKeyword: String = ""
+    ) {
 
         ll_no_data_found.visibility = View.GONE
         nointernetMainRelativelayout.visibility = View.GONE
@@ -393,76 +470,80 @@ class CollectionsFragment : androidx.fragment.app.Fragment(), SwipeRefreshLayout
         }
         Log.d("album_jsonObject", jsonObject.toString())
         jsonArray.put(jsonObject)
-        val albumlistModel = ViewModelProvider(this@CollectionsFragment).get(CteateAlbumListModel::class.java)
-        albumlistModel.getAlbumDataList(mActivity!!, false, jsonArray.toString())
-                .observe(viewLifecycleOwner,
-                        Observer { albumpojo ->
-                            if (albumpojo != null && albumpojo.isNotEmpty()) {
+        collectionViewModel.createAlbumList(jsonArray.toString())
+        collectionViewModel.createAlbumList
+            .observe(viewLifecycleOwner,
+                Observer { albumpojo ->
+                    if (albumpojo != null && albumpojo.isNotEmpty()) {
 
-                                isLoading = false
-                                ll_no_data_found.visibility = View.GONE
-                                nointernetMainRelativelayout.visibility = View.GONE
-                                relativeprogressBar.visibility = View.GONE
+                        isLoading = false
+                        ll_no_data_found.visibility = View.GONE
+                        nointernetMainRelativelayout.visibility = View.GONE
+                        relativeprogressBar.visibility = View.GONE
 
-                                if (pageNo > 0) {
+                        if (pageNo > 0) {
+                            create_album_list?.removeAt(create_album_list!!.size - 1)
+                            create_album_adapter?.notifyItemRemoved(create_album_list!!.size)
+                        }
 
-                                    create_album_list?.removeAt(create_album_list!!.size - 1)
-                                    create_album_adapter?.notifyItemRemoved(create_album_list!!.size)
-                                }
+                        if (albumpojo[0].status.equals("true", true)) {
 
-                                if (albumpojo[0].status.equals("true", true)) {
-
-                                    rc_album_create.visibility = View.VISIBLE
-                                    if (pageNo == 0) {
-                                        create_album_list?.clear()
-                                    }
-                                    create_album_list!!.addAll(albumpojo[0].data)
-                                    create_album_adapter?.notifyDataSetChanged()
-                                    pageNo += 1
-                                    if (albumpojo[0].data.size < 10) {
-                                        isLastpage = true
-                                    }
-                                    if (!albumpojo[0].data!!.isNullOrEmpty()) {
-                                        if (albumpojo[0].data!!.isNullOrEmpty()) {
-                                            ll_no_data_found.visibility = View.VISIBLE
-                                            rc_album_create.visibility = View.GONE
-                                        } else {
-                                            ll_no_data_found.visibility = View.GONE
-                                            rc_album_create.visibility = View.VISIBLE
-                                        }
-
-
-                                    } else {
-                                        ll_no_data_found.visibility = View.VISIBLE
-                                        rc_album_create.visibility = View.GONE
-                                    }
-
+                            rc_album_create.visibility = View.VISIBLE
+                            if (pageNo == 0) {
+                                create_album_list?.clear()
+                            }
+                            create_album_list!!.addAll(albumpojo[0].data)
+                            create_album_adapter?.notifyDataSetChanged()
+                            pageNo += 1
+                            if (albumpojo[0].data.size < 10) {
+                                isLastpage = true
+                            }
+                            if (!albumpojo[0].data!!.isNullOrEmpty()) {
+                                if (albumpojo[0].data!!.isNullOrEmpty()) {
+                                    ll_no_data_found.visibility = View.VISIBLE
+                                    rc_album_create.visibility = View.GONE
                                 } else {
-                                    relativeprogressBar.visibility = View.GONE
-
-                                    if (create_album_list!!.isNullOrEmpty()) {
-                                        ll_no_data_found.visibility = View.VISIBLE
-                                        rc_album_create.visibility = View.GONE
-
-                                    } else {
-                                        ll_no_data_found.visibility = View.GONE
-                                        rc_album_create.visibility = View.VISIBLE
-
-                                    }
+                                    ll_no_data_found.visibility = View.GONE
+                                    rc_album_create.visibility = View.VISIBLE
                                 }
+
 
                             } else {
-
-                                relativeprogressBar.visibility = View.GONE
-                                if (activity != null) {
-                                    ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
-
-                                }
+                                ll_no_data_found.visibility = View.VISIBLE
+                                rc_album_create.visibility = View.GONE
                             }
-                        })
+
+                        } else {
+                            relativeprogressBar.visibility = View.GONE
+
+                            if (create_album_list!!.isNullOrEmpty()) {
+                                ll_no_data_found.visibility = View.VISIBLE
+                                rc_album_create.visibility = View.GONE
+
+                            } else {
+                                ll_no_data_found.visibility = View.GONE
+                                rc_album_create.visibility = View.VISIBLE
+
+                            }
+                        }
+
+                    } else {
+
+                        relativeprogressBar.visibility = View.GONE
+                        if (activity != null) {
+                            ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+
+                        }
+                    }
+                })
     }
 
-    private fun getCreateAblumDelete(userID: String?, exalbumID: String?, apiVersion: String, apiType: String) {
+    private fun getCreateAblumDelete(
+        userID: String?,
+        exalbumID: String?,
+        apiVersion: String,
+        apiType: String
+    ) {
 
         relativeprogressBar.visibility = View.VISIBLE
         ll_no_data_found.visibility = View.GONE
@@ -483,45 +564,56 @@ class CollectionsFragment : androidx.fragment.app.Fragment(), SwipeRefreshLayout
         }
         Log.d("ALBUM_DELETE_LIST", jsonObject.toString())
         jsonArray.put(jsonObject)
-        var getCreateAlbumDeleteModel = ViewModelProvider(this@CollectionsFragment).get(CreateAlbumDeleteModel::class.java)
-        getCreateAlbumDeleteModel.apiCreateAlbumDelete((context as Activity), false, jsonArray.toString())
-                .observe(this@CollectionsFragment!!,
-                        Observer { albumDeletepojo ->
+        collectionViewModel.deleteAlbum(jsonArray.toString())
+        collectionViewModel.deleteAlbum
+            .observe(viewLifecycleOwner,
+                Observer { albumDeletepojo ->
 
-                            relativeprogressBar.visibility = View.GONE
+                    relativeprogressBar.visibility = View.GONE
 
-                            if (albumDeletepojo != null && albumDeletepojo.isNotEmpty()) {
+                    if (albumDeletepojo != null && albumDeletepojo.isNotEmpty()) {
 
-                                if (albumDeletepojo[0].status.equals("true", true)) {
+                        if (albumDeletepojo[0].status.equals("true", true)) {
 
-                                    if (create_album_list!!.size == 0) {
+                            if (create_album_list!!.size == 0) {
 
-                                        ll_no_data_found.visibility = View.VISIBLE
-                                        Toast.makeText(context, albumDeletepojo[0].message, Toast.LENGTH_SHORT).show()
-                                        create_album_adapter!!.notifyDataSetChanged();
-
-                                    } else {
-
-                                        ll_no_data_found.visibility = View.GONE
-                                    }
-
-
-                                } else {
-
-
-                                    Toast.makeText(context, albumDeletepojo[0].message, Toast.LENGTH_SHORT).show()
-                                }
+                                ll_no_data_found.visibility = View.VISIBLE
+                                Toast.makeText(
+                                    context,
+                                    albumDeletepojo[0].message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                create_album_adapter!!.notifyDataSetChanged();
 
                             } else {
 
-                                relativeprogressBar.visibility = View.GONE
-                                ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                                ll_no_data_found.visibility = View.GONE
                             }
 
-                        })
+
+                        } else {
+
+
+                            Toast.makeText(context, albumDeletepojo[0].message, Toast.LENGTH_SHORT)
+                                .show()
+                        }
+
+                    } else {
+
+                        relativeprogressBar.visibility = View.GONE
+                        ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                    }
+
+                })
     }
 
-    private fun editAlbumName(useriD: String?, albumID: String?, albumName: String?, apiType: String, apiVersion: String) {
+    private fun editAlbumName(
+        useriD: String?,
+        albumID: String?,
+        albumName: String?,
+        apiType: String,
+        apiVersion: String
+    ) {
 
         relativeprogressBar.visibility = View.VISIBLE
         val jsonObject = JSONObject()
@@ -541,39 +633,54 @@ class CollectionsFragment : androidx.fragment.app.Fragment(), SwipeRefreshLayout
             e.printStackTrace()
         }
         Log.d("EditAlbumObject", jsonObject.toString())
-        var geteditModel = ViewModelProvider(this@CollectionsFragment).get(EditAlbumModel::class.java)
-        geteditModel.apiEditAlbumDelete(mActivity!!, false, jsonArray.toString())
-                .observe(this@CollectionsFragment,
-                        Observer { albumEditpojo ->
+        collectionViewModel.editAlbum(jsonArray.toString())
+        collectionViewModel.editAlbum
+            .observe(viewLifecycleOwner,
+                Observer { albumEditpojo ->
 
-                            relativeprogressBar.visibility = View.GONE
-                            if (albumEditpojo != null && albumEditpojo.isNotEmpty()) {
-                                MyUtils.dismissProgressDialog()
-                                if (albumEditpojo[0].status.equals("true", true)) {
+                    relativeprogressBar.visibility = View.GONE
+                    if (albumEditpojo != null && albumEditpojo.isNotEmpty()) {
+                        MyUtils.dismissProgressDialog()
+                        if (albumEditpojo[0].status.equals("true", true)) {
 
-                                    Toast.makeText(context, albumEditpojo[0].message, Toast.LENGTH_SHORT).show()
-                                    b!!.dismiss()
-                                    pageNo = 0
-                                    getCreatAlbumList(userData?.userID, pageNo, "10", RestClient.apiType, RestClient.apiVersion)
-                                } else {
+                            Toast.makeText(context, albumEditpojo[0].message, Toast.LENGTH_SHORT)
+                                .show()
+                            b!!.dismiss()
+                            pageNo = 0
+                            getCreatAlbumList(
+                                userData?.userID,
+                                pageNo,
+                                "10",
+                                RestClient.apiType,
+                                RestClient.apiVersion
+                            )
+                        } else {
 
-                                    Toast.makeText(context, albumEditpojo[0].message, Toast.LENGTH_SHORT).show()
-                                }
+                            Toast.makeText(context, albumEditpojo[0].message, Toast.LENGTH_SHORT)
+                                .show()
+                        }
 
-                            } else {
+                    } else {
 
-                                relativeprogressBar.visibility = View.GONE
+                        relativeprogressBar.visibility = View.GONE
 
-                            }
+                    }
 
-                        })
+                })
     }
 
     fun applySearch(searchKeyword: String) {
         pageNo = 0
         isLastpage = false
         isLoading = false
-        getCreatAlbumList(userData?.userID, pageNo, "10", RestClient.apiType, RestClient.apiVersion,searchKeyword)
+        getCreatAlbumList(
+            userData?.userID,
+            pageNo,
+            "10",
+            RestClient.apiType,
+            RestClient.apiVersion,
+            searchKeyword
+        )
 
     }
 }

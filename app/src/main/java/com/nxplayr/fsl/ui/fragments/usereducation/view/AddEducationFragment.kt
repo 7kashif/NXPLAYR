@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.gson.Gson
 import com.nxplayr.fsl.ui.activity.addmedia.view.AddMediaActivity
@@ -61,7 +62,7 @@ class AddEducationFragment : Fragment(), View.OnClickListener,
     private var educationUpdateListener: EducationUpdateListener? = null
     var mediaTypeEducation = ""
     var mediaEduFileName = ""
-    var serverfileSizeeducation="0"
+    var serverfileSizeeducation = "0"
     var mediaEduImageTitle = ""
     var mediaEduDescription = ""
     var mediaEduLink = ""
@@ -70,10 +71,13 @@ class AddEducationFragment : Fragment(), View.OnClickListener,
     var userEduData: EducationData? = null
     var position: Int = 0
     var fromMedia = ""
+    var addEducationModel = EducationModel()
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         if (v == null) {
             v = inflater.inflate(R.layout.fragment_add_education, container, false)
         }
@@ -108,6 +112,8 @@ class AddEducationFragment : Fragment(), View.OnClickListener,
             userEduData = arguments!!.getSerializable("usereduData") as EducationData
         }
 
+        addEducationModel =
+            ViewModelProvider(this@AddEducationFragment).get(EducationModel::class.java)
 
         toolbar.setNavigationOnClickListener {
             MyUtils.hideKeyboard1(mActivity!!)
@@ -116,10 +122,46 @@ class AddEducationFragment : Fragment(), View.OnClickListener,
         if (from.equals("edit")) {
             tvToolbarTitle.text = getString(R.string.edit_education)
             btn_save_education_detail.progressText = resources.getString(R.string.update)
+            if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+                if (!sessionManager?.LanguageLabel?.lngUpdateEducation.isNullOrEmpty())
+                    tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngUpdateEducation
+            }
         } else {
             tvToolbarTitle.text = getString(R.string.add_education)
             btn_save_education_detail.progressText = resources.getString(R.string.save)
+            if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+                if (!sessionManager?.LanguageLabel?.lngAddEducation.isNullOrEmpty())
+                    tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngAddEducation
+            }
+        }
 
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_save_education_detail.progressText = sessionManager?.LanguageLabel?.lngSave
+            if (!sessionManager?.LanguageLabel?.lngSchoolCollege.isNullOrEmpty())
+                tv_university_edit_text.hint = sessionManager?.LanguageLabel?.lngSchoolCollege
+            if (!sessionManager?.LanguageLabel?.lngDegree.isNullOrEmpty())
+                tv_degree_edit_text.hint = sessionManager?.LanguageLabel?.lngDegree
+            if (!sessionManager?.LanguageLabel?.lngGrade.isNullOrEmpty())
+                tv_grade_edit_text.hint = sessionManager?.LanguageLabel?.lngGrade
+            if (!sessionManager?.LanguageLabel?.lngIAmCurrentlyStudyHere.isNullOrEmpty())
+                checkbox.text = sessionManager?.LanguageLabel?.lngIAmCurrentlyStudyHere
+            if (!sessionManager?.LanguageLabel?.lngFrom.isNullOrEmpty())
+                study_from.text = sessionManager?.LanguageLabel?.lngFrom
+            if (!sessionManager?.LanguageLabel?.lngTo.isNullOrEmpty())
+                study_to.text = sessionManager?.LanguageLabel?.lngTo
+            if (!sessionManager?.LanguageLabel?.lngDescription.isNullOrEmpty())
+                tv_txt_des_education.hint = sessionManager?.LanguageLabel?.lngDescription
+            if (!sessionManager?.LanguageLabel?.lngMedia.isNullOrEmpty())
+                study_media.text = sessionManager?.LanguageLabel?.lngMedia
+            if (!sessionManager?.LanguageLabel?.lngAddOrLinkToExternaldoc.isNullOrEmpty())
+                study_add_link.text = sessionManager?.LanguageLabel?.lngAddOrLinkToExternaldoc
+            if (!sessionManager?.LanguageLabel?.lngUpload.isNullOrEmpty())
+                btn_uploadImageEducation.text = sessionManager?.LanguageLabel?.lngUpload
+            if (!sessionManager?.LanguageLabel?.lngLink.isNullOrEmpty())
+                btn_setEduLink.text = sessionManager?.LanguageLabel?.lngLink
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_save_education_detail.progressText = sessionManager?.LanguageLabel?.lngSave
         }
 
         setOnClickListener()
@@ -236,7 +278,11 @@ class AddEducationFragment : Fragment(), View.OnClickListener,
             }
             R.id.todate_edittext -> {
                 if (fromdate_edittext.text.isNullOrEmpty()) {
-                    MyUtils.showSnackbar(mActivity!!, "Please select from date", ll_main_saveEducation)
+                    MyUtils.showSnackbar(
+                        mActivity!!,
+                        "Please select from date",
+                        ll_main_saveEducation
+                    )
                 } else {
                     setMonthPickerDialog("to")
                 }
@@ -254,10 +300,18 @@ class AddEducationFragment : Fragment(), View.OnClickListener,
 
                 try {
 
-                    var fromDate = MyUtils.formatDate(userEduData!!.usereducationPeriodOfTimeFrom, "dd-MM-yyyy hh:mm:ss", "MM/yyyy")
+                    var fromDate = MyUtils.formatDate(
+                        userEduData!!.usereducationPeriodOfTimeFrom,
+                        "dd-MM-yyyy hh:mm:ss",
+                        "MM/yyyy"
+                    )
                     fromdate_edittext.setText(fromDate)
                     if (!userEduData!!.usereducationPeriodOfTimeTo.isNullOrEmpty()) {
-                        var toDate = MyUtils.formatDate(userEduData!!.usereducationPeriodOfTimeTo, "dd-MM-yyyy hh:mm:ss", "MM/yyyy")
+                        var toDate = MyUtils.formatDate(
+                            userEduData!!.usereducationPeriodOfTimeTo,
+                            "dd-MM-yyyy hh:mm:ss",
+                            "MM/yyyy"
+                        )
                         ll_to_date.visibility = View.VISIBLE
                         todate_edittext.setText(toDate)
                         checkbox.isChecked = false
@@ -306,7 +360,8 @@ class AddEducationFragment : Fragment(), View.OnClickListener,
                 }
 
                 btn_save_education_detail.strokeColor = (resources.getColor(R.color.colorPrimary))
-                btn_save_education_detail.backgroundTint = (resources.getColor(R.color.colorPrimary))
+                btn_save_education_detail.backgroundTint =
+                    (resources.getColor(R.color.colorPrimary))
                 btn_save_education_detail.textColor = resources.getColor(R.color.black)
             }
         }
@@ -335,20 +390,39 @@ class AddEducationFragment : Fragment(), View.OnClickListener,
             try {
                 if (from.equals("from", false)) {
                     if ((selected.compareTo(currentDate) > 0)) {
-                        MyUtils.showSnackbar(mActivity!!, "Please select valid from date", ll_main_saveEducation)
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            "Please select valid from date",
+                            ll_main_saveEducation
+                        )
                     } else {
                         fromdate_edittext.setText(fromdate)
                     }
                 } else if (from.equals("to")) {
-                    var date = MyUtils.formatDate(fromdate_edittext.text.toString(), "MM/yyyy", "yyyy,MM")
+                    var date =
+                        MyUtils.formatDate(fromdate_edittext.text.toString(), "MM/yyyy", "yyyy,MM")
                     var fromYear = MyUtils.formatDate(date, "yyyy,MM", "yyyy")
                     var fromMonth = MyUtils.formatDate(date, "yyyy,MM", "MM")
 
                     if ((selected.compareTo(currentDate) > 0)) {
-                        MyUtils.showSnackbar(mActivity!!, "Please select valid to date", ll_main_saveEducation)
-                    } else if ((selectedMonth.compareTo(fromMonth) <= 0) && (selectedYear.compareTo(fromYear) <= 0)) {
-                        MyUtils.showSnackbar(mActivity!!, "Please select valid to date", ll_main_saveEducation)
-                    } else if ((selectedMonth.compareTo(fromMonth) >= 0) && (selectedYear.compareTo(fromYear) >= 0)) {
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            "Please select valid to date",
+                            ll_main_saveEducation
+                        )
+                    } else if ((selectedMonth.compareTo(fromMonth) <= 0) && (selectedYear.compareTo(
+                            fromYear
+                        ) <= 0)
+                    ) {
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            "Please select valid to date",
+                            ll_main_saveEducation
+                        )
+                    } else if ((selectedMonth.compareTo(fromMonth) >= 0) && (selectedYear.compareTo(
+                            fromYear
+                        ) >= 0)
+                    ) {
                         todate_edittext.setText(toDate)
                     } else {
                         todate_edittext.setText(toDate)
@@ -382,28 +456,36 @@ class AddEducationFragment : Fragment(), View.OnClickListener,
         jsonArray.put(jsonObject)
 
         var degreeListModel =
-                ViewModelProviders.of(this@AddEducationFragment).get(DegreeListModel::class.java)
+            ViewModelProviders.of(this@AddEducationFragment).get(DegreeListModel::class.java)
         degreeListModel.getDegreeList(mActivity!!, false, jsonArray.toString())
-                .observe(this@AddEducationFragment!!,
-                        androidx.lifecycle.Observer { degreeListPojo ->
-                            if (degreeListPojo != null && degreeListPojo.isNotEmpty()) {
+            .observe(this@AddEducationFragment!!,
+                androidx.lifecycle.Observer { degreeListPojo ->
+                    if (degreeListPojo != null && degreeListPojo.isNotEmpty()) {
 
-                                if (degreeListPojo[0].status.equals("true", false)) {
-                                    MyUtils.dismissProgressDialog()
+                        if (degreeListPojo[0].status.equals("true", false)) {
+                            MyUtils.dismissProgressDialog()
 
-                                    degreeListData!!.clear()
-                                    degreeListData!!.addAll(degreeListPojo[0].data)
-                                    openDegreeListBottomSheet(degreeListData!!)
-                                } else {
-                                    MyUtils.dismissProgressDialog()
-                                    MyUtils.showSnackbar(mActivity!!, degreeListPojo[0].message, ll_main_saveEducation)
-                                }
+                            degreeListData!!.clear()
+                            degreeListData!!.addAll(degreeListPojo[0].data)
+                            openDegreeListBottomSheet(degreeListData!!)
+                        } else {
+                            MyUtils.dismissProgressDialog()
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                degreeListPojo[0].message,
+                                ll_main_saveEducation
+                            )
+                        }
 
-                            } else {
-                                MyUtils.dismissProgressDialog()
-                                Toast.makeText(mActivity!!,R.string.error_common_network,Toast.LENGTH_SHORT).show()
-                            }
-                        })
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        Toast.makeText(
+                            mActivity!!,
+                            R.string.error_common_network,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                })
 
     }
 
@@ -423,28 +505,36 @@ class AddEducationFragment : Fragment(), View.OnClickListener,
         jsonArray.put(jsonObject)
 
         var universityListModel =
-                ViewModelProviders.of(this@AddEducationFragment).get(UniversityListModel::class.java)
+            ViewModelProviders.of(this@AddEducationFragment).get(UniversityListModel::class.java)
         universityListModel.getUniversityList(mActivity!!, false, jsonArray.toString())
-                .observe(this@AddEducationFragment!!,
-                        androidx.lifecycle.Observer { universityListPojo ->
-                            if (universityListPojo != null && universityListPojo.isNotEmpty()) {
+            .observe(this@AddEducationFragment!!,
+                androidx.lifecycle.Observer { universityListPojo ->
+                    if (universityListPojo != null && universityListPojo.isNotEmpty()) {
 
-                                if (universityListPojo[0].status.equals("true", false)) {
-                                    MyUtils.dismissProgressDialog()
+                        if (universityListPojo[0].status.equals("true", false)) {
+                            MyUtils.dismissProgressDialog()
 
-                                    universityListData!!.clear()
-                                    universityListData!!.addAll(universityListPojo[0].data)
-                                    openUnsityListBottomSheet(universityListData!!)
-                                } else {
-                                    MyUtils.dismissProgressDialog()
-                                    MyUtils.showSnackbar(mActivity!!, universityListPojo[0].message, ll_main_saveEducation)
-                                }
+                            universityListData!!.clear()
+                            universityListData!!.addAll(universityListPojo[0].data)
+                            openUnsityListBottomSheet(universityListData!!)
+                        } else {
+                            MyUtils.dismissProgressDialog()
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                universityListPojo[0].message,
+                                ll_main_saveEducation
+                            )
+                        }
 
-                            } else {
-                                MyUtils.dismissProgressDialog()
-                                Toast.makeText(mActivity!!,R.string.error_common_network, Toast.LENGTH_SHORT).show()
-                            }
-                        })
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        Toast.makeText(
+                            mActivity!!,
+                            R.string.error_common_network,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                })
 
     }
 
@@ -567,7 +657,10 @@ class AddEducationFragment : Fragment(), View.OnClickListener,
         } else if (TextUtils.isEmpty(fromdate_edittext.text.toString().trim())) {
             MyUtils.showSnackbar(mActivity!!, "Please Select from date", ll_main_saveEducation)
             fromdate_edittext.requestFocus()
-        } else if (!checkbox.isChecked && TextUtils.isEmpty(todate_edittext.text.toString().trim())) {
+        } else if (!checkbox.isChecked && TextUtils.isEmpty(
+                todate_edittext.text.toString().trim()
+            )
+        ) {
             MyUtils.showSnackbar(mActivity!!, "Please select To date", ll_main_saveEducation)
             todate_edittext.requestFocus()
         } /*else if (TextUtils.isEmpty(txt_des_education.text.toString().trim())) {
@@ -600,11 +693,25 @@ class AddEducationFragment : Fragment(), View.OnClickListener,
             jsonObject.put("universityID", universityID)
             jsonObject.put("degreeID", degreeID)
             jsonObject.put("usereducationGrade", grade_edit_text.text.toString())
-            jsonObject.put("usereducationPeriodOfTimeFrom", MyUtils.formatDate(fromdate_edittext.text.toString(), "MM/yyyy", "dd-MM-yyyy hh:mm:ss"))
+            jsonObject.put(
+                "usereducationPeriodOfTimeFrom",
+                MyUtils.formatDate(
+                    fromdate_edittext.text.toString(),
+                    "MM/yyyy",
+                    "dd-MM-yyyy hh:mm:ss"
+                )
+            )
             if (checkbox.isChecked) {
                 jsonObject.put("usereducationPeriodOfTimeTo", "")
             } else {
-                jsonObject.put("usereducationPeriodOfTimeTo", MyUtils.formatDate(todate_edittext.text.toString(), "MM/yyyy", "dd-MM-yyyy hh:mm:ss"))
+                jsonObject.put(
+                    "usereducationPeriodOfTimeTo",
+                    MyUtils.formatDate(
+                        todate_edittext.text.toString(),
+                        "MM/yyyy",
+                        "dd-MM-yyyy hh:mm:ss"
+                    )
+                )
             }
             jsonObject.put("usereducationDescription", txt_des_education.text.toString())
             jsonObject.put("usereducationPrivarcyType", "Public")
@@ -619,13 +726,19 @@ class AddEducationFragment : Fragment(), View.OnClickListener,
                     if (mediaList!![i].equals("Image")) {
                         educationmediaPojo.put("useredumediaType", "Image")
                         educationmediaPojo.put("useredumediaFile", mediaEduFileName)
-                        educationmediaPojo.put("useredumediaTitle", tv_add_media.text.toString().trim())
+                        educationmediaPojo.put(
+                            "useredumediaTitle",
+                            tv_add_media.text.toString().trim()
+                        )
                         educationmediaPojo.put("useredumediaDescription", mediaEduDescription)
                         educationmediaPojo.put("useredumediaFileSize", serverfileSizeeducation)
                     }
                     if (mediaList!![i].equals("Link")) {
                         educationmediaPojo.put("useredumediaType", "Link")
-                        educationmediaPojo.put("useredumediaFile", media_edu_linkName.text.toString().trim())
+                        educationmediaPojo.put(
+                            "useredumediaFile",
+                            media_edu_linkName.text.toString().trim()
+                        )
                         educationmediaPojo.put("useredumediaTitle", "")
                         educationmediaPojo.put("useredumediaDescription", "")
                         educationmediaPojo.put("useredumediaFileSize", serverfileSizeeducation)
@@ -644,48 +757,57 @@ class AddEducationFragment : Fragment(), View.OnClickListener,
 
         jsonArray.put(jsonObject)
 
-        var addEducationModel =
-                ViewModelProviders.of(this@AddEducationFragment).get(EducationModel::class.java)
-        addEducationModel.getEducation(mActivity!!, false, jsonArray.toString(), from)
-                .observe(this@AddEducationFragment!!,
-                        androidx.lifecycle.Observer { loginPojo ->
-                            if (loginPojo != null) {
-                                btn_save_education_detail.endAnimation()
-                                if (loginPojo.get(0).status.equals("true", false)) {
-                                    try {
 
-                                        if (from.equals("Add")) {
-                                            userData?.education?.addAll(loginPojo.get(0).data)
-                                            StoreSessionManager(userData)
-                                        } else if (from.equals("Edit")) {
-                                            for (i in 0 until userData?.education!!.size) {
-                                                if (usereducationID.equals(userData!!.education!![i]!!.usereducationID))
-                                                    userData!!.education!![i] = loginPojo!![0].data!![0]
-                                                break
-                                            }
-                                            StoreSessionManager(userData)
-                                            if (educationUpdateListener != null)
-                                                educationUpdateListener!!.onEducationUpdate()
+        addEducationModel.educationApi(jsonArray.toString(), from)
+        addEducationModel.successEducation
+            .observe(
+                viewLifecycleOwner
+            ) { loginPojo ->
+                if (loginPojo != null) {
+                    btn_save_education_detail.endAnimation()
+                    if (loginPojo.get(0).status.equals("true", false)) {
+                        try {
 
-                                        }
-                                        Handler().postDelayed({
-                                            (activity as MainActivity).onBackPressed()
-                                        }, 2000)
-
-                                        MyUtils.showSnackbar(mActivity!!, loginPojo.get(0).message, ll_main_saveEducation)
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
-                                    }
-
-                                } else {
-                                    MyUtils.showSnackbar(mActivity!!, loginPojo.get(0).message, ll_main_saveEducation)
+                            if (from.equals("Add")) {
+                                userData?.education?.addAll(loginPojo.get(0).data)
+                                StoreSessionManager(userData)
+                            } else if (from.equals("Edit")) {
+                                for (i in 0 until userData?.education!!.size) {
+                                    if (usereducationID.equals(userData!!.education!![i]!!.usereducationID))
+                                        userData!!.education!![i] = loginPojo!![0].data!![0]
+                                    break
                                 }
+                                StoreSessionManager(userData)
+                                if (educationUpdateListener != null)
+                                    educationUpdateListener!!.onEducationUpdate()
 
-                            } else {
-                                btn_save_education_detail.endAnimation()
-                                ErrorUtil.errorMethod(ll_main_saveEducation)
                             }
-                        })
+                            Handler().postDelayed({
+                                (activity as MainActivity).onBackPressed()
+                            }, 2000)
+
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                loginPojo.get(0).message,
+                                ll_main_saveEducation
+                            )
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+
+                    } else {
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            loginPojo.get(0).message,
+                            ll_main_saveEducation
+                        )
+                    }
+
+                } else {
+                    btn_save_education_detail.endAnimation()
+                    ErrorUtil.errorMethod(ll_main_saveEducation)
+                }
+            }
     }
 
 
@@ -695,11 +817,11 @@ class AddEducationFragment : Fragment(), View.OnClickListener,
 
         val json = gson.toJson(uesedata)
         sessionManager?.create_login_session(
-                json,
-                uesedata!!.userMobile,
-                "",
-                true,
-                sessionManager!!.isEmailLogin()
+            json,
+            uesedata!!.userMobile,
+            "",
+            true,
+            sessionManager!!.isEmailLogin()
         )
 
     }
@@ -756,7 +878,7 @@ class AddEducationFragment : Fragment(), View.OnClickListener,
                     mediaEduFileName = data.getStringExtra("imageMedia")!!
                     mediaTypeEducation = data.getStringExtra("media_type")!!
                     fromMedia = data.getStringExtra("fromMedia")!!
-                    serverfileSizeeducation=data.getStringExtra("serverfileSizeeducation")!!
+                    serverfileSizeeducation = data.getStringExtra("serverfileSizeeducation")!!
 
                     if (fromMedia.equals("AddMedia")) {
 

@@ -35,6 +35,8 @@ class FollowersFragment : Fragment(), View.OnClickListener {
     var userData: SignupData? = null
     var userId = ""
     var from = ""
+    var followers = "Followers"
+    var following = "Following"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,6 +81,16 @@ class FollowersFragment : Fragment(), View.OnClickListener {
         }
 
         tvToolbarTitle1.text = getString(R.string.followers_following)
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngAnd.isNullOrEmpty()) {
+                if (!sessionManager?.LanguageLabel?.lngFollowers.isNullOrEmpty())
+                    followers = sessionManager?.LanguageLabel?.lngFollowers.toString()
+                if (!sessionManager?.LanguageLabel?.lngFollowing.isNullOrEmpty())
+                    following = sessionManager?.LanguageLabel?.lngFollowing.toString()
+                tvToolbarTitle1.text =
+                    followers + " " + sessionManager?.LanguageLabel?.lngAnd + " " + following
+            }
+        }
 
         if (from.equals("profile")) {
             add_icon_connection.visibility = View.VISIBLE
@@ -96,8 +108,8 @@ class FollowersFragment : Fragment(), View.OnClickListener {
         adapter = null
         viewPager.adapter = null
         adapter = FollowersViewPagerAdapter(childFragmentManager, userId, from)
-        adapter?.addFragment(FollowersListFragment(), "Followers")
-        adapter?.addFragment(FollowersListFragment(), "Following")
+        adapter?.addFragment(FollowersListFragment(), followers)
+        adapter?.addFragment(FollowersListFragment(), following)
         viewPager.offscreenPageLimit = 2
         viewPager.adapter = adapter
         viewPager.currentItem = tabposition
@@ -105,8 +117,8 @@ class FollowersFragment : Fragment(), View.OnClickListener {
     }
 
     fun setFollowingCount(count: List<FollowingCount>) {
-        tab_layout.getTabAt(0)?.text = "Followers " + count[0].followerCount
-        tab_layout.getTabAt(1)?.text = "Following " + count[0].followingCount
+        tab_layout.getTabAt(0)?.text = "$followers " + count[0].followerCount
+        tab_layout.getTabAt(1)?.text = "$following " + count[0].followingCount
     }
 
     override fun onClick(v: View?) {

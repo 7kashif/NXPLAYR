@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.FollowingListPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
 
@@ -34,7 +37,7 @@ class FollowersModel : ViewModel() {
 
     private fun getFollowersApi(): LiveData<List<FollowingListPojo>> {
         val data = MutableLiveData<List<FollowingListPojo>>()
-
+        viewModelScope.launch(Dispatchers.IO) {
         var call: Call<List<FollowingListPojo>>? = null
         when (from) {
             "FollowingList" -> {
@@ -54,7 +57,7 @@ class FollowersModel : ViewModel() {
                 data.value = null
             }
 
-        })
+        })}
 
         return data
     }

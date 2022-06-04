@@ -4,14 +4,18 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.nxplayr.fsl.BuildConfig
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.ui.activity.intro.adapter.UltraPagerAdapter
 import com.nxplayr.fsl.data.model.IntroStaticDataPojo
+import com.nxplayr.fsl.data.model.LanguageListData
 import com.nxplayr.fsl.ui.activity.onboarding.view.SignInActivity
 import com.nxplayr.fsl.ui.activity.onboarding.view.SignupActivity
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.activity_intro_screen.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class IntroScreenActivity : AppCompatActivity(), View.OnClickListener {
@@ -75,14 +79,16 @@ class IntroScreenActivity : AppCompatActivity(), View.OnClickListener {
                 )
             }
 
-            if (!langLabel?.lngIntroTitle3.isNullOrEmpty() && !langLabel?.lngIntroDetail3.isNullOrEmpty()) {
-                list.add(
-                    IntroStaticDataPojo(
-                        langLabel?.lngIntroTitle3.toString(),
-                        langLabel?.lngIntroDetail3.toString(),
-                        ContextCompat.getDrawable(this, R.drawable.intro_slider_img3)
+            if (BuildConfig.DEBUG) {
+                if (!langLabel?.lngIntroTitle3.isNullOrEmpty() && !langLabel?.lngIntroDetail3.isNullOrEmpty()) {
+                    list.add(
+                        IntroStaticDataPojo(
+                            langLabel?.lngIntroTitle3.toString(),
+                            langLabel?.lngIntroDetail3.toString(),
+                            ContextCompat.getDrawable(this, R.drawable.intro_slider_img3)
+                        )
                     )
-                )
+                }
             }
 
             if (!langLabel?.lngIntroTitle4.isNullOrEmpty() && !langLabel?.lngIntroDetail4.isNullOrEmpty()) {
@@ -115,48 +121,52 @@ class IntroScreenActivity : AppCompatActivity(), View.OnClickListener {
                 )
             }
 
-            if (!langLabel?.lngIntroTitle7.isNullOrEmpty() && !langLabel?.lngIntroDetail7.isNullOrEmpty()) {
-                list.add(
-                    IntroStaticDataPojo(
-                        langLabel?.lngIntroTitle7.toString(),
-                        langLabel?.lngIntroDetail7.toString(),
-                        ContextCompat.getDrawable(this, R.drawable.intro_slider_img7)
+            if (BuildConfig.DEBUG) {
+                if (!langLabel?.lngIntroTitle7.isNullOrEmpty() && !langLabel?.lngIntroDetail7.isNullOrEmpty()) {
+                    list.add(
+                        IntroStaticDataPojo(
+                            langLabel?.lngIntroTitle7.toString(),
+                            langLabel?.lngIntroDetail7.toString(),
+                            ContextCompat.getDrawable(this, R.drawable.intro_slider_img7)
+                        )
                     )
-                )
+                }
+
+
+                if (!langLabel?.lngIntroTitle8.isNullOrEmpty() && !langLabel?.lngIntroDetail8.isNullOrEmpty()) {
+                    list.add(
+                        IntroStaticDataPojo(
+                            langLabel?.lngIntroTitle8.toString(),
+                            langLabel?.lngIntroDetail8.toString(),
+                            ContextCompat.getDrawable(this, R.drawable.intro_slider_img8)
+                        )
+                    )
+                }
+
+
+                if (!langLabel?.lngIntroTitle9.isNullOrEmpty() && !langLabel?.lngIntroDetail9.isNullOrEmpty()) {
+                    list.add(
+                        IntroStaticDataPojo(
+                            langLabel?.lngIntroTitle9.toString(),
+                            langLabel?.lngIntroDetail9.toString(),
+                            ContextCompat.getDrawable(this, R.drawable.intro_slider_img9)
+                        )
+                    )
+                }
+
+                if (!langLabel?.lngIntroTitle10.isNullOrEmpty() && !langLabel?.lngIntroDetail10.isNullOrEmpty()) {
+                    list.add(
+                        IntroStaticDataPojo(
+                            langLabel?.lngIntroTitle10.toString(),
+                            langLabel?.lngIntroDetail10.toString(),
+                            ContextCompat.getDrawable(this, R.drawable.intro_slider_img10)
+                        )
+                    )
+                }
             }
 
-            if (!langLabel?.lngIntroTitle8.isNullOrEmpty() && !langLabel?.lngIntroDetail8.isNullOrEmpty()) {
-                list.add(
-                    IntroStaticDataPojo(
-                        langLabel?.lngIntroTitle8.toString(),
-                        langLabel?.lngIntroDetail8.toString(),
-                        ContextCompat.getDrawable(this, R.drawable.intro_slider_img8)
-                    )
-                )
-            }
-
-            if (!langLabel?.lngIntroTitle9.isNullOrEmpty() && !langLabel?.lngIntroDetail9.isNullOrEmpty()) {
-                list.add(
-                    IntroStaticDataPojo(
-                        langLabel?.lngIntroTitle9.toString(),
-                        langLabel?.lngIntroDetail9.toString(),
-                        ContextCompat.getDrawable(this, R.drawable.intro_slider_img9)
-                    )
-                )
-            }
-
-            if (!langLabel?.lngIntroTitle10.isNullOrEmpty() && !langLabel?.lngIntroDetail10.isNullOrEmpty()) {
-                list.add(
-                    IntroStaticDataPojo(
-                        langLabel?.lngIntroTitle10.toString(),
-                        langLabel?.lngIntroDetail10.toString(),
-                        ContextCompat.getDrawable(this, R.drawable.intro_slider_img10)
-                    )
-                )
-            }
-
-            if (!langLabel?.lngSignin.isNullOrEmpty()) {
-                introLoginButton.progressText = langLabel?.lngSignin.toString()
+            if (!langLabel?.lngLogin.isNullOrEmpty()) {
+                introLoginButton.progressText = langLabel?.lngLogin.toString()
             }
 
             if (!langLabel?.lngSignup.isNullOrEmpty()) {
@@ -179,13 +189,15 @@ class IntroScreenActivity : AppCompatActivity(), View.OnClickListener {
                     ContextCompat.getDrawable(this, R.drawable.intro_slider_img2)
                 )
             )
-            list.add(
-                IntroStaticDataPojo(
-                    resources.getString(R.string.intro_title_3),
-                    resources.getString(R.string.intro_screen3_subtitle),
-                    ContextCompat.getDrawable(this, R.drawable.intro_slider_img3)
+            if (BuildConfig.DEBUG) {
+                list.add(
+                    IntroStaticDataPojo(
+                        resources.getString(R.string.intro_title_3),
+                        resources.getString(R.string.intro_screen3_subtitle),
+                        ContextCompat.getDrawable(this, R.drawable.intro_slider_img3)
+                    )
                 )
-            )
+            }
             list.add(
                 IntroStaticDataPojo(
                     resources.getString(R.string.intro_title_4),
@@ -207,34 +219,38 @@ class IntroScreenActivity : AppCompatActivity(), View.OnClickListener {
                     ContextCompat.getDrawable(this, R.drawable.intro_slider_img6)
                 )
             )
-            list.add(
-                IntroStaticDataPojo(
-                    resources.getString(R.string.intro_title_7),
-                    resources.getString(R.string.intro_screen7_subtitle),
-                    ContextCompat.getDrawable(this, R.drawable.intro_slider_img7)
+            if (BuildConfig.DEBUG) {
+                list.add(
+                    IntroStaticDataPojo(
+                        resources.getString(R.string.intro_title_7),
+                        resources.getString(R.string.intro_screen7_subtitle),
+                        ContextCompat.getDrawable(this, R.drawable.intro_slider_img7)
+                    )
                 )
-            )
-            list.add(
-                IntroStaticDataPojo(
-                    resources.getString(R.string.intro_title_8),
-                    resources.getString(R.string.intro_screen8_subtitle),
-                    ContextCompat.getDrawable(this, R.drawable.intro_slider_img8)
+
+                list.add(
+                    IntroStaticDataPojo(
+                        resources.getString(R.string.intro_title_8),
+                        resources.getString(R.string.intro_screen8_subtitle),
+                        ContextCompat.getDrawable(this, R.drawable.intro_slider_img8)
+                    )
                 )
-            )
-            list.add(
-                IntroStaticDataPojo(
-                    resources.getString(R.string.intro_title_9),
-                    resources.getString(R.string.intro_screen9_subtitle),
-                    ContextCompat.getDrawable(this, R.drawable.intro_slider_img9)
+
+                list.add(
+                    IntroStaticDataPojo(
+                        resources.getString(R.string.intro_title_9),
+                        resources.getString(R.string.intro_screen9_subtitle),
+                        ContextCompat.getDrawable(this, R.drawable.intro_slider_img9)
+                    )
                 )
-            )
-            list.add(
-                IntroStaticDataPojo(
-                    resources.getString(R.string.intro_title_10),
-                    resources.getString(R.string.intro_screen10_subtitle),
-                    ContextCompat.getDrawable(this, R.drawable.intro_slider_img10)
+                list.add(
+                    IntroStaticDataPojo(
+                        resources.getString(R.string.intro_title_10),
+                        resources.getString(R.string.intro_screen10_subtitle),
+                        ContextCompat.getDrawable(this, R.drawable.intro_slider_img10)
+                    )
                 )
-            )
+            }
         }
 
         intro_viewpager.startAutoScroll()

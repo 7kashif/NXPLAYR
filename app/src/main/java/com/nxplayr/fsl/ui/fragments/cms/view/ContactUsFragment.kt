@@ -19,6 +19,7 @@ import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.fragment_contact_us.*
+import kotlinx.android.synthetic.main.fragment_menu.*
 import kotlinx.android.synthetic.main.toolbar.*
 
 
@@ -57,24 +58,47 @@ class ContactUsFragment : Fragment(), View.OnClickListener {
     private fun setupUI() {
         tvToolbarTitle.text = getString(R.string.contact_us)
 
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngContactUs.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngContactUs
+            if (!sessionManager?.LanguageLabel?.lngContactUsTitle1.isNullOrEmpty())
+                title1.text = sessionManager?.LanguageLabel?.lngContactUsTitle1
+            if (!sessionManager?.LanguageLabel?.lngContactUsTitle2.isNullOrEmpty())
+                title2.text = sessionManager?.LanguageLabel?.lngContactUsTitle2
+            if (!sessionManager?.LanguageLabel?.lngContactUsTitle3.isNullOrEmpty())
+                title3.text = sessionManager?.LanguageLabel?.lngContactUsTitle3
+            if (!sessionManager?.LanguageLabel?.lngContactUsTitle4.isNullOrEmpty())
+                title4.text = sessionManager?.LanguageLabel?.lngContactUsTitle4
+            if (!sessionManager?.LanguageLabel?.lngCommonQuestions.isNullOrEmpty())
+                title5.text = sessionManager?.LanguageLabel?.lngCommonQuestions
+            if (!sessionManager?.LanguageLabel?.lngCommonQuestionsSubTitle.isNullOrEmpty())
+                title6.text = sessionManager?.LanguageLabel?.lngCommonQuestionsSubTitle
+            if (!sessionManager?.LanguageLabel?.lngFAQ.isNullOrEmpty())
+                tv_Faq.text = sessionManager?.LanguageLabel?.lngFAQ
+            if (!sessionManager?.LanguageLabel?.lngNeedMoreHelp.isNullOrEmpty())
+                title7.text = sessionManager?.LanguageLabel?.lngNeedMoreHelp
+            if (!sessionManager?.LanguageLabel?.lngNeedMoreHelpSubTitle.isNullOrEmpty())
+                title8.text = sessionManager?.LanguageLabel?.lngNeedMoreHelpSubTitle
+            if (!sessionManager?.LanguageLabel?.lngCUGeneralQueries.isNullOrEmpty())
+                title9.text = sessionManager?.LanguageLabel?.lngCUGeneralQueries
+            if (!sessionManager?.LanguageLabel?.lngCUSuggestFeature.isNullOrEmpty())
+                title11.text = sessionManager?.LanguageLabel?.lngCUSuggestFeature
+            if (!sessionManager?.LanguageLabel?.lngCUPartnerShip.isNullOrEmpty())
+                title13.text = sessionManager?.LanguageLabel?.lngCUPartnerShip
+            if (!sessionManager?.LanguageLabel?.lngCUPress.isNullOrEmpty())
+                title15.text = sessionManager?.LanguageLabel?.lngCUPress
+        }
+
         toolbar.setNavigationOnClickListener {
             (activity as MainActivity).onBackPressed()
         }
 
         setData()
-
-        tv_emailContactUs.setOnClickListener(this)
-        tv_callContactUs.setOnClickListener(this)
         tv_Faq.setOnClickListener(this)
     }
 
     fun setData() {
-        if (!userData!!.settings[0].settingsSupportEmail.isNullOrEmpty()) {
-            tv_emailContactUs.text = userData!!.settings[0].settingsSupportEmail
-        }
-        if (!userData!!.settings[0].settingsSupportPhone.isNullOrEmpty()) {
-            tv_callContactUs.text = userData!!.settings[0].settingsSupportPhone
-        }
+
     }
 
     private fun checkCallPermission() {
@@ -120,44 +144,43 @@ class ContactUsFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.tv_emailContactUs -> {
-                if (!userData!!.settings[0].settingsSupportEmail.isNullOrEmpty()) {
-                    var emailIntent = Intent(android.content.Intent.ACTION_SEND)
-                    emailIntent.type = "text/plain"
-                    emailIntent.putExtra(
-                        Intent.EXTRA_EMAIL,
-                        userData!!.settings[0].settingsSupportEmail
-                    )
-                    emailIntent.type = "message/rfc822"
-                    try {
-                        startActivity(
-                            Intent.createChooser(
-                                emailIntent,
-                                "Send email using..."
-                            )
-                        )
-                    } catch (ex: android.content.ActivityNotFoundException) {
-                        Toast.makeText(
-                            activity,
-                            "No email clients installed.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                }
-            }
-            R.id.tv_callContactUs ->{
-                if (!userData!!.settings[0].settingsSupportPhone.isNullOrEmpty()) {
-                    checkCallPermission()
-                }
-            }
-            R.id.tv_Faq->{
+//            R.id.tv_emailContactUs -> {
+//                if (!userData!!.settings[0].settingsSupportEmail.isNullOrEmpty()) {
+//                    var emailIntent = Intent(android.content.Intent.ACTION_SEND)
+//                    emailIntent.type = "text/plain"
+//                    emailIntent.putExtra(
+//                        Intent.EXTRA_EMAIL,
+//                        userData!!.settings[0].settingsSupportEmail
+//                    )
+//                    emailIntent.type = "message/rfc822"
+//                    try {
+//                        startActivity(
+//                            Intent.createChooser(
+//                                emailIntent,
+//                                "Send email using..."
+//                            )
+//                        )
+//                    } catch (ex: android.content.ActivityNotFoundException) {
+//                        Toast.makeText(
+//                            activity,
+//                            "No email clients installed.",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    }
+//
+//                }
+//            }
+//            R.id.tv_callContactUs ->{
+//                if (!userData!!.settings[0].settingsSupportPhone.isNullOrEmpty()) {
+//                    checkCallPermission()
+//                }
+//            }
+            R.id.tv_Faq -> {
                 (activity as MainActivity).navigateTo(
                     FAQTopicsFragment(),
                     FAQTopicsFragment::class.java.name,
                     true
                 )
-
             }
         }
     }

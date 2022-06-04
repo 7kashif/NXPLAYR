@@ -24,6 +24,7 @@
                 android:orientation="horizontal">
 
                 <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/companyLogo"
                     android:layout_width="@dimen/_50sdp"
                     android:layout_height="@dimen/_50sdp"
                     android:layout_gravity="start"
@@ -52,11 +53,11 @@
                     android:textColorHint="@color/white" />
 
                 <TextView
-                    android:id="@+id/tv_followers_name"
+                    android:id="@+id/tv_followers_count"
                     style="@style/Font.SubTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Coach-FIFA Club"
+                    android:hint="2 followers"
                     android:textColorHint="@color/white"
                     android:textSize="@dimen/_14ssp" />
 
@@ -69,6 +70,7 @@
                 android:orientation="horizontal">
 
                 <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/action"
                     android:layout_width="@dimen/_40sdp"
                     android:layout_height="@dimen/_30sdp"
                     android:layout_gravity="start|center"

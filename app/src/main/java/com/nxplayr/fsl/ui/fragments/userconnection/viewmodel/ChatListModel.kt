@@ -1,49 +1,33 @@
 package com.nxplayr.fsl.ui.fragments.userconnection.viewmodel
 
-import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.nxplayr.fsl.data.api.RestCallback
-import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.data.model.ChatList
-import retrofit2.Response
+import androidx.lifecycle.viewModelScope
+import com.nxplayr.fsl.ui.fragments.userconnection.repository.ConnectionRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ChatListModel : ViewModel() {
 
-    lateinit var languageresponse: LiveData<List<ChatList>>
-    lateinit var mContext: Context
-    var json: String? = null
+    private val connectionRepo = ConnectionRepository()
+    val chatList = connectionRepo.chatList
+    val connectionSuccess = connectionRepo.mConnectionTypePojo
+    val userContactList = connectionRepo.userContactList
 
-    fun getConnectionTypeList(
-            context: Context,
-            json: String
-    ): LiveData<List<ChatList>> {
-        this.json = json
-
-        this.mContext = context
-
-        languageresponse = getConnectionListApi()
-
-        return languageresponse
+    fun getChatList(json: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            connectionRepo.chatList(json)
+        }
     }
 
-    private fun getConnectionListApi(): LiveData<List<ChatList>> {
-        val data = MutableLiveData<List<ChatList>>()
-
-        val call = RestClient.get()!!.chatlist(json!!)
-        call.enqueue(object : RestCallback<List<ChatList>>(mContext) {
-            override fun Success(response: Response<List<ChatList>>) {
-                data.value = response.body()
-            }
-
-            override fun failure() {
-                data.value = null
-            }
-
-        })
-
-        return data
+    fun connectionList(json: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            connectionRepo.connectionList(json)
+        }
     }
 
+    fun userContactList(json: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            connectionRepo.userContactList(json)
+        }
+    }
 }

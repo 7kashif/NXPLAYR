@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.UserUniversityListPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Response
 
 class UniversityListModel : ViewModel() {
@@ -31,7 +34,7 @@ class UniversityListModel : ViewModel() {
 
     private fun getUniversityListApi(): LiveData<List<UserUniversityListPojo>> {
         val data = MutableLiveData<List<UserUniversityListPojo>>()
-
+        viewModelScope.launch(Dispatchers.IO) {
         var call = RestClient.get()!!.userUniversityListProfile(json!!)
         call!!.enqueue(object : RestCallback<List<UserUniversityListPojo>>(mContext) {
             override fun Success(response: Response<List<UserUniversityListPojo>>) {
@@ -42,7 +45,7 @@ class UniversityListModel : ViewModel() {
                 data.value = null
             }
 
-        })
+        })}
 
         return data
     }

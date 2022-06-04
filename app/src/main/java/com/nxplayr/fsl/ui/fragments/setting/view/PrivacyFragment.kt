@@ -3,24 +3,24 @@ package com.nxplayr.fsl.ui.fragments.setting.view
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.google.gson.Gson
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
 import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.data.model.SignupPojo
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModelV2
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_privacy.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.json.JSONArray
@@ -32,7 +32,7 @@ class PrivacyFragment : Fragment() {
     var mActivity: AppCompatActivity? = null
     var sessionManager: SessionManager? = null
     var userData: SignupData? = null
-    private lateinit var  loginModel: SignupModel
+    private lateinit var  loginModel: SignupModelV2
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -43,6 +43,20 @@ class PrivacyFragment : Fragment() {
         }
 
         return v
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngPrivacy.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngPrivacy
+            if (!sessionManager?.LanguageLabel?.lngSetYourPrivacy.isNullOrEmpty())
+                set_ur_privacy.text = sessionManager?.LanguageLabel?.lngSetYourPrivacy
+            if (!sessionManager?.LanguageLabel?.lngAllowPeopleToFollowMe.isNullOrEmpty())
+                allow_ppl_follow_me.text = sessionManager?.LanguageLabel?.lngAllowPeopleToFollowMe
+            if (!sessionManager?.LanguageLabel?.lngAllowConnectRequests.isNullOrEmpty())
+                allow_connect_req.text = sessionManager?.LanguageLabel?.lngAllowConnectRequests
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -80,7 +94,7 @@ class PrivacyFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-         loginModel = ViewModelProvider(this@PrivacyFragment).get(SignupModel::class.java)
+         loginModel = ViewModelProvider(this@PrivacyFragment).get(SignupModelV2::class.java)
 
     }
 
@@ -120,7 +134,8 @@ class PrivacyFragment : Fragment() {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        loginModel.userRegistration(mActivity!!, false, jsonArray.toString(), "updatePrivacy")
+        loginModel.users_updatePrivacy(jsonArray.toString())
+        loginModel.users_updatePrivacy
                 .observe(viewLifecycleOwner,
                         Observer<List<SignupPojo>> { loginPojo ->
                             if (loginPojo != null && loginPojo.isNotEmpty()) {

@@ -7,7 +7,10 @@ import androidx.multidex.MultiDex
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.google.android.exoplayer2.database.DatabaseProvider
 import com.google.android.exoplayer2.database.ExoDatabaseProvider
-import com.google.android.exoplayer2.upstream.*
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
+import com.google.android.exoplayer2.upstream.FileDataSourceFactory
+import com.google.android.exoplayer2.upstream.HttpDataSource
 import com.google.android.exoplayer2.upstream.cache.*
 import com.google.android.exoplayer2.util.Util
 import com.nxplayr.fsl.R
@@ -26,11 +29,16 @@ private const val MIN_PORT_VALUE = 1000
 private const val MIN_SOCKET_TIMEOUT = 300
 private const val MAX_SOCKET_TIMEOUT = 60000
 
-//App credentials
-private const val APPLICATION_ID = "88286"
-private const val AUTH_KEY = "x5dvS6eFrZ8AxSR"
-private const val AUTH_SECRET = "rvgS4bLVDfMsEvW"
-private const val ACCOUNT_KEY = "dsptYjqVx68ReL1yHyWS"
+////App credentials
+//private const val APPLICATION_ID = "88286"
+//private const val AUTH_KEY = "x5dvS6eFrZ8AxSR"
+//private const val AUTH_SECRET = "rvgS4bLVDfMsEvW"
+//private const val ACCOUNT_KEY = "dsptYjqVx68ReL1yHyWS"
+
+private const val APPLICATION_ID = "96844"
+private const val AUTH_KEY = "fHXYfZP5O-WtXAS"
+private const val AUTH_SECRET = "k26ukb47ysWkK6B"
+private const val ACCOUNT_KEY = "x-jCcJsv6_ioi2VE-12h"
 
 const val KEEP_ALIVE: Boolean = true
 const val USE_TLS: Boolean = true
@@ -85,7 +93,16 @@ class MyApplication : Application() {
         userAgent = Util.getUserAgent(this, "ExoPlayerDemo")
         simpleCache = SimpleCache(cacheFolder, evictor, databaseProvider)
 
-
+//        try {
+//            // Add these lines to add the AWSCognitoAuthPlugin and AWSS3StoragePlugin plugins
+//            Amplify.addPlugin(AWSCognitoAuthPlugin())
+//            Amplify.addPlugin(AWSS3StoragePlugin())
+//            Amplify.configure(applicationContext)
+//
+//            Log.i("MyAmplifyApp", "Initialized Amplify")
+//        } catch (error: AmplifyException) {
+//            Log.e("MyAmplifyApp", "Could not initialize Amplify", error)
+//        }
     }
 
     private fun checkAppCredentials() {

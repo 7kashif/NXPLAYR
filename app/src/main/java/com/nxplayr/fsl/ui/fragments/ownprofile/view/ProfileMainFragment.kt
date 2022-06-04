@@ -15,53 +15,78 @@ import com.google.android.material.tabs.TabLayout
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.model.CreatePostPhotoPojo
 import com.nxplayr.fsl.data.model.SignupData
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.ui.fragments.friendrequest.view.AcceptRequestFragment
+import com.nxplayr.fsl.ui.fragments.invite.view.InviteMainFragment
 import com.nxplayr.fsl.ui.fragments.notification.view.NotificationFragment
 import com.nxplayr.fsl.ui.fragments.ownprofile.adapter.OwnProfileViewPagerAdapter
 import com.nxplayr.fsl.ui.fragments.setting.SettingFragment
 import com.nxplayr.fsl.ui.fragments.userprofile.view.CompactProfileFragment
-import com.nxplayr.fsl.ui.fragments.userprofile.view.UserDetailFragment
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
-import com.nxplayr.fsl.ui.fragments.invite.view.InviteMainFragment
 import com.nxplayr.fsl.ui.fragments.userprofile.view.ProfileFragment
+import com.nxplayr.fsl.ui.fragments.userprofile.view.UserDetailFragment
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.fragment_profile_main.*
 import kotlinx.android.synthetic.main.toolbar.*
-import java.util.*
 
 
 @Suppress("DEPRECATION")
-class ProfileMainFragment : Fragment(),View.OnClickListener {
+class ProfileMainFragment : Fragment(), View.OnClickListener {
 
     private var v: View? = null
     var adapter: OwnProfileViewPagerAdapter? = null
     var mActivity: AppCompatActivity? = null
-    private val tabIcons = intArrayOf(com.nxplayr.fsl.R.drawable.profile_top_menu_icon1_unselected, com.nxplayr.fsl.R.drawable.profile_top_menu_icon2_unselected, com.nxplayr.fsl.R.drawable.profile_top_menu_icon3_unselected, com.nxplayr.fsl.R.drawable.profile_top_menu_icon4_unselected, com.nxplayr.fsl.R.drawable.profile_top_menu_icon5_unselected, com.nxplayr.fsl.R.drawable.profile_top_menu_icon6_unselected)
+    private val tabIcons = intArrayOf(
+        com.nxplayr.fsl.R.drawable.profile_top_menu_icon1_unselected,
+        com.nxplayr.fsl.R.drawable.profile_top_menu_icon2_unselected,
+        com.nxplayr.fsl.R.drawable.profile_top_menu_icon3_unselected,
+        com.nxplayr.fsl.R.drawable.profile_top_menu_icon4_unselected,
+        com.nxplayr.fsl.R.drawable.profile_top_menu_icon5_unselected,
+        com.nxplayr.fsl.R.drawable.profile_top_menu_icon6_unselected
+    )
     var tab_position = 0
-    var sessionManager:SessionManager?=null
-    var userData: SignupData?=null
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-     //   if (v == null) {
-            v = inflater.inflate(com.nxplayr.fsl.R.layout.fragment_profile_main, container, false)
-       // }
+    var sessionManager: SessionManager? = null
+    var userData: SignupData? = null
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        v = inflater.inflate(com.nxplayr.fsl.R.layout.fragment_profile_main, container, false)
         return v
-
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngProfile.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngProfile
+            if (!sessionManager?.LanguageLabel?.lngInvite.isNullOrEmpty())
+                menuToolbarInvite.text = sessionManager?.LanguageLabel?.lngInvite
+        }
+    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        sessionManager=SessionManager(mActivity!!)
-        if(sessionManager?.get_Authenticate_User()!=null)
-        {
-            userData=sessionManager?.get_Authenticate_User()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        sessionManager = SessionManager(mActivity!!)
+        if (sessionManager?.get_Authenticate_User() != null) {
+            userData = sessionManager?.get_Authenticate_User()
         }
         if (arguments != null) {
             tab_position = arguments!!.getInt("tabPosition", 0)
         }
         setupUI()
     }
+
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
+//        sessionManager = SessionManager(mActivity!!)
+//        if (sessionManager?.get_Authenticate_User() != null) {
+//            userData = sessionManager?.get_Authenticate_User()
+//        }
+//        if (arguments != null) {
+//            tab_position = arguments!!.getInt("tabPosition", 0)
+//        }
+//        setupUI()
+//    }
 
     private fun setupUI() {
         toolbar.visibility = View.VISIBLE
@@ -81,7 +106,10 @@ class ProfileMainFragment : Fragment(),View.OnClickListener {
         setupViewPager(viewPagerProfile)
         tab_layout_profile.setupWithViewPager(viewPagerProfile)
         setupTabIcons()
-        tab_layout_profile.getTabAt(tab_position)?.icon?.setColorFilter(Color.parseColor("#00F0FF"), PorterDuff.Mode.SRC_IN)
+        tab_layout_profile.getTabAt(tab_position)?.icon?.setColorFilter(
+            Color.parseColor("#00F0FF"),
+            PorterDuff.Mode.SRC_IN
+        )
         tab_layout_profile.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.icon?.setColorFilter(Color.parseColor("#00F0FF"), PorterDuff.Mode.SRC_IN)
@@ -113,7 +141,7 @@ class ProfileMainFragment : Fragment(),View.OnClickListener {
 
     private fun setupViewPager(viewPager: ViewPager) {
         if (adapter == null) {
-            adapter = OwnProfileViewPagerAdapter(childFragmentManager,userData?.userID!!)
+            adapter = OwnProfileViewPagerAdapter(childFragmentManager, userData?.userID!!)
             adapter?.addFragment(UserDetailFragment(), "")
             adapter?.addFragment(CompactProfileFragment(), "")
             adapter?.addFragment(ProfileFragment(), "")
@@ -135,11 +163,35 @@ class ProfileMainFragment : Fragment(),View.OnClickListener {
         }
     }
 
-    fun createPost(from: String, datumList: ArrayList<CreatePostPhotoPojo>, stringExtraDes: String, stringExtraPrivcy: String, Location: String?, latitude: String?, longitude: String?, tag: String?, VideoThumb: ArrayList<CreatePostPhotoPojo>, radioText: String?, connectionTypeIDs: String?) {
+    fun createPost(
+        from: String,
+        datumList: ArrayList<CreatePostPhotoPojo>,
+        stringExtraDes: String,
+        stringExtraPrivcy: String,
+        Location: String?,
+        latitude: String?,
+        longitude: String?,
+        tag: String?,
+        VideoThumb: ArrayList<CreatePostPhotoPojo>,
+        radioText: String?,
+        connectionTypeIDs: String?
+    ) {
 
         for (frag1 in childFragmentManager.fragments) {
             if (frag1 is UserDetailFragment) {
-                frag1.createPost(from, datumList, stringExtraDes, stringExtraPrivcy, Location, latitude, longitude, tag, VideoThumb,radioText, connectionTypeIDs!!)
+                frag1.createPost(
+                    from,
+                    datumList,
+                    stringExtraDes,
+                    stringExtraPrivcy,
+                    Location,
+                    latitude,
+                    longitude,
+                    tag,
+                    VideoThumb,
+                    radioText,
+                    connectionTypeIDs!!
+                )
             }
 
         }
@@ -148,23 +200,30 @@ class ProfileMainFragment : Fragment(),View.OnClickListener {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if ((activity as MainActivity).getCurrentFragment() is ProfileMainFragment) {
-            (activity as MainActivity).getCurrentFragment()!!.onActivityResult(requestCode, resultCode, data)
+            (activity as MainActivity).getCurrentFragment()!!
+                .onActivityResult(requestCode, resultCode, data)
         }
-
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-           R.id.menuToolbarInvite->{
-               (activity as MainActivity).navigateTo(InviteMainFragment(), InviteMainFragment::class.java.name, true)
-           }
-           R.id.tv_notifications->{
-               toolbar.visibility = View.GONE
-               ll_mainProfileTab.visibility = View.GONE
-               viewPagerProfile.visibility = View.GONE
-               (activity as MainActivity).navigateTo(NotificationFragment(), NotificationFragment::class.java.name, true)
-           }
+        when (v?.id) {
+            R.id.menuToolbarInvite -> {
+                (activity as MainActivity).navigateTo(
+                    InviteMainFragment(),
+                    InviteMainFragment::class.java.name,
+                    true
+                )
+            }
+            R.id.tv_notifications -> {
+                toolbar.visibility = View.GONE
+                ll_mainProfileTab.visibility = View.GONE
+                viewPagerProfile.visibility = View.GONE
+                (activity as MainActivity).navigateTo(
+                    NotificationFragment(),
+                    NotificationFragment::class.java.name,
+                    true
+                )
+            }
         }
     }
 }

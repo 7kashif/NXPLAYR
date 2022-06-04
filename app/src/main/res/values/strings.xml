@@ -271,7 +271,6 @@
     <string name="copyright_infringement_someone_copied_my_creation">Copyright infringement\n(Someone copied my creation)</string>
     <string name="other_legal_issue">Other legal issue</string>
     <string name="privacy_someone_is_using_my_image">Privacy(Someone is using my image)</string>
-    <string name="we_are_here_to_help_you">We are here to help you</string>
     <string name="lorem_ipsum_is_simply_dummy_text_of_the_printing_and_typesetting_industry_lorem_ipsum_has_been_the_industry_s_standard_dummy_text_ever_since_the_1500s">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.</string>
     <string name="for_support_related_queries_write_to">For support related queries write to</string>
     <string name="support_fsl_com">Support@fsl.com</string>
@@ -309,7 +308,7 @@
     <string name="full_name">Full Name</string>
     <string name="bio">Bio</string>
     <string name="zahir_abbas">Zahir Abbas</string>
-    <string name="join_me_on">Join me on</string>
+    <string name="join_me_on">Join me Now on</string>
     <string name="download_on">Download on</string>
     <string name="share_this_card">Share this card</string>
     <string name="our_fun_chat">Our Fun Chat</string>
@@ -778,6 +777,26 @@
     <string name="write_text">Write text</string>
     <string name="suggested_skills">Suggested Skills</string>
     <string name="suggested_hobbies">Suggested Hobbies</string>
+    <string name="willing_to_enjoy_unlimited_opportunities_and_give_a_boost_to_your_career">Willing to enjoy unlimited opportunities and give a boost to your career?</string>
+    <string name="referral_score_0">Referral Score : 0</string>
+    <string name="reward_msg"><![CDATA[About Our Rewarding Referral Program... Help Us Build The World’s Largest Football Community by becoming a NXPLAY.R Ambassador and be rewarded. It’s super easy. Tell your social circles about NXPLAY.R and enjoy plenty of benefits. For every friend / new user who downloads the NXPLAY.R app and creates an account, using the ‘Referral Code’ you shared using the ‘Invite’ feature, we will reward you with ‘CashPoints’ you can cumulate and redeem to purchase add-on services so you can boost your visibility and increase your chances of success… A bit of patience… you will be able to use them once we launch the Subscription Plans & Pay-As-You-Go services. We will inform you in due time !]]></string>
+    <string name="your_connection_to_nxplay_r">Your Connection to NXPLAY.R</string>
+    <string name="you_ve_got_questions_we_ve_got_answers">YOU\'VE GOT QUESTIONS, WE\'VE GOT ANSWERS!</string>
+    <string name="we_love_to_hear_from_our">We love to hear from our...</string>
+    <string name="beloved_nxplay_r_community_members">…beloved NXPLAY.R Community members.</string>
+    <string name="common_questions">Common questions ?</string>
+    <string name="we_have_gathered_the_most_common_questions_under_our_faq_section_which_we_keep_feeding_based_on_your_highly_appreciated_feedbacks">We have gathered the most common questions under our FAQ section, which we keep feeding based on your highly appreciated feedbacks.</string>
+    <string name="choose_right">Choose the right category from the list below. so your email is addressed to the right team. We will make sure to get back to you as soon as possible.</string>
+    <string name="general_queries">General queries</string>
+    <string name="hello_nxplayr_com">hello@nxplayr.com</string>
+    <string name="suggest_a_feature">Suggest a feature</string>
+    <string name="newfeature_nxplayr_com">newfeature@nxplayr.com</string>
+    <string name="partnerships_investors">Partnerships / Investors</string>
+    <string name="partnership_nxplayr_com">partnership@nxplayr.com</string>
+    <string name="press">Press</string>
+    <string name="press_nxplayr_com">press@nxplayr.com</string>
+    <string name="default_notification_channel_id">nxplayr</string>
+    <string name="expiry_date">Expiry Date</string>
 
     <string-array name="animals">
         <item>Abyssinian</item>
@@ -859,5 +878,9 @@
         <item>Z</item>
 
     </string-array>
+
+    <string name="your_feedback_is_important_to_us_so_we_can_constinusouly_improve_the_nxplay_r_experience">Your feedback is important to us so we can constinusouly improve the NXPLAY.R Experience</string>
+    <string name="help_us_improve_the_nxplay_r_experience_by_suggesting_a_new_feature">Help us improve the NXPLAY.R experience by suggesting a new feature</string>
+
 </resources>
 

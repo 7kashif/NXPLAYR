@@ -24,6 +24,7 @@ import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.common_recyclerview.*
+import kotlinx.android.synthetic.main.fragment_privacy.*
 import kotlinx.android.synthetic.main.fragment_receive_request.*
 import kotlinx.android.synthetic.main.fragment_saved_posts.*
 import kotlinx.android.synthetic.main.nodafound.*
@@ -61,6 +62,18 @@ class SavedPostsFragment : Fragment() {
             v = inflater.inflate(R.layout.fragment_saved_posts, container, false)
         }
         return v
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngSavedPosts.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngSavedPosts
+            if (!sessionManager?.LanguageLabel?.lngNoDataFound.isNullOrEmpty())
+                nodatafoundtextview.text = sessionManager?.LanguageLabel?.lngNoDataFound
+            if (!sessionManager?.LanguageLabel?.lngCheckNoInternet.isNullOrEmpty())
+                nointernettextview.text = sessionManager?.LanguageLabel?.lngCheckNoInternet
+        }
     }
 
     override fun onAttach(context: Context) {

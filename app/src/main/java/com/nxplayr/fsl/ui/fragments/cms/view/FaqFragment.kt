@@ -16,6 +16,7 @@ import com.nxplayr.fsl.ui.fragments.cms.adapter.FaqAdapter
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.ui.fragments.cms.viewmodel.FaqListModel
 import com.nxplayr.fsl.data.model.FaqData
+import com.nxplayr.fsl.ui.fragments.main.view.HomeMainFragment
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.common_recyclerview.*
@@ -27,7 +28,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 
-class FaqFragment : Fragment(),View.OnClickListener {
+class FaqFragment : Fragment(), View.OnClickListener {
 
     private var v: View? = null
     var sessionManager: SessionManager? = null
@@ -35,10 +36,12 @@ class FaqFragment : Fragment(),View.OnClickListener {
     var faqAdapter: FaqAdapter? = null
     var list_faq: ArrayList<FaqData>? = ArrayList()
     var faqcategoryID = ""
-    private lateinit var  faqModel: FaqListModel
+    private lateinit var faqModel: FaqListModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         if (v == null) {
             v = inflater.inflate(R.layout.fragment_faq, container, false)
         }
@@ -52,6 +55,7 @@ class FaqFragment : Fragment(),View.OnClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        sessionManager = SessionManager(requireContext())
         if (arguments != null) {
             faqcategoryID = arguments!!.getString("faqcategoryID").toString()
         }
@@ -59,8 +63,6 @@ class FaqFragment : Fragment(),View.OnClickListener {
         setupViewModel()
         setupUI()
         setupObserver()
-
-
     }
 
     private fun setupObserver() {
@@ -80,34 +82,31 @@ class FaqFragment : Fragment(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
         faqModel.getFaqList(mActivity!!, false, jsonArray.toString())
-            .observe(viewLifecycleOwner,
-                { faqListPojo ->
+            .observe(
+                viewLifecycleOwner
+            ) { faqListPojo ->
 
-                    relativeprogressBar.visibility = View.GONE
-                    recyclerview.visibility = View.VISIBLE
+                relativeprogressBar.visibility = View.GONE
+                recyclerview.visibility = View.VISIBLE
 
-                    if (faqListPojo != null && faqListPojo.isNotEmpty()) {
-                        if (faqListPojo[0].status.equals("true", true)) {
-                            list_faq?.clear()
-                            list_faq?.addAll(faqListPojo!![0]!!.data!!)
-                            faqAdapter?.notifyDataSetChanged()
-
-
-                        } else {
-
-                            if (list_faq!!.size == 0) {
-                                ll_no_data_found.visibility = View.VISIBLE
-                                recyclerview.visibility = View.GONE
-
-                            } else {
-                                ll_no_data_found.visibility = View.GONE
-                                recyclerview.visibility = View.VISIBLE
-                            }
-                        }
+                if (faqListPojo != null && faqListPojo.isNotEmpty()) {
+                    if (faqListPojo[0].status.equals("true", true)) {
+                        list_faq?.clear()
+                        list_faq?.addAll(faqListPojo[0].data)
+                        faqAdapter?.notifyDataSetChanged()
                     } else {
-                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                        if (list_faq!!.size == 0) {
+                            ll_no_data_found.visibility = View.VISIBLE
+                            recyclerview.visibility = View.GONE
+                        } else {
+                            ll_no_data_found.visibility = View.GONE
+                            recyclerview.visibility = View.VISIBLE
+                        }
                     }
-                })
+                } else {
+                    ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                }
+            }
     }
 
     private fun setupUI() {
@@ -117,36 +116,45 @@ class FaqFragment : Fragment(),View.OnClickListener {
             (activity as MainActivity).onBackPressed()
         }
 
-
         faqAdapter = FaqAdapter(mActivity!!, list_faq!!, object : FaqAdapter.OnItemClick {
             override fun onClicled(position: Int, from: String) {
-
+                var bundle = Bundle()
+                bundle.putString("title", "FAQ")
+                if (sessionManager?.getSelectedLanguage() != null && sessionManager?.getSelectedLanguage()?.languageID.equals(
+                        "1"
+                    )
+                ) {
+                    bundle.putString("html", list_faq!![position].faqAnswer)
+                } else {
+                    bundle.putString("html", list_faq!![position].faqAnswerFrench)
+                }
+                (activity as MainActivity).navigateTo(
+                    WebViewFragment(),
+                    bundle,
+                    WebViewFragment::class.java.name,
+                    true
+                )
             }
-        })
+        }, sessionManager!!)
         recyclerview.layoutManager = LinearLayoutManager(activity)
         recyclerview.setHasFixedSize(true)
         recyclerview.adapter = faqAdapter
         faqAdapter?.notifyDataSetChanged()
         setupObserver()
 
-        btnRetry.setOnClickListener (this)
+        btnRetry.setOnClickListener(this)
     }
 
     private fun setupViewModel() {
         faqModel = ViewModelProvider(this@FaqFragment).get(FaqListModel::class.java)
-
     }
 
-
     override fun onClick(v: View?) {
-        when (v?.id)
-        {
-            R.id.btnRetry->{
+        when (v?.id) {
+            R.id.btnRetry -> {
                 setupObserver()
-
             }
         }
     }
-
 
 }

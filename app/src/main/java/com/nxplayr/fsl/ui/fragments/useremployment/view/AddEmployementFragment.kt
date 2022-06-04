@@ -18,24 +18,22 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
-import com.nxplayr.fsl.ui.activity.addmedia.view.AddMediaActivity
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.viewmodel.CompanyListModel
-import com.nxplayr.fsl.viewmodel.EmployementModel
-import com.nxplayr.fsl.viewmodel.JobFunctionListModel
 import com.nxplayr.fsl.data.model.CompanyListData
 import com.nxplayr.fsl.data.model.EmploymentData
 import com.nxplayr.fsl.data.model.JobFunctionList
 import com.nxplayr.fsl.data.model.SignupData
+import com.nxplayr.fsl.ui.activity.addmedia.view.AddMediaActivity
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.ui.fragments.bottomsheet.BottomSheetListFragment
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MonthYearPickerDialog
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
+import com.nxplayr.fsl.viewmodel.EmployementModel
 import kotlinx.android.synthetic.main.fragment_add_employement.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
@@ -45,10 +43,10 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Suppress("DEPRECATION")
-class AddEmployementFragment : Fragment(), View.OnClickListener, BottomSheetListFragment.SelectLanguage {
+class AddEmployementFragment : Fragment(), View.OnClickListener,
+    BottomSheetListFragment.SelectLanguage {
 
     private var v: View? = null
     var mActivity: AppCompatActivity? = null
@@ -75,12 +73,16 @@ class AddEmployementFragment : Fragment(), View.OnClickListener, BottomSheetList
     var mediaList: ArrayList<String>? = ArrayList()
     var fromMedia = ""
     var imageMediaSize = "0"
-    var countryID="0"
-    var cityID="0"
-    var stateID=""
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    var countryID = "0"
+    var cityID = "0"
+    var stateID = ""
 
+    var addEmployementModel = EmployementModel()
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         if (v == null) {
             v = inflater.inflate(R.layout.fragment_add_employement, container, false)
         }
@@ -111,6 +113,8 @@ class AddEmployementFragment : Fragment(), View.OnClickListener, BottomSheetList
             userData = sessionManager?.get_Authenticate_User()
         }
 
+        addEmployementModel =
+            ViewModelProvider(this@AddEmployementFragment).get(EmployementModel::class.java)
         ll_mainLink.visibility = View.GONE
         ll_mainMediaEmp.visibility = View.GONE
 
@@ -120,12 +124,49 @@ class AddEmployementFragment : Fragment(), View.OnClickListener, BottomSheetList
             userEmplyData = arguments!!.getSerializable("userEmpData") as EmploymentData
         }
 
-        if (from.equals("edit")) {
+        if (from == "edit") {
             tvToolbarTitle.text = getString(R.string.edit_experience)
             btn_saveEmployement.progressText = resources.getString(R.string.update)
+            if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+                if (!sessionManager?.LanguageLabel?.lngEditExperience.isNullOrEmpty())
+                    tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngEditExperience
+            }
         } else {
             tvToolbarTitle.text = getString(R.string.add_experience)
             btn_saveEmployement.progressText = resources.getString(R.string.save)
+            if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+                if (!sessionManager?.LanguageLabel?.lngAddExperience.isNullOrEmpty())
+                    tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngAddExperience
+            }
+        }
+
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngUpdate.isNullOrEmpty())
+                btn_saveEmployement.progressText = sessionManager?.LanguageLabel?.lngUpdate
+            if (!sessionManager?.LanguageLabel?.lngJobTitle.isNullOrEmpty())
+                tv_jobTTitle_edit_text.hint = sessionManager?.LanguageLabel?.lngJobTitle
+            if (!sessionManager?.LanguageLabel?.lngCompanyName.isNullOrEmpty())
+                tv_companyname_edit_text.hint = sessionManager?.LanguageLabel?.lngCompanyName
+            if (!sessionManager?.LanguageLabel?.lngLocation.isNullOrEmpty())
+                tv_location_edit_text.hint = sessionManager?.LanguageLabel?.lngLocation
+            if (!sessionManager?.LanguageLabel?.lngICurrentlyWorkHere.isNullOrEmpty())
+                checkbox_employement.text = sessionManager?.LanguageLabel?.lngICurrentlyWorkHere
+            if (!sessionManager?.LanguageLabel?.lngFrom.isNullOrEmpty())
+                tv_from.text = sessionManager?.LanguageLabel?.lngFrom
+            if (!sessionManager?.LanguageLabel?.lngTo.isNullOrEmpty())
+                tv_to.text = sessionManager?.LanguageLabel?.lngTo
+            if (!sessionManager?.LanguageLabel?.lngDescription.isNullOrEmpty())
+                tv_txt_description.hint = sessionManager?.LanguageLabel?.lngDescription
+            if (!sessionManager?.LanguageLabel?.lngMedia.isNullOrEmpty())
+                media.text = sessionManager?.LanguageLabel?.lngMedia
+            if (!sessionManager?.LanguageLabel?.lngAddOrLinkToExternaldoc.isNullOrEmpty())
+                add_link.text = sessionManager?.LanguageLabel?.lngAddOrLinkToExternaldoc
+            if (!sessionManager?.LanguageLabel?.lngUpload.isNullOrEmpty())
+                btn_uploadImage.text = sessionManager?.LanguageLabel?.lngUpload
+            if (!sessionManager?.LanguageLabel?.lngLink.isNullOrEmpty())
+                btn_setLink.text = sessionManager?.LanguageLabel?.lngLink
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_saveEmployement.progressText = sessionManager?.LanguageLabel?.lngSave
         }
 
         setOnClickListener()
@@ -133,17 +174,6 @@ class AddEmployementFragment : Fragment(), View.OnClickListener, BottomSheetList
         if (userData != null) {
             setEmployementData()
         }
-
-//        from_date_edittext.setOnClickListener {
-////            val dialog = datePickerDialog("from")
-////            /*  datePickerDialog(from).getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis())*/
-////            dialog.show()
-////
-////            val day = dialog.findViewById<View>(Resources.getSystem().getIdentifier("android:id/day", null, null))
-////            if (day != null) {
-////                day.visibility = View.GONE
-////            }
-//        }
 
         checkbox_employement.setOnCheckedChangeListener { buttonView, isChecked ->
             if (buttonView.isChecked) {
@@ -189,7 +219,11 @@ class AddEmployementFragment : Fragment(), View.OnClickListener, BottomSheetList
             }
             R.id.to_date_edittext -> {
                 if (from_date_edittext.text.isNullOrEmpty()) {
-                    MyUtils.showSnackbar(mActivity!!, "Please select from date", ll_main_addEmployement)
+                    MyUtils.showSnackbar(
+                        mActivity!!,
+                        "Please select from date",
+                        ll_main_addEmployement
+                    )
                 } else {
                     setMonthPickerDialog("to")
                 }
@@ -262,22 +296,30 @@ class AddEmployementFragment : Fragment(), View.OnClickListener, BottomSheetList
     }
 
     fun setEmployementData() {
-        if (from.equals("edit") && userEmplyData!=null) {
+        if (from.equals("edit") && userEmplyData != null) {
             companyID = userEmplyData?.companyID!!
-            jobfuncID=userEmplyData?.jobfuncID!!
+            jobfuncID = userEmplyData?.jobfuncID!!
 
-            stateID=userEmplyData?.stateID!!
-            cityID=userEmplyData?.cityID!!
-            countryID=userEmplyData?.countryID!!
+            stateID = userEmplyData?.stateID!!
+            cityID = userEmplyData?.cityID!!
+            countryID = userEmplyData?.countryID!!
 
             jobTTitle_edit_text.setText(userEmplyData!!.jobfuncName)
             companyname_edit_text.setText(userEmplyData!!.companyName)
             location_edit_text.setText(userEmplyData!!.cityName)
             try {
-                var fromDate = MyUtils.formatDate(userEmplyData!!.useremployementPeriodOfTimeFrom, "dd-MM-yyyy hh:mm:ss", "MM/yyyy")
+                var fromDate = MyUtils.formatDate(
+                    userEmplyData!!.useremployementPeriodOfTimeFrom,
+                    "dd-MM-yyyy hh:mm:ss",
+                    "MM/yyyy"
+                )
                 from_date_edittext.setText(fromDate)
                 if (!userEmplyData!!.useremployementPeriodOfTimeTo.isNullOrEmpty()) {
-                    var toDate = MyUtils.formatDate(userEmplyData!!.useremployementPeriodOfTimeTo, "dd-MM-yyyy hh:mm:ss", "MM/yyyy")
+                    var toDate = MyUtils.formatDate(
+                        userEmplyData!!.useremployementPeriodOfTimeTo,
+                        "dd-MM-yyyy hh:mm:ss",
+                        "MM/yyyy"
+                    )
                     ll_toDate.visibility = View.VISIBLE
                     to_date_edittext.setText(toDate)
                     checkbox_employement.isChecked = false
@@ -326,11 +368,11 @@ class AddEmployementFragment : Fragment(), View.OnClickListener, BottomSheetList
                     }
                 }
             }
-        }else{
-                btn_saveEmployement.strokeColor = (resources.getColor(R.color.colorPrimary))
-                btn_saveEmployement.backgroundTint = (resources.getColor(R.color.colorPrimary))
-                btn_saveEmployement.textColor = resources.getColor(R.color.black)
-            }
+        } else {
+            btn_saveEmployement.strokeColor = (resources.getColor(R.color.colorPrimary))
+            btn_saveEmployement.backgroundTint = (resources.getColor(R.color.colorPrimary))
+            btn_saveEmployement.textColor = resources.getColor(R.color.black)
+        }
 
 
     }
@@ -360,20 +402,39 @@ class AddEmployementFragment : Fragment(), View.OnClickListener, BottomSheetList
             try {
                 if (from.equals("from")) {
                     if ((selected.compareTo(currentDate) > 0)) {
-                        MyUtils.showSnackbar(mActivity!!, "Please select valid from date", ll_main_addEmployement)
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            "Please select valid from date",
+                            ll_main_addEmployement
+                        )
                     } else {
                         from_date_edittext.setText(fromdate)
                     }
                 } else if (from.equals("to")) {
-                    var date = MyUtils.formatDate(from_date_edittext.text.toString(), "MM/yyyy", "yyyy,MM")
+                    var date =
+                        MyUtils.formatDate(from_date_edittext.text.toString(), "MM/yyyy", "yyyy,MM")
                     var fromYear = MyUtils.formatDate(date, "yyyy,MM", "yyyy")
                     var fromMonth = MyUtils.formatDate(date, "yyyy,MM", "MM")
 
                     if ((selected.compareTo(currentDate) > 0)) {
-                        MyUtils.showSnackbar(mActivity!!, "Please select valid to date", ll_main_addEmployement)
-                    } else if ((selected_month.compareTo(fromMonth) <= 0) && (selected_year.compareTo(fromYear) <= 0)) {
-                        MyUtils.showSnackbar(mActivity!!, "Please select valid to date", ll_main_addEmployement)
-                    } else if ((selected_month.compareTo(fromMonth) >= 0) && (selected_year.compareTo(fromYear) >= 0)) {
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            "Please select valid to date",
+                            ll_main_addEmployement
+                        )
+                    } else if ((selected_month.compareTo(fromMonth) <= 0) && (selected_year.compareTo(
+                            fromYear
+                        ) <= 0)
+                    ) {
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            "Please select valid to date",
+                            ll_main_addEmployement
+                        )
+                    } else if ((selected_month.compareTo(fromMonth) >= 0) && (selected_year.compareTo(
+                            fromYear
+                        ) >= 0)
+                    ) {
                         to_date_edittext.setText(toDate)
                     } else {
                         to_date_edittext.setText(toDate)
@@ -455,7 +516,8 @@ class AddEmployementFragment : Fragment(), View.OnClickListener, BottomSheetList
             from_date_edittext.text.toString().trim().isEmpty() -> {
                 return valid
             }
-            (to_date_edittext.text.toString().trim().isEmpty() && (!checkbox_employement.isChecked)) -> {
+            (to_date_edittext.text.toString().trim()
+                .isEmpty() && (!checkbox_employement.isChecked)) -> {
                 return valid
             }
             else -> {
@@ -480,7 +542,10 @@ class AddEmployementFragment : Fragment(), View.OnClickListener, BottomSheetList
             MyUtils.showSnackbar(mActivity!!, "Please Select from date", ll_main_addEmployement)
             from_date_edittext.requestFocus()
 
-        } else if (!checkbox_employement.isChecked && TextUtils.isEmpty(to_date_edittext.text.toString().trim())) {
+        } else if (!checkbox_employement.isChecked && TextUtils.isEmpty(
+                to_date_edittext.text.toString().trim()
+            )
+        ) {
             MyUtils.showSnackbar(mActivity!!, "Please select To date", ll_main_addEmployement)
             to_date_edittext.requestFocus()
         } /*else if (TextUtils.isEmpty(txt_description.text.toString().trim())) {
@@ -511,29 +576,35 @@ class AddEmployementFragment : Fragment(), View.OnClickListener, BottomSheetList
         }
         jsonArray.put(jsonObject)
 
-        var jobFunctionListModel =
-                ViewModelProviders.of(this@AddEmployementFragment).get(JobFunctionListModel::class.java)
-        jobFunctionListModel.getJobFunctionList(mActivity!!, false, jsonArray.toString())
-                .observe(this@AddEmployementFragment!!,
-                        androidx.lifecycle.Observer { jobFunctionListpojo ->
-                            if (jobFunctionListpojo != null && jobFunctionListpojo.isNotEmpty()) {
+        addEmployementModel.jobApi(jsonArray.toString())
+        addEmployementModel.successJob
+            .observe(viewLifecycleOwner) { jobFunctionListpojo ->
+                if (jobFunctionListpojo != null && jobFunctionListpojo.isNotEmpty()) {
 
-                                if (jobFunctionListpojo[0].status.equals("true", false)) {
-                                    MyUtils.dismissProgressDialog()
+                    if (jobFunctionListpojo[0].status.equals("true", false)) {
+                        MyUtils.dismissProgressDialog()
 
-                                    jobFunctionList!!.clear()
-                                    jobFunctionList!!.addAll(jobFunctionListpojo[0].data)
-                                    openJonFunctionListBottomSheet(jobFunctionList!!)
-                                } else {
-                                    MyUtils.dismissProgressDialog()
-                                    MyUtils.showSnackbar(mActivity!!, jobFunctionListpojo[0].message, ll_main_addEmployement)
-                                }
+                        jobFunctionList!!.clear()
+                        jobFunctionList!!.addAll(jobFunctionListpojo[0].data)
+                        openJonFunctionListBottomSheet(jobFunctionList!!)
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            jobFunctionListpojo[0].message,
+                            ll_main_addEmployement
+                        )
+                    }
 
-                            } else {
-                                MyUtils.dismissProgressDialog()
-                                Toast.makeText(mActivity!!,R.string.error_common_network,Toast.LENGTH_SHORT).show()
-                            }
-                        })
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    Toast.makeText(
+                        mActivity!!,
+                        R.string.error_common_network,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
 
 
     }
@@ -554,29 +625,36 @@ class AddEmployementFragment : Fragment(), View.OnClickListener, BottomSheetList
         }
         jsonArray.put(jsonObject)
 
-        var companyListModel =
-                ViewModelProviders.of(this@AddEmployementFragment).get(CompanyListModel::class.java)
-        companyListModel.getCompanyList(mActivity!!, false, jsonArray.toString())
-                .observe(this@AddEmployementFragment!!,
-                        androidx.lifecycle.Observer { companyListpojo ->
-                            if (companyListpojo != null && companyListpojo.isNotEmpty()) {
 
-                                if (companyListpojo[0].status.equals("true", false)) {
-                                    MyUtils.dismissProgressDialog()
+        addEmployementModel.companyApi(jsonArray.toString())
+        addEmployementModel.successCompany
+            .observe(viewLifecycleOwner) { companyListpojo ->
+                if (companyListpojo != null && companyListpojo.isNotEmpty()) {
 
-                                    companyList!!.clear()
-                                    companyList!!.addAll(companyListpojo[0].data)
-                                    openCompanyListBottomSheet(companyList!!)
-                                } else {
-                                    MyUtils.dismissProgressDialog()
-                                    MyUtils.showSnackbar(mActivity!!, companyListpojo[0].message, ll_main_addEmployement)
-                                }
+                    if (companyListpojo[0].status.equals("true", false)) {
+                        MyUtils.dismissProgressDialog()
 
-                            } else {
-                                MyUtils.dismissProgressDialog()
-                                Toast.makeText(mActivity!!,R.string.error_common_network,Toast.LENGTH_SHORT).show()
-                            }
-                        })
+                        companyList!!.clear()
+                        companyList!!.addAll(companyListpojo[0].data)
+                        openCompanyListBottomSheet(companyList!!)
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            companyListpojo[0].message,
+                            ll_main_addEmployement
+                        )
+                    }
+
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    Toast.makeText(
+                        mActivity!!,
+                        R.string.error_common_network,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
 
 
     }
@@ -628,12 +706,26 @@ class AddEmployementFragment : Fragment(), View.OnClickListener, BottomSheetList
             jsonObject.put("loginuserID", userData?.userID)
             jsonObject.put("companyName", companyname_edit_text.text.toString().trim())
             jsonObject.put("countryName", userData?.userHomeCountryName)
-            jsonObject.put("useremployementPeriodOfTimeFrom", MyUtils.formatDate(from_date_edittext.text.toString(), "MM/yyyy", "dd-MM-yyyy hh:mm:ss"))
+            jsonObject.put(
+                "useremployementPeriodOfTimeFrom",
+                MyUtils.formatDate(
+                    from_date_edittext.text.toString(),
+                    "MM/yyyy",
+                    "dd-MM-yyyy hh:mm:ss"
+                )
+            )
             if (checkbox_employement.isChecked) {
                 jsonObject.put("useremployementPeriodOfTimeTo", "")
                 jsonObject.put("useremployementIsCurrent", "Yes")
             } else {
-                jsonObject.put("useremployementPeriodOfTimeTo", MyUtils.formatDate(to_date_edittext.text.toString(), "MM/yyyy", "dd-MM-yyyy hh:mm:ss"))
+                jsonObject.put(
+                    "useremployementPeriodOfTimeTo",
+                    MyUtils.formatDate(
+                        to_date_edittext.text.toString(),
+                        "MM/yyyy",
+                        "dd-MM-yyyy hh:mm:ss"
+                    )
+                )
                 jsonObject.put("useremployementIsCurrent", "No")
             }
             jsonObject.put("cityName", location_edit_text.text.toString().trim())
@@ -653,7 +745,7 @@ class AddEmployementFragment : Fragment(), View.OnClickListener, BottomSheetList
                 jsonObject.put("useremployementID", useremployementID)
             }
 //                    || !userData!!.employement[0].media.isNullOrEmpty()
-            if (!mediaList.isNullOrEmpty() ) {
+            if (!mediaList.isNullOrEmpty()) {
                 for (i in 0 until mediaList!!.size) {
                     val mediaPojo = JSONObject()
                     if (mediaList!![i].equals("Image")) {
@@ -687,48 +779,53 @@ class AddEmployementFragment : Fragment(), View.OnClickListener, BottomSheetList
 
         jsonArray.put(jsonObject)
 
-        var addEmployementModel =
-                ViewModelProviders.of(this@AddEmployementFragment).get(EmployementModel::class.java)
-        addEmployementModel.getEmployement(mActivity!!, false, jsonArray.toString(), from)
-                .observe(this@AddEmployementFragment!!,
-                        androidx.lifecycle.Observer { loginPojo ->
-                            if (loginPojo != null) {
-                                btn_saveEmployement.endAnimation()
-                                if (loginPojo.get(0).status.equals("true", false)) {
-                                    try {
+        addEmployementModel.employeeApi(jsonArray.toString(), from)
+        addEmployementModel.successEmployee.observe(viewLifecycleOwner) { loginPojo ->
+            if (loginPojo != null) {
+                btn_saveEmployement.endAnimation()
+                if (loginPojo.get(0).status.equals("true", false)) {
+                    try {
 //                                        userData?.employement?.clear()
-                                        if (from.equals("Add")) {
-                                            userData?.employement?.addAll(loginPojo.get(0).data)
-                                            StoreSessionManager(userData)
-                                        } else if (from.equals("Edit")) {
-                                            for (i in 0 until userData?.employement!!.size) {
-                                                if (useremployementID.equals(userData!!.employement!![i]!!.useremployementID))
-                                                    userData!!.employement!![i] = loginPojo!![0].data!![0]
-                                                break
-                                            }
-                                            StoreSessionManager(userData)
-                                            if (employementUpdateListener != null)
-                                                employementUpdateListener!!.onEmployementUpdate()
-
-                                        }
-                                        Handler().postDelayed({
-                                            (activity as MainActivity).onBackPressed()
-                                        }, 2000)
-
-                                        MyUtils.showSnackbar(mActivity!!, loginPojo.get(0).message, ll_main_addEmployement)
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
-                                    }
-
-                                } else {
-                                    MyUtils.showSnackbar(mActivity!!, loginPojo.get(0).message, ll_main_addEmployement)
-                                }
-
-                            } else {
-                                btn_saveEmployement.endAnimation()
-                                ErrorUtil.errorMethod(ll_main_addEmployement)
+                        if (from.equals("Add")) {
+                            userData?.employement?.addAll(loginPojo.get(0).data)
+                            StoreSessionManager(userData)
+                        } else if (from.equals("Edit")) {
+                            for (i in 0 until userData?.employement!!.size) {
+                                if (useremployementID.equals(userData!!.employement!![i]!!.useremployementID))
+                                    userData!!.employement!![i] = loginPojo!![0].data!![0]
+                                break
                             }
-                        })
+                            StoreSessionManager(userData)
+                            if (employementUpdateListener != null)
+                                employementUpdateListener!!.onEmployementUpdate()
+
+                        }
+                        Handler().postDelayed({
+                            (activity as MainActivity).onBackPressed()
+                        }, 2000)
+
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            loginPojo.get(0).message,
+                            ll_main_addEmployement
+                        )
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+
+                } else {
+                    MyUtils.showSnackbar(
+                        mActivity!!,
+                        loginPojo.get(0).message,
+                        ll_main_addEmployement
+                    )
+                }
+
+            } else {
+                btn_saveEmployement.endAnimation()
+                ErrorUtil.errorMethod(ll_main_addEmployement)
+            }
+        }
     }
 
 
@@ -738,11 +835,11 @@ class AddEmployementFragment : Fragment(), View.OnClickListener, BottomSheetList
 
         val json = gson.toJson(uesedata)
         sessionManager?.create_login_session(
-                json,
-                uesedata!!.userMobile,
-                "",
-                true,
-                sessionManager!!.isEmailLogin()
+            json,
+            uesedata!!.userMobile,
+            "",
+            true,
+            sessionManager!!.isEmailLogin()
         )
 
     }

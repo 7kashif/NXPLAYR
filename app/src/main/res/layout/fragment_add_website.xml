@@ -113,6 +113,7 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
+                        android:id="@+id/savee"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/brandon_reg"
                         android:text="save"

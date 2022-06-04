@@ -20,10 +20,12 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.SignupData
+import com.nxplayr.fsl.ui.fragments.dialogs.MessageDialog
 import com.nxplayr.fsl.ui.fragments.invite.view.InviteMainFragment
 import com.nxplayr.fsl.util.BlurPostprocessor
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.fragment_share.*
+import kotlinx.android.synthetic.main.toolbar.*
 import java.io.ByteArrayOutputStream
 
 
@@ -69,13 +71,25 @@ class ShareFragment : Fragment() {
             tv_username.text = userData!!.userFirstName + " " + userData!!.userLastName
             img_user_profile.setImageURI(RestClient.image_base_url_users + userData!!.userProfilePicture)
         }
-
+        var infoMsg = context?.getString(R.string.reward_msg)
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngLookingForApportunities.isNullOrEmpty())
+                tv_desc.text = sessionManager?.LanguageLabel?.lngLookingForApportunities
+            if (!sessionManager?.LanguageLabel?.lngJoinMeOn.isNullOrEmpty())
+                joinme.text = sessionManager?.LanguageLabel?.lngJoinMeOn
+            if (!sessionManager?.LanguageLabel?.lngShareCardWebsite.isNullOrEmpty())
+                web.text = sessionManager?.LanguageLabel?.lngShareCardWebsite
+            if (!sessionManager?.LanguageLabel?.lngInviteReferralCode.isNullOrEmpty())
+                referral_score.text = sessionManager?.LanguageLabel?.lngInviteReferralCode + "0"
+            if (!sessionManager?.LanguageLabel?.lngInviteReferralCode.isNullOrEmpty())
+                infoMsg = sessionManager?.LanguageLabel?.lngReferralBonusInfo
+            if (!sessionManager?.LanguageLabel?.lngShareThisCard.isNullOrEmpty())
+                btn_shareCard.text = sessionManager?.LanguageLabel?.lngShareThisCard
+        }
         tabPosition = arguments!!.getInt("position") as Int
-
         postprocessor = BlurPostprocessor(mActivity, 15, 10)
 
         try {
-
             val request =
                 ImageRequestBuilder.newBuilderWithSource(Uri.parse(RestClient.image_base_url_users + userData!!.userProfilePicture))
                     .setPostprocessor(postprocessor)
@@ -90,7 +104,10 @@ class ShareFragment : Fragment() {
             e.printStackTrace()
         }
 
-
+        infoIcon.setOnClickListener {
+            val dialog = MessageDialog(0, activity!!, infoMsg!!)
+            dialog.show()
+        }
 
         btn_shareCard.setOnClickListener {
             val view = v?.findViewById(R.id.shareLinearLayout) as FrameLayout
@@ -106,7 +123,6 @@ class ShareFragment : Fragment() {
             val imageUri = Uri.parse(path)
             share.putExtra(Intent.EXTRA_STREAM, imageUri)
             startActivity(Intent.createChooser(share, "Select"))
-
         }
 
         (parentFragment as InviteMainFragment).cardImageUri(shareLinearLayout)

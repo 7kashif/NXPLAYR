@@ -226,6 +226,9 @@ class LanguageLabelPojo : Serializable{
         @SerializedName("lngCancel")
         @Expose
         val lngCancel: String?=""
+        @SerializedName("lngAgentName")
+        @Expose
+        val lngAgentName: String?=""
         @SerializedName("lngCancelRequest")
         @Expose
         val lngCancelRequest: String?=""
@@ -343,6 +346,9 @@ class LanguageLabelPojo : Serializable{
         @SerializedName("lngContentLanguage")
         @Expose
         val lngContentLanguage: String?=""
+        @SerializedName("lngSelectContentLanguage")
+        @Expose
+        val lngSelectContentLanguage: String?=""
         @SerializedName("lngContinent")
         @Expose
         val lngContinent: String?=""
@@ -394,6 +400,9 @@ class LanguageLabelPojo : Serializable{
         @SerializedName("lngCurrentSkill")
         @Expose
         val lngCurrentSkill: String?=""
+        @SerializedName("lngMaxSkillsMessage")
+        @Expose
+        val lngMaxSkillsMessage: String?=""
         @SerializedName("lngDOB")
         @Expose
         val lngDOB: String?=""
@@ -1240,6 +1249,9 @@ class LanguageLabelPojo : Serializable{
         @SerializedName("lngSave")
         @Expose
         val lngSave: String?=""
+        @SerializedName("lngAddAgent")
+        @Expose
+        val lngAddAgent: String?=""
         @SerializedName("lngSavePost")
         @Expose
         val lngSavePost: String?=""
@@ -1453,6 +1465,9 @@ class LanguageLabelPojo : Serializable{
         @SerializedName("lngSuggestFeature")
         @Expose
         val lngSuggestFeature: String?=""
+        @SerializedName("lngSendFeedbackPlaceholder")
+        @Expose
+        val lngSendFeedbackPlaceholder: String?=""
         @SerializedName("lngSuggestedHobbiesBased")
         @Expose
         val lngSuggestedHobbiesBased: String?=""
@@ -1708,5 +1723,128 @@ class LanguageLabelPojo : Serializable{
         @SerializedName("lngDeclaration")
         @Expose
         val lngDeclaration: String?=""
+        @SerializedName("lngLookingForApportunities")
+        @Expose
+        val lngLookingForApportunities: String?=""
+        @SerializedName("lngShareCardWebsite")
+        @Expose
+        val lngShareCardWebsite: String?=""
+        @SerializedName("lngInviteReferralCode")
+        @Expose
+        val lngInviteReferralCode: String?=""
+        @SerializedName("lngReferralBonusInfo")
+        @Expose
+        val lngReferralBonusInfo: String?=""
+        @SerializedName("lngContactUsTitle1")
+        @Expose
+        val lngContactUsTitle1: String?=""
+        @SerializedName("lngContactUsTitle2")
+        @Expose
+        val lngContactUsTitle2: String?=""
+        @SerializedName("lngContactUsTitle3")
+        @Expose
+        val lngContactUsTitle3: String?=""
+        @SerializedName("lngContactUsTitle4")
+        @Expose
+        val lngContactUsTitle4: String?=""
+        @SerializedName("lngCommonQuestions")
+        @Expose
+        val lngCommonQuestions: String?=""
+        @SerializedName("lngCommonQuestionsSubTitle")
+        @Expose
+        val lngCommonQuestionsSubTitle: String?=""
+        @SerializedName("lngNeedMoreHelpSubTitle")
+        @Expose
+        val lngNeedMoreHelpSubTitle: String?=""
+        @SerializedName("lngCUGeneralQueries")
+        @Expose
+        val lngCUGeneralQueries: String?=""
+        @SerializedName("lngCUSuggestFeature")
+        @Expose
+        val lngCUSuggestFeature: String?=""
+        @SerializedName("lngCUPartnerShip")
+        @Expose
+        val lngCUPartnerShip: String?=""
+        @SerializedName("lngCUPress")
+        @Expose
+        val lngCUPress: String?=""
+        @SerializedName("lngAllowPushNotifications")
+        @Expose
+        val lngAllowPushNotifications: String?=""
+        @SerializedName("lngAllowPushNotificationsOnMessage")
+        @Expose
+        val lngAllowPushNotificationsOnMessage: String?=""
+        @SerializedName("lngAllowPushNotificationsOffMessage")
+        @Expose
+        val lngAllowPushNotificationsOffMessage: String?=""
+        @SerializedName("lngFromAnyone")
+        @Expose
+        val lngFromAnyone: String?=""
+        @SerializedName("lngFromConnections")
+        @Expose
+        val lngFromConnections: String?=""
+        @SerializedName("lngFromOff")
+        @Expose
+        val lngFromOff: String?=""
+        @SerializedName("lngFromOn")
+        @Expose
+        val lngFromOn: String?=""
+        @SerializedName("lngLikeFromAnyoneMessage")
+        @Expose
+        val lngLikeFromAnyoneMessage: String?=""
+        @SerializedName("lngLikeFromOffMessage")
+        @Expose
+        val lngLikeFromOffMessage: String?=""
+        @SerializedName("lngLikeFromConnectionMessage")
+        @Expose
+        val lngLikeFromConnectionMessage: String?=""
+        @SerializedName("lngCommentsFromAnyoneMessage")
+        @Expose
+        val lngCommentsFromAnyoneMessage: String?=""
+        @SerializedName("lngCommentsFromConnectionMessage")
+        @Expose
+        val lngCommentsFromConnectionMessage: String?=""
+        @SerializedName("lngCommentsFromOffMessage")
+        @Expose
+        val lngCommentsFromOffMessage: String?=""
+        @SerializedName("lngPostComments")
+        @Expose
+        val lngPostComments: String?=""
+        @SerializedName("lngChatFromOnMessage")
+        @Expose
+        val lngChatFromOnMessage: String?=""
+        @SerializedName("lngChatFromOffMessage")
+        @Expose
+        val lngChatFromOffMessage: String?=""
+        @SerializedName("lngConnectionRequests")
+        @Expose
+        val lngConnectionRequests: String?=""
+        @SerializedName("lngConnectionRequestFromOnMessage")
+        @Expose
+        val lngConnectionRequestFromOnMessage: String?=""
+        @SerializedName("lngConnectionRequestFromOffMessage")
+        @Expose
+        val lngConnectionRequestFromOffMessage: String?=""
+        @SerializedName("lngFollowersFromOnMessage")
+        @Expose
+        val lngFollowersFromOnMessage: String?=""
+        @SerializedName("lngFollowersFromOffMessage")
+        @Expose
+        val lngFollowersFromOffMessage: String?=""
+        @SerializedName("lngSuggestAFeaturePlaceholder")
+        @Expose
+        val lngSuggestAFeaturePlaceholder: String?=""
+        @SerializedName("lngExpiryDate")
+        @Expose
+        val lngExpiryDate: String?=""
+        @SerializedName("lngPostLikes")
+        @Expose
+        val lngPostLikes: String?=""
+        @SerializedName("lngChatMessages")
+        @Expose
+        val lngChatMessages: String?=""
+        @SerializedName("lngWriteMessage")
+        @Expose
+        val lngWriteMessage: String?=""
     }
 }

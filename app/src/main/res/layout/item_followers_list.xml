@@ -24,8 +24,8 @@
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/img_followersProile"
-                    android:layout_width="@dimen/_50sdp"
-                    android:layout_height="@dimen/_50sdp"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
                     android:layout_gravity="center"
                     android:padding="@dimen/_5sdp"
                     app:actualImageResource="@drawable/profile_pic_placeholder"
@@ -50,9 +50,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/brandon_reg"
-                    android:text="Arif Sheliya"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_16ssp" />
+                    android:textSize="@dimen/_14ssp" />
 
             </LinearLayout>
 
@@ -67,8 +66,8 @@
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/img_follow"
-                    android:layout_width="@dimen/_50sdp"
-                    android:layout_height="@dimen/_40sdp"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_30sdp"
                     android:padding="@dimen/_3sdp"
                     app:actualImageResource="@drawable/follow_icon"
                     app:actualImageScaleType="fitXY"
@@ -86,8 +85,8 @@
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/img_following"
-                    android:layout_width="@dimen/_50sdp"
-                    android:layout_height="@dimen/_40sdp"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_30sdp"
                     android:layout_gravity="center"
                     android:padding="@dimen/_3sdp"
                     app:actualImageResource="@drawable/following_icon"

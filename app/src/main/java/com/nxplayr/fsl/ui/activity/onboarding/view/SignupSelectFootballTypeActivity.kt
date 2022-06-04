@@ -82,41 +82,6 @@ class SignupSelectFootballTypeActivity : AppCompatActivity(), View.OnClickListen
                 btnSelectUserType.progressText = sessionManager?.LanguageLabel?.lngNext
         }
 
-        signupSelectFootballTypeAdapter =
-            SignupSelectFootballTypeAdapter(
-                this,
-                object : SignupSelectFootballTypeAdapter.OnItemClick {
-                    override fun onClicklisneter(pos: Int, name: String) {
-
-                        footbltypeID = footballTypeListData!![pos].footbltypeID!!
-                        for (i in 0 until footballTypeListData!!.size) {
-                            footballTypeListData!![i].checked = i == pos
-
-                            btnSelectUserType.backgroundTint =
-                                (resources.getColor(R.color.colorPrimary))
-                            btnSelectUserType.textColor = (resources.getColor(R.color.black))
-                            btnSelectUserType.strokeColor =
-                                (resources.getColor(R.color.colorPrimary))
-
-                        }
-                        signupSelectFootballTypeAdapter?.notifyDataSetChanged()
-
-                    }
-                }, footballTypeListData!!
-
-            )
-        gridLayoutManager = GridLayoutManager(this, 2).also {
-            it.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    return if (position % 3 == 2)
-                        2
-                    else
-                        1
-                }
-            }
-        }
-        recyclerview.layoutManager = gridLayoutManager
-        recyclerview.adapter = signupSelectFootballTypeAdapter
         getFootballTypeList1()
 
         btnSelectUserType.strokeColor = resources.getColor(R.color.grayborder)
@@ -170,7 +135,8 @@ class SignupSelectFootballTypeActivity : AppCompatActivity(), View.OnClickListen
         }
         jsonArray.put(jsonObject)
         footballTypeListModel.getFootballLevelList(this!!, false, jsonArray.toString())
-            .observe(this@SignupSelectFootballTypeActivity!!
+            .observe(
+                this@SignupSelectFootballTypeActivity!!
             ) { footballLevelListPojo ->
 
                 relativeprogressBar.visibility = View.GONE
@@ -181,7 +147,44 @@ class SignupSelectFootballTypeActivity : AppCompatActivity(), View.OnClickListen
                     if (footballLevelListPojo.get(0).status.equals("true", false)) {
                         footballTypeListData?.clear()
                         footballTypeListData?.addAll(footballLevelListPojo.get(0).data)
-                        signupSelectFootballTypeAdapter?.notifyDataSetChanged()
+
+                        signupSelectFootballTypeAdapter =
+                            SignupSelectFootballTypeAdapter(
+                                this,
+                                object : SignupSelectFootballTypeAdapter.OnItemClick {
+                                    override fun onClicklisneter(pos: Int, name: String) {
+
+                                        footbltypeID = footballTypeListData!![pos].footbltypeID!!
+                                        for (i in 0 until footballTypeListData!!.size) {
+                                            footballTypeListData!![i].checked = i == pos
+
+                                            btnSelectUserType.backgroundTint =
+                                                (resources.getColor(R.color.colorPrimary))
+                                            btnSelectUserType.textColor = (resources.getColor(R.color.black))
+                                            btnSelectUserType.strokeColor =
+                                                (resources.getColor(R.color.colorPrimary))
+
+                                        }
+                                        signupSelectFootballTypeAdapter?.notifyDataSetChanged()
+
+                                    }
+                                }, footballTypeListData!!
+
+                            )
+                        gridLayoutManager = GridLayoutManager(this, 2).also {
+                            if (footballTypeListData?.size == 5) {
+                                it.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                                    override fun getSpanSize(position: Int): Int {
+                                        return if (position % 3 == 2)
+                                            2
+                                        else
+                                            1
+                                    }
+                                }
+                            }
+                        }
+                        recyclerview.layoutManager = gridLayoutManager
+                        recyclerview.adapter = signupSelectFootballTypeAdapter
 
                     } else {
                         if (footballTypeListData!!.size == 0) {

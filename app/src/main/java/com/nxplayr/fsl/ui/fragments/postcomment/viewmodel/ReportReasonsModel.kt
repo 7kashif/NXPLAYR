@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.ReportReasonPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
 
@@ -34,7 +37,7 @@ class ReportReasonsModel : ViewModel() {
 
     private fun getReportReasonsListApi(): LiveData<List<ReportReasonPojo>> {
         val data = MutableLiveData<List<ReportReasonPojo>>()
-
+        viewModelScope.launch(Dispatchers.IO) {
         var call: Call<List<ReportReasonPojo>>? = null
         when (from) {
             "ReportList" -> {
@@ -52,7 +55,7 @@ class ReportReasonsModel : ViewModel() {
                 data.value = null
             }
 
-        })
+        })}
 
         return data
     }

@@ -20,7 +20,9 @@ import com.nxplayr.fsl.util.SessionManager
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_set_of_skills.*
 import kotlinx.android.synthetic.main.fragment_trophy_honors.*
+import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.android.synthetic.main.toolbar2.*
+import kotlinx.android.synthetic.main.toolbar2.toolbar
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -47,6 +49,20 @@ class TrophyHonorsFragment : Fragment(), View.OnClickListener {
 
         }
         return v
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngTrophiesNHonors.isNullOrEmpty())
+                tvToolbarTitle1.text = sessionManager?.LanguageLabel?.lngTrophiesNHonors
+            if (!sessionManager?.LanguageLabel?.lngTrophiesNHonors.isNullOrEmpty())
+                caption.text = sessionManager?.LanguageLabel?.lngTrophiesNHonors
+            if (!sessionManager?.LanguageLabel?.lngWriteHere.isNullOrEmpty())
+                edit_trophyHonors.hint = sessionManager?.LanguageLabel?.lngWriteHere
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btnUpdateBasicDetail.progressText = sessionManager?.LanguageLabel?.lngSave
+        }
     }
 
     override fun onAttach(context: Context) {

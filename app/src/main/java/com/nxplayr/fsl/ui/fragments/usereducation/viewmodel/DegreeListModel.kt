@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.UserDegreeListPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Response
 
 class DegreeListModel : ViewModel() {
@@ -31,7 +34,7 @@ class DegreeListModel : ViewModel() {
 
     private fun getDegreeListApi(): LiveData<List<UserDegreeListPojo>> {
         val data = MutableLiveData<List<UserDegreeListPojo>>()
-
+        viewModelScope.launch(Dispatchers.IO) {
         var call = RestClient.get()!!.userDegreeListProfile(json!!)
         call!!.enqueue(object : RestCallback<List<UserDegreeListPojo>>(mContext) {
             override fun Success(response: Response<List<UserDegreeListPojo>>) {
@@ -42,7 +45,7 @@ class DegreeListModel : ViewModel() {
                 data.value = null
             }
 
-        })
+        })}
 
         return data
     }

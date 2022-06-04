@@ -1,57 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_main_suggestion"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/ll_main_suggestion"
-
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".ui.fragments.setting.view.SuggestedFeedbackFragment">
 
     <include layout="@layout/toolbar" />
 
-    <androidx.appcompat.widget.AppCompatRatingBar
-        style="@style/Widget.AppCompat.RatingBar"
-        android:layout_width="wrap_content"
+    <include layout="@layout/line_seperator" />
+
+    <TextView
+        android:id="@+id/tv_followers_name1"
+        style="@style/Font.SubTitle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_5sdp"
-        android:layout_marginEnd="@dimen/_20sdp"
-        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:text="@string/your_feedback_is_important_to_us_so_we_can_constinusouly_improve_the_nxplay_r_experience"
+        android:textColor="@color/white" />
+
+    <me.zhanghai.android.materialratingbar.MaterialRatingBar
         android:id="@+id/rating"
-
-       />
-
+        style="@style/Widget.MaterialRatingBar.RatingBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginVertical="@dimen/_15sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:isIndicator="false"
+        android:numStars="5"
+        android:progressBackgroundTint="@color/white"
+        android:rating="3" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_stoke"
-        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginStart="@dimen/_20sdp"
         android:layout_marginTop="@dimen/_10sdp"
-        android:layout_marginStart="@dimen/_20sdp">
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top|left"
-        android:inputType="textMultiLine"
-        android:lines="8"
-        android:id="@+id/edittext_suggestion_feature"
-        android:maxLength="3000"
-        android:textColor="@color/white"
-        android:hint="@string/provide_any_feedback"
-        android:textColorHint="@color/colorPrimary"
-        android:minLines="6"
-        android:scrollbars="vertical" />
-</LinearLayout>
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:background="@drawable/background_stoke">
+
+        <EditText
+            android:id="@+id/edittext_suggestion_feature"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:gravity="top|left"
+            android:hint="@string/provide_any_feedback"
+            android:inputType="textMultiLine"
+            android:lines="8"
+            android:maxLength="3000"
+            android:minLines="6"
+            android:padding="@dimen/_15ssp"
+            android:scrollbars="vertical"
+            android:textColor="@color/white"
+            android:textColorHint="@color/colorPrimary" />
+    </LinearLayout>
 
     <com.chand.progressbutton.ProgressButton
         android:id="@+id/btn_save"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_50sdp"
         android:layout_gravity="center|bottom"
-        android:layout_marginTop="@dimen/_20sdp"
         android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_20sdp"
         android:layout_marginEnd="@dimen/_20sdp"
         app:p_arrowVisible="false"
         app:p_backgroundTint="@color/colorPrimary"

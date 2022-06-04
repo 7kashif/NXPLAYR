@@ -4,10 +4,13 @@ import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.ReplyComment
 import com.nxplayr.fsl.util.MyUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 import retrofit2.Call
 import retrofit2.Response
@@ -38,6 +41,7 @@ class ReplyCommentModel : ViewModel() {
         }
 
         val data = MutableLiveData<List<ReplyComment>>()
+        viewModelScope.launch(Dispatchers.IO) {
         var call: Call<List<ReplyComment>>? = null
         /**
          *
@@ -65,6 +69,7 @@ class ReplyCommentModel : ViewModel() {
                     data.value = null
                 }
             })
+        }
         }
         return data
     }

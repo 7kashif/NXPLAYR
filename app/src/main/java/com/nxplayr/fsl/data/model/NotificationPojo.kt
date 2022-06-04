@@ -28,6 +28,13 @@ data class NotificationData(
         var notificationSendTime: String = "",
         @SerializedName("notificationTitle")
         var notificationTitle: String = "",
+        @SerializedName("notificationData")
+        var notificationData: NotifyData,
         @SerializedName("notificationType")
         var notificationType: String = ""
+) : Serializable
+
+data class NotifyData(
+        @SerializedName("Sender_userProfilePicture")
+        var Sender_userProfilePicture: String = "",
 ) : Serializable

@@ -9,6 +9,7 @@
     tools:context=".ui.fragments.setting.view.DeleteAccountFragment">
 
     <include layout="@layout/toolbar" />
+
     <include layout="@layout/line_seperator" />
 
     <androidx.core.widget.NestedScrollView
@@ -30,6 +31,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/are_you_sure"
                     style="@style/Font.SubTitle_blue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -42,6 +44,7 @@
                     android:textColor="@color/colorPrimaryDark" />
 
                 <TextView
+                    android:id="@+id/we_would_here"
                     style="@style/Font.SubTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -56,6 +59,7 @@
                     />
 
                 <TextView
+                    android:id="@+id/why_are"
                     style="@style/Font.SubTitle_blue"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -68,6 +72,7 @@
                     android:textColor="@color/colorPrimaryDark" />
 
                 <TextView
+                    android:id="@+id/note_remember"
                     style="@style/Font.SubTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -84,32 +89,34 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:id="@+id/txt_edit_currentPass"
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_20sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:hint="@string/current_password"
-                    android:visibility="visible"
                     android:textColorHint="@color/colorPrimary"
-                    android:theme="@style/MyEditTextTheme">
+                    android:theme="@style/MyEditTextTheme"
+                    android:visibility="visible"
+                    app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edit_currentPass"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
-                        android:imeOptions="actionDone"
                         android:drawableEnd="@drawable/show_icon_login"
+                        android:imeOptions="actionDone"
                         android:inputType="textPassword"
-                        android:overScrollMode="never"
-                        android:singleLine="true"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_16ssp"
-                        android:theme="@style/MyEditTextTheme"
                         android:longClickable="false"
                         android:maxLength="15"
+                        android:overScrollMode="never"
+                        android:paddingTop="@dimen/_35sdp"
+                        android:singleLine="true"
+                        android:textColor="@color/white"
                         android:textCursorDrawable="@null"
                         android:textIsSelectable="false"
-                      />
+                        android:textSize="@dimen/_16ssp"
+                        android:theme="@style/MyEditTextTheme" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -139,7 +146,6 @@
                     app:p_text="@string/proceed"
                     app:p_textColor="@color/colorPrimary"
                     app:p_textSize="@dimen/_18ssp" />
-
 
 
             </LinearLayout>

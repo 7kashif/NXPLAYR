@@ -29,6 +29,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:id="@+id/ti_edit_first_name"
                     android:layout_gravity="center"
                     android:hint="@string/first_name"
                     android:textColorHint="@color/colorPrimary"
@@ -55,6 +56,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:id="@+id/ti_edit_last_name"
                     android:hint="@string/last_name"
                     android:textColorHint="@color/colorPrimary"
                     android:theme="@style/MyEditTextTheme"
@@ -97,6 +99,7 @@
                       </com.google.android.material.textfield.TextInputLayout>-->
 
                 <TextView
+                    android:id="@+id/gender"
                     style="@style/Font.SubTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -151,6 +154,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:id="@+id/ti_edit_dateofbirth"
                     android:layout_gravity="center"
                     android:hint="@string/date_of_birth"
                     android:textColorHint="@color/colorPrimary"
@@ -178,6 +182,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:id="@+id/ti_edit_place_of_birth"
                     android:hint="@string/place_of_birth"
                     android:textColorHint="@color/colorPrimary"
                     android:theme="@style/MyEditTextTheme"
@@ -216,7 +221,7 @@
                     android:layout_marginTop="@dimen/_20sdp"
                     android:layout_marginEnd="@dimen/_25sdp"
                     android:layout_marginBottom="@dimen/_10sdp"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     app:p_arrowVisible="false"
                     app:p_backgroundTint="@android:color/transparent"
                     app:p_cornerRadius="@dimen/_3sdp"

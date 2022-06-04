@@ -18,29 +18,27 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.google.gson.JsonParseException
 import com.nxplayr.fsl.R
-import com.nxplayr.fsl.ui.fragments.collection.adapter.CreateAlbumAdapater
 import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.ui.fragments.collection.viewmodel.CreateAlbumModel
-import com.nxplayr.fsl.ui.fragments.collection.viewmodel.CteateAlbumListModel
 import com.nxplayr.fsl.data.model.AlbumDatum
 import com.nxplayr.fsl.data.model.CreatePostData
 import com.nxplayr.fsl.data.model.SignupData
-import com.nxplayr.fsl.util.SessionManager
-import com.google.gson.JsonParseException
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.fragments.collection.adapter.CreateAlbumAdapater
+import com.nxplayr.fsl.ui.fragments.collection.viewmodel.CollectionViewModel
 import com.nxplayr.fsl.ui.fragments.postalbum.SubAlbumFragment
+import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.add_collection_activity.*
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.ArrayList
 
 class AddToCollectionFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
@@ -290,9 +288,10 @@ class AddToCollectionFragment : Fragment(), View.OnClickListener, SwipeRefreshLa
         }
         Log.d("CreatAlbumObject", jsonObject.toString())
         var getEmployementModel =
-                ViewModelProviders.of(this@AddToCollectionFragment).get(CreateAlbumModel::class.java)
-        getEmployementModel.apiCreateAlbum(mActivity!!, false, jsonArray.toString())
-                .observe(this@AddToCollectionFragment,
+                ViewModelProvider(this@AddToCollectionFragment).get(CollectionViewModel::class.java)
+        getEmployementModel.createAlbum(jsonArray.toString())
+        getEmployementModel.createAlbum
+                .observe(viewLifecycleOwner,
                         Observer { albumCreatepojo ->
 
                             relativeprogressBar.visibility = View.GONE
@@ -355,10 +354,10 @@ class AddToCollectionFragment : Fragment(), View.OnClickListener, SwipeRefreshLa
         }
         Log.d("ALBUM_LIST", jsonObject.toString())
         jsonArray.put(jsonObject)
-        var getEmployementModel =
-                ViewModelProviders.of(this@AddToCollectionFragment).get(CteateAlbumListModel::class.java)
-        getEmployementModel.getAlbumDataList(mActivity!!, false, jsonArray.toString())
-                .observe(this@AddToCollectionFragment,
+        var getEmployementModel = ViewModelProvider(this@AddToCollectionFragment).get(CollectionViewModel::class.java)
+        getEmployementModel.createAlbumList(jsonArray.toString())
+        getEmployementModel.createAlbumList
+                .observe(viewLifecycleOwner,
                         Observer { albumListpojo ->
 
                             if (albumListpojo != null && albumListpojo.isNotEmpty()) {

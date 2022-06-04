@@ -6,48 +6,45 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nxplayr.fsl.R
-import com.nxplayr.fsl.ui.activity.post.view.CreatePostActivityTwo
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
-import com.nxplayr.fsl.ui.activity.post.view.ReportCopyRightActivity
-import com.nxplayr.fsl.ui.activity.post.view.ReportPostActivity
-import com.nxplayr.fsl.ui.fragments.feed.adapter.HomeFeedListAdapter
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.CreatePostData
 import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.data.model.ThreedotsBottomPojo
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.activity.post.view.CreatePostActivityTwo
+import com.nxplayr.fsl.ui.activity.post.view.ReportCopyRightActivity
+import com.nxplayr.fsl.ui.activity.post.view.ReportPostActivity
+import com.nxplayr.fsl.ui.fragments.bottomsheet.ThreeDotsBottomSheetFragment
+import com.nxplayr.fsl.ui.fragments.feed.adapter.HomeFeedListAdapter
+import com.nxplayr.fsl.ui.fragments.feed.viewmodel.CreatePostModelV2
 import com.nxplayr.fsl.ui.fragments.feedlikeviewlist.view.LikeViewFragment
 import com.nxplayr.fsl.ui.fragments.otheruserprofile.view.OtherUserProfileMainFragment
-import com.nxplayr.fsl.ui.fragments.bottomsheet.ThreeDotsBottomSheetFragment
+import com.nxplayr.fsl.ui.fragments.ownprofile.view.ProfileMainFragment
+import com.nxplayr.fsl.ui.fragments.postcomment.viewmodel.CommentModel
+import com.nxplayr.fsl.ui.fragments.userfollowers.viewmodel.CommonStatusModel
 import com.nxplayr.fsl.util.Constant
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
-import com.nxplayr.fsl.ui.fragments.postcomment.viewmodel.CommentModel
-import com.nxplayr.fsl.ui.fragments.userfollowers.viewmodel.CommonStatusModel
-import com.nxplayr.fsl.ui.fragments.feed.viewmodel.CreatePostModel
-import com.nxplayr.fsl.ui.fragments.ownprofile.view.ProfileMainFragment
 import kotlinx.android.synthetic.main.common_recyclerview.*
 import kotlinx.android.synthetic.main.custom_alert_dialog.view.*
-import kotlinx.android.synthetic.main.fragment_comment_like_list.*
 import kotlinx.android.synthetic.main.fragment_hash_tag_post_list.*
-import kotlinx.android.synthetic.main.fragment_hash_tag_post_list.swiperefresh
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
 import kotlinx.android.synthetic.main.toolbar.*
-import kotlinx.android.synthetic.main.toolbar.tvToolbarTitle
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -88,7 +85,7 @@ class HashTagPostListFragment : Fragment(),View.OnClickListener {
     var footballagecatID=""
     var footballType=""
     var publicationTime=""
-    private lateinit var createPostModel: CreatePostModel
+    private lateinit var createPostModel: CreatePostModelV2
     private lateinit var apiCall : CommentModel
     private lateinit var reportPostModel : CommonStatusModel
     override fun onCreateView(
@@ -156,10 +153,10 @@ class HashTagPostListFragment : Fragment(),View.OnClickListener {
 
         jsonArray.put(jsonObject)
         Log.e("JsonArray", jsonArray.toString())
-        createPostModel.apiFunction(mActivity!!, jsonArray.toString(), "getPostList")
-            .observe(viewLifecycleOwner, { postListPojo ->
-                if (postListPojo != null && postListPojo.isNotEmpty())
-                {
+        createPostModel.postFunction(jsonArray.toString(), "getPostList")
+        createPostModel.postSuccessLiveData
+            .observe(viewLifecycleOwner) { postListPojo ->
+                if (postListPojo != null && postListPojo.isNotEmpty()) {
                     isLoading = false
                     ll_no_data_found.visibility = View.GONE
                     nointernetMainRelativelayout.visibility = View.GONE
@@ -168,7 +165,7 @@ class HashTagPostListFragment : Fragment(),View.OnClickListener {
                         postList!!.removeAt(postList!!.size - 1)
                         homeFeedListAdapter!!.notifyItemRemoved(postList!!.size)
                     }
-                    if (postListPojo[0].status.equals("true",false)) {
+                    if (postListPojo[0].status.equals("true", false)) {
 
                         recyclerview.visibility = View.VISIBLE
 
@@ -203,9 +200,7 @@ class HashTagPostListFragment : Fragment(),View.OnClickListener {
 
                         }
                     }
-                }
-
-                else {
+                } else {
                     if (mActivity != null) {
                         relativeprogressBar.visibility = View.GONE
                         recyclerview.visibility = View.GONE
@@ -230,7 +225,7 @@ class HashTagPostListFragment : Fragment(),View.OnClickListener {
                     }
 
                 }
-            })
+            }
     }
 
     private fun setupUI() {
@@ -382,7 +377,7 @@ class HashTagPostListFragment : Fragment(),View.OnClickListener {
     }
 
     private fun setupViewModel() {
-        createPostModel = ViewModelProvider(this@HashTagPostListFragment).get(CreatePostModel::class.java)
+        createPostModel = ViewModelProvider(this@HashTagPostListFragment).get(CreatePostModelV2::class.java)
         apiCall = ViewModelProvider(this@HashTagPostListFragment).get(CommentModel::class.java)
         reportPostModel = ViewModelProvider(this@HashTagPostListFragment).get(CommonStatusModel::class.java)
 
@@ -910,8 +905,10 @@ class HashTagPostListFragment : Fragment(),View.OnClickListener {
         }
 
         jsonArray.put(jsonObject)
-        createPostModel.apiFunction(mActivity!!, jsonArray.toString(), "getPostList")
-            .observe(viewLifecycleOwner, { trendingFeedlistpojos ->
+        createPostModel.postFunction(jsonArray.toString(), "getPostList")
+        createPostModel.postSuccessLiveData
+            .observe(viewLifecycleOwner
+            ) { trendingFeedlistpojos ->
                 isLoading = false
                 if (trendingFeedlistpojos != null && trendingFeedlistpojos.size > 0) {
                     if (trendingFeedlistpojos[0]!!.status.equals("true", false)) {
@@ -932,7 +929,6 @@ class HashTagPostListFragment : Fragment(),View.OnClickListener {
                 }
                 swiperefresh.isRefreshing = false
             }
-            )
     }
 
     override fun onClick(v: View?) {

@@ -7,8 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/appbg"
     android:orientation="vertical"
-    android:overScrollMode="never"
-    tools:context=".ui.activity.CreatePostActivityTwo">
+    android:overScrollMode="never">
 
     <include layout="@layout/toolbar" />
     <include layout="@layout/line_seperator" />

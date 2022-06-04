@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.InteraceLanguageListPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Response
 
 class LanguageIntefaceListModel : ViewModel() {
@@ -31,7 +34,7 @@ class LanguageIntefaceListModel : ViewModel() {
 
     private fun getLanguageListApi(): LiveData<List<InteraceLanguageListPojo>> {
         val data = MutableLiveData<List<InteraceLanguageListPojo>>()
-
+        viewModelScope.launch(Dispatchers.IO) {
         var call = RestClient.get()!!.languageList(json!!)
         call!!.enqueue(object : RestCallback<List<InteraceLanguageListPojo>>(mContext) {
             override fun Success(response: Response<List<InteraceLanguageListPojo>>) {
@@ -42,7 +45,7 @@ class LanguageIntefaceListModel : ViewModel() {
                 data.value = null
             }
 
-        })
+        })}
 
         return data
     }

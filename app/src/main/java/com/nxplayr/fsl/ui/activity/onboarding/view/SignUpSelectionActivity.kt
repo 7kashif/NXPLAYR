@@ -51,7 +51,7 @@ import com.nxplayr.fsl.ui.activity.onboarding.adapter.AgeGroupAdapter
 import com.nxplayr.fsl.ui.activity.onboarding.adapter.CommonPagerAdapter
 import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.CountryListModel
 import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.FootballAgeGroupModel
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
+import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModelV2
 import com.nxplayr.fsl.ui.fragments.dialogs.ParentGuardianDialog
 import com.nxplayr.fsl.ui.fragments.dialogs.PasswordInfoDialog
 import com.nxplayr.fsl.util.*
@@ -102,7 +102,7 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
     var socialID = ""
     var image: FirebaseVisionImage? = null
     var detector: FirebaseVisionFaceDetector? = null
-    private lateinit var signup: SignupModel
+    private lateinit var signup: SignupModelV2
     private lateinit var footballTypeListModel: FootballAgeGroupModel
     private lateinit var countryListModel: CountryListModel
     var mDrawableEye: Drawable? = null
@@ -214,7 +214,7 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setupViewModel() {
-        signup = ViewModelProvider(this@SignUpSelectionActivity).get(SignupModel::class.java)
+        signup = ViewModelProvider(this@SignUpSelectionActivity).get(SignupModelV2::class.java)
         footballTypeListModel = ViewModelProvider(this@SignUpSelectionActivity).get(
             FootballAgeGroupModel::class.java
         )
@@ -1443,79 +1443,77 @@ class SignUpSelectionActivity : AppCompatActivity(), View.OnClickListener {
 
             jsonArray.put(jsonObject)
 
-            signup.userRegistration(this, false, jsonArray.toString(), "signup")
-                .observe(
-                    this@SignUpSelectionActivity,
-                    androidx.lifecycle.Observer { loginPojo ->
-                        if (loginPojo != null) {
-                            btnSubmit.endAnimation()
-                            if (loginPojo.get(0).status.equals("true", false)) {
+            signup.userRegistration(jsonArray.toString())
+            signup.userRegistration.observe(this@SignUpSelectionActivity) { loginPojo ->
+                if (loginPojo != null) {
+                    btnSubmit.endAnimation()
+                    if (loginPojo.get(0).status.equals("true", false)) {
 
-                                try {
-                                    StoreSessionManager(loginPojo.get(0).data.get(0))
-                                    if (agegroupFrom > loginPojo.get(0).data[0].settings[0].settingsMinorAge.toInt()) {
-                                        Handler().postDelayed({
-                                            var intent = Intent(
-                                                this@SignUpSelectionActivity,
-                                                OtpVerificationActivity::class.java
-                                            )
-                                            intent.putExtra("selectModeType", selectModeType)
-                                            intent.putExtra("from", "LoginByOtpVerification")
-                                            Log.e("select2", selectModeType.toString())
-                                            startActivity(intent)
-                                            finishAffinity()
-                                        }, 1000)
-                                        MyUtils.showSnackbar(
-                                            this,
-                                            loginPojo.get(0).message,
-                                            ll_signup_selection_data
-                                        )
-
-                                    } else {
-                                        Handler().postDelayed({
-                                            var intent = Intent(
-                                                this@SignUpSelectionActivity,
-                                                ParentInfoActivity::class.java
-                                            )
-                                            intent.putExtra("selectModeType", selectModeType)
-                                            intent.putExtra("from", "LoginByOtpVerification")
-                                            intent.putExtra(
-                                                "loginuserID",
-                                                loginPojo.get(0).data.get(0).userID
-                                            )
-                                            intent.putExtra(
-                                                "countryCode",
-                                                countrylist_edit_text.text.toString().trim()
-                                            )
-                                            Log.e("select2", selectModeType.toString())
-                                            startActivity(intent)
-                                            finishAffinity()
-                                        }, 1000)
-                                        MyUtils.showSnackbar(
-                                            this,
-                                            loginPojo.get(0).message,
-                                            ll_signup_selection_data
-                                        )
-
-                                    }
-
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                }
-
-                            } else {
+                        try {
+                            StoreSessionManager(loginPojo.get(0).data.get(0))
+                            if (agegroupFrom > loginPojo.get(0).data[0].settings[0].settingsMinorAge.toInt()) {
+                                Handler().postDelayed({
+                                    var intent = Intent(
+                                        this@SignUpSelectionActivity,
+                                        OtpVerificationActivity::class.java
+                                    )
+                                    intent.putExtra("selectModeType", selectModeType)
+                                    intent.putExtra("from", "LoginByOtpVerification")
+                                    Log.e("select2", selectModeType.toString())
+                                    startActivity(intent)
+                                    finishAffinity()
+                                }, 1000)
                                 MyUtils.showSnackbar(
                                     this,
                                     loginPojo.get(0).message,
                                     ll_signup_selection_data
                                 )
+
+                            } else {
+                                Handler().postDelayed({
+                                    var intent = Intent(
+                                        this@SignUpSelectionActivity,
+                                        ParentInfoActivity::class.java
+                                    )
+                                    intent.putExtra("selectModeType", selectModeType)
+                                    intent.putExtra("from", "LoginByOtpVerification")
+                                    intent.putExtra(
+                                        "loginuserID",
+                                        loginPojo.get(0).data.get(0).userID
+                                    )
+                                    intent.putExtra(
+                                        "countryCode",
+                                        countrylist_edit_text.text.toString().trim()
+                                    )
+                                    Log.e("select2", selectModeType.toString())
+                                    startActivity(intent)
+                                    finishAffinity()
+                                }, 1000)
+                                MyUtils.showSnackbar(
+                                    this,
+                                    loginPojo.get(0).message,
+                                    ll_signup_selection_data
+                                )
+
                             }
 
-                        } else {
-                            btnSubmit.endAnimation()
-                            ErrorUtil.errorMethod(ll_signup_selection_data)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
-                    })
+
+                    } else {
+                        MyUtils.showSnackbar(
+                            this,
+                            loginPojo.get(0).message,
+                            ll_signup_selection_data
+                        )
+                    }
+
+                } else {
+                    btnSubmit.endAnimation()
+                    ErrorUtil.errorMethod(ll_signup_selection_data)
+                }
+            }
         })
 
     }

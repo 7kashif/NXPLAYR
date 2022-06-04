@@ -1,23 +1,20 @@
 package com.nxplayr.fsl.ui.activity.post.view
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatRadioButton
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.ui.fragments.userfollowers.viewmodel.CommonStatusModel
-import com.nxplayr.fsl.ui.fragments.postcomment.viewmodel.ReportReasonsModel
 import com.nxplayr.fsl.data.model.CreatePostData
 import com.nxplayr.fsl.data.model.ReportReasonData
-import com.nxplayr.fsl.data.model.ReportReasonPojo
 import com.nxplayr.fsl.data.model.SignupData
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
+import com.nxplayr.fsl.ui.fragments.postcomment.viewmodel.ReportReasonsModel
+import com.nxplayr.fsl.ui.fragments.userfollowers.viewmodel.CommonStatusModel
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager

@@ -29,28 +29,25 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions
 import com.nxplayr.fsl.R
-import com.nxplayr.fsl.ui.activity.post.view.CreatePostActivity
-import com.nxplayr.fsl.ui.activity.post.view.TransperentActivity
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.CreatePostPhotoPojo
 import com.nxplayr.fsl.data.model.SignupData
+import com.nxplayr.fsl.data.model.UploadFileModel
 import com.nxplayr.fsl.data.model.UploadImagePojo
-import com.nxplayr.fsl.fragment.*
-import com.nxplayr.fsl.ui.fragments.userprofile.adapter.UserDetailViewPagerAdapter
 import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModelV2
+import com.nxplayr.fsl.ui.activity.post.view.CreatePostActivity
+import com.nxplayr.fsl.ui.activity.post.view.TransperentActivity
 import com.nxplayr.fsl.ui.fragments.explorepost.view.ExploreFragment
 import com.nxplayr.fsl.ui.fragments.feed.view.PostGridViewListFragment
-import com.nxplayr.fsl.ui.fragments.userconnection.view.ConnectionsFragment
 import com.nxplayr.fsl.ui.fragments.ownprofile.view.UserFeedListsFragment
+import com.nxplayr.fsl.ui.fragments.userconnection.view.ConnectionsFragment
 import com.nxplayr.fsl.ui.fragments.userfollowers.view.FollowersFragment
+import com.nxplayr.fsl.ui.fragments.userprofile.adapter.UserDetailViewPagerAdapter
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.ImageSaver
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
-import com.nxplayr.fsl.data.model.UploadFileModel
-import kotlinx.android.synthetic.main.fragment_explore_main.*
-import kotlinx.android.synthetic.main.fragment_photo_gallery.*
 import kotlinx.android.synthetic.main.fragment_photo_gallery.viewpager
 import kotlinx.android.synthetic.main.fragment_user_detail.*
 import kotlinx.android.synthetic.main.layout_select_dialog_camera.*
@@ -84,7 +81,27 @@ class UserDetailFragment : Fragment(), View.OnClickListener {
     var serverCoverPicName = ""
     var image: FirebaseVisionImage? = null
     var detector: FirebaseVisionFaceDetector? = null
-    private lateinit var  loginModel: SignupModel
+    private lateinit var loginModel: SignupModelV2
+
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngChange.isNullOrEmpty())
+                tv_changeCovorPhoto.text = sessionManager?.LanguageLabel?.lngChange
+            if (!sessionManager?.LanguageLabel?.lngConnection.isNullOrEmpty())
+                tv_connections_tile.text = sessionManager?.LanguageLabel?.lngConnection
+            if (!sessionManager?.LanguageLabel?.lngFollowers.isNullOrEmpty())
+                tv_followers_title.text = sessionManager?.LanguageLabel?.lngFollowers
+            if (!sessionManager?.LanguageLabel?.lngFollowing.isNullOrEmpty())
+                tv_foll.text = sessionManager?.LanguageLabel?.lngFollowing
+            if (!sessionManager?.LanguageLabel?.lngCamera.isNullOrEmpty())
+                tv_camera.text = sessionManager?.LanguageLabel?.lngCamera
+            if (!sessionManager?.LanguageLabel?.lngGallery.isNullOrEmpty())
+                tv_gallery.text = sessionManager?.LanguageLabel?.lngGallery
+            if (!sessionManager?.LanguageLabel?.lngClose.isNullOrEmpty())
+                btnCloseProfileSelection.progressText = sessionManager?.LanguageLabel?.lngClose
+        }
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -95,14 +112,14 @@ class UserDetailFragment : Fragment(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-       // if (v == null) {
-            v = inflater.inflate(R.layout.fragment_user_detail, container, false)
-      //  }
+        // if (v == null) {
+        v = inflater.inflate(R.layout.fragment_user_detail, container, false)
+        //  }
         return v
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         sessionManager = SessionManager(mActivity!!)
         if (sessionManager?.get_Authenticate_User() != null) {
             userData = sessionManager?.get_Authenticate_User()
@@ -114,8 +131,23 @@ class UserDetailFragment : Fragment(), View.OnClickListener {
             setUserData()
         }
     }
+
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
+//        sessionManager = SessionManager(mActivity!!)
+//        if (sessionManager?.get_Authenticate_User() != null) {
+//            userData = sessionManager?.get_Authenticate_User()
+//        }
+//        setupViewModel()
+//        setupUI()
+//
+//        if (userData != null) {
+//            setUserData()
+//        }
+//    }
+
     private fun setupViewModel() {
-         loginModel = ViewModelProvider(this@UserDetailFragment).get(SignupModel::class.java)
+        loginModel = ViewModelProvider(this@UserDetailFragment).get(SignupModelV2::class.java)
     }
 
     private fun setupUI() {
@@ -179,6 +211,11 @@ class UserDetailFragment : Fragment(), View.OnClickListener {
         img_user_profile.setImageURI(RestClient.image_base_url_users + userData?.userProfilePicture)
         coverImageProfile.setImageURI(RestClient.image_base_url_users + userData?.userCoverPhoto)
 
+        if (userData?.userOVerified.equals("yes",true)) {
+            verified.visibility = View.VISIBLE
+        } else {
+            verified.visibility = View.GONE
+        }
         tv_connections.text = userData!!.totalFriendCount
         tv_followers.text = userData!!.totalFollowerCount
         tv_following.text = userData!!.totalFollowingCount
@@ -187,26 +224,113 @@ class UserDetailFragment : Fragment(), View.OnClickListener {
     private fun setupViewPager(viewpager: ViewPager, from: String) {
         adapter = UserDetailViewPagerAdapter(childFragmentManager, "followersDetails")
 
+        var mAll = "All"
+        var mProSkills = "ProSkills"
+        var mPhotos = "Photos"
+        var mVideos = "Videos"
+        var mDocuments = "Documents"
+        var mLinks = "Links"
+
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngAll.isNullOrEmpty())
+                mAll = sessionManager?.LanguageLabel?.lngAll.toString()
+            if (!sessionManager?.LanguageLabel?.lngProSkills.isNullOrEmpty())
+                mProSkills = sessionManager?.LanguageLabel?.lngProSkills.toString()
+            if (!sessionManager?.LanguageLabel?.lngPhotos.isNullOrEmpty())
+                mPhotos = sessionManager?.LanguageLabel?.lngPhotos.toString()
+            if (!sessionManager?.LanguageLabel?.lngVideos.isNullOrEmpty())
+                mVideos = sessionManager?.LanguageLabel?.lngVideos.toString()
+            if (!sessionManager?.LanguageLabel?.lngDocuments.isNullOrEmpty())
+                mDocuments = sessionManager?.LanguageLabel?.lngDocuments.toString()
+            if (!sessionManager?.LanguageLabel?.lngLinks.isNullOrEmpty())
+                mLinks = sessionManager?.LanguageLabel?.lngLinks.toString()
+        }
+
         if (from.equals("Grid", false)) {
-            adapter?.addFragment(PostGridViewListFragment(), "All")
-            adapter?.addFragment(ExploreFragment(), "ProSkills")
-            adapter?.addFragment(PostGridViewListFragment(), "Photos")
-            adapter?.addFragment(PostGridViewListFragment(), "Videos")
-            adapter?.addFragment(PostGridViewListFragment(), "Documents")
-            adapter?.addFragment(PostGridViewListFragment(), "Links")
+            adapter?.addFragment(PostGridViewListFragment(), mAll)
+            adapter?.addFragment(ExploreFragment(), mProSkills)
+            adapter?.addFragment(PostGridViewListFragment(), mPhotos)
+            adapter?.addFragment(PostGridViewListFragment(), mVideos)
+            adapter?.addFragment(PostGridViewListFragment(), mDocuments)
+            adapter?.addFragment(PostGridViewListFragment(), mLinks)
             viewpager.adapter = adapter
             adapter?.notifyDataSetChanged()
         } else if (from.equals("List", false)) {
-            adapter?.addFragment(UserFeedListsFragment(), "All")
-            adapter?.addFragment(ExploreFragment(), "ProSkills")
-            adapter?.addFragment(UserFeedListsFragment(), "Photos")
-            adapter?.addFragment(UserFeedListsFragment(), "Videos")
-            adapter?.addFragment(UserFeedListsFragment(), "Documents")
-            adapter?.addFragment(UserFeedListsFragment(), "Links")
+            adapter?.addFragment(UserFeedListsFragment(), mAll)
+            adapter?.addFragment(ExploreFragment(), mProSkills)
+            adapter?.addFragment(UserFeedListsFragment(), mPhotos)
+            adapter?.addFragment(UserFeedListsFragment(), mVideos)
+            adapter?.addFragment(UserFeedListsFragment(), mDocuments)
+            adapter?.addFragment(UserFeedListsFragment(), mLinks)
             viewpager.adapter = adapter
             adapter?.notifyDataSetChanged()
         }
 
+        loginModel.userUpdateProfile
+            .observe(
+                this@UserDetailFragment
+            ) { loginPojo ->
+                if (loginPojo != null) {
+                    if (loginPojo.get(0).status.equals("true", true)) {
+
+                        try {
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                loginPojo.get(0).message,
+                                main_content
+                            )
+                            (activity as MainActivity).StoreSessionManager(
+                                loginPojo.get(0).data.get(
+                                    0
+                                )
+                            )
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    } else {
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            loginPojo.get(0).message,
+                            main_content
+                        )
+                    }
+
+                } else {
+                    ErrorUtil.errorMethod(main_content)
+                }
+            }
+
+        loginModel.userupdateCoverPhoto
+            .observe(viewLifecycleOwner) { loginPojo ->
+                if (loginPojo != null) {
+                    if (loginPojo.get(0).status.equals("true", true)) {
+                        try {
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                loginPojo.get(0).message,
+                                main_content
+                            )
+                            (activity as MainActivity).StoreSessionManager(
+                                loginPojo.get(0).data.get(
+                                    0
+                                )
+                            )
+
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    } else {
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            loginPojo.get(0).message,
+                            main_content
+                        )
+                    }
+
+                } else {
+                    ErrorUtil.errorMethod(main_content)
+                }
+            }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -722,46 +846,7 @@ class UserDetailFragment : Fragment(), View.OnClickListener {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-         loginModel.userRegistration(
-            mActivity!!,
-            false,
-            jsonArray.toString(),
-            "update_profile_picture"
-        )
-            .observe(
-                this@UserDetailFragment
-            ) { loginPojo ->
-                if (loginPojo != null) {
-                    if (loginPojo.get(0).status.equals("true", true)) {
-
-                        try {
-                            MyUtils.showSnackbar(
-                                mActivity!!,
-                                loginPojo.get(0).message,
-                                main_content
-                            )
-                            (activity as MainActivity).StoreSessionManager(
-                                loginPojo.get(0).data.get(
-                                    0
-                                )
-                            )
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    } else {
-                        MyUtils.showSnackbar(
-                            mActivity!!,
-                            loginPojo.get(0).message,
-                            main_content
-                        )
-                    }
-
-                } else {
-                    ErrorUtil.errorMethod(main_content)
-                }
-            }
-
-
+        loginModel.userUpdateProfile(jsonArray.toString())
     }
 
     private fun getUpdateCoverPic(serverfileName: String) {
@@ -779,39 +864,7 @@ class UserDetailFragment : Fragment(), View.OnClickListener {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        loginModel.userRegistration(mActivity!!, false, jsonArray.toString(), "update_cover_photo")
-            .observe(
-                this@UserDetailFragment,
-                { loginPojo ->
-                    if (loginPojo != null) {
-                        if (loginPojo.get(0).status.equals("true", true)) {
-                            try {
-                                MyUtils.showSnackbar(
-                                    mActivity!!,
-                                    loginPojo.get(0).message,
-                                    main_content
-                                )
-                                (activity as MainActivity).StoreSessionManager(
-                                    loginPojo.get(0).data.get(
-                                        0
-                                    )
-                                )
-
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-                        } else {
-                            MyUtils.showSnackbar(
-                                mActivity!!,
-                                loginPojo.get(0).message,
-                                main_content
-                            )
-                        }
-
-                    } else {
-                        ErrorUtil.errorMethod(main_content)
-                    }
-                })
+        loginModel.userupdateCoverPhoto(jsonArray.toString())
     }
 
     fun isPogress(isVisiBle: Boolean) {
@@ -974,13 +1027,13 @@ class UserDetailFragment : Fragment(), View.OnClickListener {
             R.id.post_gridIcon -> {
                 setupViewPager(viewpager, "Grid")
                 post_gridIcon.setImageResource(R.drawable.thumb_view_selected)
-                post_listIcon.setImageResource(R.drawable.list_view_unselected)
+                post_listIcon.setImageResource(R.drawable.list_icon_unselected)
 
             }
             R.id.post_listIcon -> {
                 setupViewPager(viewpager, "List")
                 post_gridIcon.setImageResource(R.drawable.thumb_view_unselected)
-                post_listIcon.setImageResource(R.drawable.list_view_selected)
+                post_listIcon.setImageResource(R.drawable.list_icon_selected)
 
             }
         }

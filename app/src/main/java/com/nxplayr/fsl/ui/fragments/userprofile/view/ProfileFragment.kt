@@ -25,44 +25,43 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.facebook.drawee.view.SimpleDraweeView
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions
-import com.nxplayr.fsl.*
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
-import com.nxplayr.fsl.ui.fragments.usereducation.adapter.EducationAdapter
-import com.nxplayr.fsl.ui.fragments.userlanguage.adapter.LanguagesAdapter
-import com.nxplayr.fsl.ui.fragments.userprofile.adapter.WorkExperienceAdapter
+import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.*
-import com.nxplayr.fsl.fragment.*
-import com.nxplayr.fsl.ui.fragments.userprofilesummary.view.ProfileSummaryFragment
+import com.nxplayr.fsl.fragment.AddEmployementFragment
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModelV2
 import com.nxplayr.fsl.ui.fragments.bottomsheet.PrivacyBottomSheetFragment
+import com.nxplayr.fsl.ui.fragments.usereducation.adapter.EducationAdapter
 import com.nxplayr.fsl.ui.fragments.usereducation.view.EducationFragment
 import com.nxplayr.fsl.ui.fragments.userhashtag.view.AddHashtagsFragment
 import com.nxplayr.fsl.ui.fragments.userhashtag.view.HashtagsFragment
+import com.nxplayr.fsl.ui.fragments.userhashtag.viewmodel.HashtagsModel
 import com.nxplayr.fsl.ui.fragments.userhobbies.view.AddHobbiesFragment
 import com.nxplayr.fsl.ui.fragments.userhobbies.view.HobbiesListFragment
 import com.nxplayr.fsl.ui.fragments.userinterest.view.AddInterestsFragment
+import com.nxplayr.fsl.ui.fragments.userlanguage.adapter.LanguagesAdapter
 import com.nxplayr.fsl.ui.fragments.userlanguage.view.AddLanguageFragment
 import com.nxplayr.fsl.ui.fragments.userlanguage.view.LanguagesFragment
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
 import com.nxplayr.fsl.ui.fragments.userlanguage.viewmodel.ProfileLanguageModel
+import com.nxplayr.fsl.ui.fragments.userprofile.adapter.WorkExperienceAdapter
+import com.nxplayr.fsl.ui.fragments.userprofilesummary.view.ProfileSummaryFragment
 import com.nxplayr.fsl.ui.fragments.userskillsendorsment.view.AddSkillsEndorsementsFragment
 import com.nxplayr.fsl.ui.fragments.userskillsendorsment.view.SkillsEndorsementsFragment
-import com.nxplayr.fsl.viewmodel.*
 import com.nxplayr.fsl.util.*
+import com.nxplayr.fsl.viewmodel.EducationModel
+import com.nxplayr.fsl.viewmodel.EmployementModel
 import kotlinx.android.synthetic.main.activity_signup_selection.*
-import kotlinx.android.synthetic.main.fragment_other_user_profile.*
+import kotlinx.android.synthetic.main.fragment_hashtags.*
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.fragment_profile.tv_emailAddress
-import kotlinx.android.synthetic.main.fragment_profile.tv_mobileNum
 import kotlinx.android.synthetic.main.layout_select_dialog_camera.*
-import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
 import org.json.JSONArray
@@ -72,7 +71,6 @@ import java.io.File
 import java.io.Serializable
 import java.text.ParseException
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFragment.selectPrivacy {
@@ -104,13 +102,99 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
     var workExperienceAdapter: WorkExperienceAdapter? = null
     var education_list: ArrayList<EducationData?>? = ArrayList()
     var educationAdapter: EducationAdapter? = null
-    var userId:String=""
+    var userId: String = ""
     var otherUserData: SignupData? = null
-    var imgUrl=""
+    var imgUrl = ""
     var image: FirebaseVisionImage? = null
     var detector: FirebaseVisionFaceDetector? = null
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                     savedInstanceState: Bundle?): View? {
+    private lateinit var loginModel: SignupModelV2
+    private lateinit var getEmployementModel: EmployementModel
+    private lateinit var educationModel: EducationModel
+    private lateinit var profileModel: ProfileLanguageModel
+
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngWorkExperience.isNullOrEmpty())
+                tv_work_exp_added.text = sessionManager?.LanguageLabel?.lngWorkExperience
+            if (!sessionManager?.LanguageLabel?.lngAdd.isNullOrEmpty())
+                tv_add_work_experience.text = sessionManager?.LanguageLabel?.lngAdd
+            if (!sessionManager?.LanguageLabel?.lngEducation.isNullOrEmpty())
+                tv_education.text = sessionManager?.LanguageLabel?.lngEducation
+            if (!sessionManager?.LanguageLabel?.lngAdd.isNullOrEmpty())
+                tv_add_education.text = sessionManager?.LanguageLabel?.lngAdd
+            if (!sessionManager?.LanguageLabel?.lngLanguage.isNullOrEmpty())
+                tv_language.text = sessionManager?.LanguageLabel?.lngLanguage
+            if (!sessionManager?.LanguageLabel?.lngAdd.isNullOrEmpty())
+                tv_add_language.text = sessionManager?.LanguageLabel?.lngAdd
+            if (!sessionManager?.LanguageLabel?.lngSkillsEndorsements.isNullOrEmpty())
+                tv_skill_added.text = sessionManager?.LanguageLabel?.lngSkillsEndorsements
+            if (!sessionManager?.LanguageLabel?.lngAdd.isNullOrEmpty())
+                tv_add_skills.text = sessionManager?.LanguageLabel?.lngAdd
+            if (!sessionManager?.LanguageLabel?.lngHobbies.isNullOrEmpty())
+                tv_hobbies.text = sessionManager?.LanguageLabel?.lngHobbies
+            if (!sessionManager?.LanguageLabel?.lngAdd.isNullOrEmpty())
+                tv_add_hobbies.text = sessionManager?.LanguageLabel?.lngAdd
+            if (!sessionManager?.LanguageLabel?.lngInterest.isNullOrEmpty())
+                tv_interests.text = sessionManager?.LanguageLabel?.lngInterest
+            if (!sessionManager?.LanguageLabel?.lngAdd.isNullOrEmpty())
+                tv_add_interests.text = sessionManager?.LanguageLabel?.lngAdd
+            if (!sessionManager?.LanguageLabel?.lngAddInterests.isNullOrEmpty())
+                add_interest.text = sessionManager?.LanguageLabel?.lngAddInterests
+            if (!sessionManager?.LanguageLabel?.lngHashtags.isNullOrEmpty())
+                tv_hashtags.text = sessionManager?.LanguageLabel?.lngHashtags
+            if (!sessionManager?.LanguageLabel?.lngAddHashtags.isNullOrEmpty())
+                add_hashtag.text = sessionManager?.LanguageLabel?.lngAddHashtags
+            if (!sessionManager?.LanguageLabel?.lngContactInformation.isNullOrEmpty())
+                tv_contct_information.text = sessionManager?.LanguageLabel?.lngContactInformation
+            if (!sessionManager?.LanguageLabel?.lngAdd.isNullOrEmpty())
+                tv_add_contct_information.text = sessionManager?.LanguageLabel?.lngAdd
+            if (!sessionManager?.LanguageLabel?.lngYourProfile.isNullOrEmpty())
+                your_profile.text = sessionManager?.LanguageLabel?.lngYourProfile
+            if (!sessionManager?.LanguageLabel?.lngMobileNo.isNullOrEmpty())
+                mob_num.text = sessionManager?.LanguageLabel?.lngMobileNo
+            if (!sessionManager?.LanguageLabel?.lngEmailAddress.isNullOrEmpty())
+                email_adr.text = sessionManager?.LanguageLabel?.lngEmailAddress
+
+            if (!sessionManager?.LanguageLabel?.lngViewMore.isNullOrEmpty())
+                tv_view_more.text = sessionManager?.LanguageLabel?.lngViewMore
+            if (!sessionManager?.LanguageLabel?.lngAddExperience.isNullOrEmpty())
+                add_exp.text = sessionManager?.LanguageLabel?.lngAddExperience
+            if (!sessionManager?.LanguageLabel?.lngViewMore.isNullOrEmpty())
+                tv_view_more_education.text = sessionManager?.LanguageLabel?.lngViewMore
+            if (!sessionManager?.LanguageLabel?.lngAddEducation.isNullOrEmpty())
+                add_edu.text = sessionManager?.LanguageLabel?.lngAddEducation
+            if (!sessionManager?.LanguageLabel?.lngViewMore.isNullOrEmpty())
+                tv_view_more_language.text = sessionManager?.LanguageLabel?.lngViewMore
+            if (!sessionManager?.LanguageLabel?.lngAddLanguages.isNullOrEmpty())
+                add_lang.text = sessionManager?.LanguageLabel?.lngAddLanguages
+            if (!sessionManager?.LanguageLabel?.lngViewMore.isNullOrEmpty())
+                tv_view_moreSkills.text = sessionManager?.LanguageLabel?.lngViewMore
+            if (!sessionManager?.LanguageLabel?.lngAddSkillsEndorsements.isNullOrEmpty())
+                add_skils.text = sessionManager?.LanguageLabel?.lngAddSkillsEndorsements
+            if (!sessionManager?.LanguageLabel?.lngViewMore.isNullOrEmpty())
+                tv_view_moreHobbies.text = sessionManager?.LanguageLabel?.lngViewMore
+            if (!sessionManager?.LanguageLabel?.lngAddHobbies.isNullOrEmpty())
+                add_hobies.text = sessionManager?.LanguageLabel?.lngAddHobbies
+            if (!sessionManager?.LanguageLabel?.lngViewMore.isNullOrEmpty())
+                tv_view_more_interests.text = sessionManager?.LanguageLabel?.lngViewMore
+            if (!sessionManager?.LanguageLabel?.lngViewMore.isNullOrEmpty())
+                tv_view_more_hashtag.text = sessionManager?.LanguageLabel?.lngViewMore
+            if (!sessionManager?.LanguageLabel?.lngChange.isNullOrEmpty())
+                tv_changeCoverPhoto.text = sessionManager?.LanguageLabel?.lngChange
+            if (!sessionManager?.LanguageLabel?.lngCamera.isNullOrEmpty())
+                tv_camera.text = sessionManager?.LanguageLabel?.lngCamera
+            if (!sessionManager?.LanguageLabel?.lngGallery.isNullOrEmpty())
+                tv_gallery.text = sessionManager?.LanguageLabel?.lngGallery
+            if (!sessionManager?.LanguageLabel?.lngClose.isNullOrEmpty())
+                btnCloseProfileSelection.progressText = sessionManager?.LanguageLabel?.lngClose
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         if (v == null) {
             v = inflater.inflate(R.layout.fragment_profile, container, false)
@@ -123,8 +207,13 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
         mActivity = context as AppCompatActivity
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+//    }
+//
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
 
         sessionManager = SessionManager(mActivity!!)
         if (sessionManager?.get_Authenticate_User() != null) {
@@ -133,197 +222,377 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
                 userId = arguments!!.getString("userID").toString()
             }
         }
-        if(!userId.equals(userData?.userID,false))
-        {
-            llEducation.visibility=View.GONE
-            edit_imageProfile.visibility=View.GONE
-            tv_changeCoverPhoto.visibility=View.GONE
-            rv_Education.visibility=View.GONE
-            tv_view_more_education.visibility=View.GONE
-            llLanguage.visibility=View.GONE
-            rv_language.visibility=View.GONE
-            tv_view_more_language.visibility=View.GONE
-            llInterests.visibility=View.GONE
-            layout_view_interest.visibility=View.GONE
-            layout_view_interests.visibility=View.GONE
-            tv_view_more_interests.visibility=View.GONE
-            llRecommendations.visibility=View.GONE
-            layout_view_recommend.visibility=View.GONE
-            layout_view_recommendation.visibility=View.GONE
-            tv_view_recommendation.visibility=View.GONE
-            tv_add_work_experience.visibility=View.GONE
-            image_profileSummary.visibility=View.GONE
+        loginModel = ViewModelProvider(this@ProfileFragment).get(SignupModelV2::class.java)
+        getEmployementModel = ViewModelProvider(this@ProfileFragment).get(EmployementModel::class.java)
+        profileModel = ViewModelProvider(this@ProfileFragment).get(ProfileLanguageModel::class.java)
+        educationModel = ViewModelProvider(this@ProfileFragment).get(EducationModel::class.java)
 
-            layout_view_workExp.isEnabled=false
-            layout_view_skillsList.isEnabled=false
-            ll_mainHobbiesList.isEnabled=false
-            layout_view_hashtags.isEnabled=false
+        if (!userId.equals(userData?.userID, false)) {
+            llEducation.visibility = View.GONE
+            edit_imageProfile.visibility = View.GONE
+            tv_changeCoverPhoto.visibility = View.GONE
+            rv_Education.visibility = View.GONE
+            tv_view_more_education.visibility = View.GONE
+            llLanguage.visibility = View.GONE
+            rv_language.visibility = View.GONE
+            tv_view_more_language.visibility = View.GONE
+            llInterests.visibility = View.GONE
+            layout_view_interest.visibility = View.GONE
+            layout_view_interests.visibility = View.GONE
+            tv_view_more_interests.visibility = View.GONE
+            llRecommendations.visibility = View.GONE
+            layout_view_recommend.visibility = View.GONE
+            layout_view_recommendation.visibility = View.GONE
+            tv_view_recommendation.visibility = View.GONE
+            tv_add_work_experience.visibility = View.GONE
+            image_profileSummary.visibility = View.GONE
 
-            tv_add_work_experience.visibility=View.GONE
-            tv_add_skills.visibility=View.GONE
-            layout_add_skills.isEnabled=false
-            tv_add_hobbies.visibility=View.GONE
-            tv_add_interests.visibility=View.GONE
-            tv_add_hashtags.visibility=View.GONE
-            tv_add_recommendations.visibility=View.GONE
-            tv_add_contact_information.visibility=View.GONE
+            layout_view_workExp.isEnabled = false
+            layout_view_skillsList.isEnabled = false
+            ll_mainHobbiesList.isEnabled = false
+            layout_view_hashtags.isEnabled = false
+
+            tv_add_work_experience.visibility = View.GONE
+            tv_add_skills.visibility = View.GONE
+            layout_add_skills.isEnabled = false
+            tv_add_hobbies.visibility = View.GONE
+            tv_add_interests.visibility = View.GONE
+            tv_add_hashtags.visibility = View.GONE
+            tv_add_recommendations.visibility = View.GONE
+            tv_add_contct_information.visibility = View.GONE
 
             getOtherUserProfileData(userId)
-        }
-        else
-        {
+        } else {
             setonClick()
 
-            llEducation.visibility=View.VISIBLE
-            edit_imageProfile.visibility=View.VISIBLE
-            tv_changeCoverPhoto.visibility=View.VISIBLE
-            image_profileSummary.visibility=View.VISIBLE
-            rv_Education.visibility=View.VISIBLE
-            tv_view_more_education.visibility=View.VISIBLE
-            llLanguage.visibility=View.VISIBLE
-            rv_language.visibility=View.VISIBLE
-            tv_view_more_language.visibility=View.VISIBLE
-            llInterests.visibility=View.VISIBLE
-            layout_view_interest.visibility=View.VISIBLE
-            layout_view_interests.visibility=View.VISIBLE
-            tv_view_more_interests.visibility=View.GONE
+            llEducation.visibility = View.VISIBLE
+            edit_imageProfile.visibility = View.VISIBLE
+            tv_changeCoverPhoto.visibility = View.VISIBLE
+            image_profileSummary.visibility = View.VISIBLE
+            rv_Education.visibility = View.VISIBLE
+            tv_view_more_education.visibility = View.VISIBLE
+            llLanguage.visibility = View.VISIBLE
+            rv_language.visibility = View.VISIBLE
+            tv_view_more_language.visibility = View.VISIBLE
+            llInterests.visibility = View.VISIBLE
+            layout_view_interest.visibility = View.VISIBLE
+            layout_view_interests.visibility = View.VISIBLE
+            tv_view_more_interests.visibility = View.GONE
 
-            llRecommendations.visibility=View.GONE
-            layout_view_recommend.visibility=View.GONE
-            layout_view_recommendation.visibility=View.GONE
-            tv_view_recommendation.visibility=View.GONE
+            llRecommendations.visibility = View.GONE
+            layout_view_recommend.visibility = View.GONE
+            layout_view_recommendation.visibility = View.GONE
+            tv_view_recommendation.visibility = View.GONE
 
-            layout_view_workExp.isEnabled=true
-            layout_view_skillsList.isEnabled=true
-            ll_mainHobbiesList.isEnabled=true
-            layout_view_hashtags.isEnabled=true
+            layout_view_workExp.isEnabled = true
+            layout_view_skillsList.isEnabled = true
+            ll_mainHobbiesList.isEnabled = true
+            layout_view_hashtags.isEnabled = true
 
-            tv_add_work_experience.visibility=View.VISIBLE
-            tv_add_skills.visibility=View.VISIBLE
-            layout_add_skills.isEnabled=true
-            tv_add_hobbies.visibility=View.VISIBLE
-            tv_add_interests.visibility=View.VISIBLE
-            tv_add_hashtags.visibility=View.GONE
-            tv_add_recommendations.visibility=View.GONE
-            tv_add_contact_information.visibility=View.VISIBLE
+            tv_add_work_experience.visibility = View.VISIBLE
+            tv_add_skills.visibility = View.VISIBLE
+            layout_add_skills.isEnabled = true
+            tv_add_hobbies.visibility = View.VISIBLE
+            tv_add_interests.visibility = View.VISIBLE
+            tv_add_hashtags.visibility = View.GONE
+            tv_add_recommendations.visibility = View.GONE
+            tv_add_contct_information.visibility = View.VISIBLE
 
             if (userData != null) {
                 setUserData(userData!!)
-                setLanguageData(userData?.languages!!,userData?.userID!!,userData?.languageID!!)
-                setEducationData(userData?.education!!,userData?.userID!!,userData?.languageID!!)
+                setLanguageData(userData?.languages!!, userData?.userID!!, userData?.languageID!!)
+                setEducationData(userData?.education!!, userData?.userID!!, userData?.languageID!!)
+                setInterestData(userData?.education!!, userData?.userID!!, userData?.languageID!!)
             }
         }
 
         btnRetry.setOnClickListener {
 //            ll_mainProfileList.visibility = View.VISIBLE
-            if(!userId.equals(userData?.userID,false))
-            {
+            if (!userId.equals(userData?.userID, false)) {
                 setUserData(otherUserData!!)
-
-            }
-            else{
+            } else {
                 setUserData(userData!!)
-
             }
-
         }
 
         layout_view_workExp.setOnClickListener {
-            (activity as MainActivity).navigateTo(AddEmployementFragment(), AddEmployementFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                AddEmployementFragment(),
+                AddEmployementFragment::class.java.name,
+                true
+            )
         }
         layout_viewEducation.setOnClickListener {
-            (activity as MainActivity).navigateTo(AddEducationFragment(), AddEducationFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                AddEducationFragment(),
+                AddEducationFragment::class.java.name,
+                true
+            )
         }
         layout_view_languages.setOnClickListener {
-            (activity as MainActivity).navigateTo(AddLanguageFragment(), AddLanguageFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                AddLanguageFragment(),
+                AddLanguageFragment::class.java.name,
+                true
+            )
         }
         layout_view_skillsList.setOnClickListener {
-            (activity as MainActivity).navigateTo(AddSkillsEndorsementsFragment(), AddSkillsEndorsementsFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                AddSkillsEndorsementsFragment(),
+                AddSkillsEndorsementsFragment::class.java.name,
+                true
+            )
 
         }
         ll_mainHobbiesList.setOnClickListener {
-            (activity as MainActivity).navigateTo(AddHobbiesFragment(), AddHobbiesFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                AddHobbiesFragment(),
+                AddHobbiesFragment::class.java.name,
+                true
+            )
         }
         layout_view_hashtags.setOnClickListener {
-            (activity as MainActivity).navigateTo(AddHashtagsFragment(), AddHashtagsFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                AddHashtagsFragment(),
+                AddHashtagsFragment::class.java.name,
+                true
+            )
         }
         tv_add_work_experience.setOnClickListener {
             //            Intent(mActivity, AddEmploymenyActivity::class.java).apply {
 //                mActivity?.startActivity(this)
 //            }
-            (activity as MainActivity).navigateTo(AddEmployementFragment(), AddEmployementFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                AddEmployementFragment(),
+                AddEmployementFragment::class.java.name,
+                true
+            )
         }
         tv_add_education.setOnClickListener {
-            (activity as MainActivity).navigateTo(AddEducationFragment(), AddEducationFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                AddEducationFragment(),
+                AddEducationFragment::class.java.name,
+                true
+            )
         }
         tv_add_language.setOnClickListener {
-            (activity as MainActivity).navigateTo(AddLanguageFragment(), AddLanguageFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                AddLanguageFragment(),
+                AddLanguageFragment::class.java.name,
+                true
+            )
 
         }
         tv_add_skills.setOnClickListener {
-            (activity as MainActivity).navigateTo(AddSkillsEndorsementsFragment(), AddSkillsEndorsementsFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                AddSkillsEndorsementsFragment(),
+                AddSkillsEndorsementsFragment::class.java.name,
+                true
+            )
         }
         layout_add_skills.setOnClickListener {
-            (activity as MainActivity).navigateTo(SkillsEndorsementsFragment(), SkillsEndorsementsFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                SkillsEndorsementsFragment(),
+                SkillsEndorsementsFragment::class.java.name,
+                true
+            )
         }
         tv_add_hobbies.setOnClickListener {
-            (activity as MainActivity).navigateTo(AddHobbiesFragment(), AddHobbiesFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                AddHobbiesFragment(),
+                AddHobbiesFragment::class.java.name,
+                true
+            )
         }
         tv_add_interests.setOnClickListener {
-            (activity as MainActivity).navigateTo(AddInterestsFragment(), AddInterestsFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                AddInterestsFragment.newInstance(2),
+                AddInterestsFragment::class.java.name,
+                true
+            )
         }
         tv_add_hashtags.setOnClickListener {
-            (activity as MainActivity).navigateTo(AddHashtagsFragment(), AddHashtagsFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                AddHashtagsFragment(),
+                AddHashtagsFragment::class.java.name,
+                true
+            )
         }
         tv_add_recommendations.setOnClickListener {
-           // (activity as MainActivity).navigateTo(RequestRecommendationFragment(), RequestRecommendationFragment::class.java.name, true)
+            // (activity as MainActivity).navigateTo(RequestRecommendationFragment(), RequestRecommendationFragment::class.java.name, true)
         }
-        tv_add_contact_information.setOnClickListener {
-            (activity as MainActivity).navigateTo(AddContactInformationFragment(), AddContactInformationFragment::class.java.name, true)
+        tv_add_contct_information.setOnClickListener {
+            (activity as MainActivity).navigateTo(
+                AddContactInformationFragment(),
+                AddContactInformationFragment::class.java.name,
+                true
+            )
         }
         tv_view_more.setOnClickListener {
             Bundle().apply {
-                putString("userId",userId)
+                putString("userId", userId)
                 (activity as MainActivity).navigateTo(
                     WorkExperienceFragment(), this,
-                    WorkExperienceFragment::class.java.name, true)
+                    WorkExperienceFragment::class.java.name, true
+                )
             }
 
         }
         tv_view_more_education.setOnClickListener {
-            (activity as MainActivity).navigateTo(EducationFragment(), EducationFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                EducationFragment(),
+                EducationFragment::class.java.name,
+                true
+            )
         }
         tv_view_more_language.setOnClickListener {
-            (activity as MainActivity).navigateTo(LanguagesFragment(), LanguagesFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                LanguagesFragment(),
+                LanguagesFragment::class.java.name,
+                true
+            )
         }
         tv_view_moreSkills.setOnClickListener {
             Bundle().apply {
                 putString("userId", userId)
                 (activity as MainActivity).navigateTo(
                     SkillsEndorsementsFragment(), this,
-                    SkillsEndorsementsFragment::class.java.name, true)
+                    SkillsEndorsementsFragment::class.java.name, true
+                )
             }
         }
         tv_view_moreHobbies.setOnClickListener {
             Bundle().apply {
                 putString("userId", userId)
-                (activity as MainActivity).navigateTo(HobbiesListFragment(),this, HobbiesListFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    HobbiesListFragment(),
+                    this,
+                    HobbiesListFragment::class.java.name,
+                    true
+                )
             }
         }
         tv_view_more_interests.setOnClickListener {
-            (activity as MainActivity).navigateTo(AddInterestsFragment(), AddInterestsFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                AddInterestsFragment(),
+                AddInterestsFragment::class.java.name,
+                true
+            )
         }
         tv_view_more_hashtag.setOnClickListener {
             Bundle().apply {
                 putString("userId", userId)
                 (activity as MainActivity).navigateTo(
                     HashtagsFragment(), this,
-                    HashtagsFragment::class.java.name, true)
+                    HashtagsFragment::class.java.name, true
+                )
             }
         }
         tv_view_recommendation.setOnClickListener {
-           // (activity as MainActivity).navigateTo(GivenFragment(), GivenFragment::class.java.name, true)
+            // (activity as MainActivity).navigateTo(GivenFragment(), GivenFragment::class.java.name, true)
         }
+
+        loginModel.otherUserProfile
+            .observe(viewLifecycleOwner,
+                androidx.lifecycle.Observer { loginPojo ->
+
+                    if (loginPojo != null) {
+                        MyUtils.dismissProgressDialog()
+                        if (loginPojo[0].status.equals("true", true)) {
+
+                            if (loginPojo[0].data.size > 0) {
+                                otherUserData = loginPojo[0].data[0]
+
+                                if (otherUserData != null) {
+                                    setUserData(otherUserData!!)
+                                    //  SetOtherUserData(otherUserData!!)
+                                }
+                            }
+                        } else {
+//                            noDatafoundRelativelayout?.visibility = View.VISIBLE
+                        }
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                    }
+                })
+        loginModel.userUploadProfilePicture.observe(
+            this@ProfileFragment,
+            androidx.lifecycle.Observer { loginPojo ->
+                if (loginPojo != null) {
+//                                MyUtils.dismissProgressDialog()
+                    if (loginPojo.get(0).status.equals("true", true)) {
+
+                        try {
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                loginPojo.get(0).message!!,
+                                ll_mainProfile
+                            )
+                            (activity as MainActivity).StoreSessionManager(
+                                loginPojo.get(0).data.get(
+                                    0
+                                )
+                            )
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    } else {
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            loginPojo.get(0).message!!,
+                            ll_mainProfile
+                        )
+                    }
+
+                } else {
+//                                MyUtils.dismissProgressDialog()
+                    ErrorUtil.errorMethod(ll_mainProfile)
+                }
+            })
+        loginModel.userupdateCoverPhoto
+            .observe(this@ProfileFragment!!,
+                androidx.lifecycle.Observer { loginPojo ->
+                    if (loginPojo != null) {
+//                                MyUtils.dismissProgressDialog()
+                        if (loginPojo.get(0).status.equals("true", true)) {
+                            try {
+                                MyUtils.showSnackbar(
+                                    mActivity!!,
+                                    loginPojo.get(0).message!!,
+                                    ll_mainProfile
+                                )
+                                (activity as MainActivity).StoreSessionManager(
+                                    loginPojo.get(0).data.get(
+                                        0
+                                    )
+                                )
+
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        } else {
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                loginPojo.get(0).message!!,
+                                ll_mainProfile
+                            )
+                        }
+
+                    } else {
+//                                MyUtils.dismissProgressDialog()
+                        ErrorUtil.errorMethod(ll_mainProfile)
+                    }
+                })
+
+    }
+
+    private fun setInterestData(
+        education: java.util.ArrayList<EducationData>,
+        userID: String,
+        languageID: String
+    ) {
+
 
     }
 
@@ -338,15 +607,69 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
 
     }
 
+    private fun deleteHashtags(userhashtagID: String, hashView: View) {
+        MyUtils.showProgressDialog(mActivity!!, "Please wait...")
+        val jsonArray = JSONArray()
+        val jsonObject = JSONObject()
+        try {
+            jsonObject.put("loginuserID", userData!!.userID)
+            jsonObject.put("languageID", "1")
+            jsonObject.put("userhashtagID", userhashtagID)
+            jsonObject.put("apiType", RestClient.apiType)
+            jsonObject.put("apiVersion", RestClient.apiVersion)
+
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        jsonArray.put(jsonObject)
+        Log.e("data", jsonArray.toString())
+        val hashtagsModel = ViewModelProvider(this).get(HashtagsModel::class.java)
+        hashtagsModel.getHashtagsList(mActivity!!, false, jsonArray.toString(), "Delete")
+            .observe(
+                mActivity!!
+            ) { hashtagpojo ->
+                MyUtils.dismissProgressDialog()
+                if (hashtagpojo != null && hashtagpojo.isNotEmpty()) {
+
+                    if (hashtagpojo[0].status.equals("true", false)) {
+                        val userData = sessionManager!!.userData
+                        if (userData!!.hashtags.size > 0) {
+                            for (i in 0 until userData.hashtags.size) {
+                                if (userhashtagID == userData.hashtags[i].userhashtagID) {
+                                    userData.hashtags.removeAt(i)
+                                    sessionManager!!.userData = userData
+                                    layout_view_hashtag.removeView(hashView)
+                                }
+                            }
+                        }
+                        if (userData.hashtags.size == 0) {
+                            layout_view_hashtags.visibility = View.VISIBLE
+                            layout_view_hashtag.visibility = View.GONE
+                            tv_view_more_hashtag.visibility = View.GONE
+                        }
+                    } else {
+                        if (activity != null && activity is MainActivity)
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                hashtagpojo.get(0).message, ll_mainHashtagsList
+                            )
+                    }
+
+                } else {
+                    ErrorUtil.errorMethod(ll_mainHashtagsList)
+                }
+            }
+    }
+
 
     fun getOtherUserProfileData(userId: String) {
-         MyUtils.showProgressDialog(mActivity!!,"")
+        MyUtils.showProgressDialog(mActivity!!, "")
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
 
         try {
             jsonObject.put("languageID", "1")
-            jsonObject.put("loginuserID",userId)
+            jsonObject.put("loginuserID", userId)
             jsonObject.put("otherUserID", this.userId)
             jsonObject.put("apiType", RestClient.apiType)
             jsonObject.put("apiVersion", RestClient.apiVersion)
@@ -358,30 +681,7 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
             e.printStackTrace()
         }
 
-        var signupModel = ViewModelProviders.of(this@ProfileFragment).get(SignupModel::class.java)
-        signupModel.userRegistration(mActivity!!, false, jsonArray.toString(), "other_userProfile").observe(viewLifecycleOwner,
-                androidx.lifecycle.Observer {  loginPojo ->
-
-                    if (loginPojo != null) {
-                          MyUtils.dismissProgressDialog()
-                        if (loginPojo[0].status.equals("true", true)) {
-
-                            if (loginPojo[0].data.size > 0) {
-                                otherUserData = loginPojo[0].data[0]
-
-                                if (otherUserData != null) {
-                                    setUserData(otherUserData!!)
-                                  //  SetOtherUserData(otherUserData!!)
-                                }
-                            }
-                        } else {
-//                            noDatafoundRelativelayout?.visibility = View.VISIBLE
-                        }
-                    } else {
-                        MyUtils.dismissProgressDialog()
-                        ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
-                    }
-                })
+        loginModel.otherUserProfile(jsonArray.toString())
 
     }
 
@@ -437,7 +737,11 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
                 gallery_layout.visibility = View.GONE
             }
             R.id.image_profileSummary -> {
-                (activity as MainActivity).navigateTo(ProfileSummaryFragment(), ProfileSummaryFragment::class.java.name, true)
+                (activity as MainActivity).navigateTo(
+                    ProfileSummaryFragment(),
+                    ProfileSummaryFragment::class.java.name,
+                    true
+                )
             }
             R.id.tv_yourProfile -> {
                 getPrivacy()
@@ -450,156 +754,37 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
 
         proflie_user_name?.text = userData?.userFirstName + " " + userData?.userLastName
         tv_userProileBio.text = userData?.userBio
+        tv_desc.text =
+            userData?.userTitle + " | " + userData?.userPosition + " | " + userData?.userOrganisation
+        tv_desc2.text = userData?.userWhoAmI
+
+        if (userData?.userOVerified.equals("yes", true)) {
+            verified.visibility = View.VISIBLE
+        } else {
+            verified.visibility = View.GONE
+        }
+
         profile_userImage.setImageURI(RestClient.image_base_url_users + userData?.userProfilePicture)
         image_Coverprofile.setImageURI(RestClient.image_base_url_users + userData?.userCoverPhoto)
 
         tv_mobileNum.text = userData!!.userCountryCode + " " + userData?.userMobile
         tv_emailAddress.text = userData?.userEmail
 
-        setEmployementData(userData?.employement,userData?.userID,userData?.languageID)
-
-        /*     if (!userData?.employement.isNullOrEmpty()) {
-
-                 layout_view_workExp.visibility = View.GONE
-                 layout_experience.visibility = View.VISIBLE
-                 tv_view_more.visibility = View.VISIBLE
-
-                 layout_experience.removeAllViews()
-
-                 for (i in 0 until userData!!.employement.size) {
-                     infaltorScheduleMode = activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
-                     var convertView = infaltorScheduleMode?.inflate(R.layout.item_work_experince_adapter_list, null)
-
-                     var tv_graphics_designer = convertView?.findViewById(R.id.tv_graphics_designer) as TextView
-                     var tv_company_name = convertView.findViewById(R.id.tv_company_name) as TextView
-                     var tv_date = convertView.findViewById(R.id.tv_date) as TextView
-                     var tv_currentWork_location = convertView.findViewById(R.id.tv_currentWork_location) as TextView
-                     var img_employement = convertView.findViewById(R.id.img_employement) as SimpleDraweeView
-                     if (i == 0 || i == 1) {
-                         tv_graphics_designer.text = userData!!.employement[i].jobfuncName
-                         tv_company_name.text = userData!!.employement[i].companyName
-                         tv_currentWork_location.text = userData!!.employement[i].cityName
-
-                try {
-                    var formDate=MyUtils.formatDate(userData?.employement!![i]!!.useremployementPeriodOfTimeFrom,"dd-MM-yyyy hh:mm:ss","MMM yyyy")
-                    var toDate=MyUtils.formatDate(userData?.employement!![i]!!.useremployementPeriodOfTimeTo,"dd-MM-yyyy hh:mm:ss","MMM yyyy")
-                         } catch (e: Exception) {
-                         }
-                         if ((!userData!!.employement[i].useremployementPeriodOfTimeTo.isNullOrEmpty())) {
-                    tv_date.text = formDate+" - "+toDate
-                } catch (e: Exception) {
-                }
-                         }
-
-                         layout_experience.addView(convertView)
-                     }
-                 }
-             } else {
-                 layout_view_workExp.visibility = View.VISIBLE
-                 layout_experience.visibility = View.GONE
-                 tv_view_more.visibility = View.GONE
-             }*/
-        /*     if (!userData?.education.isNullOrEmpty()) {
-
-
-                 layout_viewEducation.visibility = View.GONE
-                 layout_view_education.visibility = View.VISIBLE
-                 tv_view_more_education.visibility = View.VISIBLE
-
-                 layout_view_education.removeAllViews()
-
-                 for (i in 0 until userData!!.education.size) {
-
-                     infaltorScheduleMode = activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
-                     var convertView = infaltorScheduleMode?.inflate(R.layout.item_education_adapter, null)
-                     var employment_image = convertView?.findViewById(R.id.employment_image) as SimpleDraweeView
-                     var tv_degree_name = convertView?.findViewById(R.id.tv_degree_name) as TextView
-                     var tv_college_name = convertView?.findViewById(R.id.tv_college_name) as TextView
-                     var tv_from_date = convertView?.findViewById(R.id.tv_from_date) as TextView
-                     var tv_current_location = convertView?.findViewById(R.id.tv_current_location) as TextView
-
-                     //employment_image.setImageURI(RestClient.image_base_url_users+userData?.education[i].p)
-                     if (i == 0 || i == 1) {
-                         tv_degree_name.text = userData?.education!![i]!!.degreeName
-                         tv_college_name.text = userData?.education!![i]!!.universityName
-
-                try {
-                    var formDate = MyUtils.formatDate(userData?.education!![i]!!.usereducationPeriodOfTimeFrom, "dd-MM-yyyy hh:mm:ss", "MMM yyyy")
-                    var toDate = MyUtils.formatDate(userData?.education!![i]!!.usereducationPeriodOfTimeTo, "dd-MM-yyyy hh:mm:ss", "MMM yyyy")
-                         }
-                         if ((!userData!!.education[i].usereducationPeriodOfTimeTo.isNullOrEmpty())) {
-                             tv_from_date.text = formDateEducation + " - " + toDateEducation
-                         } else {
-                             tv_from_date.text = formDateEducation
-                         }
-
-                    tv_from_date.text = formDate + " - " + toDate
-                } catch (e: Exception) {
-                }
-                         tv_current_location.text = userData?.education!![i]!!.usereducationGrade + " Grade"
-
-                         layout_view_education.addView(convertView)
-                     }
-                 }
-             } else {
-                 layout_viewEducation.visibility = View.VISIBLE
-                 layout_view_education.visibility = View.GONE
-                 tv_view_more_education.visibility = View.GONE
-             }*/
-
-//        if (!userData!!.languages.isNullOrEmpty()) {
-//
-//            layout_view_language.removeAllViews()
-//
-//            layout_view_languages.visibility = View.GONE
-//            layout_view_language.visibility = View.VISIBLE
-//            tv_view_more_language.visibility = View.VISIBLE
-//
-//            for (i in 0 until userData!!.languages!!.size) {
-//                layout_view_language.refreshDrawableState()
-//
-//                infaltorScheduleMode = activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
-//                var convertView = infaltorScheduleMode?.inflate(R.layout.item_languages_adapter, null)
-//
-//                var tv_language = convertView?.findViewById(R.id.tv_language) as TextView
-//                var tv_proficiency = convertView?.findViewById(R.id.tv_proficiency) as TextView
-//                if (i == 0 || i == 1) {
-//                    tv_language.text = userData!!.languages!![i]!!.languageName
-//                    tv_proficiency.text = userData!!.languages!![i]!!.profiencyName
-//                    layout_view_language.addView(convertView)
-//                }
-//
-//            }
-//        } else {
-//
-//            layout_view_languages.visibility = View.VISIBLE
-//            layout_view_language.visibility = View.GONE
-//            tv_view_more_language.visibility = View.GONE
-//        }
+        setEmployementData(userData?.employement, userData?.userID, userData?.languageID)
 
         layout_view_interest.setOnClickListener {
-            (activity as MainActivity).navigateTo(AddInterestsFragment(), AddInterestsFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                AddInterestsFragment(),
+                AddInterestsFragment::class.java.name,
+                true
+            )
         }
 
         layout_view_recommend.setOnClickListener {
-          //  (activity as MainActivity).navigateTo(RequestRecommendationFragment(), RequestRecommendationFragment::class.java.name, true)
+            //  (activity as MainActivity).navigateTo(RequestRecommendationFragment(), RequestRecommendationFragment::class.java.name, true)
         }
 
 
-//        layout_view_recommendation.removeAllViews()
-//        for (i in 0 until 1) {
-//            infaltorScheduleMode = activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
-//            var convertView = infaltorScheduleMode?.inflate(com.nxplayr.fsl.R.layout.item_recommendations, null)
-//
-//            layout_view_recommendation.addView(convertView)
-//        }
-//        layout_view_interests.removeAllViews()
-//        for (i in 0 until 2) {
-//            infaltorScheduleMode = activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
-//            var convertView = infaltorScheduleMode?.inflate(com.nxplayr.fsl.R.layout.layout_list_addinterests, null)
-//
-//            layout_view_interests.addView(convertView)
-//        }
         if (!userData?.hashtags.isNullOrEmpty()) {
             layout_view_hashtag.removeAllViews()
 
@@ -609,7 +794,8 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
 
             for (i in 0 until userData!!.hashtags.size) {
                 tv_view_more_hashtag.visibility = View.VISIBLE
-                infaltorScheduleMode = activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
+                infaltorScheduleMode =
+                    activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
                 var convertView = infaltorScheduleMode?.inflate(R.layout.layout_hashtag, null)
 
                 var tv_hashtagsName = convertView?.findViewById(R.id.tv_hashtagsName) as TextView
@@ -617,11 +803,13 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
                 btn_following.visibility = View.VISIBLE
 
                 if (i == 0 || i == 1) {
-                    tv_hashtagsName.text = userData!!.hashtags[i].hashtagName
+                    tv_hashtagsName.text = userData.hashtags[i].hashtagName
                     layout_view_hashtag.addView(convertView)
-                } /*else {
-                    tv_view_more_hashtag.visibility = View.VISIBLE
-                }*/
+                }
+
+                btn_following.setOnClickListener {
+                    deleteHashtags(userData.hashtags[i].userhashtagID, convertView)
+                }
 
             }
         } else {
@@ -637,8 +825,12 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
             tv_view_moreSkills.visibility = View.VISIBLE
             ll_mainAddSkills.removeAllViews()
             for (i in 0 until userData!!.skills.size) {
-                infaltorScheduleMode = activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
-                var convertView = infaltorScheduleMode?.inflate(com.nxplayr.fsl.R.layout.list_item_skill_layout, null)
+                infaltorScheduleMode =
+                    activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
+                var convertView = infaltorScheduleMode?.inflate(
+                    com.nxplayr.fsl.R.layout.list_item_skill_layout,
+                    null
+                )
 
                 var tv_skill = convertView?.findViewById(R.id.skills_nameTv) as TextView
                 if (i == 0 || i == 1) {
@@ -658,8 +850,12 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
             tv_view_moreHobbies.visibility = View.VISIBLE
             ll_mainAddHobbies.removeAllViews()
             for (i in 0 until userData!!.hobbies.size) {
-                infaltorScheduleMode = activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
-                var convertView = infaltorScheduleMode?.inflate(com.nxplayr.fsl.R.layout.list_item_skill_layout, null)
+                infaltorScheduleMode =
+                    activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
+                var convertView = infaltorScheduleMode?.inflate(
+                    com.nxplayr.fsl.R.layout.list_item_skill_layout,
+                    null
+                )
 
                 var tv_skill = convertView?.findViewById(R.id.skills_nameTv) as TextView
                 if (i == 0 || i == 1) {
@@ -677,7 +873,8 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun getCameraPermissionOther(from: String) {
-        val permissionCheck = ContextCompat.checkSelfPermission(mActivity!!, Manifest.permission.CAMERA)
+        val permissionCheck =
+            ContextCompat.checkSelfPermission(mActivity!!, Manifest.permission.CAMERA)
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
             if (from.equals("profileImage")) {
                 takePhotoFromCamera()
@@ -695,17 +892,22 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {
             mfUser = ImageSaver(mActivity!!).setFileName(
-                    MyUtils.CreateFileName(Date(), "")).setExternal(true)
-                    .createFile()
+                MyUtils.CreateFileName(Date(), "")
+            ).setExternal(true)
+                .createFile()
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
                 takePictureIntent.putExtra(
-                        MediaStore.EXTRA_OUTPUT,
-                        Uri.fromFile(mfUser)
+                    MediaStore.EXTRA_OUTPUT,
+                    Uri.fromFile(mfUser)
                 )
             } else {
                 takePictureIntent.putExtra(
-                        MediaStore.EXTRA_OUTPUT,
-                        FileProvider.getUriForFile(mActivity!!, mActivity!!.packageName + ".fileprovider", mfUser!!)
+                    MediaStore.EXTRA_OUTPUT,
+                    FileProvider.getUriForFile(
+                        mActivity!!,
+                        mActivity!!.packageName + ".fileprovider",
+                        mfUser!!
+                    )
                 )
             }
         } catch (e: Exception) {
@@ -720,17 +922,22 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {
             mfUser = ImageSaver(mActivity!!).setFileName(
-                    MyUtils.CreateFileName(Date(), "")).setExternal(true)
-                    .createFile()
+                MyUtils.CreateFileName(Date(), "")
+            ).setExternal(true)
+                .createFile()
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
                 takePictureIntent.putExtra(
-                        MediaStore.EXTRA_OUTPUT,
-                        Uri.fromFile(mfUser)
+                    MediaStore.EXTRA_OUTPUT,
+                    Uri.fromFile(mfUser)
                 )
             } else {
                 takePictureIntent.putExtra(
-                        MediaStore.EXTRA_OUTPUT,
-                        FileProvider.getUriForFile(mActivity!!, mActivity!!.packageName + ".fileprovider", mfUser!!)
+                    MediaStore.EXTRA_OUTPUT,
+                    FileProvider.getUriForFile(
+                        mActivity!!,
+                        mActivity!!.packageName + ".fileprovider",
+                        mfUser!!
+                    )
                 )
             }
         } catch (e: Exception) {
@@ -743,7 +950,10 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
     @RequiresApi(Build.VERSION_CODES.M)
     fun getWriteStoragePermissionOther() {
         val permissionCheck =
-                ContextCompat.checkSelfPermission(mActivity!!, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            ContextCompat.checkSelfPermission(
+                mActivity!!,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
             getReadStoragePermissionOther()
         } else {
@@ -754,7 +964,10 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
     @RequiresApi(Build.VERSION_CODES.M)
     fun getReadStoragePermissionOther() {
         val permissionCheck =
-                ContextCompat.checkSelfPermission(mActivity!!, Manifest.permission.READ_EXTERNAL_STORAGE)
+            ContextCompat.checkSelfPermission(
+                mActivity!!,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
             openGallery(from)
         } else {
@@ -823,9 +1036,9 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>,
-            grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
@@ -834,9 +1047,9 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
                     getReadStoragePermissionOther()
                 } else {
                     MyUtils.showSnackbar(
-                            mActivity!!,
-                            getString(R.string.permission_denied),
-                            ll_signup_selection_data
+                        mActivity!!,
+                        getString(R.string.permission_denied),
+                        ll_signup_selection_data
                     )
                 }
             }
@@ -845,9 +1058,9 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
                     openGallery(from)
                 } else {
                     MyUtils.showSnackbar(
-                            mActivity!!,
-                            getString(R.string.permission_denied),
-                            ll_signup_selection_data
+                        mActivity!!,
+                        getString(R.string.permission_denied),
+                        ll_signup_selection_data
                     )
                 }
             }
@@ -857,16 +1070,16 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
                     getCameraPermissionOther(from)
                 } else {
                     MyUtils.showSnackbar(
-                            mActivity!!,
-                            getString(R.string.permission_denied),
-                            ll_signup_selection_data
+                        mActivity!!,
+                        getString(R.string.permission_denied),
+                        ll_signup_selection_data
                     )
                 }
             }
-            153->{
+            153 -> {
                 writePermission()
             }
-            152->{
+            152 -> {
                 writePermission()
             }
 
@@ -889,16 +1102,16 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
                     if (picturePath != null) {
                         if (picturePath.contains("https:")) {
                             MyUtils.showSnackbar(
-                                    mActivity!!,
-                                    getString(R.string.please_select_other_profile_pic),
-                                    ll_signup_selection_data
+                                mActivity!!,
+                                getString(R.string.please_select_other_profile_pic),
+                                ll_signup_selection_data
                             )
                         } else {
                             profileImageName = picturePath
                             mfUser_Profile_Image = File(picturePath)
                             gallery_layout.visibility = View.GONE
                             try {
-                                detectFace(imageUri,"Gallary",mfUser_Profile_Image!!)
+                                detectFace(imageUri, "Gallary", mfUser_Profile_Image!!)
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }
@@ -906,9 +1119,9 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
                         }
                     } else
                         MyUtils.showSnackbar(
-                                mActivity!!,
-                                getString(R.string.please_select_other_profile_pic),
-                                ll_signup_selection_data
+                            mActivity!!,
+                            getString(R.string.please_select_other_profile_pic),
+                            ll_signup_selection_data
                         )
                 } else {
 
@@ -930,9 +1143,9 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
                     if (picturePathcover != null) {
                         if (picturePathcover.contains("https:")) {
                             MyUtils.showSnackbar(
-                                    mActivity!!,
-                                    getString(R.string.please_select_other_profile_pic),
-                                    ll_signup_selection_data
+                                mActivity!!,
+                                getString(R.string.please_select_other_profile_pic),
+                                ll_signup_selection_data
                             )
                         } else {
                             coverImageName = picturePathcover
@@ -944,9 +1157,9 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
                         }
                     } else
                         MyUtils.showSnackbar(
-                                mActivity!!,
-                                getString(R.string.please_select_other_profile_pic),
-                                ll_signup_selection_data
+                            mActivity!!,
+                            getString(R.string.please_select_other_profile_pic),
+                            ll_signup_selection_data
                         )
                 } else {
 
@@ -968,7 +1181,7 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
-                      //  GetCameraTypedata(mfUser!!, "Photo")
+                        //  GetCameraTypedata(mfUser!!, "Photo")
                     }
                 } else {
 //                    MyUtils.showSnackbar(this, "Please select valid data", ll_signup_selection_data)
@@ -988,23 +1201,26 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
     }
 
     private fun detectFace(bitmap: Uri, s: String, mfUser_Profile_Image: File) {
-        MyUtils.showProgressDialog(mActivity!!,"Please wait..")
+        MyUtils.showProgressDialog(mActivity!!, "Please wait..")
         val options = FirebaseVisionFaceDetectorOptions.Builder()
-                .setPerformanceMode(
-                        FirebaseVisionFaceDetectorOptions.ACCURATE)
-                .setLandmarkMode(
-                        FirebaseVisionFaceDetectorOptions.ALL_LANDMARKS)
-                .setClassificationMode(
-                        FirebaseVisionFaceDetectorOptions.ALL_CLASSIFICATIONS)
-                .build()
+            .setPerformanceMode(
+                FirebaseVisionFaceDetectorOptions.ACCURATE
+            )
+            .setLandmarkMode(
+                FirebaseVisionFaceDetectorOptions.ALL_LANDMARKS
+            )
+            .setClassificationMode(
+                FirebaseVisionFaceDetectorOptions.ALL_CLASSIFICATIONS
+            )
+            .build()
 
         // we need to create a FirebaseVisionImage object
         // from the above mentioned image types(bitmap in
         // this case) and pass it to the model.
         try {
-            image = FirebaseVisionImage.fromFilePath(mActivity!!,bitmap)
+            image = FirebaseVisionImage.fromFilePath(mActivity!!, bitmap)
             detector = FirebaseVision.getInstance()
-                    .getVisionFaceDetector(options)
+                .getVisionFaceDetector(options)
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
             MyUtils.dismissProgressDialog()
@@ -1012,79 +1228,83 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
 
         // It’s time to prepare our Face Detection model.
         detector!!.detectInImage(image!!)
-                .addOnSuccessListener { firebaseVisionFaces ->
-                    MyUtils.dismissProgressDialog()
-                    // adding an onSuccess Listener, i.e, in case
+            .addOnSuccessListener { firebaseVisionFaces ->
+                MyUtils.dismissProgressDialog()
+                // adding an onSuccess Listener, i.e, in case
 // our image is successfully detected, it will
 // append it's attribute to the result
 // textview in result dialog box.
-                    var resultText: String? = ""
-                    var i = 1
-                    for (face in firebaseVisionFaces) {
-                        resultText = resultText+"""
+                var resultText: String? = ""
+                var i = 1
+                for (face in firebaseVisionFaces) {
+                    resultText = resultText + """
                 
                 FACE NUMBER. $i: 
                 """.trimIndent() +
-                                ("\nSmile: "
-                                        + (face.smilingProbability
-                                        * 100) + "%") +
-                                ("\nleft eye open: "
-                                        + (face.leftEyeOpenProbability
-                                        * 100) + "%") +
-                                ("\nright eye open "
-                                        + (face.rightEyeOpenProbability
-                                        * 100) + "%")
-                        i++
-                    }
-
-                    // if no face is detected, give a toast
-                    // message.
-                    if (firebaseVisionFaces.size == 0) {
-                        Toast
-                                .makeText(mActivity!!,
-                                        "NO FACE DETECT",
-                                        Toast.LENGTH_SHORT)
-                                .show()
-                    } else {
-                        Toast
-                                .makeText(mActivity!!,
-                                        "FACE DETECT",
-                                        Toast.LENGTH_SHORT)
-                                .show()
-                        when(s)
-                        {
-                            "Gallary"->{
-                                profile_userImage.setImageURI(Uri.fromFile(mfUser_Profile_Image))
-                                UploadImage(mfUser_Profile_Image)
-
-                            }
-                            "Camera"->{
-                                GetCameraTypedata(mfUser_Profile_Image, "Photo")
-                            }
-                        }
-
-                        /*val bundle = Bundle()
-                        bundle.putString(
-                                LCOFaceDetection.RESULT_TEXT,
-                                resultText)
-                        val resultDialog: DialogFragment = ResultDialog()
-                        resultDialog.arguments = bundle
-                        resultDialog.isCancelable = true
-                        resultDialog.show(
-                                supportFragmentManager,
-                                LCOFaceDetection.RESULT_DIALOG)*/
-                    }
-                } // adding an onfailure listener as well if
-                // something goes wrong.
-                .addOnFailureListener {
-                    MyUtils.dismissProgressDialog()
-                    Toast
-                            .makeText(
-                                    mActivity!!,
-                                    "Oops, Something went wrong",
-                                    Toast.LENGTH_SHORT)
-                            .show()
+                            ("\nSmile: "
+                                    + (face.smilingProbability
+                                    * 100) + "%") +
+                            ("\nleft eye open: "
+                                    + (face.leftEyeOpenProbability
+                                    * 100) + "%") +
+                            ("\nright eye open "
+                                    + (face.rightEyeOpenProbability
+                                    * 100) + "%")
+                    i++
                 }
+
+                // if no face is detected, give a toast
+                // message.
+                if (firebaseVisionFaces.size == 0) {
+                    Toast
+                        .makeText(
+                            mActivity!!,
+                            "NO FACE DETECT",
+                            Toast.LENGTH_SHORT
+                        )
+                        .show()
+                } else {
+                    Toast
+                        .makeText(
+                            mActivity!!,
+                            "FACE DETECT",
+                            Toast.LENGTH_SHORT
+                        )
+                        .show()
+                    when (s) {
+                        "Gallary" -> {
+                            profile_userImage.setImageURI(Uri.fromFile(mfUser_Profile_Image))
+                            UploadImage(mfUser_Profile_Image)
+
+                        }
+                        "Camera" -> {
+                            GetCameraTypedata(mfUser_Profile_Image, "Photo")
+                        }
+                    }
+
+                    /*val bundle = Bundle()
+                    bundle.putString(
+                            LCOFaceDetection.RESULT_TEXT,
+                            resultText)
+                    val resultDialog: DialogFragment = ResultDialog()
+                    resultDialog.arguments = bundle
+                    resultDialog.isCancelable = true
+                    resultDialog.show(
+                            supportFragmentManager,
+                            LCOFaceDetection.RESULT_DIALOG)*/
+                }
+            } // adding an onfailure listener as well if
+            // something goes wrong.
+            .addOnFailureListener {
+                MyUtils.dismissProgressDialog()
+                Toast
+                    .makeText(
+                        mActivity!!,
+                        "Oops, Something went wrong",
+                        Toast.LENGTH_SHORT
+                    )
+                    .show()
+            }
     }
 
 
@@ -1105,45 +1325,57 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
             jsonArray.put(jsonObject)
 
             UploadFileModel().uploadFile(
-                    mActivity!!,
-                    jsonArray.toString(),
-                    "users",
-                    picturePath,
-                    false,
-                    object : UploadFileModel.OnUploadFileListener {
-                        override fun onSuccessUpload(datumList: UploadImagePojo?) {
+                mActivity!!,
+                jsonArray.toString(),
+                "users",
+                picturePath,
+                false,
+                object : UploadFileModel.OnUploadFileListener {
+                    override fun onSuccessUpload(datumList: UploadImagePojo?) {
 //                            MyUtils.dismissProgressDialog()
-                            if (from.equals("profileImage")) {
-                                serverfileName = datumList?.fileName!!
-                                getUpdateProfilePic(serverfileName)
+                        if (from.equals("profileImage")) {
+                            serverfileName = datumList?.fileName!!
+                            getUpdateProfilePic(serverfileName)
+                        } else {
+                            serverCoverPicName = datumList?.fileName!!
+                            getUpdateCoverPic(serverCoverPicName)
+                        }
+                    }
+
+                    override fun onFailureUpload(
+                        msg: String,
+                        datumList: List<UploadImagePojo>?
+                    ) {
+//                            MyUtils.dismissProgressDialog()
+
+
+                        try {
+                            if (MyUtils.isInternetAvailable(mActivity!!)) {
+                                MyUtils.showSnackbar(
+                                    mActivity!!,
+                                    resources.getString(R.string.error_crash_error_message),
+                                    ll_signup_selection_data
+                                )
                             } else {
-                                serverCoverPicName = datumList?.fileName!!
-                                getUpdateCoverPic(serverCoverPicName)
+                                MyUtils.showSnackbar(
+                                    mActivity!!,
+                                    resources.getString(R.string.error_common_network),
+                                    ll_signup_selection_data
+                                )
                             }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
-
-                        override fun onFailureUpload(
-                                msg: String,
-                                datumList: List<UploadImagePojo>?
-                        ) {
-//                            MyUtils.dismissProgressDialog()
+                    }
 
 
-                            try {
-                                if (MyUtils.isInternetAvailable(mActivity!!)) {
-                                    MyUtils.showSnackbar(mActivity!!, resources.getString(R.string.error_crash_error_message), ll_signup_selection_data)
-                                } else {
-                                    MyUtils.showSnackbar(mActivity!!, resources.getString(R.string.error_common_network), ll_signup_selection_data)
-                                }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-                        }
-
-
-                    })
+                })
         } else {
-            MyUtils.showSnackbar(mActivity!!, resources.getString(R.string.error_common_network), ll_signup_selection_data)
+            MyUtils.showSnackbar(
+                mActivity!!,
+                resources.getString(R.string.error_common_network),
+                ll_signup_selection_data
+            )
         }
     }
 
@@ -1164,32 +1396,8 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        val loginModel =
-                ViewModelProviders.of(this@ProfileFragment).get(SignupModel::class.java)
 
-        loginModel.userRegistration(mActivity!!, false, jsonArray.toString(), "update_profile_picture")
-                .observe(this@ProfileFragment!!,
-                        androidx.lifecycle.Observer { loginPojo ->
-                            if (loginPojo != null) {
-//                                MyUtils.dismissProgressDialog()
-                                if (loginPojo.get(0).status.equals("true", true)) {
-
-                                    try {
-                                        MyUtils.showSnackbar(mActivity!!, loginPojo.get(0).message!!, ll_mainProfile)
-                                        (activity as MainActivity).StoreSessionManager(loginPojo.get(0).data.get(0))
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
-                                    }
-                                } else {
-                                    MyUtils.showSnackbar(mActivity!!, loginPojo.get(0).message!!, ll_mainProfile)
-                                }
-
-                            } else {
-//                                MyUtils.dismissProgressDialog()
-                                ErrorUtil.errorMethod(ll_mainProfile)
-                            }
-                        })
-
+        loginModel.userUploadProfilePicture(jsonArray.toString())
 
     }
 
@@ -1210,54 +1418,45 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        val loginModel =
-                ViewModelProviders.of(this@ProfileFragment).get(SignupModel::class.java)
 
-        loginModel.userRegistration(mActivity!!, false, jsonArray.toString(), "update_cover_photo")
-                .observe(this@ProfileFragment!!,
-                        androidx.lifecycle.Observer { loginPojo ->
-                            if (loginPojo != null) {
-//                                MyUtils.dismissProgressDialog()
-                                if (loginPojo.get(0).status.equals("true", true)) {
-                                    try {
-                                        MyUtils.showSnackbar(mActivity!!, loginPojo.get(0).message!!, ll_mainProfile)
-                                        (activity as MainActivity).StoreSessionManager(loginPojo.get(0).data.get(0))
-
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
-                                    }
-                                } else {
-                                    MyUtils.showSnackbar(mActivity!!, loginPojo.get(0).message!!, ll_mainProfile)
-                                }
-
-                            } else {
-//                                MyUtils.dismissProgressDialog()
-                                ErrorUtil.errorMethod(ll_mainProfile)
-                            }
-                        })
-
+        loginModel.userupdateCoverPhoto(jsonArray.toString())
 
     }
 
 
-    fun setEmployementData(employement: java.util.ArrayList<EmploymentData>, userID: String, languageID: String) {
+    fun setEmployementData(
+        employement: java.util.ArrayList<EmploymentData>,
+        userID: String,
+        languageID: String
+    ) {
         if (!employement!!.isNullOrEmpty()) {
             rv_employement.visibility = View.VISIBLE
             tv_view_more.visibility = View.VISIBLE
             layout_view_workExp.visibility = View.GONE
 
-            workExperienceAdapter = WorkExperienceAdapter(mActivity!!, employementList!!, object : WorkExperienceAdapter.OnItemClick {
-                override fun onClicled(position: Int, from: String, v: View, empData: EmploymentData?) {
-                    when (from) {
+            workExperienceAdapter = WorkExperienceAdapter(
+                mActivity!!,
+                employementList!!,
+                object : WorkExperienceAdapter.OnItemClick {
+                    override fun onClicled(
+                        position: Int,
+                        from: String,
+                        v: View,
+                        empData: EmploymentData?
+                    ) {
+                        when (from) {
 
+                        }
                     }
-                }
-            }, "emp_profile", userId)
+                },
+                "emp_profile",
+                userId
+            )
             rv_employement.layoutManager = LinearLayoutManager(activity)
             rv_employement.setHasFixedSize(true)
             rv_employement.adapter = workExperienceAdapter
             workExperienceAdapter!!.notifyDataSetChanged()
-            getEmploymentList(userID,languageID)
+            getEmploymentList(userID, languageID)
         } else {
             rv_employement.visibility = View.GONE
             tv_view_more.visibility = View.GONE
@@ -1282,58 +1481,66 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        var getEmployementModel =
-                ViewModelProviders.of(this@ProfileFragment).get(EmployementModel::class.java)
-        getEmployementModel.getEmployement(mActivity!!, false, jsonArray.toString(), "List")
-                .observe(viewLifecycleOwner,
-                        androidx.lifecycle.Observer { employementPojo ->
+        getEmployementModel.employeeApi(jsonArray.toString(), "List")
+        getEmployementModel.successEmployee
+            .observe(viewLifecycleOwner,
+                androidx.lifecycle.Observer { employementPojo ->
 
-                            relativeprogressBar.visibility = View.GONE
-                            rv_employement.visibility = View.VISIBLE
-                            ll_mainProfileList.visibility = View.VISIBLE
+                    relativeprogressBar.visibility = View.GONE
+                    rv_employement.visibility = View.VISIBLE
+                    ll_mainProfileList.visibility = View.VISIBLE
 
 
-                            if (employementPojo != null && employementPojo.isNotEmpty()) {
-                                if (employementPojo[0].status.equals("true", true)) {
-                                    employementList?.clear()
-                                    employementList?.addAll(employementPojo!![0]!!.data!!)
-                                    workExperienceAdapter?.notifyDataSetChanged()
+                    if (employementPojo != null && employementPojo.isNotEmpty()) {
+                        if (employementPojo[0].status.equals("true", true)) {
+                            employementList?.clear()
+                            employementList?.addAll(employementPojo!![0]!!.data!!)
+                            workExperienceAdapter?.notifyDataSetChanged()
 
-                                } else {
-                                    if (employementList!!.size == 0) {
-                                        rv_employement.visibility = View.GONE
-                                    } else {
-                                        rv_employement.visibility = View.VISIBLE
-                                    }
-                                }
+                        } else {
+                            if (employementList!!.size == 0) {
+                                rv_employement.visibility = View.GONE
                             } else {
-                                relativeprogressBar.visibility = View.GONE
-                                ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
-                                ll_mainProfileList.visibility = View.GONE
-
+                                rv_employement.visibility = View.VISIBLE
                             }
-                        })
+                        }
+                    } else {
+                        relativeprogressBar.visibility = View.GONE
+                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                        ll_mainProfileList.visibility = View.GONE
+
+                    }
+                })
 
     }
 
-    fun setEducationData(education: java.util.ArrayList<EducationData>, userID: String, languageID: String) {
+    fun setEducationData(
+        education: java.util.ArrayList<EducationData>,
+        userID: String,
+        languageID: String
+    ) {
         if (!education!!.isNullOrEmpty()) {
             rv_Education.visibility = View.VISIBLE
             tv_view_more_education.visibility = View.VISIBLE
             layout_viewEducation.visibility = View.GONE
 
-            educationAdapter = EducationAdapter(activity as MainActivity, education_list, object : EducationAdapter.OnItemClick {
-                override fun onClicled(position: Int, from: String, v: View) {
-                    when (from) {
+            educationAdapter = EducationAdapter(
+                activity as MainActivity,
+                education_list,
+                object : EducationAdapter.OnItemClick {
+                    override fun onClicled(position: Int, from: String, v: View) {
+                        when (from) {
 
+                        }
                     }
-                }
-            }, "edu_profile")
+                },
+                "edu_profile"
+            )
             rv_Education.layoutManager = LinearLayoutManager(activity)
             rv_Education.setHasFixedSize(true)
             rv_Education.adapter = educationAdapter
             educationAdapter!!.notifyDataSetChanged()
-            getEducationList(userID,languageID)
+            getEducationList(userID, languageID)
         } else {
             rv_Education.visibility = View.GONE
             tv_view_more_education.visibility = View.GONE
@@ -1364,61 +1571,69 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
         }
         jsonArray.put(jsonObject)
 
-        var getEducationModel =
-                ViewModelProviders.of(this@ProfileFragment).get(EducationModel::class.java)
-        getEducationModel.getEducation(mActivity!!, false, jsonArray.toString(), "List")
-                .observe(viewLifecycleOwner,
-                        androidx.lifecycle.Observer { educationPojo ->
+        educationModel.educationApi(jsonArray.toString(), "List")
+        educationModel.successEducation
+            .observe(viewLifecycleOwner,
+                androidx.lifecycle.Observer { educationPojo ->
 
-                            relativeprogressBar.visibility = View.GONE
-                            rv_Education.visibility = View.VISIBLE
-                            ll_mainProfileList.visibility = View.VISIBLE
+                    relativeprogressBar.visibility = View.GONE
+                    rv_Education.visibility = View.VISIBLE
+                    ll_mainProfileList.visibility = View.VISIBLE
 
 
-                            if (educationPojo != null && educationPojo.isNotEmpty()) {
-                                if (educationPojo[0].status.equals("true", true)) {
-                                    education_list?.clear()
-                                    education_list?.addAll(educationPojo!![0]!!.data!!)
-                                    educationAdapter?.notifyDataSetChanged()
+                    if (educationPojo != null && educationPojo.isNotEmpty()) {
+                        if (educationPojo[0].status.equals("true", true)) {
+                            education_list?.clear()
+                            education_list?.addAll(educationPojo!![0]!!.data!!)
+                            educationAdapter?.notifyDataSetChanged()
 
-                                } else {
+                        } else {
 
-                                    if (education_list!!.size == 0) {
-                                        rv_Education.visibility = View.GONE
+                            if (education_list!!.size == 0) {
+                                rv_Education.visibility = View.GONE
 
-                                    } else {
-                                        rv_Education.visibility = View.VISIBLE
-                                    }
-                                }
                             } else {
-                                relativeprogressBar.visibility = View.GONE
-                                ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
-                                ll_mainProfileList.visibility = View.GONE
-
+                                rv_Education.visibility = View.VISIBLE
                             }
-                        })
+                        }
+                    } else {
+                        relativeprogressBar.visibility = View.GONE
+                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                        ll_mainProfileList.visibility = View.GONE
+
+                    }
+                })
     }
 
 
-    fun setLanguageData(languages: java.util.ArrayList<ProfileLanguageData>, userID: String, languageID: String) {
+    fun setLanguageData(
+        languages: java.util.ArrayList<ProfileLanguageData>,
+        userID: String,
+        languageID: String
+    ) {
         if (!languages!!.isNullOrEmpty()) {
             rv_language.visibility = View.VISIBLE
             tv_view_more_language.visibility = View.VISIBLE
             layout_view_languages.visibility = View.GONE
 
 
-            languagesAdapter = LanguagesAdapter(activity as MainActivity, language_list, object : LanguagesAdapter.OnItemClick {
-                override fun onClicled(position: Int, from: String, v: View) {
-                    when (from) {
+            languagesAdapter = LanguagesAdapter(
+                activity as MainActivity,
+                language_list,
+                object : LanguagesAdapter.OnItemClick {
+                    override fun onClicled(position: Int, from: String, v: View) {
+                        when (from) {
 
+                        }
                     }
-                }
-            }, "profile")
+                },
+                "profile"
+            )
             rv_language.layoutManager = LinearLayoutManager(activity)
             rv_language.setHasFixedSize(true)
             rv_language.adapter = languagesAdapter
             languagesAdapter!!.notifyDataSetChanged()
-            getLanguageList(userID,languageID)
+            getLanguageList(userID, languageID)
         } else {
             rv_language.visibility = View.GONE
             tv_view_more_language.visibility = View.GONE
@@ -1446,43 +1661,43 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
         }
         jsonArray.put(jsonObject)
 
-        var laguageModel = ViewModelProviders.of(this@ProfileFragment).get(ProfileLanguageModel::class.java)
-        laguageModel.getLanguageList(mActivity!!, false, jsonArray.toString(), "List")
-                .observe(viewLifecycleOwner, androidx.lifecycle.Observer { languagesPojo ->
+        profileModel.profileApi(jsonArray.toString(), "List")
+        profileModel.successProfile
+            .observe(viewLifecycleOwner) { languagesPojo ->
 
-                    relativeprogressBar.visibility = View.GONE
-                    rv_language.visibility = View.VISIBLE
-                    ll_mainProfileList.visibility = View.VISIBLE
+                relativeprogressBar.visibility = View.GONE
+                rv_language.visibility = View.VISIBLE
+                ll_mainProfileList.visibility = View.VISIBLE
 
 
-                    if (languagesPojo != null && languagesPojo.isNotEmpty()) {
-                        if (languagesPojo[0].status.equals("true", true)) {
-                            language_list?.clear()
-                            language_list?.addAll(languagesPojo!![0]!!.data)
-                            languagesAdapter?.notifyDataSetChanged()
+                if (languagesPojo != null && languagesPojo.isNotEmpty()) {
+                    if (languagesPojo[0].status.equals("true", true)) {
+                        language_list?.clear()
+                        language_list?.addAll(languagesPojo!![0]!!.data)
+                        languagesAdapter?.notifyDataSetChanged()
 
-                        } else {
-
-                            if (language_list!!.size == 0) {
-                                rv_language.visibility = View.GONE
-                            } else {
-                                rv_language.visibility = View.VISIBLE
-                            }
-                        }
                     } else {
-                        relativeprogressBar.visibility = View.GONE
-                        ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
-                        ll_mainProfileList.visibility = View.GONE
 
+                        if (language_list!!.size == 0) {
+                            rv_language.visibility = View.GONE
+                        } else {
+                            rv_language.visibility = View.VISIBLE
+                        }
                     }
-                })
+                } else {
+                    relativeprogressBar.visibility = View.GONE
+                    ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                    ll_mainProfileList.visibility = View.GONE
+
+                }
+            }
     }
 
 
     private fun getPrivacy() {
         val privacyList: ArrayList<CreatePostPrivacyPojo> = ArrayList()
         privacyList.clear()
-       // privacyList.add(CreatePostPrivacyPojo("Copy", R.drawable.popup_report_icon))
+        // privacyList.add(CreatePostPrivacyPojo("Copy", R.drawable.popup_report_icon))
         privacyList.add(CreatePostPrivacyPojo("Share Via", R.drawable.popup_share_via_icon))
         openBottomSheet(privacyList)
     }
@@ -1498,7 +1713,6 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
     }
 
 
-
     override fun setPrivacy(data: CreatePostPrivacyPojo, position: Int) {
         imgUrl = RestClient.image_base_url_users + userData?.userProfilePicture
         readPermission()
@@ -1508,13 +1722,13 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
 
         try {
             if (ActivityCompat.checkSelfPermission(
-                            activity!!,
-                            Manifest.permission.READ_EXTERNAL_STORAGE
-                    ) != PackageManager.PERMISSION_GRANTED
+                    activity!!,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
             ) {
                 (this@ProfileFragment).requestPermissions(
-                        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                        153
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    153
                 )
 
             } else {
@@ -1531,18 +1745,24 @@ class ProfileFragment : Fragment(), View.OnClickListener, PrivacyBottomSheetFrag
 
         try {
             if (ActivityCompat.checkSelfPermission(
-                            activity!!,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    ) != PackageManager.PERMISSION_GRANTED
+                    activity!!,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
             ) {
                 (this@ProfileFragment).requestPermissions(
-                        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                        152
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    152
                 )
 
             } else {
                 mActivity!!.runOnUiThread {
-                    DownloadImage(imgUrl, MyUtils.createFileName(Date(),"").toString(), false,mActivity!!,userData?.userID!!).execute()
+                    DownloadImage(
+                        imgUrl,
+                        MyUtils.createFileName(Date(), "").toString(),
+                        false,
+                        mActivity!!,
+                        userData?.userID!!
+                    ).execute()
                 }
             }
 

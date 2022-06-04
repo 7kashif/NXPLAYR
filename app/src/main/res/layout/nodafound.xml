@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_no_data_found"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:visibility="gone"
     tools:visibility="visible">
 
@@ -12,30 +13,30 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:orientation="vertical">
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:minHeight="@dimen/_50sdp"
             android:minWidth="@dimen/_50sdp"
-            android:src="@drawable/no_data_found"/>
+            android:minHeight="@dimen/_50sdp"
+            android:src="@drawable/header_logo"
+            app:tint="@color/whiteTrans" />
 
         <TextView
             android:id="@+id/nodatafoundtextview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/no_data_found"
-            android:fontFamily="@font/brandon_reg"
-            android:textSize="@dimen/_14ssp"
-            android:padding="@dimen/_5sdp"
-            android:textStyle="normal"
-            android:gravity="center"
             android:layout_gravity="center"
+            android:fontFamily="@font/brandon_reg"
+            android:gravity="center"
+            android:padding="@dimen/_5sdp"
+            android:text="@string/no_data_found"
             android:textColor="@color/white"
-          />
+            android:textSize="@dimen/_14ssp"
+            android:textStyle="normal" />
 
-       </LinearLayout>
-
+    </LinearLayout>
 
 
 </RelativeLayout>

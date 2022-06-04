@@ -48,6 +48,9 @@ class ThreeDotsBottomSheetFragment : BottomSheetDialogFragment() {
         if (arguments != null) {
             list = arguments!!.get("data") as ArrayList<ThreedotsBottomPojo>
             from = arguments!!.getString("from")!!
+            if (arguments?.getString("search") != null) {
+                header.visibility = View.GONE
+            }
             if (arguments?.getString("userId") != null) {
                 userId = arguments?.getString("userId", "")!!
             }
@@ -106,8 +109,6 @@ class ThreeDotsBottomSheetFragment : BottomSheetDialogFragment() {
                 if (onItemClick != null)
                     onItemClick.onClicled(position, data[position].optionName)
             }
-
-
         }
 
         override fun getItemCount(): Int {
@@ -115,14 +116,9 @@ class ThreeDotsBottomSheetFragment : BottomSheetDialogFragment() {
         }
 
         inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
             var itemNameTv = itemView.itemNameTv
-
             var image_icon_bottom_sheet = itemView.image_icon_bottom_sheet
-
         }
-
-
     }
 
 

@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.WebsitePojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Response
 
 class WebsiteListModel:ViewModel() {
@@ -35,6 +38,7 @@ class WebsiteListModel:ViewModel() {
     private fun getWebsiteListApi(): LiveData<List<WebsitePojo>> {
 
         val data = MutableLiveData<List<WebsitePojo>>()
+        viewModelScope.launch(Dispatchers.IO) {
         val call = RestClient.get()!!.websiteList(json!!)
 
         call.enqueue(object : RestCallback<List<WebsitePojo>>(mContext){
@@ -46,7 +50,7 @@ class WebsiteListModel:ViewModel() {
                 data.value = null
             }
 
-        })
+        })}
 
         return data
     }

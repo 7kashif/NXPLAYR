@@ -35,6 +35,7 @@ import com.nxplayr.fsl.ui.fragments.usersetofskills.viewmodel.SetOfSkillsListMod
 import com.nxplayr.fsl.ui.fragments.userskillsendorsment.viewmodel.SkillsEndorsementsModel
 import kotlinx.android.synthetic.main.common_recyclerview.*
 import kotlinx.android.synthetic.main.fragment_current_club.*
+import kotlinx.android.synthetic.main.fragment_preferre_outfitters.*
 import kotlinx.android.synthetic.main.fragment_set_of_skills.*
 import kotlinx.android.synthetic.main.fragment_set_of_skills.RV_addedClubList
 import kotlinx.android.synthetic.main.fragment_set_of_skills.RV_selectedClubList
@@ -51,6 +52,8 @@ import org.json.JSONObject
 
 class SetOfSkillsFragment : Fragment(), View.OnClickListener {
 
+    private lateinit var select_skill: String
+    private var max_skill: String? = "You can select maximum 7 Skills."
     private var v: View? = null
     var mActivity: AppCompatActivity? = null
 
@@ -80,6 +83,25 @@ class SetOfSkillsFragment : Fragment(), View.OnClickListener {
             v = inflater.inflate(R.layout.fragment_set_of_skills, container, false)
         }
         return v
+    }
+
+    override fun onResume() {
+        super.onResume()
+        select_skill = getString(R.string.skills_added)
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngCurrentSkill.isNullOrEmpty())
+                tvToolbarTitle1.text = sessionManager?.LanguageLabel?.lngCurrentSkill
+            if (!sessionManager?.LanguageLabel?.lngMaxSkillsMessage.isNullOrEmpty())
+                max_skill = sessionManager?.LanguageLabel?.lngMaxSkillsMessage
+            if (!sessionManager?.LanguageLabel?.lngSkillAdded.isNullOrEmpty())
+                select_skill = sessionManager?.LanguageLabel?.lngSkillAdded.toString()
+            if (!sessionManager?.LanguageLabel?.lngSuggestedSkillBased.isNullOrEmpty())
+                tv_skill_added.text = sessionManager?.LanguageLabel?.lngSuggestedSkillBased
+            if (!sessionManager?.LanguageLabel?.lngSearchSkills.isNullOrEmpty())
+                edit_searchClub.hint = sessionManager?.LanguageLabel?.lngSearchSkills
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_save_current_club.progressText = sessionManager?.LanguageLabel?.lngSave
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -173,7 +195,7 @@ class SetOfSkillsFragment : Fragment(), View.OnClickListener {
 
     fun updateText() {
         selected_skills.text =
-            getString(R.string.skills_added) + " (" + addSaveClubList?.size!! + ") "
+            select_skill + " (" + addSaveClubList?.size!! + ") "
     }
 
     fun suggstedlist() {
@@ -587,7 +609,7 @@ class SetOfSkillsFragment : Fragment(), View.OnClickListener {
                 clubListApi()
             }
             R.id.info_skills -> {
-                val dialog = MessageDialog(0, activity!!,"You can select maximum 7 Skills.")
+                val dialog = MessageDialog(0, activity!!, max_skill!!)
                 dialog.show()
             }
         }

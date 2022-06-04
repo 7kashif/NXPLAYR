@@ -24,6 +24,7 @@ import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
+import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.android.synthetic.main.webstire_option_sheet.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -81,6 +82,12 @@ class WebsiteBottomSheet : BottomSheetDialogFragment(), View.OnClickListener {
             URL_LINK = arguments?.getString("urlLink")!!
         }
 
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngEdit.isNullOrEmpty())
+                tv_edit.text = sessionManager?.LanguageLabel?.lngEdit
+            if (!sessionManager?.LanguageLabel?.lngDelete.isNullOrEmpty())
+                tv_delete.text = sessionManager?.LanguageLabel?.lngDelete
+        }
         setupViewModel()
     }
 

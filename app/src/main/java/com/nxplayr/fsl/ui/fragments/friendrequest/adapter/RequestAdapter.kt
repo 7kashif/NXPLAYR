@@ -12,14 +12,18 @@ import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.FriendListData
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.ui.fragments.feed.viewholder.LoaderViewHolder
+import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.item_request_list.view.*
+import kotlinx.android.synthetic.main.toolbar.*
 
-class RequestAdapter(val context: Activity,
-                     val list_request: ArrayList<FriendListData?>?,
-                     val onItemClick: OnItemClick,
-                     var tabposition: Int
+class RequestAdapter(
+    val context: Activity,
+    val list_request: ArrayList<FriendListData?>?,
+    val onItemClick: OnItemClick,
+    var tabposition: Int,
+    var sessionManager: SessionManager
 ) :
-        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -30,7 +34,8 @@ class RequestAdapter(val context: Activity,
             return LoaderViewHolder(view)
 
         } else {
-            val v = LayoutInflater.from(parent.context).inflate(R.layout.item_request_list, parent, false)
+            val v = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_request_list, parent, false)
             return RequestViewHolder(v)
         }
 
@@ -43,7 +48,13 @@ class RequestAdapter(val context: Activity,
 
         } else if (holder is RequestViewHolder) {
             val holder1 = holder as RequestViewHolder
-            holder.bind(list_request?.get(position)!!, holder1.adapterPosition, onItemClick, tabposition)
+            holder.bind(
+                sessionManager,
+                list_request?.get(position)!!,
+                holder1.adapterPosition,
+                onItemClick,
+                tabposition
+            )
         }
 
     }
@@ -60,14 +71,27 @@ class RequestAdapter(val context: Activity,
 
     class RequestViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(list_request: FriendListData?, adapterPosition: Int, onItemClick: OnItemClick, tabposition: Int) = with(itemView) {
+        fun bind(
+            sessionManager: SessionManager,
+            list_request: FriendListData?,
+            adapterPosition: Int,
+            onItemClick: OnItemClick,
+            tabposition: Int
+        ) = with(itemView) {
 
             tv_username.text = list_request!!.userFirstName + " " + list_request.userLastName
             image_save_post.setImageURI(RestClient.image_base_url_users + list_request.userProfilePicture)
             image_save_post.setOnClickListener {
-                onItemClick.onClicled(adapterPosition, "otherserProfile")
-
+                onItemClick.onClicled(adapterPosition, "otherserProfile", image_save_post)
             }
+
+            if (sessionManager.LanguageLabel != null) {
+                if (!sessionManager.LanguageLabel?.lngPending.isNullOrEmpty())
+                    tv_userReqPending.text = sessionManager.LanguageLabel?.lngPending
+                if (!sessionManager.LanguageLabel?.lngUndo.isNullOrEmpty())
+                    tv_userReqUndo.text = sessionManager.LanguageLabel?.lngUndo
+            }
+
             if (tabposition == 0) {
                 btnDecline.visibility = LinearLayout.VISIBLE
                 btnAccept.visibility = LinearLayout.VISIBLE
@@ -86,20 +110,68 @@ class RequestAdapter(val context: Activity,
 
                 if (!list_request.connectionType[0].conntypeName.isNullOrEmpty()) {
                     if (list_request.connectionType[0].conntypeName.equals("Friends")) {
-                        btnFriend.setCompoundDrawablesRelativeWithIntrinsicBounds((R.drawable.friend_icon_small_connection), 0, 0, 0)
-                        var mDrawable = resources.getDrawable(R.drawable.friend_icon_small_connection)
-                        mDrawable.setColorFilter(ContextCompat.getColor(context, R.color.colorPrimary), android.graphics.PorterDuff.Mode.SRC_IN)
-                        btnFriend.setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null)
+                        btnFriend.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                            (R.drawable.friend_icon_small_connection),
+                            0,
+                            0,
+                            0
+                        )
+                        var mDrawable =
+                            resources.getDrawable(R.drawable.friend_icon_small_connection)
+                        mDrawable.setColorFilter(
+                            ContextCompat.getColor(
+                                context,
+                                R.color.colorPrimary
+                            ), android.graphics.PorterDuff.Mode.SRC_IN
+                        )
+                        btnFriend.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                            mDrawable,
+                            null,
+                            null,
+                            null
+                        )
                     } else if (list_request.connectionType[0].conntypeName.equals("Professionals")) {
-                        btnFriend.setCompoundDrawablesRelativeWithIntrinsicBounds((R.drawable.professional_icon_small_connection), 0, 0, 0)
-                        var mDrawable = resources.getDrawable(R.drawable.professional_icon_small_connection)
-                        mDrawable.setColorFilter(ContextCompat.getColor(context, R.color.colorPrimary), android.graphics.PorterDuff.Mode.SRC_IN)
-                        btnFriend.setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null)
+                        btnFriend.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                            (R.drawable.professional_icon_small_connection),
+                            0,
+                            0,
+                            0
+                        )
+                        var mDrawable =
+                            resources.getDrawable(R.drawable.professional_icon_small_connection)
+                        mDrawable.setColorFilter(
+                            ContextCompat.getColor(
+                                context,
+                                R.color.colorPrimary
+                            ), android.graphics.PorterDuff.Mode.SRC_IN
+                        )
+                        btnFriend.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                            mDrawable,
+                            null,
+                            null,
+                            null
+                        )
                     } else if (list_request.connectionType[0].conntypeName.equals("Acquaintances")) {
-                        btnFriend.setCompoundDrawablesRelativeWithIntrinsicBounds((R.drawable.acquaintance_icon_small_connection), 0, 0, 0)
-                        var mDrawable2 = resources.getDrawable(R.drawable.acquaintance_icon_small_connection)
-                        mDrawable2.setColorFilter(ContextCompat.getColor(context, R.color.colorPrimary), android.graphics.PorterDuff.Mode.SRC_IN)
-                        btnFriend.setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable2, null, null, null)
+                        btnFriend.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                            (R.drawable.acquaintance_icon_small_connection),
+                            0,
+                            0,
+                            0
+                        )
+                        var mDrawable2 =
+                            resources.getDrawable(R.drawable.acquaintance_icon_small_connection)
+                        mDrawable2.setColorFilter(
+                            ContextCompat.getColor(
+                                context,
+                                R.color.colorPrimary
+                            ), android.graphics.PorterDuff.Mode.SRC_IN
+                        )
+                        btnFriend.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                            mDrawable2,
+                            null,
+                            null,
+                            null
+                        )
                     } else {
                         btnFriend.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
                     }
@@ -112,15 +184,15 @@ class RequestAdapter(val context: Activity,
 
             if (tabposition == 0) {
                 btnAccept.setOnClickListener {
-                    onItemClick.onClicled(adapterPosition, "reqAccept")
+                    onItemClick.onClicled(adapterPosition, "reqAccept" ,btnAccept)
                 }
                 btnDecline.setOnClickListener {
-                    onItemClick.onClicled(adapterPosition, "reqReject")
+                    onItemClick.onClicled(adapterPosition, "reqReject", btnDecline)
                 }
             }
             if (tabposition == 1) {
                 ll_mainFriend.setOnClickListener {
-                    onItemClick.onClicled(adapterPosition, "changeConneType")
+                    onItemClick.onClicled(adapterPosition, "changeConneType", ll_mainFriend)
                 }
             }
 
@@ -128,7 +200,7 @@ class RequestAdapter(val context: Activity,
     }
 
     interface OnItemClick {
-        fun onClicled(position: Int, from: String)
+        fun onClicled(position: Int, from: String, view : View?)
 
     }
 }

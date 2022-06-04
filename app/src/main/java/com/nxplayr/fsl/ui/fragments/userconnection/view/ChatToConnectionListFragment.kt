@@ -131,9 +131,8 @@ class ChatToConnectionListFragment : Fragment(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
 
-        connectionModel.getFriendList(
-            mActivity!!, jsonArray.toString(), "friend_list")
-            .observe(viewLifecycleOwner, { friendlistpojo ->
+        connectionModel.friendApi(jsonArray.toString(), "friend_list")
+        connectionModel.successFriend.observe(viewLifecycleOwner) { friendlistpojo ->
 
                 if (friendlistpojo != null && friendlistpojo.isNotEmpty()) {
                     isLoading = false
@@ -192,10 +191,10 @@ class ChatToConnectionListFragment : Fragment(),View.OnClickListener {
                 } else {
                     if (activity != null) {
                         relativeprogressBar.visibility = View.GONE
-                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                        ErrorUtil.errorView(requireActivity(), nointernetMainRelativelayout)
                     }
                 }
-            })
+            }
     }
 
     private fun setupUI()
@@ -318,33 +317,43 @@ class ChatToConnectionListFragment : Fragment(),View.OnClickListener {
         } catch (e: ParseException) {
             e.printStackTrace()
         }
-        connectionModel.getFriendList(mActivity!!, jsonArray.toString(), "chatTofriend").observe(this@ChatToConnectionListFragment,
-                { loginPojo ->
-                    MyUtils.dismissProgressDialog()
-                    if (loginPojo != null) {
+        connectionModel.friendApi(jsonArray.toString(), "chatTofriend")
+        connectionModel.successFriend.observe(viewLifecycleOwner) { loginPojo ->
+                MyUtils.dismissProgressDialog()
+                if (loginPojo != null) {
 
-                        if (loginPojo[0].status.equals("true", true)) {
+                    if (loginPojo[0].status.equals("true", true)) {
 
-                            if (sessionManager?.getYesNoQBUser()!!){
+                        if (sessionManager?.getYesNoQBUser()!!) {
 
-                                    if (!MyUtils.isLoginForQuickBlock){
-                                        if (!MyUtils.isLoginForQuickBlockChat)
-                                            (mActivity as MainActivity).loginForQuickBlockChat(sessionManager?.getQbUser()!!, userQuickBlockID)
-                                        else
-                                            (mActivity as MainActivity).getQBUser(userQuickBlockID, 1)
-                                    } else if(!MyUtils.isLoginForQuickBlockChat)
-                                        (mActivity as MainActivity).loginForQuickBlockChat(sessionManager?.getQbUser()!!, userQuickBlockID)
-                                    else (mActivity as MainActivity).getQBUser(userQuickBlockID, 1)
-                                }
-
-                        } else {
-                            MyUtils.showSnackbar(mActivity!!,loginPojo[0].message,nointernetMainRelativelayout)
+                            if (!MyUtils.isLoginForQuickBlock) {
+                                if (!MyUtils.isLoginForQuickBlockChat)
+                                    (mActivity as MainActivity).loginForQuickBlockChat(
+                                        sessionManager?.getQbUser()!!,
+                                        userQuickBlockID
+                                    )
+                                else
+                                    (mActivity as MainActivity).getQBUser(userQuickBlockID, 1)
+                            } else if (!MyUtils.isLoginForQuickBlockChat)
+                                (mActivity as MainActivity).loginForQuickBlockChat(
+                                    sessionManager?.getQbUser()!!,
+                                    userQuickBlockID
+                                )
+                            else (mActivity as MainActivity).getQBUser(userQuickBlockID, 1)
                         }
+
                     } else {
-                        MyUtils.dismissProgressDialog()
-                        ErrorUtil.errorMethod(nointernetMainRelativelayout)
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            loginPojo[0].message,
+                            nointernetMainRelativelayout
+                        )
                     }
-                })
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    ErrorUtil.errorMethod(nointernetMainRelativelayout)
+                }
+            }
 
     }
 

@@ -56,20 +56,13 @@ class CurrentClubFragment : Fragment(), View.OnClickListener {
     private var mIsLastPage = false
     private var mIsLoading = false
     private var mPage: Int = 1
+    private var searchWord: String = ""
     var mActivity: Activity? = null
     var club_list: ArrayList<ClubListData>? = ArrayList()
     var myclub_list: ArrayList<ClubListData>? = ArrayList()
     var deleteClub_list: ArrayList<ClubListData>? = ArrayList()
     var clubAdapter: SuggestedClubAdapter? = null
     var myclubAdapter: CurrentClubAdapter? = null
-
-//    var addClubList: ArrayList<ClubListData>? = ArrayList()
-//    var addClubListAdapter: AddClubListAdapter? = null
-//    var addClubListData: ArrayList<ClubData>? = ArrayList()
-//    var club: ClubListData? = null
-//    var clubListAdapter: ClubListAdapter? = null
-//    var deleteList: ArrayList<ClubData>? = ArrayList()
-//    var infaltorScheduleMode: LayoutInflater? = null
 
     var sessionManager: SessionManager? = null
     var userData: SignupData? = null
@@ -82,6 +75,12 @@ class CurrentClubFragment : Fragment(), View.OnClickListener {
 
     private lateinit var clubListModel: ClubListModel
     private lateinit var addClubModel: AddClubModel
+
+    private val handler = Handler()
+    private val input_finish_checker = Runnable {
+        mPage = 1
+        suggestedClubList(searchWord)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -118,6 +117,22 @@ class CurrentClubFragment : Fragment(), View.OnClickListener {
         }
         setupViewModel()
         setupUI()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngCurrentClub.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngCurrentClub
+            if (!sessionManager?.LanguageLabel?.lngSelectedClub.isNullOrEmpty())
+                selected_club.text = sessionManager?.LanguageLabel?.lngSelectedClub
+            if (!sessionManager?.LanguageLabel?.lngSuggestions.isNullOrEmpty())
+                tv_suggestions.text = sessionManager?.LanguageLabel?.lngSuggestions
+            if (!sessionManager?.LanguageLabel?.lngSearch.isNullOrEmpty())
+                edit_searchClub.hint = sessionManager?.LanguageLabel?.lngSearch
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_save_current_club.progressText = sessionManager?.LanguageLabel?.lngSave
+        }
     }
 
     private fun setupUI() {
@@ -160,7 +175,13 @@ class CurrentClubFragment : Fragment(), View.OnClickListener {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                suggestedClubList(p0.toString().trim())
+//                suggestedClubList(p0.toString().trim())
+                handler.removeCallbacks(input_finish_checker)
+                searchWord = p0.toString()
+                handler.postDelayed(
+                    input_finish_checker,
+                    500
+                )
             }
 
         })
@@ -210,7 +231,8 @@ class CurrentClubFragment : Fragment(), View.OnClickListener {
         recyclerview.layoutManager = linearLayout
         recyclerview.setHasFixedSize(true)
         recyclerview.adapter = clubAdapter
-        suggestedClubList("")
+        searchWord = ""
+        suggestedClubList(searchWord)
         clubAdapter?.notifyDataSetChanged()
 
         scrollViewCurrent.viewTreeObserver
@@ -223,7 +245,7 @@ class CurrentClubFragment : Fragment(), View.OnClickListener {
                         if (!mIsLoading && !mIsLastPage) {
                             this@CurrentClubFragment.mIsLoading = true
                             Log.e("TAG", "PAGE : $mPage")
-                            suggestedClubList("")
+                            suggestedClubList(searchWord)
                         }
                     }
                 }
@@ -292,8 +314,10 @@ class CurrentClubFragment : Fragment(), View.OnClickListener {
                                 club_list?.addAll(clubListpojo.data)
                             }
                         }
-                        mPage++
                         mIsLastPage = mPage == clubListpojo.totalPages
+                        if (!mIsLastPage) {
+                            mPage++
+                        }
                         clubAdapter?.notifyDataSetChanged()
                     } else {
 
@@ -495,7 +519,7 @@ class CurrentClubFragment : Fragment(), View.OnClickListener {
                 if (!progress) {
                     deleteClub_list!!.removeAt(position)
                 }
-//                MyUtils.dismissProgressDialog()
+                MyUtils.dismissProgressDialog()
 //                if (clubListpojo != null && clubListpojo.isNotEmpty()) {
 //
 ////                    if (clubListpojo[0].status.equals("true", false)) {
@@ -576,7 +600,8 @@ class CurrentClubFragment : Fragment(), View.OnClickListener {
 
             }
             R.id.btnRetry -> {
-                suggestedClubList("")
+                mPage = 1
+                suggestedClubList(searchWord)
                 clubListApi()
             }
         }

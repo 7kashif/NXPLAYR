@@ -4,13 +4,11 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.WebSettings
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.nxplayr.fsl.R
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
 import com.nxplayr.fsl.ui.fragments.cms.viewmodel.CmsPageModel
 import com.nxplayr.fsl.util.MyUtils
+import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.fragment_cms.*
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
@@ -23,6 +21,8 @@ class TermsActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var cmsModel: CmsPageModel
     var mode : String = ""
     var title : String = ""
+    var sessionManager: SessionManager? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_cms)
@@ -31,6 +31,7 @@ class TermsActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setupViewModel() {
+        sessionManager = SessionManager(this)
         cmsModel = ViewModelProvider(this).get(CmsPageModel::class.java)
     }
 
@@ -76,15 +77,22 @@ class TermsActivity : AppCompatActivity(), View.OnClickListener {
                     webView.visibility = View.VISIBLE
                     webView.settings.layoutAlgorithm = WebSettings.LayoutAlgorithm.SINGLE_COLUMN;
 
+                    var data = ""
+                    if (sessionManager?.getSelectedLanguage()!=null && sessionManager?.getSelectedLanguage()?.languageID.equals("1", true))
+                        data = it[0].data[0].cmspageContents
+                    else
+                        data = it[0].data[0].cmspageFrenchContents
+
                     var text = ("<html><head>"
-                            + "<style type=\"text/css\">body{color: #FFFFFF}"
-                            + "</style></head>"
+                            + "<link href=\"style.css\" rel=\"stylesheet\" type=\"text/css\">"
+                            + "</head>"
                             + "<body>"
-                            + it[0].data[0].cmspageContents
+                            + data
                             + "</body></html>")
-                    text = "<font color='white'>$text</font>"
-                    webView.loadDataWithBaseURL(null, text, "text/html", "UTF-8", null)
-                    webView.setBackgroundColor(0)
+                    val baseUrl = "file:///android_asset/"
+                    text = "<font color='white'>" + text + "</font>";
+                    webView.loadDataWithBaseURL(baseUrl, text, "text/html", "UTF-8", null);
+                    webView.setBackgroundColor(0);
                 } else {
 
                     relativeprogressBar.visibility = View.GONE

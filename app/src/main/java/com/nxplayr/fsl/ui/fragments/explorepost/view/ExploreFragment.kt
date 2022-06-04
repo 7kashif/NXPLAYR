@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,13 +30,12 @@ import com.nxplayr.fsl.data.model.UploadImagePojo
 import com.nxplayr.fsl.ui.activity.filterfeed.view.FilterActivity
 import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.ui.fragments.explorepost.adapter.ExploreAdapter
-import com.nxplayr.fsl.ui.fragments.explorepost.viewmodel.ExploreVideoModel
-import com.nxplayr.fsl.ui.fragments.feed.viewmodel.CreatePostModel
+import com.nxplayr.fsl.ui.fragments.explorepost.viewmodel.ExploreVideoModelV2
+import com.nxplayr.fsl.ui.fragments.feed.viewmodel.CreatePostModelV2
 import com.nxplayr.fsl.util.*
 import com.vincent.videocompressor.VideoController
 import id.zelory.compressor.Compressor
 import kotlinx.android.synthetic.main.fragment_explore_main.*
-import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
@@ -64,7 +64,6 @@ class ExploreFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.OnR
     var explore_video_list: ArrayList<CreatePostData?>? = null
 
     var oldExploreVideoAdapter: ExploreAdapter? = null
-//    var exploreVideoTrickadapter: ExploreVideoListAdapater? = null
 
     private var y: Int = 0
     var pageNo = 0
@@ -87,6 +86,7 @@ class ExploreFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.OnR
     var isVideos = false
     var isTricks = false
     var isListView = false
+    var getEmployementModel = ExploreVideoModelV2()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -102,13 +102,18 @@ class ExploreFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.OnR
         mActivity = context as AppCompatActivity
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+//    }
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
 
         sessionManager = SessionManager(mActivity!!)
         if (sessionManager?.get_Authenticate_User() != null) {
             userData = sessionManager?.get_Authenticate_User()
         }
+        getEmployementModel =
+            ViewModelProvider(this@ExploreFragment).get(ExploreVideoModelV2::class.java)
         if (arguments != null) {
             type = arguments?.getString("type")!!
 
@@ -143,8 +148,119 @@ class ExploreFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.OnR
         img_Filter.setOnClickListener(this)
 
         isVideos = true
-        getExploreVideo()
+
         swipe_refresh.setOnRefreshListener(this)
+        getEmployementModel.exploreSuccessLiveData
+            .observe(viewLifecycleOwner,
+                Observer { exploreVidelistpojo ->
+
+                    relativeprogressBar.visibility = View.GONE
+
+                    if (exploreVidelistpojo != null && exploreVidelistpojo.isNotEmpty()) {
+
+                        if (exploreVidelistpojo[0].status.equals("true", true)) {
+                            rc_explore_videos.visibility = View.VISIBLE
+                            explore_video_list?.clear()
+                            explore_video_list?.addAll(exploreVidelistpojo!![0]!!.data!!)
+                            if (isListView) {
+                                linearLayoutManager =
+                                    LinearLayoutManager(
+                                        mActivity!!,
+                                        LinearLayoutManager.VERTICAL,
+                                        false
+                                    )
+                                rc_explore_videos.layoutManager = linearLayoutManager
+                                oldExploreVideoAdapter!!.changeView(isListView)
+                            }
+                            oldExploreVideoAdapter?.notifyDataSetChanged()
+                            if (explore_video_list!!.size == 0) {
+                                ll_no_data_found.visibility = View.VISIBLE
+                                rc_explore_videos.visibility = View.GONE
+                            } else {
+                                rc_explore_videos.visibility = View.VISIBLE
+                                ll_no_data_found.visibility = View.GONE
+                            }
+
+                        } else {
+                            if (pageNo == 0) {
+                                explore_video_list?.clear()
+                                oldExploreVideoAdapter?.notifyDataSetChanged()
+                            }
+
+                            if (explore_video_list!!.size == 0) {
+
+                                ll_no_data_found.visibility = View.VISIBLE
+                                rc_explore_videos.visibility = View.GONE
+                            } else {
+                                rc_explore_videos.visibility = View.VISIBLE
+                                ll_no_data_found.visibility = View.GONE
+                            }
+
+                        }
+
+                    } else {
+                        rc_explore_videos.visibility = View.GONE
+                        relativeprogressBar.visibility = View.GONE
+                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                    }
+
+                })
+        getEmployementModel.exploreSuccessLiveData
+            .observe(viewLifecycleOwner,
+                Observer { exploreVidelistpojo ->
+
+                    relativeprogressBar.visibility = View.GONE
+
+                    if (exploreVidelistpojo != null && exploreVidelistpojo.isNotEmpty()) {
+
+                        if (exploreVidelistpojo[0].status.equals("true", true)) {
+                            rc_explore_videos.visibility = View.VISIBLE
+                            explore_video_list?.clear()
+                            explore_video_list?.addAll(exploreVidelistpojo[0].data!!)
+                            if (isListView) {
+                                linearLayoutManager =
+                                    LinearLayoutManager(
+                                        mActivity!!,
+                                        LinearLayoutManager.VERTICAL,
+                                        false
+                                    )
+                                rc_explore_videos.layoutManager = linearLayoutManager
+                                oldExploreVideoAdapter!!.changeView(isListView)
+                            }
+                            oldExploreVideoAdapter?.notifyDataSetChanged()
+                            if (explore_video_list!!.size == 0) {
+
+                                ll_no_data_found.visibility = View.VISIBLE
+                                rc_explore_videos.visibility = View.GONE
+                            } else {
+
+                                ll_no_data_found.visibility = View.GONE
+                                rc_explore_videos.visibility = View.VISIBLE
+                            }
+
+                        } else {
+                            if (pageNo == 0) {
+                                explore_video_list?.clear()
+                                oldExploreVideoAdapter?.notifyDataSetChanged()
+                            }
+                            if (explore_video_list!!.size == 0) {
+
+                                ll_no_data_found.visibility = View.VISIBLE
+                                rc_explore_videos.visibility = View.GONE
+                            } else {
+
+                                ll_no_data_found.visibility = View.GONE
+                                rc_explore_videos.visibility = View.VISIBLE
+                            }
+                        }
+                    } else {
+                        rc_explore_videos.visibility = View.GONE
+                        relativeprogressBar.visibility = View.GONE
+                        ErrorUtil.errorView(requireActivity(), nointernetMainRelativelayout)
+                    }
+
+                })
+        getExploreVideo()
     }
 
     //Click Handle
@@ -421,7 +537,7 @@ class ExploreFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.OnR
             R.id.img_list -> {
                 isListView = true
                 img_grid.setImageResource(R.drawable.thumb_view_unselected)
-                img_list.setImageResource(R.drawable.list_selected)
+                img_list.setImageResource(R.drawable.list_icon_selected)
                 linearLayoutManager =
                     LinearLayoutManager(mActivity!!, LinearLayoutManager.VERTICAL, false)
                 rc_explore_videos.layoutManager = linearLayoutManager
@@ -431,7 +547,7 @@ class ExploreFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.OnR
             R.id.img_grid -> {
                 isListView = false
                 img_grid.setImageResource(R.drawable.thumb_view_selected)
-                img_list.setImageResource(R.drawable.list_icon_selected)
+                img_list.setImageResource(R.drawable.list_icon_unselected)
                 linearLayoutManager = GridLayoutManager(mActivity!!, 2)
                 rc_explore_videos.layoutManager = linearLayoutManager
                 oldExploreVideoAdapter!!.changeView(isListView)
@@ -754,63 +870,7 @@ class ExploreFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.OnR
         jsonArray.put(jsonObject)
         Log.d("LIST_GRID1111", jsonArray.toString())
 
-        var getEmployementModel =
-            ViewModelProviders.of(this@ExploreFragment).get(ExploreVideoModel::class.java)
-        getEmployementModel.getExploreVList(mActivity!!, false, jsonArray.toString())
-            .observe(viewLifecycleOwner,
-                Observer { exploreVidelistpojo ->
-
-                    relativeprogressBar.visibility = View.GONE
-
-                    if (exploreVidelistpojo != null && exploreVidelistpojo.isNotEmpty()) {
-
-                        if (exploreVidelistpojo[0].status.equals("true", true)) {
-                            rc_explore_videos.visibility = View.VISIBLE
-                            explore_video_list?.clear()
-                            explore_video_list?.addAll(exploreVidelistpojo[0].data!!)
-                            if (isListView) {
-                                linearLayoutManager =
-                                    LinearLayoutManager(
-                                        mActivity!!,
-                                        LinearLayoutManager.VERTICAL,
-                                        false
-                                    )
-                                rc_explore_videos.layoutManager = linearLayoutManager
-                                oldExploreVideoAdapter!!.changeView(isListView)
-                            }
-                            oldExploreVideoAdapter?.notifyDataSetChanged()
-                            if (explore_video_list!!.size == 0) {
-
-                                ll_no_data_found.visibility = View.VISIBLE
-                                rc_explore_videos.visibility = View.GONE
-                            } else {
-
-                                ll_no_data_found.visibility = View.GONE
-                                rc_explore_videos.visibility = View.VISIBLE
-                            }
-
-                        } else {
-                            if (pageNo == 0) {
-                                explore_video_list?.clear()
-                                oldExploreVideoAdapter?.notifyDataSetChanged()
-                            }
-                            if (explore_video_list!!.size == 0) {
-
-                                ll_no_data_found.visibility = View.VISIBLE
-                                rc_explore_videos.visibility = View.GONE
-                            } else {
-
-                                ll_no_data_found.visibility = View.GONE
-                                rc_explore_videos.visibility = View.VISIBLE
-                            }
-                        }
-                    } else {
-                        rc_explore_videos.visibility = View.GONE
-                        relativeprogressBar.visibility = View.GONE
-                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
-                    }
-
-                })
+        getEmployementModel.getVideos(jsonArray.toString())
     }
 
     private fun getListVideoTrickDataList(
@@ -875,63 +935,7 @@ class ExploreFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.OnR
         Log.d("VIDEO_LIST_123", jsonObject.toString())
         jsonArray.put(jsonObject)
 
-        var getEmployementModel =
-            ViewModelProviders.of(this@ExploreFragment).get(ExploreVideoModel::class.java)
-        getEmployementModel.getExploreVList(mActivity!!, false, jsonArray.toString())
-            .observe(this@ExploreFragment!!,
-                Observer { exploreVidelistpojo ->
-
-                    relativeprogressBar.visibility = View.GONE
-
-                    if (exploreVidelistpojo != null && exploreVidelistpojo.isNotEmpty()) {
-
-                        if (exploreVidelistpojo[0].status.equals("true", true)) {
-                            rc_explore_videos.visibility = View.VISIBLE
-                            explore_video_list?.clear()
-                            explore_video_list?.addAll(exploreVidelistpojo!![0]!!.data!!)
-                            if (isListView) {
-                                linearLayoutManager =
-                                    LinearLayoutManager(
-                                        mActivity!!,
-                                        LinearLayoutManager.VERTICAL,
-                                        false
-                                    )
-                                rc_explore_videos.layoutManager = linearLayoutManager
-                                oldExploreVideoAdapter!!.changeView(isListView)
-                            }
-                            oldExploreVideoAdapter?.notifyDataSetChanged()
-                            if (explore_video_list!!.size == 0) {
-                                ll_no_data_found.visibility = View.VISIBLE
-                                rc_explore_videos.visibility = View.GONE
-                            } else {
-                                rc_explore_videos.visibility = View.VISIBLE
-                                ll_no_data_found.visibility = View.GONE
-                            }
-
-                        } else {
-                            if (pageNo == 0) {
-                                explore_video_list?.clear()
-                                oldExploreVideoAdapter?.notifyDataSetChanged()
-                            }
-
-                            if (explore_video_list!!.size == 0) {
-
-                                ll_no_data_found.visibility = View.VISIBLE
-                                rc_explore_videos.visibility = View.GONE
-                            } else {
-                                rc_explore_videos.visibility = View.VISIBLE
-                                ll_no_data_found.visibility = View.GONE
-                            }
-
-                        }
-
-                    } else {
-                        rc_explore_videos.visibility = View.GONE
-                        relativeprogressBar.visibility = View.GONE
-                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
-                    }
-
-                })
+        getEmployementModel.getVideos(jsonArray.toString())
     }
 
     override fun onRefresh() {
@@ -994,13 +998,6 @@ class ExploreFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.OnR
     ) {
         //if (homeRadioButton.isChecked() || socialRadioButton.isChecked()){
         if (datumList != null && datumList?.size!! > 0) {
-            /*val imageVideolist1:ArrayList<AddImages> =ArrayList()
-            for (i in numberOfImage?.indices!!.reversed()) {
-                if (numberOfImage?.get(i)!!.fromServer.equals("No",false)) {
-                    imageVideolist1.add(numberOfImage!!.get(i)!!)
-                    numberOfImage?.removeAt(i)
-                }
-            }*/
 
             ll_explore_header_progress.visibility = View.VISIBLE
             if (datumList?.size!! > 0) {
@@ -1322,9 +1319,10 @@ class ExploreFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.OnR
         jsonArray.put(jsonObject)
         Log.e("jsonArray", "" + Gson().toJson(jsonArray))
         val createPostModel =
-            ViewModelProviders.of(this@ExploreFragment).get(CreatePostModel::class.java)
-        createPostModel.apiFunction(mActivity!!, jsonArray.toString(), "")
-            .observe(this@ExploreFragment,
+            ViewModelProviders.of(this@ExploreFragment).get(CreatePostModelV2::class.java)
+        createPostModel.postFunction(jsonArray.toString(), "")
+        createPostModel.postSuccessLiveData
+            .observe(viewLifecycleOwner,
                 androidx.lifecycle.Observer
                 { response ->
                     if (!response.isNullOrEmpty()) {

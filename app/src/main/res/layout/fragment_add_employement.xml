@@ -36,6 +36,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:id="@+id/tv_jobTTitle_edit_text"
                     android:layout_gravity="center"
                     android:hint="@string/job_title"
                     android:textColorHint="@color/colorPrimary"
@@ -63,6 +64,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:id="@+id/tv_companyname_edit_text"
                     android:hint="@string/company_name"
                     android:textColorHint="@color/colorPrimary"
                     android:theme="@style/MyEditTextTheme"
@@ -88,6 +90,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:id="@+id/tv_location_edit_text"
                     android:layout_gravity="center"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:hint="@string/location"
@@ -140,6 +143,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/tv_from"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/brandon_reg"
@@ -176,6 +180,7 @@
 
 
                         <TextView
+                            android:id="@+id/tv_to"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/brandon_reg"
@@ -208,6 +213,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:id="@+id/tv_txt_description"
                     android:layout_gravity="center"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:hint="@string/description"
@@ -242,6 +248,7 @@
                 android:padding="@dimen/_5sdp">
 
                 <TextView
+                    android:id="@+id/media"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_10sdp"
@@ -252,6 +259,7 @@
                     android:textSize="@dimen/_18ssp" />
 
                 <TextView
+                    android:id="@+id/add_link"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_10sdp"

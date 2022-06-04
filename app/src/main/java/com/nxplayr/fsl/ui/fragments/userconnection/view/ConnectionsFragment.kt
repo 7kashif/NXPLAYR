@@ -19,6 +19,7 @@ import com.nxplayr.fsl.data.model.All
 import com.nxplayr.fsl.data.model.FriendCount
 import com.nxplayr.fsl.ui.fragments.userconnection.adapter.ConnectionViewPagerAdapter
 import com.nxplayr.fsl.util.MyUtils
+import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.fragment_connections.*
 import kotlinx.android.synthetic.main.toolbar.toolbar
 import kotlinx.android.synthetic.main.toolbar2.*
@@ -32,7 +33,9 @@ class ConnectionsFragment : Fragment() {
     var mActivity: AppCompatActivity? = null
     var from = ""
     var userId = ""
+    var mAll = "All"
     var viewcount: ArrayList<String?>? = null
+    var sessionManager: SessionManager? = null
 
     private val tabIcons = intArrayOf(
         0,
@@ -40,6 +43,16 @@ class ConnectionsFragment : Fragment() {
         com.nxplayr.fsl.R.drawable.acquaintance_icon_big_connection,
         com.nxplayr.fsl.R.drawable.professional_icon_white
     )
+
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngConnection.isNullOrEmpty())
+                tvToolbarTitle1.text = sessionManager?.LanguageLabel?.lngConnection
+            if (!sessionManager?.LanguageLabel?.lngAll.isNullOrEmpty())
+                mAll = sessionManager?.LanguageLabel?.lngAll.toString()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,7 +72,7 @@ class ConnectionsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
+        sessionManager = SessionManager(mActivity!!)
         if (arguments != null) {
             from = arguments!!.getString("fromData").toString()
             userId = arguments!!.getString("userID").toString()
@@ -123,7 +136,7 @@ class ConnectionsFragment : Fragment() {
             val tabContentAll =
                 yourlinearlayout.findViewById<View>(R.id.tabContentAll) as AppCompatTextView
 
-            tabContentAll.text = "All"
+            tabContentAll.text = mAll
 
             if (tabIcons[i] == 0) {
                 tabContentAll.visibility = View.VISIBLE
@@ -161,7 +174,7 @@ class ConnectionsFragment : Fragment() {
             val tabContentAll =
                 yourlinearlayout.findViewById<View>(R.id.tabContentAll) as AppCompatTextView
 
-            tabContentAll.text = "All"
+            tabContentAll.text = mAll
 
             if (tabIcons[i] == 0) {
                 tabContentAll.visibility = View.VISIBLE

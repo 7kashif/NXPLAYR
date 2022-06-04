@@ -14,7 +14,6 @@
         android:layout_height="match_parent"
         android:overScrollMode="never">
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -23,141 +22,196 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/_10sdp">
+                android:orientation="vertical">
 
                 <TextView
+                    android:layout_marginTop="@dimen/_10ssp"
+                    android:id="@+id/title1"
+                    style="@style/Font.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="@dimen/_5sdp"
+                    android:text="@string/your_connection_to_nxplay_r" />
+
+                <TextView
+                    android:id="@+id/title2"
                     style="@style/Font.SubTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="@dimen/_5sdp"
-                    android:text="@string/we_are_here_to_help_you" />
+                    android:text="@string/you_ve_got_questions_we_ve_got_answers"
+                    android:textColor="@color/colorAccent" />
 
                 <TextView
+                    android:id="@+id/title3"
+                    style="@style/Font.SubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/we_love_to_hear_from_our"
+                    android:textSize="@dimen/_14ssp" />
+
+                <TextView
+                    android:id="@+id/title4"
                     style="@style/Font.SubTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_20sdp"
                     android:gravity="center"
-                    android:padding="@dimen/_10sdp"
-                    android:text="@string/lorem_ipsum_is_simply_dummy_text_of_the_printing_and_typesetting_industry_lorem_ipsum_has_been_the_industry_s_standard_dummy_text_ever_since_the_1500s"
+                    android:text="@string/beloved_nxplay_r_community_members"
                     android:textSize="@dimen/_14ssp" />
 
-
-                <LinearLayout
+                <com.google.android.material.internal.BaselineLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_5sdp"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="@dimen/_30sdp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginRight="@dimen/_20sdp"
-                        android:src="@drawable/email_icon_contact" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            style="@style/Font.SubTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/for_support_related_queries_write_to"
-                            android:textSize="@dimen/_14ssp" />
-
-                        <TextView
-                            android:id="@+id/tv_emailContactUs"
-                            style="@style/Font.SubTitle_blue"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/support_fsl_com"
-                            android:textSize="@dimen/_14ssp" />
-
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_5sdp"
-                    android:layout_marginTop="@dimen/_20sdp"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="@dimen/_30sdp"
-                        android:layout_height="@dimen/_30sdp"
-                        android:layout_gravity="center"
-                        android:layout_marginRight="@dimen/_20sdp"
-                        android:src="@drawable/call_icon_contact" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            style="@style/Font.SubTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/talk_with_our_expert_on_below_number"
-                            android:textSize="@dimen/_14ssp"
-
-                            />
-
-                        <TextView
-                            android:id="@+id/tv_callContactUs"
-                            style="@style/Font.SubTitle_blue"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="1800-9999-9999"
-                            android:textSize="@dimen/_14ssp" />
-
-
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
-
-            <com.google.android.material.internal.BaselineLayout
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginTop="@dimen/_20sdp"
-                android:background="@color/baseLineGray" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_15sdp"
-                android:layout_marginRight="@dimen/_15sdp"
-                android:orientation="vertical"
-                android:padding="@dimen/_10sdp">
+                    android:layout_height="0.5dp"
+                    android:background="@color/baseLineGray" />
 
                 <TextView
+                    android:id="@+id/title5"
                     style="@style/Font.SubTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/_5sdp"
-                    android:text="@string/need_more_help"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:text="@string/common_questions"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/_14ssp" />
+
+                <TextView
+                    android:id="@+id/title6"
+                    style="@style/Font.SubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:text="@string/we_have_gathered_the_most_common_questions_under_our_faq_section_which_we_keep_feeding_based_on_your_highly_appreciated_feedbacks"
                     android:textSize="@dimen/_14ssp" />
 
                 <TextView
                     android:id="@+id/tv_Faq"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_edittext"
-                    android:backgroundTint="@color/colorPrimary"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:background="@drawable/box_blue_border"
                     android:drawableEnd="@drawable/arrow_left"
                     android:hint="@string/faq"
                     android:padding="@dimen/_10sdp"
+                    android:textColor="@color/colorPrimary"
                     android:textColorHint="@color/colorPrimary"
+                    android:textSize="@dimen/_14ssp" />
+
+                <com.google.android.material.internal.BaselineLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@color/baseLineGray" />
+
+
+                <TextView
+                    android:id="@+id/title7"
+                    style="@style/Font.SubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:text="@string/need_more_help"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/_14ssp" />
+
+                <TextView
+                    android:id="@+id/title8"
+                    style="@style/Font.SubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:text="@string/choose_right"
+                    android:textSize="@dimen/_14ssp" />
+
+
+                <TextView
+                    android:id="@+id/title9"
+                    style="@style/Font.SubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="@string/general_queries"
+                    android:textSize="@dimen/_14ssp" />
+
+                <TextView
+                    android:id="@+id/title10"
+                    style="@style/Font.SubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:text="@string/hello_nxplayr_com"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/_14ssp" />
+
+                <TextView
+                    android:id="@+id/title11"
+                    style="@style/Font.SubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:text="@string/suggest_a_feature"
+                    android:textSize="@dimen/_14ssp" />
+
+                <TextView
+                    android:id="@+id/title12"
+                    style="@style/Font.SubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:text="@string/newfeature_nxplayr_com"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/_14ssp" />
+
+                <TextView
+                    android:id="@+id/title13"
+                    style="@style/Font.SubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:text="@string/partnerships_investors"
+                    android:textSize="@dimen/_14ssp" />
+
+                <TextView
+                    android:id="@+id/title14"
+                    style="@style/Font.SubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:text="@string/partnership_nxplayr_com"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/_14ssp" />
+
+                <TextView
+                    android:id="@+id/title15"
+                    style="@style/Font.SubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:text="@string/press"
+                    android:textSize="@dimen/_14ssp" />
+
+                <TextView
+                    android:id="@+id/title16"
+                    style="@style/Font.SubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_20sdp"
+                    android:layout_marginBottom="@dimen/_20sdp"
+                    android:text="@string/press_nxplayr_com"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/_14ssp" />
 
             </LinearLayout>

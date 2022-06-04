@@ -17,40 +17,34 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.gson.JsonParseException
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.R
-import com.nxplayr.fsl.ui.activity.post.view.CreatePostActivityTwo
-import com.nxplayr.fsl.ui.fragments.explorepost.adapter.ExploreVideoDetailAdapter
-import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.application.MyApplication
-import com.nxplayr.fsl.ui.fragments.postcomment.viewmodel.CommentModel
-import com.nxplayr.fsl.ui.fragments.feed.viewmodel.CreatePostModel
-import com.nxplayr.fsl.ui.fragments.explorepost.viewmodel.ExploreVideoModel
-import com.nxplayr.fsl.ui.fragments.explorepost.viewmodel.LikePostModel
+import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.CommentPojo
 import com.nxplayr.fsl.data.model.CreatePostData
 import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.data.model.ThreedotsBottomPojo
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.activity.post.view.CreatePostActivityTwo
 import com.nxplayr.fsl.ui.fragments.bottomsheet.ThreeDotsBottomSheetFragment
 import com.nxplayr.fsl.ui.fragments.collection.view.BottomSheetExplore
+import com.nxplayr.fsl.ui.fragments.explorepost.adapter.ExploreVideoDetailAdapter
+import com.nxplayr.fsl.ui.fragments.explorepost.viewmodel.ExploreVideoModelV2
+import com.nxplayr.fsl.ui.fragments.explorepost.viewmodel.LikePostModel
 import com.nxplayr.fsl.ui.fragments.feed.view.PostViewLikeListFragment
+import com.nxplayr.fsl.ui.fragments.feed.viewmodel.CreatePostModelV2
 import com.nxplayr.fsl.ui.fragments.postcomment.view.PostCommentListFragment
+import com.nxplayr.fsl.ui.fragments.postcomment.viewmodel.CommentModel
 import com.nxplayr.fsl.util.Constant
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
-import kotlinx.android.synthetic.main.exo_playback_control_view.view.*
 import kotlinx.android.synthetic.main.explore_video_detail_page_activity.*
 import kotlinx.android.synthetic.main.fragment_explore_view_pager.*
-import kotlinx.android.synthetic.main.fragment_postcomment_list.*
-import kotlinx.android.synthetic.main.nodafound.*
-import kotlinx.android.synthetic.main.nointernetconnection.*
-import kotlinx.android.synthetic.main.progressbar.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
 
@@ -169,7 +163,7 @@ class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
                         Intent.EXTRA_TEXT,
                         "Hey check out post on FSL" + "\n\nhttps://play.google.com/store/apps/details?id=${mActivity!!.packageName}"
                     )
-                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "FSL")
+                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "NXPLAYR")
                     startActivity(Intent.createChooser(shareIntent, "Share post via"))
 
                     //  openBottomSheetForShare(pos)
@@ -424,9 +418,10 @@ class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
 
 
         val createPostModel = ViewModelProviders.of(this@ExploreVideoDetailFragment).get(
-            CreatePostModel::class.java
+            CreatePostModelV2::class.java
         )
-        createPostModel.apiFunction(mActivity!!, jsonArray.toString(), "editPost")
+        createPostModel.postFunction(jsonArray.toString(), "editPost")
+        createPostModel.postSuccessLiveData
             .observe(this@ExploreVideoDetailFragment,
                 androidx.lifecycle.Observer { response ->
                     if (!response.isNullOrEmpty()) {
@@ -709,7 +704,7 @@ class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
                             Intent.EXTRA_TEXT,
                             "Hey check out post on FSL" + "\n\nhttps://play.google.com/store/apps/details?id=${mActivity!!.packageName}"
                         )
-                        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "FSL")
+                        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "NXPLAYR")
                         startActivity(Intent.createChooser(shareIntent, "Share post via"))
 
                     }
@@ -753,8 +748,9 @@ class ExploreVideoDetailFragment : Fragment(), View.OnClickListener {
         jsonArray.put(jsonObject)
         var getEmployementModel =
             ViewModelProviders.of(this@ExploreVideoDetailFragment)
-                .get(ExploreVideoModel::class.java)
-        getEmployementModel.getExploreVList(mActivity!!, false, jsonArray.toString())
+                .get(ExploreVideoModelV2::class.java)
+        getEmployementModel.getVideos(jsonArray.toString())
+        getEmployementModel.exploreSuccessLiveData
             .observe(viewLifecycleOwner,
                 Observer { exploreVidelistpojo ->
 

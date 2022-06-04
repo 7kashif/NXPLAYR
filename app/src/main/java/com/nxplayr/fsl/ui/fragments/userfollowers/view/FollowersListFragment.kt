@@ -88,6 +88,12 @@ class FollowersListFragment : Fragment(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
+        if(sessionManager?.LanguageLabel!=null) {
+            if (!sessionManager?.LanguageLabel?.lngNoInternet.isNullOrEmpty())
+                nointernettextview.text = sessionManager?.LanguageLabel?.lngNoInternet
+            if (!sessionManager?.LanguageLabel?.lngNoDataFound.isNullOrEmpty())
+                nodatafoundtextview.text = sessionManager?.LanguageLabel?.lngNoDataFound.toString()
+        }
         isLastpage = false
         isLoading = false
         pageNo = 0

@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.DeleteCollecationPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Response
 
 class DeletePostCollecationModel : ViewModel() {
@@ -31,18 +34,19 @@ class DeletePostCollecationModel : ViewModel() {
 
     private fun getDeletePostApi(): LiveData<List<DeleteCollecationPojo>> {
         val data = MutableLiveData<List<DeleteCollecationPojo>>()
+        viewModelScope.launch(Dispatchers.IO) {
+            var call = RestClient.get()!!.deleteCollecationPost(json!!)
+            call!!.enqueue(object : RestCallback<List<DeleteCollecationPojo>>(mContext) {
+                override fun Success(response: Response<List<DeleteCollecationPojo>>) {
+                    data.value = response.body()
+                }
 
-        var call = RestClient.get()!!.deleteCollecationPost(json!!)
-        call!!.enqueue(object : RestCallback<List<DeleteCollecationPojo>>(mContext) {
-            override fun Success(response: Response<List<DeleteCollecationPojo>>) {
-                data.value = response.body()
-            }
+                override fun failure() {
+                    data.value = null
+                }
 
-            override fun failure() {
-                data.value = null
-            }
-
-        })
+            })
+        }
 
         return data
     }

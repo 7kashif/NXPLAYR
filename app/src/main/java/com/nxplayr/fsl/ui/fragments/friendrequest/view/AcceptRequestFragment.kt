@@ -18,6 +18,7 @@ import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.ui.fragments.friendrequest.adapter.FriendRequestViewPagerAdapter
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.fragment_accept_request.*
+import kotlinx.android.synthetic.main.toolbar.*
 import java.util.ArrayList
 
 class AcceptRequestFragment : Fragment() {
@@ -28,12 +29,16 @@ class AcceptRequestFragment : Fragment() {
     var sessionManager: SessionManager? = null
     var userData: SignupData? = null
     var mActivity: AppCompatActivity? = null
+    var rec_req = "Received Requests"
+    var send_req = "Sent Requests"
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
-      //  if (v == null)
-            v = inflater.inflate(com.nxplayr.fsl.R.layout.fragment_accept_request, container, false)
+        //  if (v == null)
+        v = inflater.inflate(com.nxplayr.fsl.R.layout.fragment_accept_request, container, false)
         return v
     }
 
@@ -43,17 +48,37 @@ class AcceptRequestFragment : Fragment() {
 
     }
 
-    @SuppressLint("ResourceType")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         sessionManager = SessionManager(activity!!)
         if (sessionManager?.get_Authenticate_User() != null) {
             userData = sessionManager?.get_Authenticate_User()
-
+        }
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngReceivedRequests.isNullOrEmpty())
+                rec_req = sessionManager?.LanguageLabel?.lngReceivedRequests.toString()
+            if (!sessionManager?.LanguageLabel?.lngSentRequests.isNullOrEmpty())
+                send_req = sessionManager?.LanguageLabel?.lngSentRequests.toString()
         }
         setupUI()
-      }
+    }
+//
+//    @SuppressLint("ResourceType")
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
+//
+//        sessionManager = SessionManager(activity!!)
+//        if (sessionManager?.get_Authenticate_User() != null) {
+//            userData = sessionManager?.get_Authenticate_User()
+//        }
+//        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+//            if (!sessionManager?.LanguageLabel?.lngReceivedRequests.isNullOrEmpty())
+//                rec_req = sessionManager?.LanguageLabel?.lngReceivedRequests.toString()
+//            if (!sessionManager?.LanguageLabel?.lngSentRequests.isNullOrEmpty())
+//                send_req = sessionManager?.LanguageLabel?.lngSentRequests.toString()
+//        }
+//        setupUI()
+//    }
 
 
     private fun setupUI() {
@@ -63,15 +88,16 @@ class AcceptRequestFragment : Fragment() {
 
     private fun setupViewPager(viewPager: ViewPager) {
         adapter = FriendRequestViewPagerAdapter(childFragmentManager)
-        adapter?.addFragment(ReceiveRequestFragment(), "Received Requests")
-        adapter?.addFragment(ReceiveRequestFragment(), "Sent Requests")
+        adapter?.addFragment(ReceiveRequestFragment(), rec_req)
+        adapter?.addFragment(ReceiveRequestFragment(), send_req)
         viewPager.offscreenPageLimit = 2
         viewPager.adapter = adapter
         adapter?.notifyDataSetChanged()
     }
 
     fun setTabtitle(count: List<FriendCount>) {
-        tab_layout_request.getTabAt(0)?.text = "Received Requests " + "(" + count!![0].pendingCount + ")"
-        tab_layout_request.getTabAt(1)?.text = "Sent Requests " + "(" + count!![0].sentCount + ")"
+        tab_layout_request.getTabAt(0)?.text =
+            "$rec_req " + "(" + count[0].pendingCount + ")"
+        tab_layout_request.getTabAt(1)?.text = "$send_req " + "(" + count[0].sentCount + ")"
     }
 }

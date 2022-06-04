@@ -19,7 +19,7 @@ import java.io.IOException
  */
 class ImageSaver(private val context: Context) {
 
-    private var directoryName = "FSL"
+    private var directoryName = "NXPLAYR"
     private var fileName = "image.png"
     private var external: Boolean = false
 

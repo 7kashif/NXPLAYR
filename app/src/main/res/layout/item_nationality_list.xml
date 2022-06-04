@@ -49,16 +49,18 @@
         android:id="@+id/ll_expireDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginEnd="@dimen/_10sdp"
+        android:background="@color/sticky_header_color"
         android:orientation="vertical"
+        android:paddingHorizontal="@dimen/_10ssp"
         android:visibility="visible">
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tv_expire_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:hint="@string/expire_date"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:hint="@string/expiry_date"
             android:textColorHint="@color/colorPrimary"
             android:theme="@style/MyEditTextTheme"
             app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">

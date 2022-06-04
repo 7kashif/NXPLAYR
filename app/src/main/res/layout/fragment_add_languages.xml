@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:hint="@string/language"
+            android:id="@+id/tv_language_edit_text"
             android:textColorHint="@color/colorPrimary"
             android:theme="@style/MyEditTextTheme"
             app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
@@ -53,6 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:id="@+id/tv_proficiency_edit_text"
             android:hint="@string/proficiency"
             android:textColorHint="@color/colorPrimary"
             android:theme="@style/MyEditTextTheme"

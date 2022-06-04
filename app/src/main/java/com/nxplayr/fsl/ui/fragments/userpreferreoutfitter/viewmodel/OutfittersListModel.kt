@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.OutfittersPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
 
@@ -34,26 +37,28 @@ class OutfittersListModel : ViewModel() {
 
     private fun getOutfittersListApi(): LiveData<List<OutfittersPojo>> {
         val data = MutableLiveData<List<OutfittersPojo>>()
-          var call: Call<List<OutfittersPojo>>?=null
-           when(s){
-               "Add"->{
-                   call = RestClient.get()!!.getAddOutfittersProfile(json!!)
-               }else->{
-                call = RestClient.get()!!.getuserOutfittersProfile(json!!)
+        viewModelScope.launch(Dispatchers.IO) {
+            var call: Call<List<OutfittersPojo>>? = null
+            when (s) {
+                "Add" -> {
+                    call = RestClient.get()!!.getAddOutfittersProfile(json!!)
+                }
+                else -> {
+                    call = RestClient.get()!!.getuserOutfittersProfile(json!!)
 
-              }
-           }
-        call?.enqueue(object : RestCallback<List<OutfittersPojo>>(mContext) {
-            override fun Success(response: Response<List<OutfittersPojo>>) {
-                data.value = response.body()
+                }
             }
+            call?.enqueue(object : RestCallback<List<OutfittersPojo>>(mContext) {
+                override fun Success(response: Response<List<OutfittersPojo>>) {
+                    data.value = response.body()
+                }
 
-            override fun failure() {
-                data.value = null
-            }
+                override fun failure() {
+                    data.value = null
+                }
 
-        })
-
+            })
+        }
         return data
     }
 

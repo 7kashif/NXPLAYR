@@ -12,8 +12,14 @@ data class CmsPojo(
 )
 
 data class CMSPageData(
+        @SerializedName("url")
+        var url: String,
+        @SerializedName("cmspageID")
+        var cmspageID: String,
         @SerializedName("cmspageContents")
         var cmspageContents: String,
+        @SerializedName("cmspageFrenchContents")
+        var cmspageFrenchContents: String,
         @SerializedName("cmspageName")
         var cmspageName: String
 )

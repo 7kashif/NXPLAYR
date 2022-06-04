@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.SkillsPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Response
 
 class SetOfSkillsListModel : ViewModel() {
@@ -31,7 +34,7 @@ class SetOfSkillsListModel : ViewModel() {
 
     private fun getSkillsListApi(): LiveData<List<SkillsPojo>> {
         val data = MutableLiveData<List<SkillsPojo>>()
-
+        viewModelScope.launch(Dispatchers.IO) {
         var call = RestClient.get()!!.getuserSkillProfile(json!!)
         call!!.enqueue(object : RestCallback<List<SkillsPojo>>(mContext) {
             override fun Success(response: Response<List<SkillsPojo>>) {
@@ -42,7 +45,7 @@ class SetOfSkillsListModel : ViewModel() {
                 data.value = null
             }
 
-        })
+        })}
 
         return data
     }

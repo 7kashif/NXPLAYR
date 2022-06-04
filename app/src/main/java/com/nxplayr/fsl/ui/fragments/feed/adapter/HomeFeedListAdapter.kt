@@ -1945,15 +1945,15 @@ class HomeFeedListAdapter(
                                     if (viewHolder1 is TrendingItemVideoAdapter.ImgHolder) {
                                         val holder1 =
                                             viewHolder1 as TrendingItemVideoAdapter.ImgHolder
-                                        playVideo(
-                                            i,
-                                            holder1.galleryImageView!!,
-                                            holder1.thumnail!!,
-                                            holder1.thumnail!!/*holder1.volume!!*/,
-                                            holder1.pb!!,
-                                            holder1.playicon!!,
-                                            feedlist
-                                        )
+//                                        playVideo(
+//                                            i,
+//                                            holder1.galleryImageView!!,
+//                                            holder1.thumnail!!,
+//                                            holder1.thumnail!!/*holder1.volume!!*/,
+//                                            holder1.pb!!,
+//                                            holder1.playicon!!,
+//                                            feedlist
+//                                        )
                                     }
 
                                 }
@@ -2185,47 +2185,47 @@ class HomeFeedListAdapter(
     fun pausePlayer(positionNot: Int) {
 
 
-        try {
-            context.runOnUiThread(Runnable {
-                Handler().post {
-                    videoPlayPosition = -1
-                    for (i in feedlist!!.indices) {
-                        if (feedlist.get(i) != null && !feedlist.get(i)!!.postSerializedData.isNullOrEmpty() && feedlist.get(
-                                i
-                            )!!.postSerializedData[0].albummedia != null && feedlist.get(
-                                i
-                            )!!.postSerializedData[0].albummedia.isNotEmpty()
-                        )
-                            if (feedlist[i]!!.postSerializedData[0].albummedia[0].isPlaying && positionNot != i) {
-                                videoPlayPosition = i
-                                break
-                            }
-                    }
-
-                    if (videoPlayPosition > -1) {
-                        if (exoPlayer != null)
-                            feedlist.get(videoPlayPosition)!!.postSerializedData[0].albummedia[0].duration =
-                                (
-                                        exoPlayer?.currentPosition!!
-                                        )
-                        feedlist.get(videoPlayPosition)!!.postSerializedData[0].albummedia[0].isPlaying =
-                            (false)
-                        notifyItemChanged(videoPlayPosition)
-                        videoPlayPosition = -1
-
-
-                        if (exoPlayer != null) {
-                            exoPlayer?.stop(true)
-                            exoPlayer?.release()
-                            exoPlayer = null
-                        }
-                    }
-                }
-            })
-        } catch (e: Exception) {
-            e.printStackTrace()
-            stopPlayer()
-        }
+//        try {
+//            context.runOnUiThread(Runnable {
+//                Handler().post {
+//                    videoPlayPosition = -1
+//                    for (i in feedlist!!.indices) {
+//                        if (feedlist.get(i) != null && !feedlist.get(i)!!.postSerializedData.isNullOrEmpty() && feedlist.get(
+//                                i
+//                            )!!.postSerializedData[0].albummedia != null && feedlist.get(
+//                                i
+//                            )!!.postSerializedData[0].albummedia.isNotEmpty()
+//                        )
+//                            if (feedlist[i]!!.postSerializedData[0].albummedia[0].isPlaying && positionNot != i) {
+//                                videoPlayPosition = i
+//                                break
+//                            }
+//                    }
+//
+//                    if (videoPlayPosition > -1) {
+//                        if (exoPlayer != null)
+//                            feedlist.get(videoPlayPosition)!!.postSerializedData[0].albummedia[0].duration =
+//                                (
+//                                        exoPlayer?.currentPosition!!
+//                                        )
+//                        feedlist.get(videoPlayPosition)!!.postSerializedData[0].albummedia[0].isPlaying =
+//                            (false)
+//                        notifyItemChanged(videoPlayPosition)
+//                        videoPlayPosition = -1
+//
+//
+//                        if (exoPlayer != null) {
+//                            exoPlayer?.stop(true)
+//                            exoPlayer?.release()
+//                            exoPlayer = null
+//                        }
+//                    }
+//                }
+//            })
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            stopPlayer()
+//        }
 
     }
 

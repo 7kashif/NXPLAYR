@@ -2,40 +2,41 @@ package com.nxplayr.fsl.ui.fragments.setting.view
 
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
-
-import com.nxplayr.fsl.R
-import com.nxplayr.fsl.ui.fragments.setting.adapter.LanguageAdapter
-import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.viewmodel.*
-import kotlinx.android.synthetic.main.toolbar.*
 import com.google.gson.Gson
-import com.nxplayr.fsl.data.model.*
+import com.nxplayr.fsl.R
+import com.nxplayr.fsl.data.api.RestClient
+import com.nxplayr.fsl.data.model.LanguageLabelPojo
+import com.nxplayr.fsl.data.model.LanguageListData
+import com.nxplayr.fsl.data.model.LanguageListPojo
+import com.nxplayr.fsl.data.model.SignupData
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModelV2
+import com.nxplayr.fsl.ui.fragments.setting.adapter.LanguageAdapter
 import com.nxplayr.fsl.ui.fragments.setting.viewmodel.LanguageIntefaceListModel
-import com.nxplayr.fsl.ui.fragments.setting.viewmodel.LanguageLabelModel
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
+import com.nxplayr.fsl.ui.fragments.setting.viewmodel.LanguageLabelModelV2
 import com.nxplayr.fsl.ui.fragments.setting.viewmodel.LanguageListModel
-import com.nxplayr.fsl.util.*
+import com.nxplayr.fsl.util.ErrorUtil
+import com.nxplayr.fsl.util.MyUtils
+import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.common_recyclerview.*
-import kotlinx.android.synthetic.main.fragment_add_hashtag.*
-import kotlinx.android.synthetic.main.fragment_jerusy_number.*
 import kotlinx.android.synthetic.main.fragment_language.*
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
+import kotlinx.android.synthetic.main.toolbar.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.*
 
 
 class LanguageFragment : Fragment(), View.OnClickListener {
@@ -49,11 +50,11 @@ class LanguageFragment : Fragment(), View.OnClickListener {
     var linearLayoutManager: LinearLayoutManager? = null
     var userData: SignupData? = null
     var sessionManager: SessionManager? = null
-    var language : LanguageListData? = null
+    var language: LanguageListData? = null
     var languageId = ""
     private lateinit var lannguageModel: LanguageIntefaceListModel
-    private lateinit var loginModel: SignupModel
-    private lateinit var languageLabelModel: LanguageLabelModel
+    private lateinit var loginModel: SignupModelV2
+    private lateinit var languageLabelModel: LanguageLabelModelV2
 
 
     override fun onCreateView(
@@ -64,7 +65,6 @@ class LanguageFragment : Fragment(), View.OnClickListener {
             v = inflater.inflate(R.layout.fragment_language, container, false)
         }
         return v
-
     }
 
     override fun onAttach(context: Context) {
@@ -72,6 +72,20 @@ class LanguageFragment : Fragment(), View.OnClickListener {
 
         mActivity = context as AppCompatActivity
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngLanguage.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngLanguage
+            if (!sessionManager?.LanguageLabel?.lngNoDataFound.isNullOrEmpty())
+                nodatafoundtextview.text = sessionManager?.LanguageLabel?.lngNoDataFound
+            if (!sessionManager?.LanguageLabel?.lngCheckNoInternet.isNullOrEmpty())
+                nointernettextview.text = sessionManager?.LanguageLabel?.lngCheckNoInternet
+            if (!sessionManager?.LanguageLabel?.lngUpdate.isNullOrEmpty())
+                btn_update_language.progressText = sessionManager?.LanguageLabel?.lngUpdate
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -95,6 +109,7 @@ class LanguageFragment : Fragment(), View.OnClickListener {
         }
         linearLayoutManager = LinearLayoutManager(mActivity!!)
 
+        language = sessionManager?.getSelectedLanguage()
         languageAdapter =
             LanguageAdapter(mActivity!!, languageList, object : LanguageAdapter.OnItemClick {
 
@@ -132,9 +147,11 @@ class LanguageFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setupViewModel() {
-        lannguageModel = ViewModelProvider(this@LanguageFragment).get(LanguageIntefaceListModel::class.java)
-        loginModel = ViewModelProvider(this@LanguageFragment).get(SignupModel::class.java)
-        languageLabelModel = ViewModelProvider(this@LanguageFragment).get(LanguageLabelModel::class.java)
+        lannguageModel =
+            ViewModelProvider(this@LanguageFragment).get(LanguageIntefaceListModel::class.java)
+        loginModel = ViewModelProvider(this@LanguageFragment).get(SignupModelV2::class.java)
+        languageLabelModel =
+            ViewModelProvider(this@LanguageFragment).get(LanguageLabelModelV2::class.java)
     }
 
     private fun languagesApi() {
@@ -181,7 +198,7 @@ class LanguageFragment : Fragment(), View.OnClickListener {
                     btn_update_language.backgroundTint = (resources.getColor(R.color.transperent1))
                     btn_update_language.textColor = resources.getColor(R.color.colorPrimary)
 
-                    ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                    ErrorUtil.errorView(requireActivity(), nointernetMainRelativelayout)
                 }
             }
 
@@ -208,7 +225,8 @@ class LanguageFragment : Fragment(), View.OnClickListener {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        loginModel.userRegistration(mActivity!!, false, jsonArray.toString(), "changeLanguage")
+        loginModel.users_changeLanguage(jsonArray.toString())
+        loginModel.users_changeLanguage
             .observe(
                 viewLifecycleOwner
             ) { loginPojo ->
@@ -219,7 +237,7 @@ class LanguageFragment : Fragment(), View.OnClickListener {
 
 
                             sessionManager?.LanguageLabel = languageLabel
-                            loginPojo[0].data[0].languageID = this.languageId
+//                            loginPojo[0].data[0].languageID = this.languageId
                             sessionManager?.setSelectedLanguage(language)
                             StoreSessionManager(loginPojo[0].data[0])
                             //setLocalLanguage()
@@ -252,7 +270,7 @@ class LanguageFragment : Fragment(), View.OnClickListener {
     }
 
     private fun getLanguageLabelList(languageId: String) {
-        MyUtils.showProgressDialog(activity!!, "Please wait...")
+        MyUtils.showProgressDialog(requireActivity(), "Please wait...")
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
         try {
@@ -266,8 +284,10 @@ class LanguageFragment : Fragment(), View.OnClickListener {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        languageLabelModel.getLanguageList(activity!!, false, jsonArray.toString())
-            .observe(viewLifecycleOwner
+        languageLabelModel.getLabels(jsonArray.toString())
+        languageLabelModel.usersSuccessLiveData
+            .observe(
+                viewLifecycleOwner
             ) { languageLabelPojo ->
                 if (!languageLabelPojo.isNullOrEmpty()) {
                     if (languageLabelPojo[0].status == true && !languageLabelPojo[0].data.isNullOrEmpty()) {
@@ -328,6 +348,10 @@ class LanguageFragment : Fragment(), View.OnClickListener {
             R.id.btn_update_language -> {
                 if (!languageId.isEmpty()) {
                     // changeLanguage()
+                    if (language?.languageName.equals("Automatic", true)) {
+                        language?.languageCode = Locale.getDefault().language
+                    }
+                    sessionManager?.setSelectedLanguage(language)
                     getLanguageLabelList(languageId)
                 } else {
                     MyUtils.showSnackbar(

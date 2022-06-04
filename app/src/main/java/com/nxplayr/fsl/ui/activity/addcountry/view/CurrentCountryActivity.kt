@@ -29,6 +29,7 @@ import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.fragment_current_location.*
+import kotlinx.android.synthetic.main.fragment_passport_nationality.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -68,7 +69,16 @@ class CurrentCountryActivity : AppCompatActivity(),View.OnClickListener {
 
     private fun setupUI() {
         tvToolbarTitle.setText(R.string.current_country)
-
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngCurrentCountry.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngCurrentCountry
+            if (!sessionManager?.LanguageLabel?.lngSearchLocation.isNullOrEmpty())
+                search_location.hint = sessionManager?.LanguageLabel?.lngSearchLocation
+            if (!sessionManager?.LanguageLabel?.lngCurrentLocation.isNullOrEmpty())
+                current_location.text = sessionManager?.LanguageLabel?.lngCurrentLocation
+            if (!sessionManager?.LanguageLabel?.lngUsingGPS.isNullOrEmpty())
+                using_gps.text = sessionManager?.LanguageLabel?.lngUsingGPS
+        }
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }

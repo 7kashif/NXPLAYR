@@ -2,14 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_main_partner"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/appbg"
     android:orientation="vertical"
-    android:id="@+id/ll_main_partner"
     tools:context=".ui.activity.onboarding.view.PartnerWithUSActivity">
 
     <include layout="@layout/toolbar" />
+
     <include layout="@layout/line_seperator" />
 
     <androidx.core.widget.NestedScrollView
@@ -26,35 +27,39 @@
             android:layout_marginEnd="@dimen/_15sdp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_select_gender"
-                style="@style/Font.SubTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:text="@string/please_fill_your_details_and_we_will_get_back_to_you_after_review_your_information"
-                android:textSize="@dimen/_14ssp" />
+            <!--            <TextView-->
+            <!--                android:id="@+id/tv_select_gender"-->
+            <!--                style="@style/Font.SubTitle"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginTop="@dimen/_5sdp"-->
+            <!--                android:text="@string/please_fill_your_details_and_we_will_get_back_to_you_after_review_your_information"-->
+            <!--                android:textSize="@dimen/_14ssp" />-->
 
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/firstName_textInputLayout"
                 style="@style/TextInputLayout"
+                android:layout_marginTop="@dimen/_30sdp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/full_name"
                 android:textColorHint="@color/colorPrimary"
-                android:theme="@style/TextInputLayout">
+                android:theme="@style/TextInputLayout"
+                app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/firstName_edit_text"
                     style="@style/primaryInputTextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLength="150"
                     android:background="@drawable/edittext_underline_selector"
                     android:imeOptions="actionNext"
                     android:inputType="textCapSentences"
+                    android:maxLength="150"
                     android:maxLines="1"
+                    android:paddingTop="@dimen/_20sdp"
+                    android:text=""
                     android:textSize="@dimen/_16ssp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -65,7 +70,9 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/email"
                 android:textColorHint="@color/colorPrimary"
-                android:theme="@style/TextInputLayout">
+                android:theme="@style/TextInputLayout"
+                app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
+
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/emailAddress_edit_text"
@@ -77,6 +84,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
+                    android:paddingTop="@dimen/_20sdp"
                     android:textCursorDrawable="@null"
                     android:textSize="@dimen/_16ssp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -88,7 +96,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/mobile_number"
                 android:textColorHint="@color/colorPrimary"
-                android:theme="@style/TextInputLayout">
+                android:theme="@style/TextInputLayout"
+                app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
 
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -106,32 +115,37 @@
                     android:inputType="phone"
                     android:maxLength="16"
                     android:maxLines="1"
+                    android:paddingTop="@dimen/_20sdp"
                     android:textCursorDrawable="@null"
                     android:textSize="@dimen/_16ssp" />
 
 
             </com.google.android.material.textfield.TextInputLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/background_stoke"
                 android:layout_marginTop="@dimen/_5sdp"
-               >
+                android:background="@drawable/background_stoke">
+
                 <EditText
+                    android:id="@+id/edittext_message"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@null"
                     android:gravity="top|left"
+                    android:hint="@string/write_message"
                     android:inputType="textMultiLine"
                     android:lines="8"
                     android:maxLength="3000"
-                    android:id="@+id/edittext_message"
                     android:maxLines="10"
-                    android:textColor="@color/white"
-                    android:hint="@string/write_message"
-                    android:textColorHint="@color/white"
                     android:minLines="6"
-                    android:scrollbars="vertical" />
+                    android:padding="@dimen/_10ssp"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/colorPrimary" />
             </LinearLayout>
+
             <com.chand.progressbutton.ProgressButton
                 android:id="@+id/btnSend"
                 android:layout_width="match_parent"

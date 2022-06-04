@@ -28,6 +28,7 @@ import kotlinx.android.synthetic.main.fragment_contract_sitiuation.*
 import kotlinx.android.synthetic.main.fragment_geographical.*
 import kotlinx.android.synthetic.main.fragment_geographical.btn_addNationality
 import kotlinx.android.synthetic.main.fragment_passport_nationality.*
+import kotlinx.android.synthetic.main.fragment_trophy_honors.*
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
@@ -65,6 +66,16 @@ class GeographicalFragment : Fragment(),View.OnClickListener {
             v = inflater.inflate(R.layout.fragment_geographical, container, false)
         }
         return v
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngGeographical.isNullOrEmpty())
+                tvToolbarTitle1.text = sessionManager?.LanguageLabel?.lngGeographical
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_addNationality.progressText = sessionManager?.LanguageLabel?.lngSave
+        }
     }
 
     override fun onAttach(context: Context) {

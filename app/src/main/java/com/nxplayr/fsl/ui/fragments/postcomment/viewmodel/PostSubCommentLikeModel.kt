@@ -4,9 +4,12 @@ import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.CommonPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 import retrofit2.Call
 import retrofit2.Response
@@ -30,6 +33,7 @@ class PostSubCommentLikeModel : ViewModel() {
     private fun apiResponse(): LiveData<List<CommonPojo>?> {
         val data = MutableLiveData<List<CommonPojo>>()
         var call: Call<List<CommonPojo>>? = null
+        viewModelScope.launch(Dispatchers.IO) {
         call = RestClient.get()!!.getPostReplyCommentLike(jsonArray)
 
 
@@ -41,7 +45,7 @@ class PostSubCommentLikeModel : ViewModel() {
             override fun failure() {
                 data.value = null
             }
-        })
+        })}
         return data
     }
 }

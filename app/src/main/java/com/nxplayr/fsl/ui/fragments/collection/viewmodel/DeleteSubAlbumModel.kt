@@ -4,9 +4,12 @@ import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.CreateAlbumDeletePojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Response
 
 class DeleteSubAlbumModel:ViewModel() {
@@ -29,19 +32,20 @@ class DeleteSubAlbumModel:ViewModel() {
 
     private fun apiSubAlbumDeleteResponse(): LiveData<List<CreateAlbumDeletePojo>> {
         val data = MutableLiveData<List<CreateAlbumDeletePojo>>()
+        viewModelScope.launch(Dispatchers.IO) {
+            var call = RestClient.get()!!.deleteSubAlbum(json)
 
-        var call = RestClient.get()!!.deleteSubAlbum(json)
+            call.enqueue(object : RestCallback<List<CreateAlbumDeletePojo>>(mContext) {
+                override fun Success(response: Response<List<CreateAlbumDeletePojo>>) {
+                    data.value = response.body()
+                }
 
-        call.enqueue(object : RestCallback<List<CreateAlbumDeletePojo>>(mContext) {
-            override fun Success(response: Response<List<CreateAlbumDeletePojo>>) {
-                data.value = response.body()
-            }
+                override fun failure() {
+                    data.value = null
+                }
 
-            override fun failure() {
-                data.value = null
-            }
-
-        })
+            })
+        }
 
         return data
     }

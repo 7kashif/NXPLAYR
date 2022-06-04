@@ -13,16 +13,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.nxplayr.fsl.*
-import com.nxplayr.fsl.ui.activity.post.view.DocumentActivity
-import com.nxplayr.fsl.ui.activity.fullscreenvideo.view.FullScreenVideo
-import com.nxplayr.fsl.ui.activity.post.view.LinkWebViewActivity
-import com.nxplayr.fsl.ui.activity.fullscreenvideo.view.PhotoGallaryView
-import com.nxplayr.fsl.ui.fragments.feed.adapter.PostGridViewAdapter
+import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.ui.fragments.feed.viewmodel.CreatePostModel
 import com.nxplayr.fsl.data.model.CreatePostData
 import com.nxplayr.fsl.data.model.SignupData
+import com.nxplayr.fsl.ui.activity.fullscreenvideo.view.FullScreenVideo
+import com.nxplayr.fsl.ui.activity.fullscreenvideo.view.PhotoGallaryView
+import com.nxplayr.fsl.ui.activity.post.view.DocumentActivity
+import com.nxplayr.fsl.ui.activity.post.view.LinkWebViewActivity
+import com.nxplayr.fsl.ui.fragments.feed.adapter.PostGridViewAdapter
+import com.nxplayr.fsl.ui.fragments.feed.viewmodel.CreatePostModelV2
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.common_recyclerview.*
@@ -57,10 +57,12 @@ class PostGridViewListFragment : Fragment() {
     var tabPos: Int = 0
     var userID = ""
     var from = ""
-    private lateinit var  createPostModel: CreatePostModel
+    private lateinit var createPostModel: CreatePostModelV2
 
-     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         if (v == null) {
             v = inflater.inflate(R.layout.fragment_post_grid_view_list, container, false)
         }
@@ -88,7 +90,6 @@ class PostGridViewListFragment : Fragment() {
         setupViewModel()
         setupUI()
 
-
     }
 
     private fun setupUI() {
@@ -96,61 +97,76 @@ class PostGridViewListFragment : Fragment() {
 
         if (postList == null) {
             postList = ArrayList()
-            postGridViewAdapter = PostGridViewAdapter(mActivity!!, postList!!, object : PostGridViewAdapter.OnItemClick {
-                override fun onClicled(position: Int, from: String) {
-                    when(postList!![position]!!.postMediaType)
-                    {
-                        "Video"->{
-                            val i = Intent(mActivity, FullScreenVideo::class.java)
-                            i.putExtra("videouri", RestClient.image_base_url_posts + postList?.get(position)!!.postSerializedData.get(
-                                0
-                            ).albummedia[0].albummediaFile)
-                            mActivity?.startActivity(i)
-                            mActivity?.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            postGridViewAdapter = PostGridViewAdapter(
+                mActivity!!,
+                postList!!,
+                object : PostGridViewAdapter.OnItemClick {
+                    override fun onClicled(position: Int, from: String) {
+                        when (postList!![position]!!.postMediaType) {
+                            "Video" -> {
+                                val i = Intent(mActivity, FullScreenVideo::class.java)
+                                i.putExtra(
+                                    "videouri",
+                                    RestClient.image_base_url_posts + postList?.get(position)!!.postSerializedData.get(
+                                        0
+                                    ).albummedia[0].albummediaFile
+                                )
+                                mActivity?.startActivity(i)
+                                mActivity?.overridePendingTransition(
+                                    R.anim.slide_in_right,
+                                    R.anim.slide_out_left
+                                )
 
-                        }
-                        "Photo"->{
-                            Intent(mActivity, PhotoGallaryView::class.java).apply {
-                                putExtra("photoUri",postList!![position]!!.postSerializedData[0].albummedia as Serializable)
-                                mActivity?.startActivity(this)
                             }
-                        }
-                        "Document"->{
-                            Intent(mActivity, DocumentActivity::class.java).apply {
-                                putExtra("file", RestClient.image_base_url_posts + postList?.get(position)?.postSerializedData?.get(0)?.albummedia?.get(0)?.albummediaFile)
-                                mActivity?.startActivity(this)
-                            }
-                        }
-                        "Link"->{
-                            var des= if(!postList?.get(position)?.postDescription.isNullOrEmpty()){
-
-                                postList?.get(position)?.postDescription?.split("||")?.toTypedArray()
-                            }else{
-                                null
-                            }
-                            var uri=""
-                            if (des?.size!! > 1){
-                                uri = if (!des!![1]?.isNullOrEmpty())
-                                {
-                                    Uri.parse(des[1]).toString()
-                                }
-                                else
-                                {
-                                    ""
+                            "Photo" -> {
+                                Intent(mActivity, PhotoGallaryView::class.java).apply {
+                                    putExtra(
+                                        "photoUri",
+                                        postList!![position]!!.postSerializedData[0].albummedia as Serializable
+                                    )
+                                    mActivity?.startActivity(this)
                                 }
                             }
-                            if (des?.size!! > 1) {
-                                Intent(context, LinkWebViewActivity::class.java).apply {
-                                    putExtra("file", uri.toString())
-                                    startActivity(this)
+                            "Document" -> {
+                                Intent(mActivity, DocumentActivity::class.java).apply {
+                                    putExtra(
+                                        "file",
+                                        RestClient.image_base_url_posts + postList?.get(position)?.postSerializedData?.get(
+                                            0
+                                        )?.albummedia?.get(0)?.albummediaFile
+                                    )
+                                    mActivity?.startActivity(this)
                                 }
                             }
+                            "Link" -> {
+                                var des =
+                                    if (!postList?.get(position)?.postDescription.isNullOrEmpty()) {
 
+                                        postList?.get(position)?.postDescription?.split("||")
+                                            ?.toTypedArray()
+                                    } else {
+                                        null
+                                    }
+                                var uri = ""
+                                if (des?.size!! > 1) {
+                                    uri = if (!des!![1]?.isNullOrEmpty()) {
+                                        Uri.parse(des[1]).toString()
+                                    } else {
+                                        ""
+                                    }
+                                }
+                                if (des?.size!! > 1) {
+                                    Intent(context, LinkWebViewActivity::class.java).apply {
+                                        putExtra("file", uri.toString())
+                                        startActivity(this)
+                                    }
+                                }
+
+                            }
                         }
+
                     }
-
-                }
-            })
+                })
             recyclerview.layoutManager = gridViewManager
             recyclerview.adapter = postGridViewAdapter
             getPostList()
@@ -183,8 +199,60 @@ class PostGridViewListFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-         createPostModel = ViewModelProvider(this@PostGridViewListFragment).get(CreatePostModel::class.java)
+        createPostModel =
+            ViewModelProvider(this@PostGridViewListFragment).get(CreatePostModelV2::class.java)
+        createPostModel.postSuccessLiveData
+            .observe(viewLifecycleOwner) { postListPojo ->
+                if (postListPojo != null && postListPojo.isNotEmpty()) {
+                    isLoading = false
+                    ll_no_data_found.visibility = View.GONE
+                    nointernetMainRelativelayout.visibility = View.GONE
+                    relativeprogressBar.visibility = View.GONE
 
+                    if (pageNo > 0) {
+                        postList!!.removeAt(postList!!.size - 1)
+                        postGridViewAdapter!!.notifyItemRemoved(postList!!.size)
+                    }
+
+                    if (postListPojo[0].status.equals("true")) {
+
+                        recyclerview.visibility = View.VISIBLE
+
+                        if (pageNo == 0) {
+                            postList?.clear()
+                        }
+                        postList?.addAll(postListPojo[0].data!!)
+                        postGridViewAdapter?.notifyDataSetChanged()
+                        pageNo += 1
+
+                        if (postListPojo[0].data!!.size < 10) {
+                            isLastpage = true
+                        }
+                        if (postListPojo[0].data!!.isNullOrEmpty()) {
+                            ll_no_data_found.visibility = View.VISIBLE
+                            recyclerview.visibility = View.GONE
+                        } else {
+                            ll_no_data_found.visibility = View.GONE
+                            recyclerview.visibility = View.VISIBLE
+                        }
+
+                    } else {
+                        relativeprogressBar.visibility = View.GONE
+
+                        if (postList!!.isNullOrEmpty()) {
+                            ll_no_data_found.visibility = View.VISIBLE
+                            recyclerview.visibility = View.GONE
+
+                        } else {
+                            ll_no_data_found.visibility = View.GONE
+                            recyclerview.visibility = View.VISIBLE
+
+                        }
+                    }
+                } else {
+                    ErrorUtil.errorView(mActivity!!, ll_grid_viewpost)
+                }
+            }
     }
 
     fun getPostList() {
@@ -213,7 +281,7 @@ class PostGridViewListFragment : Fragment() {
                 jsonObject.put("loginuserID", userData!!.userID)
             } else if (from.equals("OtherUserPro")) {
 
-                        jsonObject.put("loginuserID", userID)
+                jsonObject.put("loginuserID", userID)
 
             }
             jsonObject.put("page", pageNo)
@@ -223,7 +291,7 @@ class PostGridViewListFragment : Fragment() {
                     jsonObject.put("tabname", "my")
                     jsonObject.put("postType", "Social")
                 }
-                2-> {
+                2 -> {
                     jsonObject.put("tabname", "my")
                     jsonObject.put("postType", "Social")
                     jsonObject.put("postMediaType", "Photo")
@@ -252,59 +320,7 @@ class PostGridViewListFragment : Fragment() {
 
         jsonArray.put(jsonObject)
 
-        createPostModel.apiFunction(mActivity!!, jsonArray.toString(), "getPostList")
-                .observe(viewLifecycleOwner,{ postListPojo ->
-
-                    if (postListPojo != null && postListPojo.isNotEmpty()) {
-                        isLoading = false
-                        ll_no_data_found.visibility = View.GONE
-                        nointernetMainRelativelayout.visibility = View.GONE
-                        relativeprogressBar.visibility = View.GONE
-
-                        if (pageNo > 0) {
-                            postList!!.removeAt(postList!!.size - 1)
-                            postGridViewAdapter!!.notifyItemRemoved(postList!!.size)
-                        }
-
-                        if (postListPojo[0].status.equals("true")) {
-
-                            recyclerview.visibility = View.VISIBLE
-
-                            if (pageNo == 0) {
-                                postList?.clear()
-                            }
-                            postList?.addAll(postListPojo[0].data!!)
-                            postGridViewAdapter?.notifyDataSetChanged()
-                            pageNo += 1
-
-                            if (postListPojo[0].data!!.size < 10) {
-                                isLastpage = true
-                            }
-                            if (postListPojo[0].data!!.isNullOrEmpty()) {
-                                ll_no_data_found.visibility = View.VISIBLE
-                                recyclerview.visibility = View.GONE
-                            } else {
-                                ll_no_data_found.visibility = View.GONE
-                                recyclerview.visibility = View.VISIBLE
-                            }
-
-                        } else {
-                            relativeprogressBar.visibility = View.GONE
-
-                            if (postList!!.isNullOrEmpty()) {
-                                ll_no_data_found.visibility = View.VISIBLE
-                                recyclerview.visibility = View.GONE
-
-                            } else {
-                                ll_no_data_found.visibility = View.GONE
-                                recyclerview.visibility = View.VISIBLE
-
-                            }
-                        }
-                    } else {
-                         ErrorUtil.errorView(mActivity!!,ll_grid_viewpost)
-                    }
-                })
+        createPostModel.postFunction(jsonArray.toString(), "getPostList")
 
     }
 }

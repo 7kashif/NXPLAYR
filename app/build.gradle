@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-android-extensions'
     id 'kotlin-kapt'
     id 'com.google.firebase.crashlytics'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -24,7 +25,7 @@ android {
     }
     dexOptions {
         incremental true
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "1536m" //4g
     }
 
     buildTypes {
@@ -185,7 +186,14 @@ dependencies {
     androidTestImplementation "org.mockito:mockito-core:$rootProject.mockitoVersion"
     androidTestAnnotationProcessor "com.google.dagger:dagger-compiler:$rootProject.dagger2Version"
    // implementation 'javax.annotation:javax.annotation-api:1.3.2'
+    implementation 'org.sufficientlysecure:html-textview:3.9'
+    implementation 'com.makeramen:roundedimageview:2.3.0'
+    implementation 'me.zhanghai.android.materialratingbar:library:1.4.0'
 
+    implementation 'com.amazonaws:aws-android-sdk-s3:2.44.0'
+    implementation 'com.amazonaws:aws-android-sdk-cognito:2.18.0'
+    implementation 'com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.44.0'
+    implementation 'com.github.barteksc:android-pdf-viewer:3.2.0-beta.1'
 }
 apply plugin: 'com.google.gms.google-services'
 repositories {

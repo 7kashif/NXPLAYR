@@ -13,10 +13,8 @@ import android.widget.Filterable
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.nxplayr.fsl.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.nxplayr.fsl.data.model.FriendListData
-import kotlinx.android.synthetic.main.fragment_add_website.*
+import com.nxplayr.fsl.R
 import kotlinx.android.synthetic.main.fragment_bottom_sheet.*
 import kotlinx.android.synthetic.main.list_item_layout.view.*
 
@@ -45,8 +43,6 @@ class BottomSheetListFragment : BottomSheetDialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-
         if (arguments != null) {
             list = arguments!!.get("data") as ArrayList<String>
             from = arguments!!.getString("from")!!

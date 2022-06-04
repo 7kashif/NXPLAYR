@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/tools"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -45,26 +47,26 @@
             <LinearLayout
                 android:layout_width="@dimen/_40sdp"
                 android:layout_height="@dimen/_40sdp"
-                android:orientation="horizontal"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:background="@drawable/background_stoke_circle"
+                android:orientation="horizontal">
 
-                >
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/notificationIconImageview"
-                android:layout_width="@dimen/_20sdp"
-                android:layout_height="@dimen/_20sdp"
-                android:layout_gravity="center"
-                android:src="@drawable/home_notification_selected_"
-                android:tint="@color/colorPrimary" />
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/notificationIconImageview"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:scaleType="centerCrop"
+                    fresco:riv_border_color="@color/colorPrimary"
+                    fresco:riv_border_width="1dp"
+                    fresco:riv_oval="true" />
+
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_marginStart="@dimen/_5sdp"
+                android:orientation="vertical"
                 android:padding="@dimen/_5sdp">
 
                 <TextView

@@ -49,8 +49,7 @@
         <include
             layout="@layout/common_recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="wrap_content" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -82,13 +81,13 @@
         android:id="@+id/floating_btn_scroll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/_20sdp"
         android:layout_marginBottom="@dimen/_20sdp"
         android:clickable="true"
-        android:visibility="gone"
-        android:layout_marginEnd="@dimen/_20sdp"
         android:src="@drawable/scroll_to_top"
+        android:visibility="gone"
         app:layout_anchorGravity="bottom|right">
 
     </androidx.appcompat.widget.AppCompatImageView>

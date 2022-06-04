@@ -15,6 +15,7 @@ import com.nxplayr.fsl.ui.fragments.main.view.HomeMainFragment
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.fragment_my_account.*
+import kotlinx.android.synthetic.main.fragment_setting.*
 import kotlinx.android.synthetic.main.toolbar.*
 
 
@@ -25,8 +26,10 @@ class MyAccountFragment : Fragment() {
     var sessionManager: SessionManager? = null
     var userData: SignupData? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         v = inflater.inflate(R.layout.fragment_my_account, container, false)
 
@@ -36,6 +39,24 @@ class MyAccountFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mActivity = context as AppCompatActivity
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngMyAccount.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngMyAccount
+            if (!sessionManager?.LanguageLabel?.lngFullName.isNullOrEmpty())
+                txt_edit_full_name.hint = sessionManager?.LanguageLabel?.lngFullName
+            if (!sessionManager?.LanguageLabel?.lngEmail.isNullOrEmpty())
+                txt_edit_emailId.hint = sessionManager?.LanguageLabel?.lngEmail
+            if (!sessionManager?.LanguageLabel?.lngMobileNo.isNullOrEmpty())
+                txt_edit_mobileNumber.hint = sessionManager?.LanguageLabel?.lngMobileNo
+            if (!sessionManager?.LanguageLabel?.lngLogout.isNullOrEmpty())
+                btn_logout.progressText = sessionManager?.LanguageLabel?.lngLogout
+            if (!sessionManager?.LanguageLabel?.lngDeleteAccount.isNullOrEmpty())
+                btn_deleteAccount.progressText = sessionManager?.LanguageLabel?.lngDeleteAccount
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -59,15 +80,19 @@ class MyAccountFragment : Fragment() {
 
         btn_logout.setOnClickListener {
             MyUtils.showMessageOKCancel(mActivity!!,
-                    "Are you sure want to logout?",
-                    "Logout",
-                    DialogInterface.OnClickListener { dialog, which ->
-                        dialog.dismiss()
-                        (activity as MainActivity).logOut()
-                    })
+                "Are you sure want to logout?",
+                "Logout",
+                DialogInterface.OnClickListener { dialog, which ->
+                    dialog.dismiss()
+                    (activity as MainActivity).logOut()
+                })
         }
         btn_deleteAccount.setOnClickListener {
-            (activity as MainActivity).navigateTo(DeleteAccountFragment(), DeleteAccountFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                DeleteAccountFragment(),
+                DeleteAccountFragment::class.java.name,
+                true
+            )
         }
 
     }

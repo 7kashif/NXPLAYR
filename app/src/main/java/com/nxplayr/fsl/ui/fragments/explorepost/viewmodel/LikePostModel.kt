@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.LikePostPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Response
 
 class LikePostModel:ViewModel() {
@@ -35,18 +38,20 @@ class LikePostModel:ViewModel() {
     private fun getLikePostApi(): LiveData<List<LikePostPojo>> {
 
         val data = MutableLiveData<List<LikePostPojo>>()
-        val call = RestClient.get()!!.userLikePost(json!!)
+        viewModelScope.launch(Dispatchers.IO) {
+            val call = RestClient.get()!!.userLikePost(json!!)
 
-        call.enqueue(object : RestCallback<List<LikePostPojo>>(mContext){
-            override fun Success(response: Response<List<LikePostPojo>>) {
-                data.value = response.body()
-            }
+            call.enqueue(object : RestCallback<List<LikePostPojo>>(mContext) {
+                override fun Success(response: Response<List<LikePostPojo>>) {
+                    data.value = response.body()
+                }
 
-            override fun failure() {
-                data.value = null
-            }
+                override fun failure() {
+                    data.value = null
+                }
 
-        })
+            })
+        }
 
         return data
     }

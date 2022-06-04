@@ -28,19 +28,14 @@ import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
-import com.nxplayr.fsl.*
-import com.nxplayr.fsl.ui.activity.addcountry.view.CurrentCountryActivity
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
-import com.nxplayr.fsl.data.model.ClubData
 import com.nxplayr.fsl.data.model.ClubListData
 import com.nxplayr.fsl.data.model.SignupData
-import com.nxplayr.fsl.fragment.*
+import com.nxplayr.fsl.ui.activity.addcountry.view.CurrentCountryActivity
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModelV2
 import com.nxplayr.fsl.ui.fragments.PreferreOutfittersFragment
-import com.nxplayr.fsl.ui.fragments.usersetofskills.view.SetOfSkillsFragment
-import com.nxplayr.fsl.ui.fragments.userwebsite.view.StaticWebsiteFragment
-import com.nxplayr.fsl.ui.fragments.usertrophyhonors.view.TrophyHonorsFragment
 import com.nxplayr.fsl.ui.fragments.usercontractsituation.view.ContractSitiuationFragment
 import com.nxplayr.fsl.ui.fragments.usercurrentclub.view.CurrentClubFragment
 import com.nxplayr.fsl.ui.fragments.usercurrentclub.view.PreviousFragment
@@ -51,6 +46,9 @@ import com.nxplayr.fsl.ui.fragments.userjerusynumber.view.JerusyNumberFragment
 import com.nxplayr.fsl.ui.fragments.usernationteam.view.NationalTeamFragment
 import com.nxplayr.fsl.ui.fragments.userpasspassportnationality.view.PassportNationalityFragment
 import com.nxplayr.fsl.ui.fragments.userpitchposition.view.PitchPositionFragment
+import com.nxplayr.fsl.ui.fragments.usersetofskills.view.SetOfSkillsFragment
+import com.nxplayr.fsl.ui.fragments.usertrophyhonors.view.TrophyHonorsFragment
+import com.nxplayr.fsl.ui.fragments.userwebsite.view.StaticWebsiteFragment
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.LocationProvider
 import com.nxplayr.fsl.util.MyUtils
@@ -63,12 +61,10 @@ import kotlinx.android.synthetic.main.activity_profile.ll_football_age_group
 import kotlinx.android.synthetic.main.activity_profile.ll_height_weight
 import kotlinx.android.synthetic.main.activity_profile.ll_nationality
 import kotlinx.android.synthetic.main.fragment_compact_profile.*
-import kotlinx.android.synthetic.main.list_current_club_layout.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.text.ParseException
-import java.util.*
 
 
 class CompactProfileFragment : Fragment(), View.OnClickListener {
@@ -89,7 +85,7 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
     var fromProfile = ""
     var userId = ""
     var otherUserData: SignupData? = null
-    private lateinit var loginModel: SignupModel
+    private lateinit var loginModel: SignupModelV2
     private lateinit var passportNationalityModel: UpdateResumeCallsViewModel
 
 
@@ -108,10 +104,8 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
         mActivity = context as AppCompatActivity
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         sessionManager = SessionManager(mActivity!!)
         if (sessionManager?.get_Authenticate_User() != null) {
             userData = sessionManager?.get_Authenticate_User()
@@ -122,7 +116,78 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
         }
         setupViewModel()
         setupUI()
-        setupObserver()
+//        setupObserver()
+    }
+
+//    @RequiresApi(Build.VERSION_CODES.M)
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
+//
+//        sessionManager = SessionManager(mActivity!!)
+//        if (sessionManager?.get_Authenticate_User() != null) {
+//            userData = sessionManager?.get_Authenticate_User()
+//        }
+//        if (arguments != null) {
+//            fromProfile = arguments!!.getString("fromProfile").toString()
+//            userId = arguments!!.getString("userID").toString()
+//        }
+//        setupViewModel()
+//        setupUI()
+////        setupObserver()
+//    }
+
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngBasicDetail.isNullOrEmpty())
+                tv_basic_details.text = sessionManager?.LanguageLabel?.lngBasicDetail
+            if (!sessionManager?.LanguageLabel?.lngPassportNationality.isNullOrEmpty())
+                tv_passport_nationality.text = sessionManager?.LanguageLabel?.lngPassportNationality
+            if (!sessionManager?.LanguageLabel?.lngCurrentCountry.isNullOrEmpty())
+                tv_current_country.text = sessionManager?.LanguageLabel?.lngCurrentCountry
+            if (!sessionManager?.LanguageLabel?.lngFootballAgeCategory.isNullOrEmpty())
+                tv_football_age_category.text =
+                    sessionManager?.LanguageLabel?.lngFootballAgeCategory
+            if (!sessionManager?.LanguageLabel?.lngHeight.isNullOrEmpty() &&
+                !sessionManager?.LanguageLabel?.lngCm.isNullOrEmpty() &&
+                !sessionManager?.LanguageLabel?.lngKg.isNullOrEmpty() &&
+                !sessionManager?.LanguageLabel?.lngAnd.isNullOrEmpty() &&
+                !sessionManager?.LanguageLabel?.lngWeight.isNullOrEmpty()
+            )
+                tv_height_weight.text =
+                    sessionManager?.LanguageLabel?.lngHeight + "(" + sessionManager?.LanguageLabel?.lngCm + ") " +
+                            sessionManager?.LanguageLabel?.lngAnd + " " + sessionManager?.LanguageLabel?.lngWeight + "(" + sessionManager?.LanguageLabel?.lngKg + ")"
+            if (!sessionManager?.LanguageLabel?.lngFootballLevel.isNullOrEmpty())
+                tv_football_level.text = sessionManager?.LanguageLabel?.lngFootballLevel
+            if (!sessionManager?.LanguageLabel?.lngFootballLeague.isNullOrEmpty())
+                tv_football_league.text = sessionManager?.LanguageLabel?.lngFootballLeague
+            if (!sessionManager?.LanguageLabel?.lngCurrentClub.isNullOrEmpty())
+                tv_current_club.text = sessionManager?.LanguageLabel?.lngCurrentClub
+            if (!sessionManager?.LanguageLabel?.lngcontract.isNullOrEmpty())
+                tv_contract_situation.text = sessionManager?.LanguageLabel?.lngcontract
+            if (!sessionManager?.LanguageLabel?.lngPreviousClub.isNullOrEmpty())
+                tv_prev_club.text = sessionManager?.LanguageLabel?.lngPreviousClub
+            if (!sessionManager?.LanguageLabel?.lngPitchPosition.isNullOrEmpty())
+                tv_pitch_position.text = sessionManager?.LanguageLabel?.lngPitchPosition
+            if (!sessionManager?.LanguageLabel?.lngBestFootFeet.isNullOrEmpty())
+                tv_best_foot.text = sessionManager?.LanguageLabel?.lngBestFootFeet
+            if (!sessionManager?.LanguageLabel?.lngNationalTeam.isNullOrEmpty())
+                tv_nationalTeam.text = sessionManager?.LanguageLabel?.lngNationalTeam
+            if (!sessionManager?.LanguageLabel?.lngJersey.isNullOrEmpty())
+                tv_jerseyNumber.text = sessionManager?.LanguageLabel?.lngJersey
+            if (!sessionManager?.LanguageLabel?.lngPreferredOutfitters.isNullOrEmpty())
+                tv_preferred_outfit.text = sessionManager?.LanguageLabel?.lngPreferredOutfitters
+            if (!sessionManager?.LanguageLabel?.lngCurrentSkill.isNullOrEmpty())
+                tv_set_of_skills.text = sessionManager?.LanguageLabel?.lngCurrentSkill
+            if (!sessionManager?.LanguageLabel?.lngLinkWebsite.isNullOrEmpty())
+                tv_website.text = sessionManager?.LanguageLabel?.lngLinkWebsite
+            if (!sessionManager?.LanguageLabel?.lngTrophiesNHonors.isNullOrEmpty())
+                tv_trophy_honor.text = sessionManager?.LanguageLabel?.lngTrophiesNHonors
+            if (!sessionManager?.LanguageLabel?.lngGeographical.isNullOrEmpty())
+                tv_geographical_mob.text = sessionManager?.LanguageLabel?.lngGeographical
+            if (!sessionManager?.LanguageLabel?.lngAgent.isNullOrEmpty())
+                tv_current_location.text = sessionManager?.LanguageLabel?.lngAgent
+        }
     }
 
     private fun setupObserver() {
@@ -141,26 +206,7 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
         } catch (e: ParseException) {
             e.printStackTrace()
         }
-        loginModel.userRegistration(mActivity!!, false, jsonArray.toString(), "other_userProfile")
-            .observe(
-                viewLifecycleOwner
-            ) { loginPojo ->
-
-                if (loginPojo != null) {
-
-                    if (loginPojo[0].status.equals("true", true)) {
-
-                        if (loginPojo[0].data.isNotEmpty()) {
-                            otherUserData = loginPojo[0].data[0]
-                            if (otherUserData != null) {
-                                setProfileData(otherUserData!!)
-                            }
-                        }
-                    }
-                }
-
-            }
-
+        loginModel.otherUserProfile(jsonArray.toString())
     }
 
     private fun setupUI() {
@@ -189,10 +235,30 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setupViewModel() {
-        loginModel = ViewModelProvider(this@CompactProfileFragment).get(SignupModel::class.java)
+        loginModel = ViewModelProvider(this@CompactProfileFragment).get(SignupModelV2::class.java)
         passportNationalityModel = ViewModelProvider(this@CompactProfileFragment).get(
             UpdateResumeCallsViewModel::class.java
         )
+
+        loginModel.otherUserProfile
+            .observe(
+                viewLifecycleOwner
+            ) { loginPojo ->
+
+                if (loginPojo != null) {
+
+                    if (loginPojo[0].status.equals("true", true)) {
+
+                        if (loginPojo[0].data.isNotEmpty()) {
+                            otherUserData = loginPojo[0].data[0]
+                            if (otherUserData != null) {
+                                setProfileData(otherUserData!!)
+                            }
+                        }
+                    }
+                }
+
+            }
     }
 
     fun setOnClick() {
@@ -491,7 +557,11 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
             }
             if (!userData?.location.isNullOrEmpty()) {
                 tv_currentCountry.visibility = View.VISIBLE
-                tv_currentCountry.text = userData!!.location[0].countryName
+                if (!userData!!.location[0].countryName.isNullOrEmpty()) {
+                    tv_currentCountry.text = userData!!.location[0].countryName
+                } else if (!userData!!.location[0].cityName.isNullOrEmpty()) {
+                    tv_currentCountry.text = userData!!.location[0].cityName
+                }
             }
             if (!userData!!.clubs.isNullOrEmpty()) {
                 clubId = userData!!.clubs[0].clubID
@@ -807,6 +877,19 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
 
         txt_album.setText("Add Agent")
         txt_okay.setText("Add")
+
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngAddAgent.isNullOrEmpty())
+                txt_album.text = sessionManager?.LanguageLabel?.lngAddAgent
+            if (!sessionManager?.LanguageLabel?.lngAdd.isNullOrEmpty())
+                txt_okay.text = sessionManager?.LanguageLabel?.lngAdd
+            if (!sessionManager?.LanguageLabel?.lngCancel.isNullOrEmpty())
+                txt_cancel.text = sessionManager?.LanguageLabel?.lngCancel
+            if (!sessionManager?.LanguageLabel?.lngAgentName.isNullOrEmpty())
+                edtAlbumName.hint = sessionManager?.LanguageLabel?.lngAgentName
+        }
+        edtAlbumName.requestFocus()
+
 //        if (!userData?.userAgentName.isNullOrEmpty()) {
 //            edtAlbumName.setText(userData?.userAgentName)
 //        }
@@ -825,6 +908,7 @@ class CompactProfileFragment : Fragment(), View.OnClickListener {
         }
 
         txt_cancel.setOnClickListener {
+            MyUtils.hideKeyboard1(context as AppCompatActivity)
             b!!.dismiss()
         }
 

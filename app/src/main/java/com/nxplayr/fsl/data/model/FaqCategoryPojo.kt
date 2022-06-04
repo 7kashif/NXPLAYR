@@ -16,8 +16,12 @@ data class FaqCategoryData(
         var faqcategoryID: String,
         @SerializedName("faqcategoryName")
         var faqcategoryName: String,
+        @SerializedName("faqcategoryNameFrench")
+        var faqcategoryNameFrench: String,
         @SerializedName("faqcategoryRemarks")
         var faqcategoryRemarks: String,
         @SerializedName("faqcategoryStatus")
-        var faqcategoryStatus: String
+        var faqcategoryStatus: String,
+        @SerializedName("faqcategoryImage")
+        var faqcategoryImage: String
 )

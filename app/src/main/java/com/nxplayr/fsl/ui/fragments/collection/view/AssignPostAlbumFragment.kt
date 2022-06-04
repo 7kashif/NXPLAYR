@@ -13,27 +13,26 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.R
-import com.nxplayr.fsl.ui.fragments.explorepost.adapter.OldExploreVideoAdapater
-import com.nxplayr.fsl.ui.fragments.explorepost.adapter.ExploreVideoListAdapater
 import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.ui.fragments.explorepost.viewmodel.ExploreVideoModel
 import com.nxplayr.fsl.data.model.CreatePostData
 import com.nxplayr.fsl.data.model.SignupData
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.fragments.explorepost.adapter.ExploreVideoListAdapater
+import com.nxplayr.fsl.ui.fragments.explorepost.adapter.OldExploreVideoAdapater
 import com.nxplayr.fsl.ui.fragments.explorepost.view.ExploreVideoDetailFragment
+import com.nxplayr.fsl.ui.fragments.explorepost.viewmodel.ExploreVideoModelV2
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.explore_view_all_video_activity.*
-import kotlinx.android.synthetic.main.explore_view_all_video_activity.img_Filter
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.*
 
-class AssignPostAlbumFragment : Fragment(), View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+class AssignPostAlbumFragment : Fragment(), View.OnClickListener,
+    SwipeRefreshLayout.OnRefreshListener {
 
     private var v: View? = null
     var sessionManager: SessionManager? = null
@@ -62,7 +61,11 @@ class AssignPostAlbumFragment : Fragment(), View.OnClickListener, SwipeRefreshLa
     var subAlbumId: String? = null
     var postId: String? = "0"
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         v = inflater.inflate(R.layout.explore_view_all_video_activity, container, false)
 
         return v
@@ -87,16 +90,14 @@ class AssignPostAlbumFragment : Fragment(), View.OnClickListener, SwipeRefreshLa
             postId = arguments?.getString("postId")!!
 
         }
-        img_Filter.visibility=View.GONE
+        img_Filter.visibility = View.GONE
         txt_video_type.setText(subAlbumName)
 
         txtViewAll.setOnClickListener(this)
-        img_listView.setOnClickListener(this)
-        img_expGridView.setOnClickListener(this)
+        img_list.setOnClickListener(this)
+        img_grid.setOnClickListener(this)
         btnRetry.setOnClickListener(this)
         img_Filter.setOnClickListener(this)
-        img_expGridView2.setOnClickListener(this)
-        img_listView2.setOnClickListener(this)
         swipe_refresh_layout.setOnRefreshListener(this)
         getGridAssignPostAlbum()
     }
@@ -110,9 +111,11 @@ class AssignPostAlbumFragment : Fragment(), View.OnClickListener, SwipeRefreshLa
             swipe_refresh_layout.isRefreshing = false
 
             pageNo = 0
-            getAssignPostAlbumData(userData?.userID!!, pageNo, "Album", "", "", "", "", RestClient.apiVersion, "10",
-                    "", "", "", "", subAlbumId!!, "", "",
-                    "Video", "0", albumId!!, "0", RestClient.apiType)
+            getAssignPostAlbumData(
+                userData?.userID!!, pageNo, "Album", "", "", "", "", RestClient.apiVersion, "10",
+                "", "", "", "", subAlbumId!!, "", "",
+                "Video", "0", albumId!!, "0", RestClient.apiType
+            )
         }
     }
 
@@ -122,43 +125,73 @@ class AssignPostAlbumFragment : Fragment(), View.OnClickListener, SwipeRefreshLa
 
             R.id.txtViewAll -> {
                 (activity as MainActivity).onBackPressed()
-              
+
             }
 
-            R.id.img_listView -> {
-
-                img_listView2.visibility = View.VISIBLE
-                img_expGridView2.visibility = View.VISIBLE
-                img_expGridView.visibility = View.GONE
-                img_listView.visibility = View.GONE
+            R.id.img_list -> {
 
                 if (explore_video_list.isNullOrEmpty()) {
 
                     //Api call Funcation
                     pageNo = 0
-                    getAssignPostAlbumData(userData?.userID!!, pageNo, "Album", "", "", "", "", RestClient.apiVersion, "10",
-                            "", "", "", "", subAlbumId!!, "", "",
-                            "Video", "0", albumId!!, "0", RestClient.apiType)
+                    getAssignPostAlbumData(
+                        userData?.userID!!,
+                        pageNo,
+                        "Album",
+                        "",
+                        "",
+                        "",
+                        "",
+                        RestClient.apiVersion,
+                        "10",
+                        "",
+                        "",
+                        "",
+                        "",
+                        subAlbumId!!,
+                        "",
+                        "",
+                        "Video",
+                        "0",
+                        albumId!!,
+                        "0",
+                        RestClient.apiType
+                    )
                 } else {
 
                     getListAssignPostAlbum()
                 }
             }
 
-            R.id.img_expGridView2 -> {
-
-                img_expGridView2.visibility = View.GONE
-                img_listView2.visibility = View.GONE
-                img_listView.visibility = View.VISIBLE
-                img_expGridView.visibility = View.VISIBLE
+            R.id.img_grid -> {
 
                 if (explore_video_list.isNullOrEmpty()) {
 
                     //Api call Funcation
                     pageNo = 0
-                    getAssignPostAlbumData(userData?.userID!!, pageNo, "Album", "", "", "", "", RestClient.apiVersion, "10",
-                            "", "", "", "", subAlbumId!!, "", "",
-                            "Video", "0", albumId!!, "0", RestClient.apiType)
+                    getAssignPostAlbumData(
+                        userData?.userID!!,
+                        pageNo,
+                        "Album",
+                        "",
+                        "",
+                        "",
+                        "",
+                        RestClient.apiVersion,
+                        "10",
+                        "",
+                        "",
+                        "",
+                        "",
+                        subAlbumId!!,
+                        "",
+                        "",
+                        "Video",
+                        "0",
+                        albumId!!,
+                        "0",
+                        RestClient.apiType
+                    )
                 } else {
 
                     getGridAssignPostAlbum()
@@ -170,9 +203,29 @@ class AssignPostAlbumFragment : Fragment(), View.OnClickListener, SwipeRefreshLa
 
                 //Api call Funcation
                 pageNo = 0
-                getAssignPostAlbumData(userData?.userID!!, pageNo, "Album", "", "", "", "", RestClient.apiVersion, "10",
-                        "", "", "", "", subAlbumId!!, "", "",
-                        "Video", "0", albumId!!, "0", RestClient.apiType)
+                getAssignPostAlbumData(
+                    userData?.userID!!,
+                    pageNo,
+                    "Album",
+                    "",
+                    "",
+                    "",
+                    "",
+                    RestClient.apiVersion,
+                    "10",
+                    "",
+                    "",
+                    "",
+                    "",
+                    subAlbumId!!,
+                    "",
+                    "",
+                    "Video",
+                    "0",
+                    albumId!!,
+                    "0",
+                    RestClient.apiType
+                )
             }
 
             R.id.img_Filter -> {
@@ -186,52 +239,76 @@ class AssignPostAlbumFragment : Fragment(), View.OnClickListener, SwipeRefreshLa
         rc_all_video.layoutManager = GridLayoutManager(mActivity!!, 2)
         if (explore_video_list.isNullOrEmpty() || pageNo == 0) {
 
-            oldExploreVideo_adapter = OldExploreVideoAdapater(mActivity!!, object : OldExploreVideoAdapater.OnItemClick {
-                override fun onClicklisneter(pos: Int) {
+            oldExploreVideo_adapter =
+                OldExploreVideoAdapater(mActivity!!, object : OldExploreVideoAdapater.OnItemClick {
+                    override fun onClicklisneter(pos: Int) {
 
-                    val exploreDetailFragment = ExploreVideoDetailFragment()
-                    Bundle().apply {
-                        putString("user_ID", explore_video_list!!.get(pos)?.userID)
-                        putInt("pos", pos)
-                        putString("username", explore_video_list!!.get(pos)?.userFirstName)
-                        putString("like", explore_video_list!!.get(pos)?.postLike)
-                        putString("view", explore_video_list!!.get(pos)?.postViews)
-                        putString("userProfile", explore_video_list!!.get(pos)?.userProfilePicture)
-                        putString("postID", explore_video_list!!.get(pos)?.postID)
-                        putString("postLike", explore_video_list!!.get(pos)?.youpostLiked)
-                        putString("posthashtag", explore_video_list!!.get(pos)?.posthashtag)
-                        putString("exploreVideo", explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaFile)
-                        putString("exploreThumbnail", explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaThumbnail)
-                        putString("albumID", explore_video_list!!.get(pos)?.postAlbum!![0].exalbumID)
-                        putString("subAlbumAId", explore_video_list!!.get(pos)?.postAlbum!![0].exsubalbumID)
-                        putString("collection", "Remove")
-                        putSerializable("explore_video_list",explore_video_list)
-                        putString("postType",explore_video_list?.get(pos)?.postType)
-                        exploreDetailFragment.arguments = this
+                        val exploreDetailFragment = ExploreVideoDetailFragment()
+                        Bundle().apply {
+                            putString("user_ID", explore_video_list!!.get(pos)?.userID)
+                            putInt("pos", pos)
+                            putString("username", explore_video_list!!.get(pos)?.userFirstName)
+                            putString("like", explore_video_list!!.get(pos)?.postLike)
+                            putString("view", explore_video_list!!.get(pos)?.postViews)
+                            putString(
+                                "userProfile",
+                                explore_video_list!!.get(pos)?.userProfilePicture
+                            )
+                            putString("postID", explore_video_list!!.get(pos)?.postID)
+                            putString("postLike", explore_video_list!!.get(pos)?.youpostLiked)
+                            putString("posthashtag", explore_video_list!!.get(pos)?.posthashtag)
+                            putString(
+                                "exploreVideo",
+                                explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaFile
+                            )
+                            putString(
+                                "exploreThumbnail",
+                                explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaThumbnail
+                            )
+                            putString(
+                                "albumID",
+                                explore_video_list!!.get(pos)?.postAlbum!![0].exalbumID
+                            )
+                            putString(
+                                "subAlbumAId",
+                                explore_video_list!!.get(pos)?.postAlbum!![0].exsubalbumID
+                            )
+                            putString("collection", "Remove")
+                            putSerializable("explore_video_list", explore_video_list)
+                            putString("postType", explore_video_list?.get(pos)?.postType)
+                            exploreDetailFragment.arguments = this
+                        }
+                        (activity as MainActivity).navigateTo(
+                            exploreDetailFragment,
+                            exploreDetailFragment::class.java.name,
+                            true
+                        )
                     }
-                    (activity as MainActivity).navigateTo(exploreDetailFragment,exploreDetailFragment::class.java.name,true)
-                }
 
-            }, explore_video_list!!, false)
+                }, explore_video_list!!, false)
         }
         rc_all_video.setHasFixedSize(true)
         rc_all_video.adapter = oldExploreVideo_adapter
 
         pageNo = 0
-        getAssignPostAlbumData(userData?.userID!!, pageNo, "Album", "", "", "", "", RestClient.apiVersion, "10",
-                "", "", "", "", subAlbumId!!, "", "",
-                "Video", "0", albumId!!, "0", RestClient.apiType)
+        getAssignPostAlbumData(
+            userData?.userID!!, pageNo, "Album", "", "", "", "", RestClient.apiVersion, "10",
+            "", "", "", "", subAlbumId!!, "", "",
+            "Video", "0", albumId!!, "0", RestClient.apiType
+        )
     }
 
     private fun getListAssignPostAlbum() {
 
-        linearLayoutManagerTrick = LinearLayoutManager(mActivity!!, LinearLayoutManager.VERTICAL, false)
+        linearLayoutManagerTrick =
+            LinearLayoutManager(mActivity!!, LinearLayoutManager.VERTICAL, false)
 
         rc_all_video.layoutManager = linearLayoutManagerTrick
-        exploreVideoListadapter = ExploreVideoListAdapater(mActivity!!, object : ExploreVideoListAdapater.OnItemClick {
-            override fun onClicklisneter(pos: Int) {
+        exploreVideoListadapter =
+            ExploreVideoListAdapater(mActivity!!, object : ExploreVideoListAdapater.OnItemClick {
+                override fun onClicklisneter(pos: Int) {
 
-                val exploreDetailFragment = ExploreVideoDetailFragment()
+                    val exploreDetailFragment = ExploreVideoDetailFragment()
                     Bundle().apply {
                         putString("user_ID", explore_video_list!!.get(pos)?.userID)
                         putInt("pos", pos)
@@ -244,18 +321,34 @@ class AssignPostAlbumFragment : Fragment(), View.OnClickListener, SwipeRefreshLa
                         putString("postID", explore_video_list!!.get(pos)?.postID)
                         putString("postLike", explore_video_list!!.get(pos)?.youpostLiked)
                         putString("posthashtag", explore_video_list!!.get(pos)?.posthashtag)
-                        putString("exploreVideo", explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaFile)
-                        putString("exploreThumbnail", explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaThumbnail)
-                        putString("albumID", explore_video_list!!.get(pos)?.postAlbum!![0].exalbumID)
-                        putString("subAlbumAId", explore_video_list!!.get(pos)?.postAlbum!![0].exsubalbumID)
+                        putString(
+                            "exploreVideo",
+                            explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaFile
+                        )
+                        putString(
+                            "exploreThumbnail",
+                            explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaThumbnail
+                        )
+                        putString(
+                            "albumID",
+                            explore_video_list!!.get(pos)?.postAlbum!![0].exalbumID
+                        )
+                        putString(
+                            "subAlbumAId",
+                            explore_video_list!!.get(pos)?.postAlbum!![0].exsubalbumID
+                        )
                         putString("collection", "Remove")
-                        putSerializable("explore_video_list",explore_video_list)
-                        putString("postType",explore_video_list?.get(pos)?.postType)
+                        putSerializable("explore_video_list", explore_video_list)
+                        putString("postType", explore_video_list?.get(pos)?.postType)
                         exploreDetailFragment.arguments = this
                     }
-                    (activity as MainActivity).navigateTo(exploreDetailFragment,exploreDetailFragment::class.java.name,true)
-            }
-        }, explore_video_list!!, false)
+                    (activity as MainActivity).navigateTo(
+                        exploreDetailFragment,
+                        exploreDetailFragment::class.java.name,
+                        true
+                    )
+                }
+            }, explore_video_list!!, false)
 
         rc_all_video.setHasFixedSize(true)
         rc_all_video.adapter = exploreVideoListadapter
@@ -263,11 +356,30 @@ class AssignPostAlbumFragment : Fragment(), View.OnClickListener, SwipeRefreshLa
     }
 
     //Api Calling Funcation
-    private fun getAssignPostAlbumData(userid: String, page: Int, tabname: String, sortby: String, publicationTime: String, tag: String,
-                                       gender: String, apiVersion: String, pagesize: String, footballType: String, footballLevel: String, pitchPosition: String,
-                                       footballagecatID: String, exsubalbumID: String, countryID: String, postType: String,
-                                       postMediaType: String, loginuserID: String?, exalbumID:
-                                       String, postID: String, apiType: String) {
+    private fun getAssignPostAlbumData(
+        userid: String,
+        page: Int,
+        tabname: String,
+        sortby: String,
+        publicationTime: String,
+        tag: String,
+        gender: String,
+        apiVersion: String,
+        pagesize: String,
+        footballType: String,
+        footballLevel: String,
+        pitchPosition: String,
+        footballagecatID: String,
+        exsubalbumID: String,
+        countryID: String,
+        postType: String,
+        postMediaType: String,
+        loginuserID: String?,
+        exalbumID:
+        String,
+        postID: String,
+        apiType: String
+    ) {
 
         relativeprogressBar.visibility = View.VISIBLE
         ll_no_data_found.visibility = View.GONE
@@ -320,73 +432,74 @@ class AssignPostAlbumFragment : Fragment(), View.OnClickListener, SwipeRefreshLa
         Log.d("AssignPost_List", jsonObject.toString())
         jsonArray.put(jsonObject)
         var getAssignPostAlbumModel =
-                ViewModelProviders.of(mActivity!!).get(ExploreVideoModel::class.java)
-        getAssignPostAlbumModel.getExploreVList(mActivity!!, false, jsonArray.toString())
-                .observe(mActivity!!,
-                        Observer { exploreVidelistpojo ->
+            ViewModelProviders.of(mActivity!!).get(ExploreVideoModelV2::class.java)
+        getAssignPostAlbumModel.getVideos(jsonArray.toString())
+        getAssignPostAlbumModel.exploreSuccessLiveData
+            .observe(mActivity!!,
+                Observer { exploreVidelistpojo ->
 
-                            if (exploreVidelistpojo != null && exploreVidelistpojo.isNotEmpty()) {
+                    if (exploreVidelistpojo != null && exploreVidelistpojo.isNotEmpty()) {
 
-                                isLoading = false
-                                ll_no_data_found.visibility = View.GONE
-                                nointernetMainRelativelayout.visibility = View.GONE
-                                relativeprogressBar.visibility = View.GONE
+                        isLoading = false
+                        ll_no_data_found.visibility = View.GONE
+                        nointernetMainRelativelayout.visibility = View.GONE
+                        relativeprogressBar.visibility = View.GONE
 
-                                if (pageNo > 0) {
+                        if (pageNo > 0) {
 
-                                    explore_video_list?.removeAt(explore_video_list!!.size - 1)
-                                    oldExploreVideo_adapter?.notifyItemRemoved(explore_video_list!!.size)
-                                }
+                            explore_video_list?.removeAt(explore_video_list!!.size - 1)
+                            oldExploreVideo_adapter?.notifyItemRemoved(explore_video_list!!.size)
+                        }
 
-                                if (exploreVidelistpojo[0].status.equals("true", true)) {
+                        if (exploreVidelistpojo[0].status.equals("true", true)) {
 
-                                    rc_all_video.visibility = View.VISIBLE
-                                    if (pageNo == 0) {
-                                        explore_video_list?.clear()
-                                    }
-
-                                    explore_video_list?.addAll(exploreVidelistpojo!![0]!!.data!!)
-                                    oldExploreVideo_adapter?.notifyDataSetChanged()
-                                    exploreVideoListadapter?.notifyDataSetChanged()
-                                    pageNo += 1
-                                    if (exploreVidelistpojo[0].data!!.size < 10) {
-                                        isLastpage = true
-                                    }
-                                    if (!exploreVidelistpojo[0].data!!.isNullOrEmpty()) {
-                                        if (exploreVidelistpojo[0].data!!.isNullOrEmpty()) {
-                                            ll_no_data_found.visibility = View.VISIBLE
-                                            rc_all_video.visibility = View.GONE
-                                        } else {
-                                            ll_no_data_found.visibility = View.GONE
-                                            rc_all_video.visibility = View.VISIBLE
-                                        }
-
-
-                                    } else {
-                                        ll_no_data_found.visibility = View.VISIBLE
-                                        rc_all_video.visibility = View.GONE
-                                    }
-                                } else {
-
-                                    if (explore_video_list!!.size == 0) {
-
-                                        ll_no_data_found.visibility = View.VISIBLE
-                                        rc_all_video.visibility = View.GONE
-                                    } else {
-
-                                        ll_no_data_found.visibility = View.GONE
-                                        rc_all_video.visibility = View.VISIBLE
-                                    }
-
-                                }
-
-                            } else {
-
-                                relativeprogressBar.visibility = View.GONE
-                                ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                            rc_all_video.visibility = View.VISIBLE
+                            if (pageNo == 0) {
+                                explore_video_list?.clear()
                             }
 
-                        })
+                            explore_video_list?.addAll(exploreVidelistpojo!![0]!!.data!!)
+                            oldExploreVideo_adapter?.notifyDataSetChanged()
+                            exploreVideoListadapter?.notifyDataSetChanged()
+                            pageNo += 1
+                            if (exploreVidelistpojo[0].data!!.size < 10) {
+                                isLastpage = true
+                            }
+                            if (!exploreVidelistpojo[0].data!!.isNullOrEmpty()) {
+                                if (exploreVidelistpojo[0].data!!.isNullOrEmpty()) {
+                                    ll_no_data_found.visibility = View.VISIBLE
+                                    rc_all_video.visibility = View.GONE
+                                } else {
+                                    ll_no_data_found.visibility = View.GONE
+                                    rc_all_video.visibility = View.VISIBLE
+                                }
+
+
+                            } else {
+                                ll_no_data_found.visibility = View.VISIBLE
+                                rc_all_video.visibility = View.GONE
+                            }
+                        } else {
+
+                            if (explore_video_list!!.size == 0) {
+
+                                ll_no_data_found.visibility = View.VISIBLE
+                                rc_all_video.visibility = View.GONE
+                            } else {
+
+                                ll_no_data_found.visibility = View.GONE
+                                rc_all_video.visibility = View.VISIBLE
+                            }
+
+                        }
+
+                    } else {
+
+                        relativeprogressBar.visibility = View.GONE
+                        ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                    }
+
+                })
     }
 
 }

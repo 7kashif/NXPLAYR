@@ -55,11 +55,10 @@ class FAQTopicsFragment : Fragment(),View.OnClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        sessionManager = SessionManager(requireContext())
         setupViewModel()
         setupUI()
         setupObserver()
-
-
     }
 
     private fun setupObserver() {
@@ -82,33 +81,32 @@ class FAQTopicsFragment : Fragment(),View.OnClickListener {
 
         jsonArray.put(jsonObject)
         faqCategoryModel.getFaqCategoryList(mActivity!!, false, jsonArray.toString())
-            .observe(viewLifecycleOwner,
-                { faqCategoryPojo ->
+            .observe(viewLifecycleOwner
+            ) { faqCategoryPojo ->
 
-                    relativeprogressBar.visibility = View.GONE
-                    recyclerview.visibility = View.VISIBLE
+                relativeprogressBar.visibility = View.GONE
+                recyclerview.visibility = View.VISIBLE
 
-                    if (faqCategoryPojo != null && faqCategoryPojo.isNotEmpty()) {
-                        if (faqCategoryPojo[0].status.equals("true", true)) {
-                            faqCategoryList?.clear()
-                            faqCategoryList?.addAll(faqCategoryPojo!![0]!!.data!!)
-                            faqCategoryListAdapter?.notifyDataSetChanged()
+                if (faqCategoryPojo != null && faqCategoryPojo.isNotEmpty()) {
+                    if (faqCategoryPojo[0].status.equals("true", true)) {
+                        faqCategoryList?.clear()
+                        faqCategoryList?.addAll(faqCategoryPojo[0].data)
+                        faqCategoryListAdapter?.notifyDataSetChanged()
 
-                        } else {
-
-                            if (faqCategoryList!!.size == 0) {
-                                ll_no_data_found.visibility = View.VISIBLE
-                                recyclerview.visibility = View.GONE
-
-                            } else {
-                                ll_no_data_found.visibility = View.GONE
-                                recyclerview.visibility = View.VISIBLE
-                            }
-                        }
                     } else {
-                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+
+                        if (faqCategoryList!!.size == 0) {
+                            ll_no_data_found.visibility = View.VISIBLE
+                            recyclerview.visibility = View.GONE
+                        } else {
+                            ll_no_data_found.visibility = View.GONE
+                            recyclerview.visibility = View.VISIBLE
+                        }
                     }
-                })
+                } else {
+                    ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                }
+            }
     }
 
     private fun setupUI() {
@@ -122,14 +120,11 @@ class FAQTopicsFragment : Fragment(),View.OnClickListener {
         gridLayoutManager = GridLayoutManager(mActivity, 2)
         faqCategoryListAdapter = FaqCategoryListAdapter(mActivity!!, faqCategoryList!!, object : FaqCategoryListAdapter.OnItemClick {
             override fun onClicled(position: Int, from: String) {
-
                 val bundle = Bundle()
                 bundle.putString("faqcategoryID", faqCategoryList!![position].faqcategoryID)
                 (activity as MainActivity).navigateTo(FaqFragment(), bundle, FaqFragment::class.java.name, true)
-
-
             }
-        })
+        }, sessionManager!!)
         recyclerview.layoutManager = gridLayoutManager
         recyclerview.setHasFixedSize(true)
         recyclerview.adapter = faqCategoryListAdapter

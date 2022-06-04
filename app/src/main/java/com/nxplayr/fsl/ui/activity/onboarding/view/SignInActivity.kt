@@ -1,6 +1,5 @@
 package com.nxplayr.fsl.ui.activity.onboarding.view
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -16,7 +15,6 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -31,13 +29,16 @@ import com.google.gson.Gson
 import com.google.gson.JsonParseException
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.data.model.*
+import com.nxplayr.fsl.data.model.CountryListData
+import com.nxplayr.fsl.data.model.LanguageLabelPojo
+import com.nxplayr.fsl.data.model.LanguageListData
+import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.CountryListModel
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
+import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModelV2
 import com.nxplayr.fsl.ui.fragments.dialogs.LanguageDialog
 import com.nxplayr.fsl.ui.fragments.setting.viewmodel.LanguageIntefaceListModel
-import com.nxplayr.fsl.ui.fragments.setting.viewmodel.LanguageLabelModel
+import com.nxplayr.fsl.ui.fragments.setting.viewmodel.LanguageLabelModelV2
 import com.nxplayr.fsl.util.*
 import com.nxplayr.fsl.util.interfaces.LanguageSelection
 import kotlinx.android.synthetic.main.activity_signin.*
@@ -45,7 +46,6 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class SignInActivity : AppCompatActivity(), View.OnClickListener {
@@ -61,9 +61,9 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
     var languageList: ArrayList<LanguageListData>? = ArrayList()
     private lateinit var callbackManager: CallbackManager
     private lateinit var countryListModel: CountryListModel
-    private lateinit var signup: SignupModel
+    private lateinit var signup: SignupModelV2
     private lateinit var languageModel: LanguageIntefaceListModel
-    private lateinit var languageLabelModel: LanguageLabelModel
+    private lateinit var languageLabelModel: LanguageLabelModelV2
 
     override fun onResume() {
         super.onResume()
@@ -83,11 +83,11 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun setupViewModel() {
         countryListModel = ViewModelProvider(this@SignInActivity).get(CountryListModel::class.java)
-        signup = ViewModelProvider(this@SignInActivity).get(SignupModel::class.java)
+        signup = ViewModelProvider(this@SignInActivity).get(SignupModelV2::class.java)
         languageModel =
             ViewModelProvider(this@SignInActivity).get(LanguageIntefaceListModel::class.java)
         languageLabelModel =
-            ViewModelProvider(this@SignInActivity).get(LanguageLabelModel::class.java)
+            ViewModelProvider(this@SignInActivity).get(LanguageLabelModelV2::class.java)
         languagesApi()
     }
 
@@ -400,12 +400,17 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
                 }).showLinkedin()
             }
             R.id.language -> {
-                val dialog = LanguageDialog(this@SignInActivity, languageList, object : LanguageSelection {
-                    override fun onLanguageSelect(data: LanguageListData) {
-                        updateLanguage()
-                        getLanguageLabelList(data.languageID)
-                    }
-                })
+                val dialog =
+                    LanguageDialog(this@SignInActivity, languageList, object : LanguageSelection {
+                        override fun onLanguageSelect(data: LanguageListData) {
+                            if (data.languageName.equals("Automatic", true)) {
+                                data.languageCode = Locale.getDefault().language
+                                sessionManager!!.setSelectedLanguage(data)
+                            }
+                            updateLanguage()
+                            getLanguageLabelList(data.languageID)
+                        }
+                    })
                 dialog.show()
             }
         }
@@ -544,79 +549,78 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
             } catch (e: JsonParseException) {
                 e.printStackTrace()
             }
-            signup.userRegistration(this@SignInActivity, false, jsonArray.toString(), "socialLogin")
-                .observe(this@SignInActivity,
-                    Observer<List<SignupPojo?>?> { response ->
-                        if (!response.isNullOrEmpty()) {
-                            btn_signIn.endAnimation()
-                            MyUtils.setViewAndChildrenEnabled(ll_main_login, true)
-                            MyUtils.fbID = fbID
-                            MyUtils.user_Name = userName
-                            MyUtils.user_Email = userEmail
-                            if (response[0]?.status.equals("true", true)) {
-                                try {
-                                    sessionManager?.clear_login_session()
-                                    storeSessionManager(response.get(0)?.data?.get(0))
-                                    Handler().postDelayed({
-                                        if (response[0]?.data!![0].userOVerified.equals(
-                                                "Yes",
-                                                true
-                                            )
-                                        ) {
-                                            MyUtils.startActivity(
-                                                this@SignInActivity,
-                                                MainActivity::class.java,
-                                                true
-                                            )
-                                            finishAffinity()
+            signup.socialLogin(jsonArray.toString())
+            signup.socialLogin.observe(this@SignInActivity) { response ->
+                if (!response.isNullOrEmpty()) {
+                    btn_signIn.endAnimation()
+                    MyUtils.setViewAndChildrenEnabled(ll_main_login, true)
+                    MyUtils.fbID = fbID
+                    MyUtils.user_Name = userName
+                    MyUtils.user_Email = userEmail
+                    if (response[0]?.status.equals("true", true)) {
+                        try {
+                            sessionManager?.clear_login_session()
+                            storeSessionManager(response.get(0)?.data?.get(0))
+                            Handler().postDelayed({
+                                if (response[0]?.data!![0].userOVerified.equals(
+                                        "Yes",
+                                        true
+                                    )
+                                ) {
+                                    MyUtils.startActivity(
+                                        this@SignInActivity,
+                                        MainActivity::class.java,
+                                        true
+                                    )
+                                    finishAffinity()
 
-                                        } else {
-                                            var i = Intent(
-                                                this@SignInActivity,
-                                                OtpVerificationActivity::class.java
-                                            )
-                                            i.putExtra("from", "LoginByOtpVerification")
-                                            startActivity(i)
-                                            overridePendingTransition(
-                                                R.anim.slide_in_right,
-                                                R.anim.slide_out_left
-                                            )
-                                        }
-                                    }, 1000)
-
-
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
+                                } else {
+                                    var i = Intent(
+                                        this@SignInActivity,
+                                        OtpVerificationActivity::class.java
+                                    )
+                                    i.putExtra("from", "LoginByOtpVerification")
+                                    startActivity(i)
+                                    overridePendingTransition(
+                                        R.anim.slide_in_right,
+                                        R.anim.slide_out_left
+                                    )
                                 }
+                            }, 1000)
 
-                            } else {
-                                //No data and no internet
-                                MyUtils.showSnackbar(
-                                    this@SignInActivity, response.get(0)?.message!!,
-                                    ll_main_login
-                                )
-                            }
-                        } else {
-                            btn_signIn.endAnimation()
-                            MyUtils.setViewAndChildrenEnabled(
-                                ll_main_login,
-                                true
-                            )                                            //No internet and somting went rong
-                            if (MyUtils.isInternetAvailable(this@SignInActivity)) {
-                                MyUtils.showSnackbar(
-                                    this@SignInActivity,
-                                    resources.getString(R.string.error_crash_error_message),
-                                    ll_main_login
-                                )
-                            } else {
-                                MyUtils.showSnackbar(
-                                    this@SignInActivity,
-                                    resources.getString(R.string.error_common_network),
-                                    ll_main_login
-                                )
-                            }
+
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
-                    })
+
+                    } else {
+                        //No data and no internet
+                        MyUtils.showSnackbar(
+                            this@SignInActivity, response.get(0)?.message!!,
+                            ll_main_login
+                        )
+                    }
+                } else {
+                    btn_signIn.endAnimation()
+                    MyUtils.setViewAndChildrenEnabled(
+                        ll_main_login,
+                        true
+                    )                                            //No internet and somting went rong
+                    if (MyUtils.isInternetAvailable(this@SignInActivity)) {
+                        MyUtils.showSnackbar(
+                            this@SignInActivity,
+                            resources.getString(R.string.error_crash_error_message),
+                            ll_main_login
+                        )
+                    } else {
+                        MyUtils.showSnackbar(
+                            this@SignInActivity,
+                            resources.getString(R.string.error_common_network),
+                            ll_main_login
+                        )
+                    }
+                }
+            }
 
 
         })
@@ -651,8 +655,10 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
             }
             var jsonArray = JSONArray()
             jsonArray.put(jsonObject)
-            signup.userRegistration(this, false, jsonArray.toString(), "login")
-                .observe(this@SignInActivity
+            signup.userLoginWithEmail(jsonArray.toString())
+            signup.userLoginwithEmail
+                .observe(
+                    this@SignInActivity
                 ) { loginPojo ->
                     if (loginPojo != null) {
                         btn_signIn.endAnimation()
@@ -777,23 +783,23 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        languageLabelModel.getLanguageList(this@SignInActivity, false, jsonArray.toString())
-            .observe(
-                this@SignInActivity
-            ) { languageLabelPojo: List<LanguageLabelPojo>? ->
-                if (!languageLabelPojo.isNullOrEmpty()) {
-                    if (languageLabelPojo[0].status == true && !languageLabelPojo[0].data.isNullOrEmpty()) {
-                        MyUtils.dismissProgressDialog()
-                        sessionManager?.LanguageLabel = languageLabelPojo[0].data?.get(0)!!
-                        updateContent()
-                    } else {
-                        MyUtils.dismissProgressDialog()
-                    }
-
+        languageLabelModel.getLabels(jsonArray.toString())
+        languageLabelModel.usersSuccessLiveData.observe(
+            this@SignInActivity
+        ) { languageLabelPojo: List<LanguageLabelPojo>? ->
+            if (!languageLabelPojo.isNullOrEmpty()) {
+                if (languageLabelPojo[0].status == true && !languageLabelPojo[0].data.isNullOrEmpty()) {
+                    MyUtils.dismissProgressDialog()
+                    sessionManager?.LanguageLabel = languageLabelPojo[0].data?.get(0)!!
+                    updateContent()
                 } else {
                     MyUtils.dismissProgressDialog()
                 }
+
+            } else {
+                MyUtils.dismissProgressDialog()
             }
+        }
     }
 
     private fun languagesApi() {

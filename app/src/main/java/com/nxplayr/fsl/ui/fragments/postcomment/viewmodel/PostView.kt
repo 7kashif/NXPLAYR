@@ -5,9 +5,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.PostViewPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
 
@@ -31,6 +34,7 @@ class PostView : ViewModel() {
 
     fun postviewApi(): LiveData<List<PostViewPojo>> {
         val data = MutableLiveData<List<PostViewPojo>>()
+        viewModelScope.launch(Dispatchers.IO) {
         val call: Call<List<PostViewPojo>> = RestClient.get()?.postview(parameter)!!
         call.enqueue(object : RestCallback<List<PostViewPojo>?>(mcontext) {
             override fun failure() {
@@ -41,7 +45,7 @@ class PostView : ViewModel() {
                 data.value = response.body()
             }
 
-        })
+        })}
         return data
     }
 }

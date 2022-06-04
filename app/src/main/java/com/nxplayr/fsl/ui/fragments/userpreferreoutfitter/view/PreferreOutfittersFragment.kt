@@ -25,6 +25,7 @@ import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.ui.fragments.usergeographical.viewmodel.UpdateResumeCallsViewModel
 import com.nxplayr.fsl.ui.fragments.userpreferreoutfitter.adapter.PreferreOutfittersAdapter
 import kotlinx.android.synthetic.main.common_recyclerview.*
+import kotlinx.android.synthetic.main.fragment_jerusy_number.*
 import kotlinx.android.synthetic.main.fragment_preferre_outfitters.*
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
@@ -63,6 +64,16 @@ class PreferreOutfittersFragment : Fragment(),View.OnClickListener {
 
         }
         return v
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngPreferredOutfitters.isNullOrEmpty())
+                tvToolbarTitle1.text = sessionManager?.LanguageLabel?.lngPreferredOutfitters
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_addNationality.progressText = sessionManager?.LanguageLabel?.lngSave
+        }
     }
 
     override fun onAttach(context: Context) {

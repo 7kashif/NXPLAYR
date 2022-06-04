@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.FootballLevelPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Response
 
 class FootballLevelListModel : ViewModel() {
@@ -32,17 +35,19 @@ class FootballLevelListModel : ViewModel() {
     private fun getFootballLevelListApi(): LiveData<List<FootballLevelPojo>> {
         val data = MutableLiveData<List<FootballLevelPojo>>()
 
-        var call = RestClient.get()!!.getFootballLevelList(json!!)
-        call!!.enqueue(object : RestCallback<List<FootballLevelPojo>>(mContext) {
-            override fun Success(response: Response<List<FootballLevelPojo>>) {
-                data.value = response.body()
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            var call = RestClient.get()!!.getFootballLevelList(json!!)
+            call!!.enqueue(object : RestCallback<List<FootballLevelPojo>>(mContext) {
+                override fun Success(response: Response<List<FootballLevelPojo>>) {
+                    data.value = response.body()
+                }
 
-            override fun failure() {
-                data.value = null
-            }
+                override fun failure() {
+                    data.value = null
+                }
 
-        })
+            })
+        }
 
         return data
     }

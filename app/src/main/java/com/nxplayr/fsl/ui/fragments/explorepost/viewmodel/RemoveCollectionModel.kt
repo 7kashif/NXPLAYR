@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.RemoveCollectionPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Response
 
 class RemoveCollectionModel: ViewModel() {
@@ -35,18 +38,20 @@ class RemoveCollectionModel: ViewModel() {
     private fun getRemoveCollectionApi(): LiveData<List<RemoveCollectionPojo>> {
 
         val data = MutableLiveData<List<RemoveCollectionPojo>>()
-        val call = RestClient.get()!!.removeCollection(json!!)
+        viewModelScope.launch(Dispatchers.IO) {
+            val call = RestClient.get()!!.removeCollection(json!!)
 
-        call.enqueue(object : RestCallback<List<RemoveCollectionPojo>>(mContext){
-            override fun Success(response: Response<List<RemoveCollectionPojo>>) {
-                data.value = response.body()
-            }
+            call.enqueue(object : RestCallback<List<RemoveCollectionPojo>>(mContext) {
+                override fun Success(response: Response<List<RemoveCollectionPojo>>) {
+                    data.value = response.body()
+                }
 
-            override fun failure() {
-                data.value = null
-            }
+                override fun failure() {
+                    data.value = null
+                }
 
-        })
+            })
+        }
 
         return data
     }

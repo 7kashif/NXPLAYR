@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.FaqCategoryPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Response
 
 class FaqCategoryListModel : ViewModel() {
@@ -32,6 +35,7 @@ class FaqCategoryListModel : ViewModel() {
     private fun getFaqCategoryListApi(): LiveData<List<FaqCategoryPojo>> {
         val data = MutableLiveData<List<FaqCategoryPojo>>()
 
+        viewModelScope.launch(Dispatchers.IO) {
         var call = RestClient.get()!!.faqCategoryList(json!!)
         call!!.enqueue(object : RestCallback<List<FaqCategoryPojo>>(mContext) {
             override fun Success(response: Response<List<FaqCategoryPojo>>) {
@@ -42,7 +46,7 @@ class FaqCategoryListModel : ViewModel() {
                 data.value = null
             }
 
-        })
+        })}
 
         return data
     }

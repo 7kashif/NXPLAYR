@@ -10,7 +10,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnScrollChangedListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -28,10 +27,11 @@ import com.nxplayr.fsl.ui.fragments.usercurrentclub.viewmodel.ClubListModel
 import com.nxplayr.fsl.ui.fragments.usergeographical.viewmodel.UpdateResumeCallsViewModel
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
-import com.nxplayr.fsl.util.PaginationScrollListener
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.common_recyclerview.*
+import kotlinx.android.synthetic.main.fragment_current_club.*
 import kotlinx.android.synthetic.main.fragment_previous.*
+import kotlinx.android.synthetic.main.fragment_previous.edit_searchClub
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
@@ -50,15 +50,6 @@ class PreviousFragment : Fragment() {
     var deleteClub_list: ArrayList<ClubListData>? = ArrayList()
     var clubAdapter: SuggestedClubAdapter? = null
     var myclubAdapter: CurrentClubAdapter? = null
-
-//    var addClubList: ArrayList<ClubListData>? = ArrayList()
-//    var addClubListAdapter: AddClubListAdapter? = null
-//    var addClubListData: ArrayList<ClubData>? = ArrayList()
-//    var club: ClubListData? = null
-//    var clubListAdapter: ClubListAdapter? = null
-//    var deleteList: ArrayList<ClubData>? = ArrayList()
-//    var infaltorScheduleMode: LayoutInflater? = null
-
     var linearLayout: LinearLayoutManager? = null
     var sessionManager: SessionManager? = null
     var userData: SignupData? = null
@@ -70,9 +61,31 @@ class PreviousFragment : Fragment() {
     private var mIsLastPage = false
     private var mIsLoading = false
     private var mPage: Int = 1
+    private var searchWord: String = ""
     private lateinit var clubListModel: ClubListModel
     private lateinit var addClubModel: AddClubModel
     private lateinit var updateResumeCallsViewModel: UpdateResumeCallsViewModel
+    private val handler = Handler()
+    private val input_finish_checker = Runnable {
+        mPage = 1
+        suggestedClubList(searchWord)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngPreviousClub.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngPreviousClub
+            if (!sessionManager?.LanguageLabel?.lngSelectedClub.isNullOrEmpty())
+                tv_selected_club_prev.text = sessionManager?.LanguageLabel?.lngSelectedClub
+            if (!sessionManager?.LanguageLabel?.lngClubsSuggestions.isNullOrEmpty())
+                tv_suggestions_prev.text = sessionManager?.LanguageLabel?.lngClubsSuggestions
+            if (!sessionManager?.LanguageLabel?.lngSearch.isNullOrEmpty())
+                edit_searchClub.hint = sessionManager?.LanguageLabel?.lngSearch
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_previous_club.progressText = sessionManager?.LanguageLabel?.lngSave
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -155,14 +168,21 @@ class PreviousFragment : Fragment() {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                clubAdapter!!.filter?.filter(p0.toString())
-                clubAdapter?.notifyDataSetChanged()
+//                clubAdapter!!.filter?.filter(p0.toString())
+//                clubAdapter?.notifyDataSetChanged()
+                handler.removeCallbacks(input_finish_checker)
+                searchWord = p0.toString()
+                handler.postDelayed(
+                    input_finish_checker,
+                    500
+                )
             }
 
         })
 
         btnRetry.setOnClickListener {
-            suggestedClubList()
+            mPage = 1
+            suggestedClubList(searchWord)
             clubListApi()
         }
     }
@@ -186,6 +206,8 @@ class PreviousFragment : Fragment() {
                     if (!myclub_list!!.contains(clubData!!)) {
                         myclub_list!!.add(clubData)
                         myclubAdapter!!.notifyDataSetChanged()
+                        club_list!!.removeAt(position)
+                        clubAdapter!!.notifyDataSetChanged()
                     }
 
                     if ((myclub_list!!.size > 0)) {
@@ -209,11 +231,13 @@ class PreviousFragment : Fragment() {
         recyclerview.layoutManager = linearLayout
         recyclerview.setHasFixedSize(true)
         recyclerview.adapter = clubAdapter
-        suggestedClubList()
+        searchWord = ""
+        mPage = 1
+        suggestedClubList(searchWord)
         clubAdapter?.notifyDataSetChanged()
 
         scrollView.viewTreeObserver
-            .addOnScrollChangedListener(OnScrollChangedListener {
+            .addOnScrollChangedListener {
                 if (scrollView != null) {
                     if (scrollView.getChildAt(0).bottom
                         <= scrollView.height + scrollView.scrollY
@@ -222,15 +246,16 @@ class PreviousFragment : Fragment() {
                         if (!mIsLoading && !mIsLastPage) {
                             this@PreviousFragment.mIsLoading = true
                             Log.e("TAG", "PAGE : $mPage")
-                            suggestedClubList()
+                            suggestedClubList(searchWord)
                         }
                     }
                 }
-            })
+            }
 
     }
 
-    private fun suggestedClubList() {
+    private fun suggestedClubList(searchWord: String) {
+        RestClient.cancelAll()
         if (mPage == 1) {
             relativeprogressBar.visibility = View.VISIBLE
         } else {
@@ -245,7 +270,7 @@ class PreviousFragment : Fragment() {
             jsonObject.put("loginuserID", userData?.userID)
             jsonObject.put("apiType", RestClient.apiType)
             jsonObject.put("apiVersion", RestClient.apiVersion)
-            jsonObject.put("searchWord", "")
+            jsonObject.put("searchWord", searchWord)
             jsonObject.put("page", mPage)
             jsonObject.put("pageSize", 15)
 
@@ -292,9 +317,15 @@ class PreviousFragment : Fragment() {
                         if (mPage == 1) {
                             clubListApi()
                         }
-                        mPage++
+                        Log.e("mIsLastPage", "page = $mPage")
+                        Log.e("mIsLastPage", "total page = ${clubListpojo.totalPages}")
                         mIsLastPage = mPage == clubListpojo.totalPages
+                        Log.e("mIsLastPage", "mIsLastPage = $mIsLastPage")
+                        Log.d("mIsLastPage", "===========================================")
                         clubAdapter?.notifyDataSetChanged()
+                        if (!mIsLastPage) {
+                            mPage++
+                        }
                     } else {
 
                         if (club_list!!.size == 0) {
@@ -353,18 +384,13 @@ class PreviousFragment : Fragment() {
 
         var userPreiviosClub = userData?.previousclubName?.split(",")
         myclub_list!!.clear()
-        if (!userPreiviosClub.isNullOrEmpty()) {
-            for (j in 0 until userPreiviosClub.size) {
-                club_list!![j].selected = true
-                myclub_list?.add(club_list!![j])
-//                for (i in 0 until club_list?.size!!) {
-//                    if (club_list!![i].clubName == userPreiviosClub[j].trim()) {
-//                        club_list!![i].selected = true
-//                        myclub_list?.add(club_list!![i])
-//                    }
-//                }
+        if (club_list?.size!! > 0) {
+            if (!userPreiviosClub.isNullOrEmpty()) {
+                for (j in userPreiviosClub.indices) {
+                    club_list!![j].selected = true
+                    myclub_list?.add(club_list!![j])
+                }
             }
-
         }
         myclubAdapter?.notifyDataSetChanged()
 

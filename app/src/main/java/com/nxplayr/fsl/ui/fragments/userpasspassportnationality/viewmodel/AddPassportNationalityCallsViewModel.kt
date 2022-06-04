@@ -42,7 +42,7 @@ class AddPassportNationalityCallsViewModel: ViewModel() {
         var list:ArrayList<PassportNationalityPojo>?=ArrayList()
         var call: List<PassportNationalityPojo>? = null
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
            // data.postValue(null)
             try {
                 // coroutineScope is needed, else in case of any network error, it will crash

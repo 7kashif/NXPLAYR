@@ -4,10 +4,13 @@ import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.ReasonList
 import com.nxplayr.fsl.util.MyUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 import retrofit2.Response
 
@@ -36,25 +39,28 @@ class ReasonModel : ViewModel() {
         }
 
         val data = MutableLiveData<List<ReasonList>>()
-        var call = RestClient.get()!!.reasonList(jsonArray)
+        viewModelScope.launch(Dispatchers.IO) {
+            var call = RestClient.get()!!.reasonList(jsonArray)
 
-        if (call != null) {
-            call.enqueue(object : RestCallback<List<ReasonList>?>(mContext) {
+            if (call != null) {
+                call.enqueue(object : RestCallback<List<ReasonList>?>(mContext) {
 
 
-                override fun Success(response: Response<List<ReasonList>?>) {
-                    if (progress){
-                        MyUtils.dismissProgressDialog()
+                    override fun Success(response: Response<List<ReasonList>?>) {
+                        if (progress) {
+                            MyUtils.dismissProgressDialog()
+                        }
+                        data.value = response.body()
                     }
-                    data.value = response.body()
-                }
-                override fun failure() {
-                    if (progress){
-                        MyUtils.dismissProgressDialog()
+
+                    override fun failure() {
+                        if (progress) {
+                            MyUtils.dismissProgressDialog()
+                        }
+                        data.value = null
                     }
-                    data.value = null
-                }
-            })
+                })
+            }
         }
         return data
     }

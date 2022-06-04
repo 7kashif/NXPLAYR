@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.ui.fragments.userconnection.adapter.FriendListAdapter
@@ -31,34 +32,37 @@ class PostDesMultiAutoCompleteTexView : AppCompatMultiAutoCompleteTextView, Text
     var contentFriendsTagList: ArrayList<FriendListData?>? = null
     var userId: String? = null
     var languageId: String? = null
+    var getFollowModel = FriendListModel()
 
     constructor(context: Context?) : super(context!!) {
         init(context)
     }
 
     constructor(context: Context?, attrs: AttributeSet?) : super(
-            context!!,
-            attrs
+        context!!,
+        attrs
     ) {
         init(context)
     }
 
     constructor(
-            context: Context?,
-            attrs: AttributeSet?,
-            defStyleAttr: Int
+        context: Context?,
+        attrs: AttributeSet?,
+        defStyleAttr: Int
     ) : super(context!!, attrs, defStyleAttr) {
         init(context)
     }
 
     fun init(c: Context?) {
         mContext = c
+        getFollowModel =
+            ViewModelProvider(mContext!! as FragmentActivity).get(FriendListModel::class.java)
         friendList = ArrayList()
         contentFriendsTagList = ArrayList()
         val sessionManager =
-                SessionManager(mContext!!)
+            SessionManager(mContext!!)
         userId = sessionManager.get_Authenticate_User().userID
-        languageId= sessionManager.get_Authenticate_User().languageID
+        languageId = sessionManager.get_Authenticate_User().languageID
         var inputType = inputType
         setRawInputType(EditorInfo.TYPE_TEXT_FLAG_AUTO_COMPLETE.inv().let {
             inputType = inputType and it; inputType
@@ -68,26 +72,26 @@ class PostDesMultiAutoCompleteTexView : AppCompatMultiAutoCompleteTextView, Text
     }
 
     override fun beforeTextChanged(
-            s: CharSequence,
-            start: Int,
-            count: Int,
-            after: Int
+        s: CharSequence,
+        start: Int,
+        count: Int,
+        after: Int
     ) {
     }
 
     override fun onTextChanged(
-            s: CharSequence,
-            start: Int,
-            before: Int,
-            count: Int
+        s: CharSequence,
+        start: Int,
+        before: Int,
+        count: Int
     ) {
         val string = s.toString()
         if (string.contains("@")) {
             val pos = start
             if (string.length > 1) {
                 val search =
-                        text.toString().substring(text.toString().lastIndexOf("@"))
-                getAllFriendlist(search,userId,languageId)
+                    text.toString().substring(text.toString().lastIndexOf("@"))
+                getAllFriendlist(search, userId, languageId)
             }
         }
     }
@@ -102,14 +106,14 @@ class PostDesMultiAutoCompleteTexView : AppCompatMultiAutoCompleteTextView, Text
             try {
                 val builder = SpannableStringBuilder(text)
                 val start = text.toString()
-                        .lastIndexOf((friendList!![position]!!.userFirstName!!+friendList!![position]!!.userLastName).trim { it <= ' ' })
+                    .lastIndexOf((friendList!![position]!!.userFirstName!! + friendList!![position]!!.userLastName).trim { it <= ' ' })
                 val end =
-                        start + (friendList!![position]!!.userFirstName!!+friendList!![position]!!.userLastName).trim { it <= ' ' }.length
+                    start + (friendList!![position]!!.userFirstName!! + friendList!![position]!!.userLastName).trim { it <= ' ' }.length
                 builder.setSpan(
-                        BackgroundColorSpan(mContext!!.resources.getColor(R.color.grey)),
-                        start,
-                        end,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    BackgroundColorSpan(mContext!!.resources.getColor(R.color.grey)),
+                    start,
+                    end,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
                 text = builder
                 setSelection(text.length)
@@ -122,9 +126,9 @@ class PostDesMultiAutoCompleteTexView : AppCompatMultiAutoCompleteTextView, Text
     }
 
     private fun getAllFriendlist(
-            searchKeyword: String,
-            userId: String?,
-            languageId: String?
+        searchKeyword: String,
+        userId: String?,
+        languageId: String?
     ) {
         var searchKeyword = searchKeyword
         searchKeyword = searchKeyword.replace("\n", "")
@@ -134,9 +138,9 @@ class PostDesMultiAutoCompleteTexView : AppCompatMultiAutoCompleteTextView, Text
             val jsonObject = JSONObject()
             try {
 
-                jsonObject.put("loginuserID",userId)
-                jsonObject.put("languageID",languageId)
-                jsonObject.put("searchWord",searchKeyword)
+                jsonObject.put("loginuserID", userId)
+                jsonObject.put("languageID", languageId)
+                jsonObject.put("searchWord", searchKeyword)
                 jsonObject.put("userID", userId)
                 jsonObject.put("friendtype", "taglist")
                 jsonObject.put("action", "friendlist")
@@ -150,25 +154,23 @@ class PostDesMultiAutoCompleteTexView : AppCompatMultiAutoCompleteTextView, Text
             }
             jsonArray.put(jsonObject)
             Log.e("System out", jsonArray.toString())
-            var getFollowModel=
-                    ViewModelProviders.of(mContext!! as FragmentActivity).get(FriendListModel::class.java)
-            getFollowModel?.getFriendList(mContext!!as FragmentActivity,  jsonArray.toString(),"friend_list")?.observe(mContext!! as FragmentActivity,
-                    androidx.lifecycle.Observer {
-                        if (it != null && it.isNotEmpty()) {
-                            if (it[0].status?.equals("true")!!) {
 
-                                friendList!!.clear()
-                                friendList?.addAll(it.get(0).data!!)
-                                if (text.toString().contains("@")) {
-                                    setAdapter(friendListAdapter)
-                                    friendListAdapter!!.notifyDataSetChanged()
-                                }
-
-                            }
-
+            getFollowModel.friendApi(jsonArray.toString(), "friend_list")
+            getFollowModel.successFriend.observe(mContext!! as FragmentActivity) {
+                if (it != null && it.isNotEmpty()) {
+                    if (it[0].status == "true") {
+                        friendList!!.clear()
+                        friendList?.addAll(it.get(0).data!!)
+                        if (text.toString().contains("@")) {
+                            setAdapter(friendListAdapter)
+                            friendListAdapter!!.notifyDataSetChanged()
                         }
 
-                    })
+                    }
+
+                }
+
+            }
 
         }
     }
@@ -177,7 +179,7 @@ class PostDesMultiAutoCompleteTexView : AppCompatMultiAutoCompleteTextView, Text
         var text = text
         contentFriendsTagList!!.clear()
         val mat =
-                Pattern.compile("<Shase>(.+?)<Chase>").matcher(text)
+            Pattern.compile("<Shase>(.+?)<Chase>").matcher(text)
         while (mat.find()) {
             Log.d("match", mat.group())
             if (mat.group(1) != null && mat.group(1).length >= 1) {
@@ -186,22 +188,27 @@ class PostDesMultiAutoCompleteTexView : AppCompatMultiAutoCompleteTextView, Text
         }
         // create the pattern matcher
         val m =
-                Pattern.compile("<SatRate>(.+?)<CatRate>").matcher(text)
+            Pattern.compile("<SatRate>(.+?)<CatRate>").matcher(text)
         val matchesSoFar = 0
         // iterate through all matches
         while (m.find()) { // get the match
             if (m.group(1) != null && m.group(1).isNotEmpty() && m.group(1).contains(",")) {
                 text = text.replace(
-                        "<SatRate>" + m.group(1) + "<CatRate>",
-                        m.group(1).toString().trim { it <= ' ' }.substring(
-                                0,
-                                m.group(1).indexOf(",")
-                        ).trim { it <= ' ' }
+                    "<SatRate>" + m.group(1) + "<CatRate>",
+                    m.group(1).toString().trim { it <= ' ' }.substring(
+                        0,
+                        m.group(1).indexOf(",")
+                    ).trim { it <= ' ' }
                 )
 
-                val datum: FriendListData?=null
-                datum?.userFirstName=(m.group(1).trim { it <= ' ' }.substring(0, m.group(1).indexOf(",")))
-                datum?.userID=(m.group(1).trim { it <= ' ' }.substring(m.group(1).trim { it <= ' ' }.indexOf(",") + 2, m.group(1).trim { it <= ' ' }.length))
+                val datum: FriendListData? = null
+                datum?.userFirstName =
+                    (m.group(1).trim { it <= ' ' }.substring(0, m.group(1).indexOf(",")))
+                datum?.userID = (m.group(1).trim { it <= ' ' }
+                    .substring(
+                        m.group(1).trim { it <= ' ' }.indexOf(",") + 2,
+                        m.group(1).trim { it <= ' ' }.length
+                    ))
                 var isadded = false
                 for (i in contentFriendsTagList!!.indices) {
                     if (contentFriendsTagList!![i]!!.userID == datum?.userID) {
@@ -215,22 +222,20 @@ class PostDesMultiAutoCompleteTexView : AppCompatMultiAutoCompleteTextView, Text
         val builder = SpannableStringBuilder(text)
         for (i in contentFriendsTagList!!.indices) {
             val start = text
-                    .lastIndexOf((contentFriendsTagList!![i]!!.userFirstName!!+contentFriendsTagList!![i]!!.userLastName).trim { it <= ' ' })
+                .lastIndexOf((contentFriendsTagList!![i]!!.userFirstName!! + contentFriendsTagList!![i]!!.userLastName).trim { it <= ' ' })
             val end =
-                    start +(contentFriendsTagList!![i]!!.userFirstName!!+contentFriendsTagList!![i]!!.userLastName).trim { it <= ' ' }.length
+                start + (contentFriendsTagList!![i]!!.userFirstName!! + contentFriendsTagList!![i]!!.userLastName).trim { it <= ' ' }.length
             builder.setSpan(
-                    BackgroundColorSpan(mContext!!.resources.getColor(R.color.grey)),
-                    start,
-                    end,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                BackgroundColorSpan(mContext!!.resources.getColor(R.color.grey)),
+                start,
+                end,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         }
         removeTextChangedListener(this)
         setText(builder, BufferType.SPANNABLE)
         addTextChangedListener(this)
     }
-
-
 
 
     val tagText: String
@@ -249,8 +254,10 @@ class PostDesMultiAutoCompleteTexView : AppCompatMultiAutoCompleteTextView, Text
             }
             for (i in contentFriendsTagList!!.indices) {
                 jo = jo.replace(
-                        (contentFriendsTagList!![i]!!.userFirstName!!+contentFriendsTagList!![i]!!.userLastName).trim().toRegex(),
-                        "<SatRate>" +  (contentFriendsTagList!![i]!!.userFirstName!!+contentFriendsTagList!![i]!!.userLastName).trim().toString() + ",," + contentFriendsTagList!![i]!!.userID.toString() + "<CatRate>"
+                    (contentFriendsTagList!![i]!!.userFirstName!! + contentFriendsTagList!![i]!!.userLastName).trim()
+                        .toRegex(),
+                    "<SatRate>" + (contentFriendsTagList!![i]!!.userFirstName!! + contentFriendsTagList!![i]!!.userLastName).trim()
+                        .toString() + ",," + contentFriendsTagList!![i]!!.userID.toString() + "<CatRate>"
                 )
 
 
@@ -294,8 +301,8 @@ class PostDesMultiAutoCompleteTexView : AppCompatMultiAutoCompleteTextView, Text
                 if (text is Spanned) {
                     val sp = SpannableString("$text ")
                     TextUtils.copySpansFrom(
-                            text, 0, text.length,
-                            Any::class.java, sp, 0
+                        text, 0, text.length,
+                        Any::class.java, sp, 0
                     )
                     sp
                 } else {

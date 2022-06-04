@@ -6,6 +6,7 @@ import com.nxplayr.fsl.data.model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 
@@ -39,21 +40,6 @@ interface RestApi {
     @POST("appusertype/get-appusertype-list")
     fun userRoleList(@Field("json") json: String): Call<List<UserRoleListPojo>>
 
-    @FormUrlEncoded
-    @POST("users/user-registration")
-    fun userRegistration(@Field("json") json: String): Call<List<SignupPojo>>
-
-    @FormUrlEncoded
-    @POST("users/user-forgot-password")
-    fun userForagatePass(@Field("json") json: String): Call<List<SignupPojo>>
-
-    @FormUrlEncoded
-    @POST("users/user-update-profile-picture")
-    fun userUploadProfilePicture(@Field("json") json: String): Call<List<SignupPojo>>
-
-    @FormUrlEncoded
-    @POST("users/user-update-cover-photo")
-    fun userupdateCoverPhoto(@Field("json") json: String): Call<List<SignupPojo>>
 
     //@Multipart
 //    @POST("upload")
@@ -61,41 +47,29 @@ interface RestApi {
 
     @Multipart
     @POST("users/file-upload")
-    fun uploadAttachment(@Part filePart: MultipartBody.Part, @Part("FilePath") filePath: RequestBody, @Part("json") json: RequestBody): Call<List<UploadImagePojo>>
+    fun uploadAttachment(
+        @Part filePart: MultipartBody.Part,
+        @Part("FilePath") filePath: RequestBody,
+        @Part("json") json: RequestBody
+    ): Call<List<UploadImagePojo>>
 
     @Multipart
     @POST("users/file-upload")
-    suspend fun uploadAttachment1(@Part filePart: MultipartBody.Part, @Part("FilePath") filePath: RequestBody, @Part("json") json: RequestBody): List<UploadImagePojo>
+    suspend fun uploadAttachment1(
+        @Part filePart: MultipartBody.Part,
+        @Part("FilePath") filePath: RequestBody,
+        @Part("json") json: RequestBody
+    ): List<UploadImagePojo>
 
-    @FormUrlEncoded
-    @POST("users/user-login-password")
-    fun userLoginwithEmail(@Field("json") json: String): Call<List<SignupPojo>>
 
     //    @POST("users/user-login-mobile")
 //    fun userLoginwithMobile(@Body json: JsonObject): Call<SignupPojo>
-    @FormUrlEncoded
-    @POST("users/otp-resend")
-    fun resendOTP(@Field("json") json: String): Call<List<CommonPojo>>
 
-    @FormUrlEncoded
-    @POST("users/otp-verification")
-    fun userVerifyOtp(@Field("json") json: String): Call<List<SignupPojo>>
-
-    @FormUrlEncoded
-    @POST("users/reset-password")
-    fun userResetPass(@Field("json") json: String): Call<List<SignupPojo>>
-
-    @FormUrlEncoded
-    @POST("users/change-password")
-    fun userChangePassword(@Field("json") json: String): Call<List<SignupPojo>>
 
     @FormUrlEncoded
     @POST("cmspage/get-cmspage")
     fun cmsPageContent(@Field("json") json: String): Call<List<CmsPojo>>
 
-    @FormUrlEncoded
-    @POST("users/user-update-profile")
-    fun userUpdateProfile(@Field("json") json: String): Call<List<SignupPojo>>
 
     @FormUrlEncoded
     @POST("university/get-university-list")
@@ -106,68 +80,12 @@ interface RestApi {
     fun userDegreeListProfile(@Field("json") json: String): Call<List<UserDegreeListPojo>>
 
     @FormUrlEncoded
-    @POST("usereducation/add-users-education")
-    fun userAddEducationProfile(@Field("json") json: String): Call<List<EducationPojo>>
-
-    @FormUrlEncoded
-    @POST("usereducation/edit-users-education")
-    fun userEditEducationProfile(@Field("json") json: String): Call<List<EducationPojo>>
-
-    @FormUrlEncoded
-    @POST("usereducation/delete-users-education")
-    fun userDeleteEducationProfile(@Field("json") json: String): Call<List<EducationPojo>>
-
-    @FormUrlEncoded
-    @POST("usereducation/list-users-education")
-    fun userListEducationProfile(@Field("json") json: String): Call<List<EducationPojo>>
-
-    @FormUrlEncoded
-    @POST("jobfunction/get-jobfunction-list")
-    fun userJobFunctionListProfile(@Field("json") json: String): Call<List<JobFunctionPojo>>
-
-    @FormUrlEncoded
-    @POST("company/get-company-list")
-    fun userCompanyListProfile(@Field("json") json: String): Call<List<CompanyListPojo>>
-
-    @FormUrlEncoded
-    @POST("useremployement/add-user-employement")
-    fun userAddEmployementProfile(@Field("json") json: String): Call<List<Employmentpojo>>
-
-    @FormUrlEncoded
-    @POST("useremployement/edit-user-employement")
-    fun userEditEmployementProfile(@Field("json") json: String): Call<List<Employmentpojo>>
-
-    @FormUrlEncoded
-    @POST("useremployement/delete-user-employement")
-    fun userDeleteEmployementProfile(@Field("json") json: String): Call<List<Employmentpojo>>
-
-    @FormUrlEncoded
-    @POST("useremployement/list-user-employement")
-    fun userListEmployementProfile(@Field("json") json: String): Call<List<Employmentpojo>>
-
-    @FormUrlEncoded
     @POST("language/get-language-list")
     fun userLanguageListProfile(@Field("json") json: String): Call<List<LanguagesPojo>>
 
     @FormUrlEncoded
     @POST("profiency/get-profiency-list")
     fun userProficiencyListProfile(@Field("json") json: String): Call<List<ProficiencyPojo>>
-
-    @FormUrlEncoded
-    @POST("userlanguages/add-userlanguages")
-    fun userAddLanguageProfile(@Field("json") json: String): Call<List<ProfileLanguagePojo>>
-
-    @FormUrlEncoded
-    @POST("userlanguages/edit-userlanguages")
-    fun userEditLanguageProfile(@Field("json") json: String): Call<List<ProfileLanguagePojo>>
-
-    @FormUrlEncoded
-    @POST("userlanguages/delete-userlanguages")
-    fun userDeleteLanguageProfile(@Field("json") json: String): Call<List<ProfileLanguagePojo>>
-
-    @FormUrlEncoded
-    @POST("userlanguages/list-userlanguages")
-    fun userListLanguageProfile(@Field("json") json: String): Call<List<ProfileLanguagePojo>>
 
     @FormUrlEncoded
     @POST("hashtags/get-hashtags-list")
@@ -270,7 +188,7 @@ interface RestApi {
 
     @FormUrlEncoded
     @POST("userpassport/delete-userpassport")
-     fun deleteUserPassport(@Field("json") json: String): Call<List<PassportNationalityPojo>>
+    fun deleteUserPassport(@Field("json") json: String): Call<List<PassportNationalityPojo>>
 
     @FormUrlEncoded
     @POST("userpassport/list-userpassport")
@@ -289,10 +207,6 @@ interface RestApi {
     fun getContactList(@Field("json") json: String): Call<List<ContactListPojo>>
 
     @FormUrlEncoded
-    @POST("user-friend/user-friend")
-    fun userContactList(@Field("json") json: String): Call<List<SuggestedFreindListPojo>>
-
-    @FormUrlEncoded
     @POST("user-follower/user-follower")
     fun userFollowingList(@Field("json") json: String): Call<List<FollowingListPojo>>
 
@@ -307,10 +221,6 @@ interface RestApi {
     @FormUrlEncoded
     @POST("user-follower/user-follower")
     fun userUnFollow(@Field("json") json: String): Call<List<CommonPojo>>
-
-    @FormUrlEncoded
-    @POST("post/get-post-list")
-    fun getPostList(@Field("json") json: String): Call<List<PostCreatePojo>>
 
     @FormUrlEncoded
     @POST("postlike/post-like")
@@ -348,21 +258,11 @@ interface RestApi {
     @POST("faq/get-faqcategory-list")
     fun faqCategoryList(@Field("json") json: String): Call<List<FaqCategoryPojo>>
 
-    @FormUrlEncoded
-    @POST("users/change-language")
-    fun users_changeLanguage(@Field("json") json: String): Call<List<SignupPojo>>
-
-    @FormUrlEncoded
-    @POST("users/update-privacy")
-    fun users_updatePrivacy(@Field("json") json: String): Call<List<SignupPojo>>
 
     @FormUrlEncoded
     @POST("playerposition/get-playerposition-list")
     fun playerPositionList(@Field("json") json: String): Call<List<PlayerPositionListPojo>>
 
-    @FormUrlEncoded
-    @POST("users/change-player-position")
-    fun changePlayerPosition(@Field("json") json: String): Call<List<SignupPojo>>
 
     @FormUrlEncoded
     @POST("postsave/save-post")
@@ -408,42 +308,18 @@ interface RestApi {
     @POST("notification/delete-notification")
     fun deleteNotification(@Field("json") json: String): Call<List<CommonPojo>>
 
-    @FormUrlEncoded
-    @POST("user-friend/user-friend")
-    fun friendList(@Field("json") json: String): Call<List<FriendListPojo>>
-
-    @FormUrlEncoded
-    @POST("user-friend/chat-list")
-    fun chatlist(@Field("json") json: String): Call<List<ChatList>>
-
-    @FormUrlEncoded
-    @POST("user-friend/add-chat-list")
-    fun chatTofriend(@Field("json") json: String): Call<List<FriendListPojo>>
-
-    @FormUrlEncoded
-    @POST("post/create-post")
-    fun createPost(@Field("json") json: String): Call<List<PostCreatePojo>>
-
-
     @Multipart
     @POST("apilog/file-upload-multiple")
-    fun uploadAttachmentArray(@Part filePart: Array<MultipartBody.Part?>, /*@Part("FilePath") filePath: RequestBody,*/ @Part("json") json: RequestBody): Call<List<MultiplefileUpload>>
+    fun uploadAttachmentArray(
+        @Part filePart: Array<MultipartBody.Part?>, /*@Part("FilePath") filePath: RequestBody,*/
+        @Part("json") json: RequestBody
+    ): Call<List<MultiplefileUpload>>
 
     @FormUrlEncoded
     @POST("users/delete-account")
     fun deleteAccount(@Field("json") json: String): Call<List<CommonPojo>>
 
-    @FormUrlEncoded
-    @POST("users/update-email-notifications")
-    fun updateEmailNotification(@Field("json") json: String): Call<List<SignupPojo>>
 
-    @FormUrlEncoded
-    @POST("users/update-push-notifications")
-    fun updatePushNotification(@Field("json") json: String): Call<List<SignupPojo>>
-
-    @FormUrlEncoded
-    @POST("users/update-sms-notifications")
-    fun updateSmsNotification(@Field("json") json: String): Call<List<SignupPojo>>
 
     @FormUrlEncoded
     @POST("postviews/view-post")
@@ -499,14 +375,6 @@ interface RestApi {
     fun friendConnectionRemove(@Field("json") jsonLogin: String): Call<List<CommentPojo>>
 
     @FormUrlEncoded
-    @POST("connectiontype/get-connectiontype-list")
-    fun connectionList(@Field("json") jsonLogin: String): Call<List<ConnectionTypePojo>>
-
-    @FormUrlEncoded
-    @POST("user-friend/user-friend-connection-type")
-    fun changeConnection(@Field("json") jsonLogin: String): Call<List<FriendListPojo>>
-
-    @FormUrlEncoded
     @POST("user-friend/user-friend-connection-type")
     fun addConnection(@Field("json") jsonLogin: String): Call<List<AddConnectionPojo>>
 
@@ -514,14 +382,6 @@ interface RestApi {
     @POST("user-friend/user-friend-remove-connection-type")
     fun removeConnecton(@Field("json") jsonLogin: String): Call<List<AddConnectionPojo>>
 
-
-    @FormUrlEncoded
-    @POST("users/check-user-duplication")
-    fun checkDublication(@Field("json") json: String): Call<List<SignupPojo>>
-
-    @FormUrlEncoded
-    @POST("users/user-social-login")
-    fun socialLogin(@Field("json") jsonLogin: String): Call<List<SignupPojo>>
 
     @GET("v2/me")
     fun getUser(@Header("Authorization") auth: String): Call<LinkedInUserProfile>
@@ -533,41 +393,6 @@ interface RestApi {
     @POST("post/delete-post")
     fun deletePostList(@Field("json") json: String): Call<List<CommonPojo>>
 
-    @FormUrlEncoded
-    @POST("post/edit-post")
-    fun editPost(@Field("json") json: String): Call<List<PostCreatePojo>>
-
-    @FormUrlEncoded
-    @POST("post/postshare")
-    fun sharePost(@Field("json") json: String): Call<List<PostCreatePojo>>
-
-    @FormUrlEncoded
-    @POST("users/get-other-user-profile")
-    fun otherUserProfile(@Field("json") json: String): Call<List<SignupPojo>>
-
-    @FormUrlEncoded
-    @POST("exploreralbumposts/get-banners")
-    fun showbanners(@Field("json") json: String): Call<List<BannerPojo>>
-
-    @FormUrlEncoded
-    @POST("post/get-post-list")
-    fun showExploreVideos(@Field("json") json: String): Call<List<ExploreVideosPojo>>
-
-    @FormUrlEncoded
-    @POST("exploreralbumposts/create-album")
-    fun createAlbum(@Field("json") json: String): Call<List<CreateAlbumPojo>>
-
-    @FormUrlEncoded
-    @POST("exploreralbumposts/get-albums")
-    fun createAlbumList(@Field("json") json: String): Call<List<CreateAlbumListPojo>>
-
-    @FormUrlEncoded
-    @POST("exploreralbumposts/delete-album")
-    fun createAlbumDelete(@Field("json") json: String): Call<List<CreateAlbumDeletePojo>>
-
-    @FormUrlEncoded
-    @POST("exploreralbumposts/edit-album")
-    fun editAlbum(@Field("json") json: String): Call<List<EditAlbumDeletePojo>>
 
     @FormUrlEncoded
     @POST("exploreralbumposts/create-sub-album")
@@ -580,10 +405,6 @@ interface RestApi {
     @FormUrlEncoded
     @POST("exploreralbumposts/delete-sub-album")
     fun deleteSubAlbum(@Field("json") json: String): Call<List<CreateAlbumDeletePojo>>
-
-    @FormUrlEncoded
-    @POST("exploreralbumposts/assign-post-album")
-    fun assignPostAlbum(@Field("json") json: String): Call<List<AssignPostAlbumPojo>>
 
     @FormUrlEncoded
     @POST("exploreralbumposts/remove-post-album")
@@ -645,64 +466,36 @@ interface RestApi {
     @POST("userurls/edit-userurls")
     fun editWebsiteList(@Field("json") json: String): Call<List<WebsitePojo>>
 
-    @FormUrlEncoded
-    @POST("users/user-update-profile-info")
-    fun userInfoUpdate(@Field("json") json: String): Call<List<SignupPojo>>
 
     @FormUrlEncoded
     @POST("users/parent-otp-resend")
     fun parentResendOTP(@Field("json") json: String): Call<List<CommonPojo>>
 
-    @FormUrlEncoded
-    @POST("users/user-parental-process")
-    fun profileParents(@Field("json") json: String): Call<List<SignupPojo>>
-
-    @FormUrlEncoded
-    @POST("users/parent-otp-verification")
-    fun parentsVerifyOtp(@Field("json") json: String): Call<List<SignupPojo>>
 
     @FormUrlEncoded
     @POST("suggestions/create-suggestions")
     fun suggestionsFeature(@Field("json") json: String): Call<List<CommonPojo>>
 
-    @FormUrlEncoded
-    @POST("users/update-chat-id")
-    fun quickblockdetails(@Field("json") json: String): Call<List<SignupPojo>>
-
-    @FormUrlEncoded
-    @POST("users/user-update-device-token")
-    fun updateDeviceToken(@Field("json") json: String): Call<List<SignupPojo>>
 
     @FormUrlEncoded
     @POST("users/check-storage")
     fun checkStorage(@Field("json") json: String): Call<List<CheckStoragePojo>>
 
-    @FormUrlEncoded
-    @POST("users/change-content-language")
-    fun changeContentLanguage(@Field("json") json: String): Call<List<SignupPojo>>
 
     @FormUrlEncoded
     @POST("verificationcategory/get-verificationcategory-list")
     fun getVerificationCategory(@Field("json") json: String): Call<List<VerificationCatPojo>>
 
-    @FormUrlEncoded
-    @POST("users/request-profile-verification")
-    fun getSendVerification(@Field("json") json: String): Call<List<SignupPojo>>
 
     @POST("language/translate/v2")
-    fun getTranslate( @Body body: com.squareup.okhttp.RequestBody,
-                     @Header("content-type") type: String,
-                     @Header("accept-encoding") accept: String,
-                     @Header("x-rapidapi-key") rapidapi: String,
-                     @Header("x-rapidapi-host") host: String): Call<GoogleTranslateObject>
+    fun getTranslate(
+        @Body body: com.squareup.okhttp.RequestBody,
+        @Header("content-type") type: String,
+        @Header("accept-encoding") accept: String,
+        @Header("x-rapidapi-key") rapidapi: String,
+        @Header("x-rapidapi-host") host: String
+    ): Call<GoogleTranslateObject>
 
-    @FormUrlEncoded
-    @POST("suggestions/create-partner-with-us")
-    fun getPartnerWithUs(@Field("json") json: String): Call<List<SignupPojo>>
-
-    @FormUrlEncoded
-    @POST("language/list-labels")
-    fun languageLabel(@Field("json") json: String): Call<List<LanguageLabelPojo>>
 
     @FormUrlEncoded
     @POST("postcommentreply/post-comment-reply-like")
@@ -732,7 +525,247 @@ interface RestApi {
     @POST("jobs/apply-job")
     fun getApplyJob(@Field("json") json: String): retrofit2.Call<List<ApplyJoblist>>
 
+
+    /* NEW API WITH REPOSITORY */
+
+    @FormUrlEncoded
+    @POST("language/list-labels")
+    suspend fun languageLabel(@Field("json") json: String): Response<MutableList<LanguageLabelPojo>>
+
+    @FormUrlEncoded
+    @POST("post/get-post-list")
+    suspend fun getPostList(@Field("json") json: String): Response<MutableList<PostCreatePojo>>
+
+    @FormUrlEncoded
+    @POST("post/edit-post")
+    suspend fun editPost(@Field("json") json: String): Response<MutableList<PostCreatePojo>>
+
+    @FormUrlEncoded
+    @POST("post/postshare")
+    suspend fun sharePost(@Field("json") json: String): Response<MutableList<PostCreatePojo>>
+
+    @FormUrlEncoded
+    @POST("post/create-post")
+    suspend fun createPost(@Field("json") json: String): Response<MutableList<PostCreatePojo>>
+
+    @FormUrlEncoded
+    @POST("post/get-post-list")
+    suspend fun showExploreVideos(@Field("json") json: String): Response<MutableList<ExploreVideosPojo>>
+
+    @FormUrlEncoded
+    @POST("exploreralbumposts/get-banners")
+    suspend fun showbanners(@Field("json") json: String): Response<MutableList<BannerPojo>>
+
+    @FormUrlEncoded
+    @POST("exploreralbumposts/get-albums")
+    suspend fun createAlbumList(@Field("json") json: String): Response<MutableList<CreateAlbumListPojo>>
+
+    @FormUrlEncoded
+    @POST("exploreralbumposts/assign-post-album")
+    suspend fun assignPostAlbum(@Field("json") json: String): Response<MutableList<AssignPostAlbumPojo>>
+
+    @FormUrlEncoded
+    @POST("exploreralbumposts/delete-album")
+    suspend fun createAlbumDelete(@Field("json") json: String): Response<MutableList<CreateAlbumDeletePojo>>
+
+    @FormUrlEncoded
+    @POST("exploreralbumposts/create-album")
+    suspend fun createAlbum(@Field("json") json: String): Response<MutableList<CreateAlbumPojo>>
+
+    @FormUrlEncoded
+    @POST("exploreralbumposts/edit-album")
+    suspend fun editAlbum(@Field("json") json: String): Response<MutableList<EditAlbumDeletePojo>>
+
+    @FormUrlEncoded
+    @POST("user-friend/chat-list")
+    suspend fun chatlist(@Field("json") json: String): Response<MutableList<ChatList>>
+
+    @FormUrlEncoded
+    @POST("users/otp-resend")
+    fun resendOTP(@Field("json") json: String): Call<List<CommonPojo>>
+
+    @FormUrlEncoded
+    @POST("users/user-login-password")
+    suspend fun userLoginwithEmail(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/user-registration")
+    suspend fun userRegistration(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/user-update-profile-info")
+    suspend fun userInfoUpdate(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/user-update-profile-picture")
+    suspend fun userUploadProfilePicture(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/user-update-cover-photo")
+    suspend fun userupdateCoverPhoto(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/change-password")
+    suspend fun userChangePassword(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/reset-password")
+    suspend fun userResetPass(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/user-forgot-password")
+    suspend fun userForagatePass(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/otp-verification")
+    suspend fun userVerifyOtp(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/change-language")
+    suspend fun users_changeLanguage(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/update-privacy")
+    suspend fun users_updatePrivacy(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/change-player-position")
+    suspend fun changePlayerPosition(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/update-email-notifications")
+    suspend fun updateEmailNotification(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/update-push-notifications")
+    suspend fun updatePushNotification(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/update-sms-notifications")
+    suspend fun updateSmsNotification(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/check-user-duplication")
+    suspend fun checkDublication(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/user-social-login")
+    suspend fun socialLogin(@Field("json") jsonLogin: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/get-other-user-profile")
+    suspend fun otherUserProfile(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/user-parental-process")
+    suspend fun profileParents(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/user-update-profile")
+    suspend fun userUpdateProfile(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/parent-otp-verification")
+    suspend fun parentsVerifyOtp(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/update-chat-id")
+    suspend fun quickblockdetails(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/user-update-device-token")
+    suspend fun updateDeviceToken(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/change-content-language")
+    suspend fun changeContentLanguage(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("users/request-profile-verification")
+    suspend fun getSendVerification(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("suggestions/create-partner-with-us")
+    suspend fun getPartnerWithUs(@Field("json") json: String): Response<MutableList<SignupPojo>>
+
     @FormUrlEncoded
     @POST("suggestions/create-feedback")
-    fun getSendFeedback(@Field("json") json: String): retrofit2.Call<List<SignupPojo>>
+    suspend fun getSendFeedback(@Field("json") json: String): retrofit2.Response<MutableList<SignupPojo>>
+
+    @FormUrlEncoded
+    @POST("useremployement/add-user-employement")
+    suspend fun userAddEmployementProfile(@Field("json") json: String): Response<MutableList<Employmentpojo>>
+
+    @FormUrlEncoded
+    @POST("useremployement/edit-user-employement")
+    suspend fun userEditEmployementProfile(@Field("json") json: String): Response<MutableList<Employmentpojo>>
+
+    @FormUrlEncoded
+    @POST("useremployement/delete-user-employement")
+    suspend fun userDeleteEmployementProfile(@Field("json") json: String): Response<MutableList<Employmentpojo>>
+
+    @FormUrlEncoded
+    @POST("useremployement/list-user-employement")
+    suspend fun userListEmployementProfile(@Field("json") json: String): Response<MutableList<Employmentpojo>>
+
+    @FormUrlEncoded
+    @POST("company/get-company-list")
+    suspend fun userCompanyListProfile(@Field("json") json: String): Response<MutableList<CompanyListPojo>>
+
+    @FormUrlEncoded
+    @POST("jobfunction/get-jobfunction-list")
+    suspend fun userJobFunctionListProfile(@Field("json") json: String): Response<MutableList<JobFunctionPojo>>
+
+    @FormUrlEncoded
+    @POST("userlanguages/list-userlanguages")
+    suspend fun userListLanguageProfile(@Field("json") json: String): Response<MutableList<ProfileLanguagePojo>>
+
+    @FormUrlEncoded
+    @POST("usereducation/list-users-education")
+    suspend fun userListEducationProfile(@Field("json") json: String): Response<MutableList<EducationPojo>>
+
+    @FormUrlEncoded
+    @POST("userlanguages/delete-userlanguages")
+    suspend fun userDeleteLanguageProfile(@Field("json") json: String): Response<MutableList<ProfileLanguagePojo>>
+
+    @FormUrlEncoded
+    @POST("userlanguages/edit-userlanguages")
+    suspend fun userEditLanguageProfile(@Field("json") json: String): Response<MutableList<ProfileLanguagePojo>>
+
+    @FormUrlEncoded
+    @POST("userlanguages/add-userlanguages")
+    suspend fun userAddLanguageProfile(@Field("json") json: String): Response<MutableList<ProfileLanguagePojo>>
+
+    @FormUrlEncoded
+    @POST("usereducation/delete-users-education")
+    suspend fun userDeleteEducationProfile(@Field("json") json: String): Response<MutableList<EducationPojo>>
+
+    @FormUrlEncoded
+    @POST("usereducation/edit-users-education")
+    suspend fun userEditEducationProfile(@Field("json") json: String): Response<MutableList<EducationPojo>>
+
+    @FormUrlEncoded
+    @POST("usereducation/add-users-education")
+    suspend fun userAddEducationProfile(@Field("json") json: String): Response<MutableList<EducationPojo>>
+
+    @FormUrlEncoded
+    @POST("user-friend/user-friend")
+    suspend fun friendList(@Field("json") json: String): Response<MutableList<FriendListPojo>>
+
+    @FormUrlEncoded
+    @POST("user-friend/user-friend-connection-type")
+    suspend fun changeConnection(@Field("json") jsonLogin: String): Response<MutableList<FriendListPojo>>
+
+    @FormUrlEncoded
+    @POST("user-friend/add-chat-list")
+    suspend fun chatTofriend(@Field("json") json: String): Response<MutableList<FriendListPojo>>
+
+    @FormUrlEncoded
+    @POST("connectiontype/get-connectiontype-list")
+    suspend fun connectionList(@Field("json") jsonLogin: String): Response<MutableList<ConnectionTypePojo>>
+
+    @FormUrlEncoded
+    @POST("user-friend/user-friend")
+    suspend fun userContactList(@Field("json") json: String): Response<MutableList<SuggestedFreindListPojo>>
+
 }

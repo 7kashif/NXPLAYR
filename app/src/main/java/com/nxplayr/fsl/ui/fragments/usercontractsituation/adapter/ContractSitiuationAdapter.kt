@@ -17,6 +17,7 @@ import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.item_nationality_list.view.*
+import kotlinx.android.synthetic.main.toolbar2.*
 import java.util.*
 
 
@@ -97,6 +98,11 @@ class ContractSitiuationAdapter(
         ) = with(itemView) {
 
             tv_nationality.text = countryList.contractsituationName
+            if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+                if (!sessionManager?.LanguageLabel?.lngExpiryDate.isNullOrEmpty())
+                    tv_expire_date.hint = sessionManager?.LanguageLabel?.lngExpiryDate
+            }
+
             edit_expire_date.setText(countryList.userContractExpiryDate)
             if (countryList.checked) {
                 btn_nationality.setImageDrawable(

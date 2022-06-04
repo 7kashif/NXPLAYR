@@ -23,6 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:id="@+id/ti_edittext_height"
             android:hint="@string/height_cm"
             android:textColorHint="@color/colorPrimary"
             android:theme="@style/MyEditTextTheme"
@@ -47,6 +48,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/ti_edittext_weight"
             android:layout_gravity="center"
             android:hint="@string/weight_kg"
             android:textColorHint="@color/colorPrimary"

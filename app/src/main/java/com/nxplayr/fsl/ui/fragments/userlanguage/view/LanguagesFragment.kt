@@ -37,7 +37,7 @@ import org.json.JSONException
 import org.json.JSONObject
 
 
-class LanguagesFragment : Fragment(),View.OnClickListener {
+class LanguagesFragment : Fragment(), View.OnClickListener {
 
     private var v: View? = null
     var language_list: ArrayList<ProfileLanguageData?>? = ArrayList()
@@ -48,10 +48,12 @@ class LanguagesFragment : Fragment(),View.OnClickListener {
     var userData: SignupData? = null
     var linearLayoutManager: LinearLayoutManager? = null
     var pageNo = 0
-    private lateinit var  languageModel: ProfileLanguageModel
+    private lateinit var profileModel: ProfileLanguageModel
 
-   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         if (v == null) {
             v = inflater.inflate(R.layout.fragment_languages, container, false)
         }
@@ -97,40 +99,41 @@ class LanguagesFragment : Fragment(),View.OnClickListener {
         }
 
         jsonArray.put(jsonObject)
-        languageModel.getLanguageList(mActivity!!, false, jsonArray.toString(), "List")
+        profileModel.profileApi(jsonArray.toString(), "List")
+        profileModel.successProfile
             .observe(
-                viewLifecycleOwner,
-                { languagesPojo ->
+                viewLifecycleOwner
+            ) { languagesPojo ->
 
-                    relativeprogressBar.visibility = View.GONE
-                    recyclerview.visibility = View.VISIBLE
+                relativeprogressBar.visibility = View.GONE
+                recyclerview.visibility = View.VISIBLE
 
-                    if (languagesPojo != null && languagesPojo.isNotEmpty()) {
-                        if (languagesPojo[0].status.equals("true", true)) {
-                            language_list?.clear()
-                            language_list?.addAll(languagesPojo[0].data)
-                            languagesAdapter?.notifyDataSetChanged()
+                if (languagesPojo != null && languagesPojo.isNotEmpty()) {
+                    if (languagesPojo[0].status.equals("true", true)) {
+                        language_list?.clear()
+                        language_list?.addAll(languagesPojo[0].data)
+                        languagesAdapter?.notifyDataSetChanged()
 
+
+                    } else {
+
+                        if (language_list!!.size == 0) {
+                            ll_no_data_found.visibility = View.VISIBLE
+                            recyclerview.visibility = View.GONE
 
                         } else {
-
-                            if (language_list!!.size == 0) {
-                                ll_no_data_found.visibility = View.VISIBLE
-                                recyclerview.visibility = View.GONE
-
-                            } else {
-                                ll_no_data_found.visibility = View.GONE
-                                recyclerview.visibility = View.VISIBLE
-
-                            }
-
+                            ll_no_data_found.visibility = View.GONE
+                            recyclerview.visibility = View.VISIBLE
 
                         }
-                    } else {
-                        relativeprogressBar.visibility = View.GONE
-                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+
+
                     }
-                })
+                } else {
+                    relativeprogressBar.visibility = View.GONE
+                    ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                }
+            }
     }
 
     private fun setupUI() {
@@ -144,40 +147,59 @@ class LanguagesFragment : Fragment(),View.OnClickListener {
         btnRetry!!.setOnClickListener(this)
 
 
-        languagesAdapter = LanguagesAdapter(activity as MainActivity, language_list, object : LanguagesAdapter.OnItemClick {
+        languagesAdapter = LanguagesAdapter(
+            activity as MainActivity,
+            language_list,
+            object : LanguagesAdapter.OnItemClick {
 
-            override fun onClicled(position: Int, from: String, v: View) {
-                when (from) {
-                    "deleteLan" -> {
-                        list = java.util.ArrayList()
-                        list!!.add("Edit")
-                        list!!.add("Delete")
+                override fun onClicled(position: Int, from: String, v: View) {
+                    when (from) {
+                        "deleteLan" -> {
+                            list = java.util.ArrayList()
+                            list!!.add("Edit")
+                            list!!.add("Delete")
 
-                        PopupMenu(mActivity!!, v, list!!).showPopUp(object : PopupMenu.OnMenuSelectItemClickListener {
-                            override fun onItemClick(item: String, pos: Int) {
-                                when (pos) {
-                                    0 -> {
-                                        var bundle = Bundle()
-                                        bundle.putString("from", "edit")
-                                        bundle.putSerializable("userlanlID", language_list!![position]!!)
-                                        bundle.putInt("pos", position)
+                            PopupMenu(mActivity!!, v, list!!).showPopUp(object :
+                                PopupMenu.OnMenuSelectItemClickListener {
+                                override fun onItemClick(item: String, pos: Int) {
+                                    when (pos) {
+                                        0 -> {
+                                            var bundle = Bundle()
+                                            bundle.putString("from", "edit")
+                                            bundle.putSerializable(
+                                                "userlanlID",
+                                                language_list!![position]!!
+                                            )
+                                            bundle.putInt("pos", position)
 
-                                        (activity as MainActivity).navigateTo(AddLanguageFragment(), bundle, AddLanguageFragment::class.java.name, true)
-                                    }
-                                    1 -> {
-                                        MyUtils.showMessageYesNo(mActivity!!, activity!!.resources.getString(R.string.language_remove_dialog),
-                                            "", DialogInterface.OnClickListener { dialogInterface, i ->
-                                                deleteLanguage(language_list!![position]!!.userlanguageID, position)
-                                            })
+                                            (activity as MainActivity).navigateTo(
+                                                AddLanguageFragment(),
+                                                bundle,
+                                                AddLanguageFragment::class.java.name,
+                                                true
+                                            )
+                                        }
+                                        1 -> {
+                                            MyUtils.showMessageYesNo(mActivity!!,
+                                                activity!!.resources.getString(R.string.language_remove_dialog),
+                                                "",
+                                                DialogInterface.OnClickListener { dialogInterface, i ->
+                                                    deleteLanguage(
+                                                        language_list!![position]!!.userlanguageID,
+                                                        position
+                                                    )
+                                                })
+                                        }
                                     }
                                 }
-                            }
 
-                        })
+                            })
+                        }
                     }
                 }
-            }
-        }, "Language")
+            },
+            "Language"
+        )
         recyclerview.layoutManager = LinearLayoutManager(activity)
         recyclerview.setHasFixedSize(true)
         recyclerview.adapter = languagesAdapter
@@ -186,8 +208,8 @@ class LanguagesFragment : Fragment(),View.OnClickListener {
     }
 
     private fun setupViewModel() {
-         languageModel = ViewModelProvider(this@LanguagesFragment).get(ProfileLanguageModel::class.java)
-
+        profileModel =
+            ViewModelProvider(this@LanguagesFragment).get(ProfileLanguageModel::class.java)
     }
 
     private fun deleteLanguage(userlanguageID: String, position: Int) {
@@ -206,52 +228,63 @@ class LanguagesFragment : Fragment(),View.OnClickListener {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        languageModel.getLanguageList(mActivity!!, false, jsonArray.toString(), "Delete")
-                .observe(this@LanguagesFragment,
-                    { languagepojo ->
-                        MyUtils.dismissProgressDialog()
-                        if (languagepojo != null && languagepojo.isNotEmpty()) {
+        profileModel.profileApi(jsonArray.toString(), "Delete")
+        profileModel.successProfile
+            .observe(
+                viewLifecycleOwner
+            ) { languagepojo ->
+                MyUtils.dismissProgressDialog()
+                if (languagepojo != null && languagepojo.isNotEmpty()) {
 
-                            if (languagepojo[0].status.equals("true", false)) {
+                    if (languagepojo[0].status.equals("true", false)) {
 
-                                val userData = sessionManager!!.userData
-                                if (userData!!.languages.size > 0) {
-                                    for (i in 0 until userData.languages.size) {
-                                        if (language_list!![position]!!.userlanguageID.equals(
-                                                userData.languages[i].userlanguageID)) {
-                                            userData.languages.removeAt(i)
-                                            sessionManager!!.userData = userData
-                                            language_list!!.removeAt(position)
-                                            break
-                                        }
-                                    }
-                                    languagesAdapter!!.notifyDataSetChanged()
+                        val userData = sessionManager!!.userData
+                        if (userData!!.languages.size > 0) {
+                            for (i in 0 until userData.languages.size) {
+                                if (language_list!![position]!!.userlanguageID.equals(
+                                        userData.languages[i].userlanguageID
+                                    )
+                                ) {
+                                    userData.languages.removeAt(i)
+                                    sessionManager!!.userData = userData
+                                    language_list!!.removeAt(position)
+                                    break
                                 }
-
-                            } else {
-                                if (activity != null && activity is MainActivity)
-                                    MyUtils.showSnackbar(mActivity!!, languagepojo[0].message, ll_mainLaguages)
                             }
-
-                        } else {
-                            ErrorUtil.errorMethod(ll_mainHashtagsList)
-
-
+                            languagesAdapter!!.notifyDataSetChanged()
                         }
-                    })
+
+                    } else {
+                        if (activity != null && activity is MainActivity)
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                languagepojo[0].message,
+                                ll_mainLaguages
+                            )
+                    }
+
+                } else {
+                    ErrorUtil.errorMethod(ll_mainHashtagsList)
+
+
+                }
+            }
 
 
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-            R.id.btnRetry->{
+        when (v?.id) {
+            R.id.btnRetry -> {
                 pageNo = 0
                 setupObserver()
             }
-            R.id.add_icon_connection->{
-                (activity as MainActivity).navigateTo(AddLanguageFragment(), AddLanguageFragment::class.java.name, true)
+            R.id.add_icon_connection -> {
+                (activity as MainActivity).navigateTo(
+                    AddLanguageFragment(),
+                    AddLanguageFragment::class.java.name,
+                    true
+                )
             }
         }
     }

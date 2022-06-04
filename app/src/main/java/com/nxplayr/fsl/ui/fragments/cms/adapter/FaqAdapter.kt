@@ -7,14 +7,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nxplayr.fsl.R
 import com.nxplayr.fsl.data.model.FaqData
+import com.nxplayr.fsl.util.SessionManager
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_layout_faq.view.*
 
 class FaqAdapter(
-        val context: Activity,
-        val listData: ArrayList<FaqData>?
-        , val onItemClick: OnItemClick
+    val context: Activity,
+    val listData: ArrayList<FaqData>?, val onItemClick: OnItemClick,
+    val sessionManager: SessionManager
 ) :
-        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -24,54 +26,37 @@ class FaqAdapter(
     }
 
     override fun getItemCount(): Int {
-
         return listData!!.size
     }
 
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
         if (holder is ViewHolder) {
-            holder.bind(listData!![position], holder.adapterPosition, onItemClick)
-
+            holder.bind(listData!![position], holder.adapterPosition, onItemClick, sessionManager)
         }
-
-
     }
 
     class ViewHolder(itemView: View, context: Activity) : RecyclerView.ViewHolder(itemView) {
-
-
-        fun bind(listData: FaqData,
-                 adapterPosition: Int,
-                 onItemClick: OnItemClick
+        fun bind(
+            listData: FaqData,
+            adapterPosition: Int,
+            onItemClick: OnItemClick,
+            sessionManager: SessionManager
         ) = with(itemView) {
-
-            tv_faqQuestion.text = listData.faqQuestion
-            tv_question.text = listData.faqQuestion
-            tv_faqAnswer.text = listData.faqAnswer
-
-
-            icon_downQue.setOnClickListener {
-                ll_expanded_layout.visibility = View.VISIBLE
+            if (sessionManager.getSelectedLanguage() != null && sessionManager.getSelectedLanguage()?.languageID.equals(
+                    "1"
+                )
+            ) {
+                tv_faqQuestion.text = listData.faqQuestion
+            } else {
+                tv_faqQuestion.text = listData.faqQuestionFrench
             }
-            icon_upanswer.setOnClickListener {
-                ll_expanded_layout.visibility = View.GONE
-            }
-
-
             itemView.setOnClickListener {
                 onItemClick.onClicled(adapterPosition, "")
-
             }
-
         }
-
-
     }
 
     interface OnItemClick {
         fun onClicled(position: Int, from: String)
     }
-
 }

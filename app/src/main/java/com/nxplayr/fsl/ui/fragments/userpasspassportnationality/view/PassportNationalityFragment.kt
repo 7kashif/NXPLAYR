@@ -41,7 +41,7 @@ import org.json.JSONException
 import org.json.JSONObject
 
 
-class PassportNationalityFragment : Fragment(),View.OnClickListener {
+class PassportNationalityFragment : Fragment(), View.OnClickListener {
 
     private var v: View? = null
     var mActivity: Activity? = null
@@ -64,13 +64,15 @@ class PassportNationalityFragment : Fragment(),View.OnClickListener {
     var fromProfile = ""
     var userId = ""
     var otherUserData: SignupData? = null
-    private lateinit var   countryListModel : CountryListModel
-    private lateinit var   addpassportNationalityModel : AddPassportNationalityCallsViewModel
-    private lateinit var   deletePasportNationality : DeletePasportNationality
-    private lateinit var   passportNationalityModel : PassportNationalityModel
+    private lateinit var countryListModel: CountryListModel
+    private lateinit var addpassportNationalityModel: AddPassportNationalityCallsViewModel
+    private lateinit var deletePasportNationality: DeletePasportNationality
+    private lateinit var passportNationalityModel: PassportNationalityModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         if (v == null) {
             v = inflater.inflate(R.layout.fragment_passport_nationality, container, false)
         }
@@ -89,8 +91,7 @@ class PassportNationalityFragment : Fragment(),View.OnClickListener {
         if (sessionManager?.get_Authenticate_User() != null) {
             userData = sessionManager?.get_Authenticate_User()
         }
-        if (arguments != null)
-        {
+        if (arguments != null) {
             fromProfile = arguments!!.getString("fromProfile", "")
             userId = arguments!!.getString("userId", "")
             if (!userId.equals(userData?.userID, false)) {
@@ -105,12 +106,19 @@ class PassportNationalityFragment : Fragment(),View.OnClickListener {
     private fun setupUI() {
         tvToolbarTitle.text = resources.getString(R.string.passport_nationality)
 
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngPassportNationality.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngPassportNationality
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_addNationality.progressText = sessionManager?.LanguageLabel?.lngSave
+            if (!sessionManager?.LanguageLabel?.lngSearchCountry.isNullOrEmpty())
+                search_nationality.hint = sessionManager?.LanguageLabel?.lngSearchCountry
+        }
         toolbar.setNavigationOnClickListener {
             MyUtils.hideKeyboard1(mActivity!!)
             (activity as MainActivity).onBackPressed()
         }
-        if (userId.equals(userData?.userID, false))
-        {
+        if (userId.equals(userData?.userID, false)) {
             btn_addNationality.visibility = View.VISIBLE
         } else {
             btn_addNationality.visibility = View.GONE
@@ -138,52 +146,63 @@ class PassportNationalityFragment : Fragment(),View.OnClickListener {
         if (nationalityDataList == null) {
             nationalityDataList = ArrayList()
             nationalityAdapter =
-                NationalityAdapter(mActivity!!, nationalityDataList, object : NationalityAdapter.OnItemClick {
-                    override fun onClicled(position: Int, from: String) {
-                        if (userId.equals(userData?.userID, false)) {
-                            for (i in 0 until nationalityDataList!!.size) {
-                                if (i == position) {
-                                    nationalityDataList!![i].checked = !(nationalityDataList!![i].checked)
-                                    btn_addNationality.backgroundTint = (resources.getColor(R.color.colorPrimary))
-                                    btn_addNationality.textColor = resources.getColor(R.color.black)
-                                    btn_addNationality.strokeColor = resources.getColor(R.color.colorPrimary)
+                NationalityAdapter(
+                    mActivity!!,
+                    nationalityDataList,
+                    object : NationalityAdapter.OnItemClick {
+                        override fun onClicled(position: Int, from: String) {
+                            if (userId.equals(userData?.userID, false)) {
+                                for (i in 0 until nationalityDataList!!.size) {
+                                    if (i == position) {
+                                        nationalityDataList!![i].checked =
+                                            !(nationalityDataList!![i].checked)
+                                        btn_addNationality.backgroundTint =
+                                            (resources.getColor(R.color.colorPrimary))
+                                        btn_addNationality.textColor =
+                                            resources.getColor(R.color.black)
+                                        btn_addNationality.strokeColor =
+                                            resources.getColor(R.color.colorPrimary)
+                                    }
                                 }
-                            }
-                            if (nationalityDataList!![position].checked) {
-                                countryName = nationalityDataList!![position].countryName
-                                countryId = nationalityDataList!![position].countryID
-                                data++
-                            } else {
-                                countryName = nationalityDataList!![position].countryName
-                                countryId = nationalityDataList!![position].countryID
-                                if (!userData?.passport.isNullOrEmpty()) {
-                                    deletePassortNationaityApi(countryName!!, countryId!!)
+                                if (nationalityDataList!![position].checked) {
+                                    countryName = nationalityDataList!![position].countryName
+                                    countryId = nationalityDataList!![position].countryID
+                                    data++
+                                } else {
+                                    countryName = nationalityDataList!![position].countryName
+                                    countryId = nationalityDataList!![position].countryID
+                                    if (!userData?.passport.isNullOrEmpty()) {
+                                        deletePassortNationaityApi(countryName!!, countryId!!)
+                                    }
                                 }
+                                nationalityAdapter?.notifyDataSetChanged()
                             }
-                            nationalityAdapter?.notifyDataSetChanged()
+
                         }
 
-                    }
-
-                })
+                    })
             recyclerview.layoutManager = linearLayoutManager
             recyclerview.adapter = nationalityAdapter
             nationalityList(search_nationality.text.toString().trim())
 
         }
 
-        btnRetry.setOnClickListener (this)
+        btnRetry.setOnClickListener(this)
 
     }
 
     private fun setupViewModel() {
-         countryListModel = ViewModelProvider(this@PassportNationalityFragment).get(CountryListModel::class.java)
-         addpassportNationalityModel = ViewModelProvider(this@PassportNationalityFragment).get(
-             AddPassportNationalityCallsViewModel::class.java)
-         deletePasportNationality = ViewModelProvider(this@PassportNationalityFragment).get(
-             DeletePasportNationality::class.java)
-         passportNationalityModel = ViewModelProvider(this@PassportNationalityFragment).get(
-             PassportNationalityModel::class.java)
+        countryListModel =
+            ViewModelProvider(this@PassportNationalityFragment).get(CountryListModel::class.java)
+        addpassportNationalityModel = ViewModelProvider(this@PassportNationalityFragment).get(
+            AddPassportNationalityCallsViewModel::class.java
+        )
+        deletePasportNationality = ViewModelProvider(this@PassportNationalityFragment).get(
+            DeletePasportNationality::class.java
+        )
+        passportNationalityModel = ViewModelProvider(this@PassportNationalityFragment).get(
+            PassportNationalityModel::class.java
+        )
 
     }
 
@@ -197,7 +216,7 @@ class PassportNationalityFragment : Fragment(),View.OnClickListener {
         try {
             jsonObject.put("loginuserID", "0")
             jsonObject.put("apiType", RestClient.apiType)
-            jsonObject.put("blankCountryCode","No")
+            jsonObject.put("blankCountryCode", "No")
 
             jsonObject.put("apiVersion", RestClient.apiVersion)
             jsonObject.put("searchWord", searchWord)
@@ -207,117 +226,156 @@ class PassportNationalityFragment : Fragment(),View.OnClickListener {
         var jsonArray = JSONArray()
         jsonArray.put(jsonObject)
         countryListModel.getCountryList(mActivity!!, false, jsonArray.toString())
-                .observe(viewLifecycleOwner,
-                    { passportListPojo ->
-                        relativeprogressBar.visibility = View.GONE
-                        recyclerview.visibility = View.VISIBLE
-                        if (passportListPojo != null) {
-                            if (passportListPojo.get(0).status.equals("true", false)) {
-                                nationalityDataList?.clear()
-                                if (userId.equals(userData?.userID, false)) {
-                                    if (userData != null) {
-                                        for (i in 0 until userData?.passport!!.size) {
-                                            for (j in passportListPojo?.get(0).data.indices) {
-                                                if (userData?.passport!![i].countryID.equals(passportListPojo?.get(0).data[j].countryID, false)) {
-                                                    passportListPojo?.get(0).data[j].checked = true
-                                                }
+            .observe(viewLifecycleOwner,
+                { passportListPojo ->
+                    relativeprogressBar.visibility = View.GONE
+                    recyclerview.visibility = View.VISIBLE
+                    if (passportListPojo != null) {
+                        if (passportListPojo.get(0).status.equals("true", false)) {
+                            nationalityDataList?.clear()
+                            if (userId.equals(userData?.userID, false)) {
+                                if (userData != null) {
+                                    for (i in 0 until userData?.passport!!.size) {
+                                        for (j in passportListPojo?.get(0).data.indices) {
+                                            if (userData?.passport!![i].countryID.equals(
+                                                    passportListPojo?.get(0).data[j].countryID,
+                                                    false
+                                                )
+                                            ) {
+                                                passportListPojo?.get(0).data[j].checked = true
                                             }
                                         }
                                     }
-
-                                } else {
-                                    if (otherUserData != null) {
-                                        for (i in 0 until otherUserData?.passport!!.size) {
-                                            for (j in passportListPojo?.get(0).data.indices) {
-                                                if (otherUserData?.passport!![i].countryID.equals(passportListPojo?.get(0).data[j].countryID, false)) {
-                                                    passportListPojo?.get(0).data[j].checked = true
-                                                }
-                                            }
-                                        }
-                                    }
-
                                 }
-                                nationalityDataList?.addAll(passportListPojo.get(0).data)
-                                nationalityAdapter?.notifyDataSetChanged()
+
                             } else {
-
-                                if (nationalityDataList!!.size == 0) {
-                                    ll_no_data_found.visibility = View.VISIBLE
-                                    recyclerview.visibility = View.GONE
-
-                                } else {
-                                    ll_no_data_found.visibility = View.GONE
-                                    recyclerview.visibility = View.VISIBLE
-
+                                if (otherUserData != null) {
+                                    for (i in 0 until otherUserData?.passport!!.size) {
+                                        for (j in passportListPojo?.get(0).data.indices) {
+                                            if (otherUserData?.passport!![i].countryID.equals(
+                                                    passportListPojo?.get(0).data[j].countryID,
+                                                    false
+                                                )
+                                            ) {
+                                                passportListPojo?.get(0).data[j].checked = true
+                                            }
+                                        }
+                                    }
                                 }
-                            }
 
+                            }
+                            nationalityDataList?.addAll(passportListPojo.get(0).data)
+                            nationalityAdapter?.notifyDataSetChanged()
                         } else {
-                            ErrorUtil.errorMethod(ll_mainPassNationality)
+
+                            if (nationalityDataList!!.size == 0) {
+                                ll_no_data_found.visibility = View.VISIBLE
+                                recyclerview.visibility = View.GONE
+
+                            } else {
+                                ll_no_data_found.visibility = View.GONE
+                                recyclerview.visibility = View.VISIBLE
+
+                            }
                         }
-                    })
+
+                    } else {
+                        ErrorUtil.errorMethod(ll_mainPassNationality)
+                    }
+                })
 
     }
 
     private fun addpassportNationaityApi(s: String) {
 
         btn_addNationality.startAnimation()
-        addpassportNationalityModel.getPassport(mActivity!!, s, countryList, userData?.userID!!,userData?.passport)
-                .observe(viewLifecycleOwner,
-                    { countryListPojo ->
-                        if (countryListPojo != null) {
-                            if (countryListPojo.get(0).status.equals("true", false)) {
-                                try {
-                                    passpoertNationalityList()
-                                    Handler().postDelayed({
-                                        MyUtils.showSnackbar(mActivity!!, countryListPojo.get(0).message, ll_mainPassNationality)
-                                    }, 2000)
+        addpassportNationalityModel.getPassport(
+            mActivity!!,
+            s,
+            countryList,
+            userData?.userID!!,
+            userData?.passport
+        )
+            .observe(viewLifecycleOwner,
+                { countryListPojo ->
+                    if (countryListPojo != null) {
+                        if (countryListPojo.get(0).status.equals("true", false)) {
+                            try {
+                                passpoertNationalityList()
+                                Handler().postDelayed({
+                                    MyUtils.showSnackbar(
+                                        mActivity!!,
+                                        countryListPojo.get(0).message,
+                                        ll_mainPassNationality
+                                    )
+                                }, 2000)
 
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                }
-
-                            } else {
-                                btn_addNationality.endAnimation()
-                                MyUtils.showSnackbar(mActivity!!, countryListPojo.get(0).message, ll_mainPassNationality)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
                             }
 
                         } else {
                             btn_addNationality.endAnimation()
-                            ErrorUtil.errorMethod(ll_mainPassNationality)
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                countryListPojo.get(0).message,
+                                ll_mainPassNationality
+                            )
                         }
-                    })
+
+                    } else {
+                        btn_addNationality.endAnimation()
+                        ErrorUtil.errorMethod(ll_mainPassNationality)
+                    }
+                })
     }
 
-    private fun editpassportNationaityApi(s: String, passport: java.util.ArrayList<PassportNationality>?) {
+    private fun editpassportNationaityApi(
+        s: String,
+        passport: java.util.ArrayList<PassportNationality>?
+    ) {
 
         btn_addNationality.startAnimation()
-        addpassportNationalityModel.getPassport(mActivity!!, s, countryList, userData?.userID!!,passport)
-                .observe(viewLifecycleOwner,
-                    { countryListPojo ->
-                        if (countryListPojo != null) {
-                            if (countryListPojo.get(0).status.equals("true", false)) {
-                                try {
-                                    passpoertNationalityList()
+        addpassportNationalityModel.getPassport(
+            mActivity!!,
+            s,
+            countryList,
+            userData?.userID!!,
+            passport
+        )
+            .observe(viewLifecycleOwner,
+                { countryListPojo ->
+                    if (countryListPojo != null) {
+                        if (countryListPojo.get(0).status.equals("true", false)) {
+                            try {
+                                passpoertNationalityList()
 
-                                    Handler().postDelayed({
-                                        MyUtils.showSnackbar(mActivity!!, countryListPojo.get(0).message, ll_mainPassNationality)
-                                    }, 2000)
+                                Handler().postDelayed({
+                                    MyUtils.showSnackbar(
+                                        mActivity!!,
+                                        countryListPojo.get(0).message,
+                                        ll_mainPassNationality
+                                    )
+                                }, 2000)
 
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
-                                }
-
-                            } else {
-                                btn_addNationality.endAnimation()
-                                MyUtils.showSnackbar(mActivity!!, countryListPojo.get(0).message, ll_mainPassNationality)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
                             }
 
                         } else {
                             btn_addNationality.endAnimation()
-                            ErrorUtil.errorMethod(ll_mainPassNationality)
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                countryListPojo.get(0).message,
+                                ll_mainPassNationality
+                            )
                         }
-                    })
+
+                    } else {
+                        btn_addNationality.endAnimation()
+                        ErrorUtil.errorMethod(ll_mainPassNationality)
+                    }
+                })
     }
 
     private fun deletePassortNationaityApi(countryName: String, countryID: String) {
@@ -343,28 +401,32 @@ class PassportNationalityFragment : Fragment(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
         deletePasportNationality.getDeleteCollecation(mActivity!!, jsonArray.toString())
-                .observe(viewLifecycleOwner,
-                    { countryListPojo ->
-                        if (countryListPojo != null) {
-                            if (countryListPojo.get(0).status.equals("true", false)) {
-                                try {
-                                    for (i in 0 until userData?.passport?.size!!) {
-                                        if (countryID.equals(userData?.passport?.get(i)?.countryID, false)) {
-                                            userData?.passport?.removeAt(i)
-                                            break
-                                        }
+            .observe(viewLifecycleOwner,
+                { countryListPojo ->
+                    if (countryListPojo != null) {
+                        if (countryListPojo.get(0).status.equals("true", false)) {
+                            try {
+                                for (i in 0 until userData?.passport?.size!!) {
+                                    if (countryID.equals(
+                                            userData?.passport?.get(i)?.countryID,
+                                            false
+                                        )
+                                    ) {
+                                        userData?.passport?.removeAt(i)
+                                        break
                                     }
-                                    StoreSessionManager(userData)
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
                                 }
-
+                                StoreSessionManager(userData)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
                             }
 
-                        } else {
-                            ErrorUtil.errorMethod(ll_mainPassNationality)
                         }
-                    })
+
+                    } else {
+                        ErrorUtil.errorMethod(ll_mainPassNationality)
+                    }
+                })
 
     }
 
@@ -374,11 +436,11 @@ class PassportNationalityFragment : Fragment(),View.OnClickListener {
 
         val json = gson.toJson(uesedata)
         sessionManager?.create_login_session(
-                json,
-                uesedata!!.userMobile,
-                "",
-                true,
-                sessionManager!!.isEmailLogin()
+            json,
+            uesedata!!.userMobile,
+            "",
+            true,
+            sessionManager!!.isEmailLogin()
         )
 
     }
@@ -394,80 +456,91 @@ class PassportNationalityFragment : Fragment(),View.OnClickListener {
         }
         var jsonArray = JSONArray()
         jsonArray.put(jsonObject)
-        passportNationalityModel.getNationalityList(mActivity!!, false, jsonArray.toString(), "List")
-                .observe(viewLifecycleOwner,
-                    { passportListPojo ->
-                        btn_addNationality.endAnimation()
+        passportNationalityModel.getNationalityList(
+            mActivity!!,
+            false,
+            jsonArray.toString(),
+            "List"
+        )
+            .observe(viewLifecycleOwner,
+                { passportListPojo ->
+                    btn_addNationality.endAnimation()
 
-                        if (passportListPojo != null) {
-                            if (passportListPojo[0].status.equals("true", false)) {
-                                userData?.passport?.clear()
-                                userData?.passport?.addAll(passportListPojo.get(0).data)
-                                StoreSessionManager(userData)
-                                Handler().postDelayed({
-                                    (activity as MainActivity).onBackPressed()
-                                }, 2000)
-                            } else {
-
-
-                            }
-
+                    if (passportListPojo != null) {
+                        if (passportListPojo[0].status.equals("true", false)) {
+                            userData?.passport?.clear()
+                            userData?.passport?.addAll(passportListPojo.get(0).data)
+                            StoreSessionManager(userData)
+                            Handler().postDelayed({
+                                (activity as MainActivity).onBackPressed()
+                            }, 2000)
                         } else {
-                            ErrorUtil.errorMethod(ll_mainPassNationality)
+
 
                         }
-                    })
+
+                    } else {
+                        ErrorUtil.errorMethod(ll_mainPassNationality)
+
+                    }
+                })
 
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-            R.id.btn_addNationality->{
+        when (v?.id) {
+            R.id.btn_addNationality -> {
                 MyUtils.hideKeyboard1(mActivity!!)
                 if (!userData?.passport.isNullOrEmpty()) {
                     for (i in 0 until userData?.passport?.size!!) {
                         for (k in 0 until nationalityDataList?.size!!) {
-                            if (userData?.passport?.get(i)?.countryID?.equals(nationalityDataList?.get(k)?.countryID!!)!!) {
+                            if (userData?.passport?.get(i)?.countryID?.equals(
+                                    nationalityDataList?.get(
+                                        k
+                                    )?.countryID!!
+                                )!!
+                            ) {
                                 nationalityDataList?.get(k)?.isServerChecked = true
                             }
                         }
                     }
                 }
                 countryList?.clear()
-                var isAdd=false
+                var isAdd = false
                 nationalityDataList?.forEach {
 
                     if (it?.checked) {
 
                         if (!it?.isServerChecked) {
-                            isAdd=true
+                            isAdd = true
                             countryList?.add(it)
                         }
                     }
                 }
-                if(countryList.isNullOrEmpty())
-                {
+                if (countryList.isNullOrEmpty()) {
                     nationalityDataList?.forEach {
-                        if (it.checked)
-                        {
+                        if (it.checked) {
                             countryList?.add(it)
                         }
                     }
                 }
                 if (countryList?.isNullOrEmpty()!!) {
-                    MyUtils.showSnackbar(mActivity!!, "Please select country", ll_mainPassNationality)
+                    MyUtils.showSnackbar(
+                        mActivity!!,
+                        "Please select country",
+                        ll_mainPassNationality
+                    )
                 } else {
                     if (!userData?.passport.isNullOrEmpty() && !isAdd) {
 
-                        editpassportNationaityApi("Edit",userData?.passport)
+                        editpassportNationaityApi("Edit", userData?.passport)
                     } else {
                         addpassportNationaityApi("Add")
                     }
 
                 }
             }
-            R.id.btnRetry->{
+            R.id.btnRetry -> {
                 nationalityList(search_nationality.text.toString().trim())
 
             }

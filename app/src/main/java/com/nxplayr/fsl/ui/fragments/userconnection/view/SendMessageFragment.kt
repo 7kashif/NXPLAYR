@@ -23,14 +23,11 @@ import com.nxplayr.fsl.ui.fragments.userconnection.viewmodel.ChatListModel
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
-import kotlinx.android.synthetic.main.activity_dialogs.*
 import kotlinx.android.synthetic.main.common_recyclerview.*
 import kotlinx.android.synthetic.main.fragment_send_message.*
-import kotlinx.android.synthetic.main.fragment_send_message.floating_btn_connection
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
-import kotlinx.android.synthetic.main.toolbar.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -53,17 +50,17 @@ class SendMessageFragment : androidx.fragment.app.Fragment() {
     var y: Int = 0
     var sessionManager: SessionManager? = null
     var userData: SignupData? = null
-    private lateinit var  chatListModel: ChatListModel
-    private lateinit var  connectionModel: FriendListModel
+    private lateinit var chatListModel: ChatListModel
+    private lateinit var connectionModel: FriendListModel
 
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-      //  if (v == null)
-            v = inflater.inflate(R.layout.fragment_send_message, container, false)
-            return v
+        //  if (v == null)
+        v = inflater.inflate(R.layout.fragment_send_message, container, false)
+        return v
     }
 
     override fun onAttach(context: Context) {
@@ -87,13 +84,15 @@ class SendMessageFragment : androidx.fragment.app.Fragment() {
         linearLayoutManager = LinearLayoutManager(mActivity)
         if (sendMessageListData == null) {
             sendMessageListData = ArrayList()
-            sendMessageAdapter = SendMessageAdapter(mActivity!!, object : SendMessageAdapter.OnItemClick {
+            sendMessageAdapter =
+                SendMessageAdapter(mActivity!!, object : SendMessageAdapter.OnItemClick {
                     override fun onClicklisneter(pos: Int, name: String) {
-                        var  userQuickBlockID =  if (!sendMessageListData!![pos]?.userQBoxID.isNullOrEmpty())
-                            sendMessageListData!![pos]?.userQBoxID!!
-                        else
-                            return
-                        addToChatList(userQuickBlockID,sendMessageListData!![pos]?.userID)
+                        var userQuickBlockID =
+                            if (!sendMessageListData!![pos]?.userQBoxID.isNullOrEmpty())
+                                sendMessageListData!![pos]?.userQBoxID!!
+                            else
+                                return
+                        addToChatList(userQuickBlockID, sendMessageListData!![pos]?.userID)
                     }
 
                 }, sendMessageListData)
@@ -101,28 +100,42 @@ class SendMessageFragment : androidx.fragment.app.Fragment() {
             recyclerview.layoutManager = linearLayoutManager
             recyclerview.adapter = sendMessageAdapter
 
-            val divider = DividerItemDecoration(recyclerview.getContext(), DividerItemDecoration.VERTICAL)
-            divider.setDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.line_layout) }!!)
+            val divider =
+                DividerItemDecoration(recyclerview.getContext(), DividerItemDecoration.VERTICAL)
+            divider.setDrawable(context?.let {
+                ContextCompat.getDrawable(
+                    it,
+                    R.drawable.line_layout
+                )
+            }!!)
             recyclerview.addItemDecoration(divider)
 
             sendMessageListApi()
-        }else{
-            sendMessageAdapter = SendMessageAdapter(mActivity!!, object : SendMessageAdapter.OnItemClick {
-                override fun onClicklisneter(pos: Int, name: String) {
-                    var  userQuickBlockID =  if (!sendMessageListData!![pos]?.userQBoxID.isNullOrEmpty())
-                        sendMessageListData!![pos]?.userQBoxID!!
-                    else
-                        return
-                    addToChatList(userQuickBlockID,sendMessageListData!![pos]?.userID)
-                }
+        } else {
+            sendMessageAdapter =
+                SendMessageAdapter(mActivity!!, object : SendMessageAdapter.OnItemClick {
+                    override fun onClicklisneter(pos: Int, name: String) {
+                        var userQuickBlockID =
+                            if (!sendMessageListData!![pos]?.userQBoxID.isNullOrEmpty())
+                                sendMessageListData!![pos]?.userQBoxID!!
+                            else
+                                return
+                        addToChatList(userQuickBlockID, sendMessageListData!![pos]?.userID)
+                    }
 
-            }, sendMessageListData)
+                }, sendMessageListData)
 
             recyclerview.layoutManager = linearLayoutManager
             recyclerview.adapter = sendMessageAdapter
 
-            val divider = DividerItemDecoration(recyclerview.getContext(), DividerItemDecoration.VERTICAL)
-            divider.setDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.line_layout) }!!)
+            val divider =
+                DividerItemDecoration(recyclerview.getContext(), DividerItemDecoration.VERTICAL)
+            divider.setDrawable(context?.let {
+                ContextCompat.getDrawable(
+                    it,
+                    R.drawable.line_layout
+                )
+            }!!)
             recyclerview.addItemDecoration(divider)
         }
 
@@ -154,17 +167,23 @@ class SendMessageFragment : androidx.fragment.app.Fragment() {
 
             var bundle = Bundle()
             bundle.putString("fromData", "chat")
-            (activity as MainActivity).navigateTo(ChatToConnectionListFragment(), bundle, ChatToConnectionListFragment::class.java.name, true)
+            (activity as MainActivity).navigateTo(
+                ChatToConnectionListFragment(),
+                bundle,
+                ChatToConnectionListFragment::class.java.name,
+                true
+            )
 
         }
     }
 
     private fun setupViewModel() {
         chatListModel = ViewModelProvider(this@SendMessageFragment).get(ChatListModel::class.java)
-        connectionModel = ViewModelProvider(this@SendMessageFragment).get(FriendListModel::class.java)
+        connectionModel =
+            ViewModelProvider(this@SendMessageFragment).get(FriendListModel::class.java)
     }
 
-    private fun sendMessageListApi(searchWord:String="") {
+    private fun sendMessageListApi(searchWord: String = "") {
 
         ll_no_data_found.visibility = View.GONE
         nointernetMainRelativelayout.visibility = View.GONE
@@ -192,75 +211,74 @@ class SendMessageFragment : androidx.fragment.app.Fragment() {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        chatListModel.getConnectionTypeList(
-            mActivity!!, jsonArray.toString())
-                .observe(viewLifecycleOwner, { friendlistpojo ->
-                    if (friendlistpojo != null && friendlistpojo.isNotEmpty()) {
-                        isLoading = false
-                        ll_no_data_found.visibility = View.GONE
-                        nointernetMainRelativelayout.visibility = View.GONE
-                        relativeprogressBar.visibility = View.GONE
+        chatListModel.getChatList(jsonArray.toString())
+        chatListModel.chatList.observe(viewLifecycleOwner) { friendlistpojo ->
+            if (friendlistpojo != null && friendlistpojo.isNotEmpty()) {
+                isLoading = false
+                ll_no_data_found.visibility = View.GONE
+                nointernetMainRelativelayout.visibility = View.GONE
+                relativeprogressBar.visibility = View.GONE
 
-                        if (pageNo > 0) {
-                            sendMessageListData!!.removeAt(sendMessageListData!!.size - 1)
-                            sendMessageAdapter!!.notifyItemRemoved(sendMessageListData!!.size)
-                        }
-
-
-                        if (friendlistpojo[0].status.equals("true", true)) {
-                            recyclerview.visibility = View.VISIBLE
-
-                            if (pageNo == 0) {
-                                sendMessageListData?.clear()
-                            }
-
-                            sendMessageListData?.addAll(friendlistpojo[0].data!!)
+                if (pageNo > 0) {
+                    sendMessageListData!!.removeAt(sendMessageListData!!.size - 1)
+                    sendMessageAdapter!!.notifyItemRemoved(sendMessageListData!!.size)
+                }
 
 
-                            sendMessageAdapter?.notifyDataSetChanged()
-                            pageNo += 1
+                if (friendlistpojo[0].status.equals("true", true)) {
+                    recyclerview.visibility = View.VISIBLE
 
-                            if (friendlistpojo[0].data!!.size < 10) {
-                                isLastpage = true
-                            }
-                            if (!friendlistpojo[0].data!!.isNullOrEmpty()) {
-                                if (friendlistpojo[0].data!!.isNullOrEmpty()) {
-                                    ll_no_data_found.visibility = View.VISIBLE
-                                    recyclerview.visibility = View.GONE
-                                } else {
-                                    ll_no_data_found.visibility = View.GONE
-                                    recyclerview.visibility = View.VISIBLE
-                                }
-                            } else {
-                                ll_no_data_found.visibility = View.VISIBLE
-                                recyclerview.visibility = View.GONE
-                            }
+                    if (pageNo == 0) {
+                        sendMessageListData?.clear()
+                    }
+
+                    sendMessageListData?.addAll(friendlistpojo[0].data!!)
 
 
+                    sendMessageAdapter?.notifyDataSetChanged()
+                    pageNo += 1
+
+                    if (friendlistpojo[0].data!!.size < 10) {
+                        isLastpage = true
+                    }
+                    if (!friendlistpojo[0].data!!.isNullOrEmpty()) {
+                        if (friendlistpojo[0].data!!.isNullOrEmpty()) {
+                            ll_no_data_found.visibility = View.VISIBLE
+                            recyclerview.visibility = View.GONE
                         } else {
-                            relativeprogressBar.visibility = View.GONE
-
-                            if (sendMessageListData!!.isNullOrEmpty()) {
-                                ll_no_data_found.visibility = View.VISIBLE
-                                recyclerview.visibility = View.GONE
-
-                            } else {
-                                ll_no_data_found.visibility = View.GONE
-                                recyclerview.visibility = View.VISIBLE
-
-                            }
+                            ll_no_data_found.visibility = View.GONE
+                            recyclerview.visibility = View.VISIBLE
                         }
                     } else {
-                        if (activity != null) {
-                            relativeprogressBar.visibility = View.GONE
-                            ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
-                        }
+                        ll_no_data_found.visibility = View.VISIBLE
+                        recyclerview.visibility = View.GONE
                     }
-                })
+
+
+                } else {
+                    relativeprogressBar.visibility = View.GONE
+
+                    if (sendMessageListData!!.isNullOrEmpty()) {
+                        ll_no_data_found.visibility = View.VISIBLE
+                        recyclerview.visibility = View.GONE
+
+                    } else {
+                        ll_no_data_found.visibility = View.GONE
+                        recyclerview.visibility = View.VISIBLE
+
+                    }
+                }
+            } else {
+                if (activity != null) {
+                    relativeprogressBar.visibility = View.GONE
+                    ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                }
+            }
+        }
     }
 
     private fun addToChatList(userQuickBlockID: String, userID: String?) {
-        MyUtils.showProgressDialog(mActivity!!,"Please wait")
+        MyUtils.showProgressDialog(mActivity!!, "Please wait")
 
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
@@ -278,39 +296,49 @@ class SendMessageFragment : androidx.fragment.app.Fragment() {
         } catch (e: ParseException) {
             e.printStackTrace()
         }
-        connectionModel.getFriendList(mActivity!!, jsonArray.toString(), "chatTofriend").observe(this@SendMessageFragment,
-            { loginPojo ->
+        connectionModel.friendApi(jsonArray.toString(), "chatTofriend")
+        connectionModel.successFriend.observe(viewLifecycleOwner) { loginPojo ->
                 MyUtils.dismissProgressDialog()
                 if (loginPojo != null) {
 
                     if (loginPojo[0].status.equals("true", true)) {
 
-                        if (sessionManager?.getYesNoQBUser()!!){
+                        if (sessionManager?.getYesNoQBUser()!!) {
 
-                            if (!MyUtils.isLoginForQuickBlock){
+                            if (!MyUtils.isLoginForQuickBlock) {
                                 if (!MyUtils.isLoginForQuickBlockChat)
-                                    (activity as MainActivity).loginForQuickBlockChat(sessionManager?.getQbUser()!!, userQuickBlockID)
+                                    (activity as MainActivity).loginForQuickBlockChat(
+                                        sessionManager?.getQbUser()!!,
+                                        userQuickBlockID
+                                    )
                                 else
                                     (activity as MainActivity).getQBUser(userQuickBlockID, 1)
-                            } else if(!MyUtils.isLoginForQuickBlockChat)
-                                (activity as MainActivity).loginForQuickBlockChat(sessionManager?.getQbUser()!!, userQuickBlockID)
+                            } else if (!MyUtils.isLoginForQuickBlockChat)
+                                (activity as MainActivity).loginForQuickBlockChat(
+                                    sessionManager?.getQbUser()!!,
+                                    userQuickBlockID
+                                )
                             else (activity as MainActivity).getQBUser(userQuickBlockID, 1)
                         }
 
                     } else {
-                        MyUtils.showSnackbar(mActivity!!,loginPojo[0].message,nointernetMainRelativelayout)
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            loginPojo[0].message,
+                            nointernetMainRelativelayout
+                        )
                     }
                 } else {
                     MyUtils.dismissProgressDialog()
                     ErrorUtil.errorMethod(nointernetMainRelativelayout)
                 }
-            })
+            }
 
     }
 
     fun applySearch(searchKeyword: String) {
-         pageNo=0
-         sendMessageListApi(searchKeyword)
+        pageNo = 0
+        sendMessageListApi(searchKeyword)
     }
 
 

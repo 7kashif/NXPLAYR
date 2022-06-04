@@ -48,6 +48,25 @@ class DeleteAccountFragment : Fragment(),View.OnClickListener {
         return v
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngDeleteAccount.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngDeleteAccount
+            if (!sessionManager?.LanguageLabel?.lngAreYouSure.isNullOrEmpty())
+                are_you_sure.text = sessionManager?.LanguageLabel?.lngAreYouSure
+            if (!sessionManager?.LanguageLabel?.lngWeWouldhate.isNullOrEmpty())
+                we_would_here.text = sessionManager?.LanguageLabel?.lngWeWouldhate
+            if (!sessionManager?.LanguageLabel?.lngWhyAreYouLeaving.isNullOrEmpty())
+                why_are.text = sessionManager?.LanguageLabel?.lngWhyAreYouLeaving
+            if (!sessionManager?.LanguageLabel?.lngNoteRemember.isNullOrEmpty())
+                note_remember.text = sessionManager?.LanguageLabel?.lngNoteRemember
+            if (!sessionManager?.LanguageLabel?.lngCurrentPassword.isNullOrEmpty())
+                txt_edit_currentPass.hint = sessionManager?.LanguageLabel?.lngCurrentPassword
+            if (!sessionManager?.LanguageLabel?.lngProceed.isNullOrEmpty())
+                btn_deleteAccount.progressText = sessionManager?.LanguageLabel?.lngProceed
+        }
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

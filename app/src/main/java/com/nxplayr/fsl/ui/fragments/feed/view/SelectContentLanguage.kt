@@ -13,14 +13,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.R
-import com.nxplayr.fsl.ui.fragments.feed.adapter.LanguageListAdapter
 import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.ui.fragments.userlanguage.viewmodel.LanguagesModel
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
 import com.nxplayr.fsl.data.model.LanguageList
 import com.nxplayr.fsl.data.model.SignupData
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModelV2
+import com.nxplayr.fsl.ui.fragments.feed.adapter.LanguageListAdapter
+import com.nxplayr.fsl.ui.fragments.userlanguage.viewmodel.LanguagesModel
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
@@ -52,8 +52,8 @@ class SelectContentLanguage : Fragment(), View.OnClickListener {
     var langugelistAdapter: LanguageListAdapter? = null
     var selectedIds = ""
     var lastCheckedPosition = ""
-    private lateinit var  languagesModel: LanguagesModel
-    private lateinit var  loginModel: SignupModel
+    private lateinit var languagesModel: LanguagesModel
+    private lateinit var loginModel: SignupModelV2
 
 
     override fun onCreateView(
@@ -65,6 +65,18 @@ class SelectContentLanguage : Fragment(), View.OnClickListener {
             v = inflater.inflate(R.layout.fragment_select_content_language, container, false)
         }
         return v
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngContentLanguage.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngContentLanguage
+            if (!sessionManager?.LanguageLabel?.lngSelectContentLanguage.isNullOrEmpty())
+                content_preferred.text = sessionManager?.LanguageLabel?.lngSelectContentLanguage
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_update_language.progressText = sessionManager?.LanguageLabel?.lngSave
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -153,8 +165,9 @@ class SelectContentLanguage : Fragment(), View.OnClickListener {
     }
 
     private fun setupViewModel() {
-        languagesModel = ViewModelProvider(this@SelectContentLanguage).get(LanguagesModel::class.java)
-        loginModel = ViewModelProvider(this@SelectContentLanguage).get(SignupModel::class.java)
+        languagesModel =
+            ViewModelProvider(this@SelectContentLanguage).get(LanguagesModel::class.java)
+        loginModel = ViewModelProvider(this@SelectContentLanguage).get(SignupModelV2::class.java)
     }
 
     private fun languageListApi() {
@@ -272,45 +285,38 @@ class SelectContentLanguage : Fragment(), View.OnClickListener {
         }
         jsonArray.put(jsonObject)
 
-
-         loginModel.userRegistration(
-            mActivity!!,
-            false,
-            jsonArray.toString(),
-            "changeContentLanguage"
-        )
-            .observe(viewLifecycleOwner,
-                { loginPojo ->
-                    btn_update_language.endAnimation()
-                    if (loginPojo != null) {
-                        if (loginPojo.get(0).status.equals("true", true)) {
-                            try {
-                                StoreSessionManager(loginPojo[0].data[0])
-                                langugelistAdapter?.notifyDataSetChanged()
-                                Handler().postDelayed({
-                                    (activity as MainActivity).onBackPressed()
-                                }, 1000)
-                                MyUtils.showSnackbar(
-                                    mActivity!!,
-                                    loginPojo.get(0).message,
-                                    ll_sub_content_language
-                                )
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-                        } else {
-                            MyUtils.showSnackbar(
-                                mActivity!!,
-                                loginPojo.get(0).message!!,
-                                ll_sub_content_language
-                            )
-                        }
-
-                    } else {
-                        btn_update_language.endAnimation()
-                        ErrorUtil.errorMethod(ll_sub_content_language)
+        loginModel.changeContentLanguage(jsonArray.toString())
+        loginModel.changeContentLanguage.observe(viewLifecycleOwner) { loginPojo ->
+            btn_update_language.endAnimation()
+            if (loginPojo != null) {
+                if (loginPojo.get(0).status.equals("true", true)) {
+                    try {
+                        StoreSessionManager(loginPojo[0].data[0])
+                        langugelistAdapter?.notifyDataSetChanged()
+                        Handler().postDelayed({
+                            (activity as MainActivity).onBackPressed()
+                        }, 1000)
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            loginPojo.get(0).message,
+                            ll_sub_content_language
+                        )
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-                })
+                } else {
+                    MyUtils.showSnackbar(
+                        mActivity!!,
+                        loginPojo.get(0).message!!,
+                        ll_sub_content_language
+                    )
+                }
+
+            } else {
+                btn_update_language.endAnimation()
+                ErrorUtil.errorMethod(ll_sub_content_language)
+            }
+        }
 
     }
 

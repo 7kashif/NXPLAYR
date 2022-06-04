@@ -27,7 +27,7 @@ import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.data.model.UserLanguageList
 import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.FootballLevelListModel
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
+import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModelV2
 import com.nxplayr.fsl.ui.fragments.userfootballleague.adapter.FootballLanguageListAdapter
 import com.nxplayr.fsl.ui.fragments.userprofile.adapter.FootballAgeSelectAdapter
 import com.nxplayr.fsl.ui.fragments.userprofile.adapter.FootballLevelListAdapter
@@ -91,7 +91,7 @@ class UpdateUserProfileFragment : Fragment() {
     var otherUserData: SignupData? = null
     var fromProfile = ""
     private lateinit var footballLevelListModel: FootballLevelListModel
-    private lateinit var loginModel: SignupModel
+    private lateinit var loginModel: SignupModelV2
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -109,6 +109,69 @@ class UpdateUserProfileFragment : Fragment() {
         mActivity = context as AppCompatActivity
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            //BASIC DETAILS
+            if (!sessionManager?.LanguageLabel?.lngFirstName.isNullOrEmpty())
+                ti_edit_first_name.hint = sessionManager?.LanguageLabel?.lngFirstName
+            if (!sessionManager?.LanguageLabel?.lngLastName.isNullOrEmpty())
+                ti_edit_last_name.hint = sessionManager?.LanguageLabel?.lngLastName
+            if (!sessionManager?.LanguageLabel?.lngGender.isNullOrEmpty())
+                gender.text = sessionManager?.LanguageLabel?.lngGender
+            if (!sessionManager?.LanguageLabel?.lngMale.isNullOrEmpty())
+                img_select_male.text = sessionManager?.LanguageLabel?.lngMale
+            if (!sessionManager?.LanguageLabel?.lngFemale.isNullOrEmpty())
+                img_select_female.text = sessionManager?.LanguageLabel?.lngFemale
+            if (!sessionManager?.LanguageLabel?.lngDOB.isNullOrEmpty())
+                ti_edit_dateofbirth.hint = sessionManager?.LanguageLabel?.lngDOB
+            if (!sessionManager?.LanguageLabel?.lngBirthPlace.isNullOrEmpty())
+                ti_edit_place_of_birth.hint = sessionManager?.LanguageLabel?.lngBirthPlace
+            if (!sessionManager?.LanguageLabel?.lngUpdate.isNullOrEmpty())
+                btnUpdateBasicDetail.progressText = sessionManager?.LanguageLabel?.lngUpdate
+            //FOOTBALL AGE CATEGORY
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_save_age.progressText = sessionManager?.LanguageLabel?.lngSave
+            //HEIGHT & WEIGHT
+            if (!sessionManager?.LanguageLabel?.lngHeight.isNullOrEmpty() && !sessionManager?.LanguageLabel?.lngCm.isNullOrEmpty())
+                ti_edittext_height.hint = sessionManager?.LanguageLabel?.lngHeight + "(" + sessionManager?.LanguageLabel?.lngCm + ")"
+            if (!sessionManager?.LanguageLabel?.lngWeight.isNullOrEmpty() && !sessionManager?.LanguageLabel?.lngKg.isNullOrEmpty())
+                ti_edittext_weight.hint = sessionManager?.LanguageLabel?.lngWeight + "(" + sessionManager?.LanguageLabel?.lngKg + ")"
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_save_heightWeight.progressText = sessionManager?.LanguageLabel?.lngSave
+            //FOOTBALL LEVEL
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_save_footballLevel.progressText = sessionManager?.LanguageLabel?.lngSave
+            //FOOTBALL BEST FOOT
+            if (!sessionManager?.LanguageLabel?.lngLeft.isNullOrEmpty())
+                tv_leftFeet.text = sessionManager?.LanguageLabel?.lngLeft
+            if (!sessionManager?.LanguageLabel?.lngRight.isNullOrEmpty())
+                selectRightFeet.text = sessionManager?.LanguageLabel?.lngRight
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_save_footprint.progressText = sessionManager?.LanguageLabel?.lngSave
+            if (!sessionManager?.LanguageLabel?.lngLeft.isNullOrEmpty() &&
+                !sessionManager?.LanguageLabel?.lngRight.isNullOrEmpty() &&
+                !sessionManager?.LanguageLabel?.lngAnd.isNullOrEmpty())
+            tv_rightLeft.text = sessionManager?.LanguageLabel?.lngLeft + " " + sessionManager?.LanguageLabel?.lngAnd + " " + sessionManager?.LanguageLabel?.lngRight
+            //NAME AND BIO
+            if (!sessionManager?.LanguageLabel?.lngName.isNullOrEmpty())
+                tv_userFullName.text = sessionManager?.LanguageLabel?.lngName
+            if (!sessionManager?.LanguageLabel?.lngBio.isNullOrEmpty())
+                tv_bio.text = sessionManager?.LanguageLabel?.lngBio
+            if (!sessionManager?.LanguageLabel?.lngTellUsBriflyYourself.isNullOrEmpty())
+                tv_about_yourself.text = sessionManager?.LanguageLabel?.lngTellUsBriflyYourself
+            if (!sessionManager?.LanguageLabel?.lngChangeRole.isNullOrEmpty())
+                userRole.text = sessionManager?.LanguageLabel?.lngChangeRole
+            if (!sessionManager?.LanguageLabel?.lngFirstName.isNullOrEmpty())
+                ti_edit_userFirstname.hint = sessionManager?.LanguageLabel?.lngFirstName
+            if (!sessionManager?.LanguageLabel?.lngLastName.isNullOrEmpty())
+                ti_edit_userLastname.hint = sessionManager?.LanguageLabel?.lngLastName
+            if (!sessionManager?.LanguageLabel?.lngWriteAboutYourself.isNullOrEmpty())
+                ti_edit_write_about_yourself.hint = sessionManager?.LanguageLabel?.lngWriteAboutYourself
+            if (!sessionManager?.LanguageLabel?.lngUpdate.isNullOrEmpty())
+                btn_updateNameBio.progressText = sessionManager?.LanguageLabel?.lngUpdate
+        }
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -152,32 +215,64 @@ class UpdateUserProfileFragment : Fragment() {
         if (type.equals("BasicDetails")) {
             icon_edit!!.visibility = View.VISIBLE
             tvToolbarTitle.text = getString(R.string.basic_details)
+            if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+                if (!sessionManager?.LanguageLabel?.lngBasicDetail.isNullOrEmpty())
+                    tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngBasicDetail
+            }
             layout_basicDetails.visibility = View.VISIBLE
             basicDetails()
 
         } else if (type.equals("footballAgeCat")) {
             tvToolbarTitle.text = getString(R.string.football_age_category)
+            if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+                if (!sessionManager?.LanguageLabel?.lngFootballAgeCategory.isNullOrEmpty())
+                    tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngFootballAgeCategory
+            }
             layout_footballAgeCategory.visibility = View.VISIBLE
             ageCategory()
 
         } else if (type.equals("heightWeight")) {
             tvToolbarTitle.text = getString(R.string.height_weight)
+            if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+                if (!sessionManager?.LanguageLabel?.lngHeight.isNullOrEmpty() &&
+                    !sessionManager?.LanguageLabel?.lngWeight.isNullOrEmpty() &&
+                    !sessionManager?.LanguageLabel?.lngAnd.isNullOrEmpty()
+                )
+                    tvToolbarTitle.text =  sessionManager?.LanguageLabel?.lngHeight +
+                            " " +  sessionManager?.LanguageLabel?.lngAnd + " " + sessionManager?.LanguageLabel?.lngWeight
+            }
             layout_heigntWeight.visibility = View.VISIBLE
             setHeightWeight()
 
         } else if (type.equals("footballLevel")) {
             tvToolbarTitle.text = getString(R.string.football_level)
+            if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+                if (!sessionManager?.LanguageLabel?.lngFootballLevel.isNullOrEmpty())
+                    tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngFootballLevel
+            }
             layout_footballLevel.visibility = View.VISIBLE
 
             footballLevel()
 
         } else if (type.equals("FootballbestFeet")) {
             tvToolbarTitle.text = getString(R.string.best_foot_feet)
+            if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+                if (!sessionManager?.LanguageLabel?.lngBestFootFeet.isNullOrEmpty())
+                    tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngBestFootFeet
+            }
             layout_bestFootPrint.visibility = View.VISIBLE
             bestFootFeet()
 
         } else if (type.equals("NameAndBio")) {
             tvToolbarTitle.text = getString(R.string.name_bio)
+            if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+                if (!sessionManager?.LanguageLabel?.lngName.isNullOrEmpty() &&
+                    !sessionManager?.LanguageLabel?.lngAnd.isNullOrEmpty() &&
+                    !sessionManager?.LanguageLabel?.lngBio.isNullOrEmpty()
+                )
+                    tvToolbarTitle.text =
+                        sessionManager?.LanguageLabel?.lngName + " " + sessionManager?.LanguageLabel?.lngAnd + " " + sessionManager?.LanguageLabel?.lngBio
+            }
             layout_nameandBio.visibility = View.VISIBLE
             NameAndBio()
         }
@@ -187,7 +282,7 @@ class UpdateUserProfileFragment : Fragment() {
         footballLevelListModel = ViewModelProvider(this@UpdateUserProfileFragment).get(
             FootballLevelListModel::class.java
         )
-        loginModel = ViewModelProvider(this@UpdateUserProfileFragment).get(SignupModel::class.java)
+        loginModel = ViewModelProvider(this@UpdateUserProfileFragment).get(SignupModelV2::class.java)
 
     }
 
@@ -260,10 +355,16 @@ class UpdateUserProfileFragment : Fragment() {
 
     fun basicDetails() {
 
-//        btnUpdateBasicDetail.visibility = View.VISIBLE
+
+        btnUpdateBasicDetail.visibility = View.VISIBLE
         selectGender = userData?.userGender!!
         edit_first_name.setText(userData?.userFirstName)
         edit_last_name.setText(userData?.userLastName)
+
+        btnUpdateBasicDetail.strokeColor = (resources.getColor(R.color.grayborder1))
+        btnUpdateBasicDetail.backgroundTint = (resources.getColor(R.color.transperent1))
+        btnUpdateBasicDetail.textColor = (resources.getColor(R.color.colorPrimary))
+        btnUpdateBasicDetail.isEnabled = false
 
         try {
             var date = MyUtils.formatDate(userData?.userDOB!!, "yyyy-MM-dd", "dd MMM yyyy")
@@ -292,11 +393,14 @@ class UpdateUserProfileFragment : Fragment() {
             img_select_female.isEnabled = true
             edit_place_of_birth.isEnabled = true
 
+            btnUpdateBasicDetail.backgroundTint = (resources.getColor(R.color.colorPrimary))
+            btnUpdateBasicDetail.textColor = resources.getColor(R.color.black)
+            btnUpdateBasicDetail.strokeColor = resources.getColor(R.color.colorPrimary)
+            btnUpdateBasicDetail.isEnabled = true
+
         }
 
-        btnUpdateBasicDetail.backgroundTint = (resources.getColor(R.color.colorPrimary))
-        btnUpdateBasicDetail.textColor = resources.getColor(R.color.black)
-        btnUpdateBasicDetail.strokeColor = resources.getColor(R.color.colorPrimary)
+
 
         btnUpdateBasicDetail.setOnClickListener {
             checkValidation()
@@ -1215,12 +1319,8 @@ class UpdateUserProfileFragment : Fragment() {
                 e.printStackTrace()
             }
             jsonArray.put(jsonObject)
-            loginModel.userRegistration(
-                mActivity!!,
-                false,
-                jsonArray.toString(),
-                "update_userProfile"
-            )
+            loginModel.userUpdateProfile(jsonArray.toString())
+            loginModel.userUpdateProfile
                 .observe(mActivity!!,
                     androidx.lifecycle.Observer { loginPojo ->
                         if (loginPojo != null) {

@@ -222,6 +222,7 @@ class LinkedinActivity(context1: Context, var mListener: LinkedinData) {
             )
             .build()
         val client = retrofit.create<RestApi>(RestApi::class.java)
+
         val call = client.getUserEmail("Bearer $token")
         call.enqueue(object : retrofit2.Callback<LinkedInEmailPojo> {
             override fun onFailure(call: retrofit2.Call<LinkedInEmailPojo>, t: Throwable) {

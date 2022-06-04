@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,26 +13,26 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.R
+import com.nxplayr.fsl.data.api.RestClient
+import com.nxplayr.fsl.data.model.CreatePostPrivacyPojo
+import com.nxplayr.fsl.data.model.FriendListData
+import com.nxplayr.fsl.data.model.SignupData
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.fragments.blockeduser.viewmodel.BlockUserListModel
+import com.nxplayr.fsl.ui.fragments.bottomsheet.PrivacyBottomSheetFragment
+import com.nxplayr.fsl.ui.fragments.friendrequest.viewmodel.FriendListModel
+import com.nxplayr.fsl.ui.fragments.otheruserprofile.view.OtherUserProfileMainFragment
+import com.nxplayr.fsl.ui.fragments.ownprofile.view.ProfileMainFragment
+import com.nxplayr.fsl.ui.fragments.postcomment.view.RepostReasonFragment
 import com.nxplayr.fsl.ui.fragments.userconnection.adapter.AlphaBetAdapter
 import com.nxplayr.fsl.ui.fragments.userconnection.adapter.ConnectionAdapter
-import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.data.model.*
-import com.nxplayr.fsl.ui.fragments.otheruserprofile.view.OtherUserProfileMainFragment
-import com.nxplayr.fsl.ui.fragments.bottomsheet.PrivacyBottomSheetFragment
-import com.nxplayr.fsl.ui.fragments.postcomment.view.RepostReasonFragment
-import com.nxplayr.fsl.ui.fragments.ownprofile.view.ProfileMainFragment
-import com.nxplayr.fsl.ui.fragments.blockeduser.viewmodel.BlockUserListModel
-import com.nxplayr.fsl.ui.fragments.friendrequest.viewmodel.FriendListModel
 import com.nxplayr.fsl.util.*
 import kotlinx.android.synthetic.main.common_recyclerview.*
 import kotlinx.android.synthetic.main.fragment_connection_list.*
-import kotlinx.android.synthetic.main.fragment_other_user_profile.*
 import kotlinx.android.synthetic.main.fragment_receive_request.*
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
@@ -116,6 +115,18 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
         return v
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngNoInternet.isNullOrEmpty())
+                nointernettextview.text = sessionManager?.LanguageLabel?.lngNoInternet
+            if (!sessionManager?.LanguageLabel?.lngNoDataFound.isNullOrEmpty())
+                nodatafoundtextview.text = sessionManager?.LanguageLabel?.lngNoDataFound.toString()
+            if (!sessionManager?.LanguageLabel?.lngSearch.isNullOrEmpty())
+                search_connection.hint = sessionManager?.LanguageLabel?.lngSearch.toString()
+        }
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mActivity = context as AppCompatActivity
@@ -190,10 +201,8 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        connectionModel.getFriendList(
-            mActivity!!, jsonArray.toString(), "friend_list"
-        )
-            .observe(viewLifecycleOwner) { friendlistpojo ->
+        connectionModel.friendApi(jsonArray.toString(), "friend_list")
+        connectionModel.successFriend.observe(viewLifecycleOwner) { friendlistpojo ->
 
                 if (friendlistpojo != null && friendlistpojo.isNotEmpty()) {
                     isLoading = false
@@ -260,7 +269,7 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
                 } else {
                     if (activity != null) {
                         relativeprogressBar.visibility = View.GONE
-                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                        ErrorUtil.errorView(requireActivity(), nointernetMainRelativelayout)
                     }
                 }
             }
@@ -433,29 +442,45 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
     }
 
     private fun getPrivacy() {
+        var sendMsg = resources.getString(R.string.send_message)
+        var disconnect = resources.getString(R.string.disconnect)
+        var blockUser = resources.getString(R.string.block_this_user)
+        var report = resources.getString(R.string.report)
+
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngSendMessage.isNullOrEmpty())
+                sendMsg = sessionManager?.LanguageLabel?.lngSendMessage.toString()
+            if (!sessionManager?.LanguageLabel?.lngDisconnect.isNullOrEmpty())
+                disconnect = sessionManager?.LanguageLabel?.lngDisconnect.toString()
+            if (!sessionManager?.LanguageLabel?.lngBlockUser.isNullOrEmpty())
+                blockUser = sessionManager?.LanguageLabel?.lngBlockUser.toString()
+            if (!sessionManager?.LanguageLabel?.lngReport.isNullOrEmpty())
+                report = sessionManager?.LanguageLabel?.lngReport.toString()
+        }
+
         val privacyList: ArrayList<CreatePostPrivacyPojo> = ArrayList()
         privacyList.clear()
         privacyList.add(
             CreatePostPrivacyPojo(
-                resources.getString(R.string.send_message),
+                sendMsg,
                 R.drawable.popup_send_messages_icon
             )
         )
         privacyList.add(
             CreatePostPrivacyPojo(
-                resources.getString(R.string.disconnect),
+                disconnect,
                 +R.drawable.connection_popup_disconnect
             )
         )
         privacyList.add(
             CreatePostPrivacyPojo(
-                resources.getString(R.string.block_this_user),
+                blockUser,
                 R.drawable.connection_popup_block
             )
         )
         privacyList.add(
             CreatePostPrivacyPojo(
-                resources.getString(R.string.report),
+                report,
                 R.drawable.popup_report_icon
             )
         )
@@ -588,29 +613,27 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
         }
         jsonArray.put(jsonObject)
 
-        connectionModel.getFriendList(mActivity!!, jsonArray.toString(), "friend_list")
-            .observe(
-                this@ConnectionListFragment!!
-            ) { disconnectUserpojo ->
-                if (disconnectUserpojo != null && disconnectUserpojo.isNotEmpty()) {
-                    if (disconnectUserpojo[0].status.equals("true", false)) {
-                        MyUtils.dismissProgressDialog()
-                        pageNo = 0
-                        setupObserver()
-                    } else {
-                        MyUtils.dismissProgressDialog()
-                        MyUtils.showSnackbar(
-                            mActivity!!,
-                            disconnectUserpojo[0].message,
-                            ll_mainConnectionList
-                        )
-                    }
-
+        connectionModel.friendApi(jsonArray.toString(), "friend_list")
+        connectionModel.successFriend.observe(viewLifecycleOwner) { disconnectUserpojo ->
+            if (disconnectUserpojo != null && disconnectUserpojo.isNotEmpty()) {
+                if (disconnectUserpojo[0].status.equals("true", false)) {
+                    MyUtils.dismissProgressDialog()
+                    pageNo = 0
+                    setupObserver()
                 } else {
                     MyUtils.dismissProgressDialog()
-                    (activity as MainActivity).errorMethod()
+                    MyUtils.showSnackbar(
+                        mActivity!!,
+                        disconnectUserpojo[0].message,
+                        ll_mainConnectionList
+                    )
                 }
+
+            } else {
+                MyUtils.dismissProgressDialog()
+                (activity as MainActivity).errorMethod()
             }
+        }
     }
 
     private fun setConnectionApi(connectioniD: String, uesrId: String, pos: Int, menuname: String) {
@@ -630,34 +653,33 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
         }
         jsonArray.put(jsonObject)
 
-        connectionModel.getFriendList(mActivity!!, jsonArray.toString(), "change_friendList")
-            .observe(this@ConnectionListFragment!!,
-                androidx.lifecycle.Observer { connectionListpojo ->
-                    if (connectionListpojo != null && connectionListpojo.isNotEmpty()) {
+        connectionModel.friendApi(jsonArray.toString(), "change_friendList")
+        connectionModel.successFriend.observe(viewLifecycleOwner) { connectionListpojo ->
+            if (connectionListpojo != null && connectionListpojo.isNotEmpty()) {
 
-                        if (connectionListpojo[0].status.equals("true", false)) {
-                            MyUtils.dismissProgressDialog()
+                if (connectionListpojo[0].status.equals("true", false)) {
+                    MyUtils.dismissProgressDialog()
 
 
-                            when (tab_position) {
-                                0 -> {
-                                    if (parentFragment != null && parentFragment is ConnectionsFragment) {
-                                        (parentFragment as ConnectionsFragment?)?.csetupTabIcons(
-                                            connectionListpojo[0].counts?.get(0)!!.all!![0]
-                                        )
-                                    }
-                                    connection_list?.get(pos)?.connectionType =
-                                        connectionListpojo!![0].data!![0]!!.connectionType
-                                    connectionAdapter?.notifyItemChanged(pos)
-                                }
-                                else -> {
-                                    pageNo = 0
-                                    setupObserver()
+                    when (tab_position) {
+                        0 -> {
+                            if (parentFragment != null && parentFragment is ConnectionsFragment) {
+                                (parentFragment as ConnectionsFragment?)?.csetupTabIcons(
+                                    connectionListpojo[0].counts?.get(0)!!.all!![0]
+                                )
+                            }
+                            connection_list?.get(pos)?.connectionType =
+                                connectionListpojo!![0].data!![0]!!.connectionType
+                            connectionAdapter?.notifyItemChanged(pos)
+                        }
+                        else -> {
+                            pageNo = 0
+                            setupObserver()
 //                                    if (parentFragment != null && parentFragment is ConnectionsFragment) {
 //                                        pageNo = 0
 //                                        (parentFragment as ConnectionsFragment).updateViewPager()
 //                                    }
-                                }
+                        }
 //                                1 -> {
 //                                    if (connection_list?.get(pos)?.connectionType?.equals(
 //                                            connectionListpojo!![0].data!![0]!!.connectionType
@@ -746,22 +768,22 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
 //                                        }
 //                                    }
 //                                }
-                            }
-
-
-                        } else {
-                            MyUtils.dismissProgressDialog()
-                            MyUtils.showSnackbar(
-                                mActivity!!,
-                                connectionListpojo[0].message,
-                                llRecevie
-                            )
-                        }
-                    } else {
-                        MyUtils.dismissProgressDialog()
-                        (activity as MainActivity).errorMethod()
                     }
-                })
+
+
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    MyUtils.showSnackbar(
+                        mActivity!!,
+                        connectionListpojo[0].message,
+                        llRecevie
+                    )
+                }
+            } else {
+                MyUtils.dismissProgressDialog()
+                (activity as MainActivity).errorMethod()
+            }
+        }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -797,45 +819,42 @@ class ConnectionListFragment : Fragment(), PrivacyBottomSheetFragment.selectPriv
             e.printStackTrace()
         }
 
-        var signupModel =
-            ViewModelProviders.of(this@ConnectionListFragment).get(FriendListModel::class.java)
-        signupModel.getFriendList(mActivity!!, jsonArray.toString(), "chatTofriend")
-            .observe(this@ConnectionListFragment
-            ) { loginPojo ->
-                MyUtils.dismissProgressDialog()
-                if (loginPojo != null) {
+        connectionModel.friendApi(jsonArray.toString(), "chatTofriend")
+        connectionModel.successFriend.observe(viewLifecycleOwner) { loginPojo ->
+            MyUtils.dismissProgressDialog()
+            if (loginPojo != null) {
 
-                    if (loginPojo[0].status.equals("true", true)) {
+                if (loginPojo[0].status.equals("true", true)) {
 
-                        if (sessionManager?.getYesNoQBUser()!!) {
+                    if (sessionManager?.getYesNoQBUser()!!) {
 
-                            if (!MyUtils.isLoginForQuickBlock) {
-                                if (!MyUtils.isLoginForQuickBlockChat)
-                                    (mActivity as MainActivity).loginForQuickBlockChat(
-                                        sessionManager?.getQbUser()!!,
-                                        userQuickBlockID
-                                    )
-                                else
-                                    (mActivity as MainActivity).getQBUser(userQuickBlockID, 1)
-                            } else if (!MyUtils.isLoginForQuickBlockChat)
+                        if (!MyUtils.isLoginForQuickBlock) {
+                            if (!MyUtils.isLoginForQuickBlockChat)
                                 (mActivity as MainActivity).loginForQuickBlockChat(
                                     sessionManager?.getQbUser()!!,
                                     userQuickBlockID
                                 )
-                            else (mActivity as MainActivity).getQBUser(userQuickBlockID, 1)
-                        }
-                    } else {
-                        MyUtils.showSnackbar(
-                            mActivity!!,
-                            loginPojo[0].message,
-                            nointernetMainRelativelayout
-                        )
+                            else
+                                (mActivity as MainActivity).getQBUser(userQuickBlockID, 1)
+                        } else if (!MyUtils.isLoginForQuickBlockChat)
+                            (mActivity as MainActivity).loginForQuickBlockChat(
+                                sessionManager?.getQbUser()!!,
+                                userQuickBlockID
+                            )
+                        else (mActivity as MainActivity).getQBUser(userQuickBlockID, 1)
                     }
                 } else {
-                    MyUtils.dismissProgressDialog()
-                    ErrorUtil.errorMethod(nointernetMainRelativelayout)
+                    MyUtils.showSnackbar(
+                        mActivity!!,
+                        loginPojo[0].message,
+                        nointernetMainRelativelayout
+                    )
                 }
+            } else {
+                MyUtils.dismissProgressDialog()
+                ErrorUtil.errorMethod(nointernetMainRelativelayout)
             }
+        }
 
     }
 

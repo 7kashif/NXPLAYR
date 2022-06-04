@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.PostLikeViewListItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
 
@@ -34,7 +37,7 @@ class PostLikeListModel : ViewModel() {
 
     private fun getFollowersApi(): LiveData<List<PostLikeViewListItem>> {
         val data = MutableLiveData<List<PostLikeViewListItem>>()
-
+        viewModelScope.launch(Dispatchers.IO) {
         var call: Call<List<PostLikeViewListItem>>? = null
         when (from) {
             "postViewList" -> {
@@ -58,7 +61,7 @@ class PostLikeListModel : ViewModel() {
                 data.value = null
             }
 
-        })
+        })}
 
         return data
     }

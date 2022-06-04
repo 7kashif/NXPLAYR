@@ -27,7 +27,6 @@
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
                 <LinearLayout
-
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -39,14 +38,6 @@
                         android:orientation="horizontal"
                         android:padding="@dimen/_10sdp"
                         android:visibility="visible">
-
-                        <!--<View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="@dimen/_5sdp"
-                            android:layout_marginRight="@dimen/_5sdp"
-                            android:background="@color/gray_text_color" />-->
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/post_gridIcon"
@@ -60,63 +51,39 @@
                             android:layout_width="@dimen/_30sdp"
                             android:layout_height="@dimen/_30sdp"
                             android:padding="@dimen/_2sdp"
-                            android:src="@drawable/list_view_unselected" />
+                            android:src="@drawable/list_icon_unselected" />
 
                     </LinearLayout>
 
-                    <LinearLayout
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/tablayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:backgroundTint="@android:color/transparent"
+                        android:scrollbars="horizontal"
+                        app:tabGravity="fill"
+                        app:tabIndicatorColor="@color/colorPrimary"
+                        app:tabIndicatorHeight="@dimen/_2sdp"
+                        app:tabMode="fixed"
+                        app:tabPadding="0dp"
+                        app:tabSelectedTextColor="@color/colorPrimary"
+                        app:tabTextAppearance="@style/MyCustomTabText"
+                        app:tabTextColor="@color/white">
+
+                    </com.google.android.material.tabs.TabLayout>
+
+                    <androidx.viewpager.widget.ViewPager
+                        android:id="@+id/viewpager"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:layout_marginTop="@dimen/_10sdp">
 
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <com.google.android.material.tabs.TabLayout
-                                android:id="@+id/tablayout"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="@android:color/transparent"
-                                android:backgroundTint="@android:color/transparent"
-                                android:scrollbars="horizontal"
-                                app:tabGravity="fill"
-                                app:tabIndicatorColor="@color/colorPrimary"
-                                app:tabIndicatorHeight="@dimen/_2sdp"
-                                app:tabMode="fixed"
-                                app:tabPadding="0dp"
-                                app:tabSelectedTextColor="@color/colorPrimary"
-                                app:tabTextAppearance="@style/MyCustomTabText"
-                                app:tabTextColor="@color/white">
-
-                            </com.google.android.material.tabs.TabLayout>
-
-
-                        </LinearLayout>
-
-                        <RelativeLayout
-
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <androidx.viewpager.widget.ViewPager
-                                android:id="@+id/viewpager"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginTop="@dimen/_10sdp">
-
-                            </androidx.viewpager.widget.ViewPager>
-
-                        </RelativeLayout>
-                    </LinearLayout>
+                    </androidx.viewpager.widget.ViewPager>
 
                 </LinearLayout>
 
             </androidx.core.widget.NestedScrollView>
-
 
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/appbar"
@@ -132,8 +99,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fitsSystemWindows="true"
-                    app:layout_scrollFlags="scroll|enterAlways">-->
-
+                    app:layout_scrollFlags="scroll|enterAlways">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -206,7 +172,9 @@
                                         app:actualImageScaleType="fitXY"
                                         app:placeholderImage="@drawable/profile_pic_img"
                                         app:placeholderImageScaleType="fitXY"
-                                        app:roundAsCircle="true" />
+                                        app:roundAsCircle="true"
+                                        app:roundingBorderColor="@color/colorPrimary"
+                                        app:roundingBorderWidth="1dp" />
 
                                     <androidx.appcompat.widget.AppCompatImageView
                                         android:id="@+id/edit_image"
@@ -241,6 +209,15 @@
                                     android:textColorHint="@color/white" />
 
                                 <androidx.appcompat.widget.AppCompatImageView
+                                    android:id="@+id/verified"
+                                    android:layout_width="@dimen/_15sdp"
+                                    android:layout_height="@dimen/_15sdp"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="@dimen/_5sdp"
+                                    android:src="@drawable/verified_icon"
+                                    android:visibility="gone" />
+
+                                <androidx.appcompat.widget.AppCompatImageView
                                     android:id="@+id/image_update_profile"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -262,7 +239,6 @@
                                 android:textSize="@dimen/_14ssp" />
 
                         </LinearLayout>
-
 
                         <com.google.android.material.internal.BaselineLayout
                             android:layout_width="match_parent"
@@ -293,8 +269,8 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
-                                    tools:text="250"
-                                    android:textSize="@dimen/_16ssp" />
+                                    android:textSize="@dimen/_16ssp"
+                                    tools:text="250" />
 
                                 <TextView
                                     android:id="@+id/tv_connections_tile"
@@ -336,7 +312,6 @@
 
                             </LinearLayout>
 
-
                             <LinearLayout
                                 android:id="@+id/layout_following"
                                 android:layout_width="match_parent"
@@ -366,7 +341,6 @@
 
                             </LinearLayout>
 
-
                         </LinearLayout>
 
                         <com.google.android.material.internal.BaselineLayout
@@ -377,9 +351,7 @@
 
                     </LinearLayout>
 
-
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
-
 
             </com.google.android.material.appbar.AppBarLayout>
 
@@ -396,7 +368,6 @@
             android:clickable="true"
             android:src="@drawable/floting_icon"
             app:layout_anchorGravity="bottom|center" />
-
 
         <include
             android:id="@+id/camera_galleryLayout"

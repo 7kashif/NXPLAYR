@@ -414,48 +414,48 @@ class FilterActivity : AppCompatActivity(), View.OnClickListener {
         }
         jsonArray.put(jsonObject)
 
-        playerPositionModel.getPlayerPosList(this@FilterActivity, false, jsonArray.toString()).observe(this@FilterActivity,
-            { specialityPojo ->
-                if (specialityPojo != null && specialityPojo.isNotEmpty()) {
-                    MyUtils.dismissProgressDialog()
-                    isLoading = false
-                    //   remove progress item
-                    ll_no_data_found.visibility = View.GONE
-                    nointernetMainRelativelayout.visibility = View.GONE
-                    relativeprogressBar.visibility = View.GONE
-                    recyclerview.visibility = (View.VISIBLE)
+        playerPositionModel.getPlayerPosList(this@FilterActivity, false, jsonArray.toString()).observe(this@FilterActivity
+        ) { specialityPojo ->
+            if (specialityPojo != null && specialityPojo.isNotEmpty()) {
+                MyUtils.dismissProgressDialog()
+                isLoading = false
+                //   remove progress item
+                ll_no_data_found.visibility = View.GONE
+                nointernetMainRelativelayout.visibility = View.GONE
+                relativeprogressBar.visibility = View.GONE
+                recyclerview.visibility = (View.VISIBLE)
 
-                    if (pageNumberPitchPos > 0) {
-                        listSubItem!!.removeAt(listSubItem!!.size - 1)
-                        filterSubItemAdapter?.notifyItemRemoved(listSubItem!!.size)
-                    }
-                    if (specialityPojo[0].status.equals("true", false)) {
-
-                        if (pageNumberPitchPos == 0)
-                            footballTypeItemList?.clear()
-
-                        pitchPositionItemList.addAll(specialityPojo[0].data)
-
-                        pageNumberPitchPos += 1
-                        if (specialityPojo[0].data!!.size < 100) {
-                            isLastpage = true
-                        }
-                        getPitchPosition(specialityPojo[0].data as ArrayList<PlayerPosData>)
-                    }
-
-                    relativeprogressBar.visibility = View.GONE
-
-                    if (pitchPositionItemList?.size == 0) {
-                        ll_no_data_found.visibility = View.VISIBLE
-                        recyclerview.visibility = View.GONE
-                    } else {
-                        ll_no_data_found.visibility = View.GONE
-                        recyclerview.visibility = View.VISIBLE
-                    }
-                } else {
-                    errromethod1()
+                if (pageNumberPitchPos > 0) {
+                    listSubItem!!.removeAt(listSubItem!!.size - 1)
+                    filterSubItemAdapter?.notifyItemRemoved(listSubItem!!.size)
                 }
-            })
+                if (specialityPojo[0].status.equals("true", false)) {
+
+                    if (pageNumberPitchPos == 0)
+                        footballTypeItemList?.clear()
+
+                    pitchPositionItemList.addAll(specialityPojo[0].data)
+
+                    pageNumberPitchPos += 1
+                    if (specialityPojo[0].data!!.size < 100) {
+                        isLastpage = true
+                    }
+                    getPitchPosition(specialityPojo[0].data as ArrayList<PlayerPosData>)
+                }
+
+                relativeprogressBar.visibility = View.GONE
+
+                if (pitchPositionItemList?.size == 0) {
+                    ll_no_data_found.visibility = View.VISIBLE
+                    recyclerview.visibility = View.GONE
+                } else {
+                    ll_no_data_found.visibility = View.GONE
+                    recyclerview.visibility = View.VISIBLE
+                }
+            } else {
+                errromethod1()
+            }
+        }
     }
 
     private fun getFootballLevelApi() {

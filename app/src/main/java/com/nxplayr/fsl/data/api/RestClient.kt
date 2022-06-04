@@ -8,18 +8,17 @@ import com.nxplayr.fsl.application.MyApplication
 import com.nxplayr.fsl.util.SessionManager
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.IOException
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class RestClient {
 
 
     companion object {
+        private lateinit var builder: OkHttpClient.Builder
         val apiType = "Android"
         const val apiVersion = "1.0"
 
@@ -81,15 +80,20 @@ class RestClient {
         }
 
         fun setOkHttpClientBuilder(): OkHttpClient.Builder {
-            val builder = OkHttpClient.Builder()
+            builder = OkHttpClient.Builder()
             builder.connectTimeout(300, TimeUnit.SECONDS)
             builder.readTimeout(80, TimeUnit.SECONDS)
             builder.writeTimeout(90, TimeUnit.SECONDS)
             builder.addInterceptor(object : Interceptor {
                 override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
                     val request = chain.request().newBuilder()
-                    sessionManager?.getSelectedLanguage()
-                        ?.let { request.addHeader("x-locale", it.languageCode) }
+
+                    val selectedLanguage = sessionManager?.getSelectedLanguage()
+                    if (selectedLanguage != null) selectedLanguage.let {
+                        request.addHeader("x-locale", it.languageCode)
+                    } else {
+                        request.addHeader("x-locale", Locale.getDefault().language)
+                    }
                     request.addHeader("x-device-id", uniqueDeviceId)
                     return chain.proceed(request.build())
                 }
@@ -120,13 +124,17 @@ class RestClient {
                 .build()
         }
 
+        fun cancelAll() {
+//            if (builder != null) {
+//                builder
+//            }
+        }
 
         fun get(): RestApi? {
             if (REST_CLIENT == null) {
                 REST_CLIENT = restAdapter!!.create(
                     RestApi::class.java
                 )
-
             }
             return REST_CLIENT
         }

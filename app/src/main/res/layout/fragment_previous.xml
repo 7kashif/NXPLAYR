@@ -47,6 +47,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/Font.SubTitle_blue"
+                android:id="@+id/tv_selected_club_prev"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
@@ -111,7 +112,7 @@
 
 
             <TextView
-                android:id="@+id/tv_skill_added"
+                android:id="@+id/tv_suggestions_prev"
                 style="@style/Font.SubTitle_blue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

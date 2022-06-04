@@ -110,7 +110,7 @@
                     android:layout_gravity="center"
                     android:layout_marginRight="@dimen/_5sdp"
                     android:padding="@dimen/_3sdp"
-                    android:src="@drawable/list_icon_selected" />
+                    android:src="@drawable/list_icon_unselected" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/img_sublistView2"

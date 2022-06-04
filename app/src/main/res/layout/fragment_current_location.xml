@@ -20,7 +20,7 @@
         android:layout_marginStart="@dimen/_16sdp"
         android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginEnd="@dimen/_16sdp"
-        android:paddingStart="@dimen/_5sdp"
+        android:paddingStart="@dimen/_15sdp"
         android:layout_marginBottom="@dimen/_10sdp"
         android:background="@drawable/round_search_box_bg"
         android:drawableRight="@drawable/search_icon"
@@ -79,6 +79,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/current_location"
                 style="@style/Font.SubTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -87,6 +88,7 @@
                 android:textColorHint="@color/white" />
 
             <TextView
+                android:id="@+id/using_gps"
                 style="@style/Font.SubTitle_blue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

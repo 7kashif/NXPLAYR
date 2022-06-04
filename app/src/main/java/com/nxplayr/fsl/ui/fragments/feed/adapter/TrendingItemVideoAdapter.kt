@@ -40,7 +40,8 @@ class TrendingItemVideoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder?> 
 
     fun setData(feeddata: CreatePostData?) {
         trendingFeedDatum = feeddata
-        thumbSize = if (trendingFeedDatum!!.postSerializedData.size > 4) 4 else trendingFeedDatum!!.postSerializedData.size
+        thumbSize =
+            if (trendingFeedDatum!!.postSerializedData.size > 4) 4 else trendingFeedDatum!!.postSerializedData.size
         notifyDataSetChanged()
     }
 
@@ -54,16 +55,20 @@ class TrendingItemVideoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder?> 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == MyUtils.TYPE_FULL) {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_trending_video, parent, false)
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_trending_video, parent, false)
             ImgHolder(view)
         } else if (viewType == MyUtils.TYPE_HALF) {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_trending_video2, parent, false)
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_trending_video2, parent, false)
             ImgHolder2(view)
         } else if (viewType == MyUtils.TYPE_HALF_H) {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_trending_video3, parent, false)
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_trending_video3, parent, false)
             ImgHolder3(view)
         } else if (viewType == MyUtils.TYPE_QUARTER) {
-            val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_trending_video4, parent, false)
+            val view: View = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_trending_video4, parent, false)
             ImgHolder4(view)
         } else {
             null!!
@@ -81,11 +86,11 @@ class TrendingItemVideoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder?> 
 
     fun getTypeView(position: Int): Int {
         var size = MyUtils.TEXT_TYPE
-        if(!trendingFeedDatum?.postSerializedData.isNullOrEmpty()) {
+        if (!trendingFeedDatum?.postSerializedData.isNullOrEmpty()) {
             if (trendingFeedDatum!!.postSerializedData[0].albummedia.size >= 3)
-                size= 3
+                size = 3
             else
-                size=  trendingFeedDatum!!.postSerializedData[0].albummedia.size
+                size = trendingFeedDatum!!.postSerializedData[0].albummedia.size
         }
         return when (size) {
             1 -> MyUtils.TYPE_FULL
@@ -115,7 +120,7 @@ class TrendingItemVideoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder?> 
         var galleryImageView: PlayerView? = null
         var thumnail: ImageView? = null
         var playicon: ImageView? = null
-        var volume: ImageView?=null
+        var volume: ImageView? = null
         var pb: ProgressBar? = null
         var selectImage: RelativeLayout? = null
         var ivFullScreen: ImageButton
@@ -127,7 +132,8 @@ class TrendingItemVideoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder?> 
             pb = itemView!!.findViewById<View>(R.id.pb) as ProgressBar
 //            volume = itemView!!.findViewById<View>(R.id.volume) as ImageView
 
-            ivFullScreen = galleryImageView!!.findViewById<View>(R.id.exo_fullscreen_icon) as ImageButton
+            ivFullScreen =
+                galleryImageView!!.findViewById<View>(R.id.exo_fullscreen_icon) as ImageButton
             ivFullScreen.visibility = View.VISIBLE
             volume = galleryImageView!!.findViewById<View>(R.id.exo_volume_icon) as ImageButton
             volume?.visibility = View.VISIBLE
@@ -176,17 +182,21 @@ class TrendingItemVideoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder?> 
             holder.thumnail!!.visibility = View.GONE
             try {
                 if (trendingFeedDatum!!.postSerializedData.size > 0) {
-                    if(!trendingFeedDatum!!.postSerializedData[0].albummedia.isNullOrEmpty()&& !trendingFeedDatum?.postSerializedData!![0].albummedia[0].albummediaThumbnail.isNullOrEmpty())
-                    {
+                    if (!trendingFeedDatum!!.postSerializedData[0].albummedia.isNullOrEmpty() && !trendingFeedDatum?.postSerializedData!![0].albummedia[0].albummediaFile.isNullOrEmpty()) {
                         holder.thumnail!!.visibility = View.VISIBLE
-                        holder.thumnail!!.setImageURI(Uri.parse(RestClient.image_base_url_posts+trendingFeedDatum?.postSerializedData!![0].albummedia[0].albummediaThumbnail))
-
+                        holder.thumnail!!.setImageURI(
+                            Uri.parse(
+                                RestClient.image_base_url_posts + trendingFeedDatum?.postSerializedData!![0].albummedia[0].albummediaFile.replace(
+                                    ".mp4",
+                                    "_thumb.jpg"
+                                )
+                            )
+                        )
                     }
-                    if (!trendingFeedDatum!!.postSerializedData[0].albummedia.isNullOrEmpty()&& trendingFeedDatum!!.postSerializedData[0].albummedia[0].isPlaying) {
-                        if(!trendingFeedDatum!!.postSerializedData[0].albummedia.isNullOrEmpty()&& !trendingFeedDatum?.postSerializedData!![0].albummedia[0].albummediaThumbnail.isNullOrEmpty())
-                        {
+                    if (!trendingFeedDatum!!.postSerializedData[0].albummedia.isNullOrEmpty() && trendingFeedDatum!!.postSerializedData[0].albummedia[0].isPlaying) {
+                        if (!trendingFeedDatum!!.postSerializedData[0].albummedia.isNullOrEmpty() && !trendingFeedDatum?.postSerializedData!![0].albummedia[0].albummediaFile.isNullOrEmpty()) {
                             holder.thumnail!!.visibility = View.VISIBLE
-                        }else{
+                        } else {
                             holder.thumnail!!.visibility = View.GONE
                         }
                         holder.playicon!!.visibility = View.GONE
@@ -201,17 +211,21 @@ class TrendingItemVideoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder?> 
                     }
                     holder.galleryImageView!!.setShutterBackgroundColor(Color.TRANSPARENT)
                     if (isMuteing) {
-                        holder.volume?.background = context.resources.getDrawable(R.drawable.ic_volume_off_black_24dp)
+                        holder.volume?.background =
+                            context.resources.getDrawable(R.drawable.ic_volume_off_black_24dp)
                     } else {
-                        holder.volume?.background = context.resources.getDrawable(R.drawable.ic_volume_up_black_24dp)
+                        holder.volume?.background =
+                            context.resources.getDrawable(R.drawable.ic_volume_up_black_24dp)
                     }
                     holder.volume?.setOnClickListener {
                         if (isMuteing) {
-                           isMuteing = false
-                            holder.volume?.background = context.resources.getDrawable(R.drawable.ic_volume_up_black_24dp)
+                            isMuteing = false
+                            holder.volume?.background =
+                                context.resources.getDrawable(R.drawable.ic_volume_up_black_24dp)
                         } else {
                             isMuteing = true
-                            holder.volume?.background = context.resources.getDrawable(R.drawable.ic_volume_off_black_24dp)
+                            holder.volume?.background =
+                                context.resources.getDrawable(R.drawable.ic_volume_off_black_24dp)
                         }
                         if (mClickListener != null)
                             mClickListener!!.setVolume(isMuteing)

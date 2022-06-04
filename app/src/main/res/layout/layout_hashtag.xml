@@ -32,8 +32,8 @@
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/btn_deleteHashtag"
-                android:layout_width="@dimen/_50sdp"
-                android:layout_height="@dimen/_35sdp"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_30sdp"
                 android:layout_gravity="start|center"
                 android:layout_margin="@dimen/_5sdp"
                 android:visibility="gone"
@@ -45,8 +45,8 @@
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/btn_following"
-                android:layout_width="@dimen/_50sdp"
-                android:layout_height="@dimen/_35sdp"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_30sdp"
                 android:layout_gravity="start|center"
                 android:layout_margin="@dimen/_5sdp"
                 android:visibility="gone"

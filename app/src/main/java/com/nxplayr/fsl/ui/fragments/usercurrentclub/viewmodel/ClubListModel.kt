@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.ClubListPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Response
 
 class ClubListModel : ViewModel() {
@@ -31,7 +34,7 @@ class ClubListModel : ViewModel() {
 
     private fun getClubListApi(): LiveData<ClubListPojo> {
         val data = MutableLiveData<ClubListPojo>()
-
+        viewModelScope.launch(Dispatchers.IO) {
         var call = RestClient.get()!!.getClubList(json!!)
         call.enqueue(object : RestCallback<ClubListPojo>(mContext) {
             override fun Success(response: Response<ClubListPojo>) {
@@ -42,7 +45,7 @@ class ClubListModel : ViewModel() {
                 data.value = null
             }
 
-        })
+        })}
 
         return data
     }

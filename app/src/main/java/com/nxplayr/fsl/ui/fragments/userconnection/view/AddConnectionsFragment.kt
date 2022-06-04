@@ -16,18 +16,20 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.R
+import com.nxplayr.fsl.data.api.RestClient
+import com.nxplayr.fsl.data.model.CommonPojo
+import com.nxplayr.fsl.data.model.ConnectionListData
+import com.nxplayr.fsl.data.model.SignupData
+import com.nxplayr.fsl.data.model.SuggestedFriendData
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.fragments.friendrequest.viewmodel.FriendListModel
+import com.nxplayr.fsl.ui.fragments.otheruserprofile.view.OtherUserProfileMainFragment
+import com.nxplayr.fsl.ui.fragments.ownprofile.view.ProfileMainFragment
 import com.nxplayr.fsl.ui.fragments.userconnection.adapter.AddConnectionListAdapter
 import com.nxplayr.fsl.ui.fragments.userconnection.adapter.AlphaBetAdapter
-import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.data.model.*
-import com.nxplayr.fsl.ui.fragments.otheruserprofile.view.OtherUserProfileMainFragment
+import com.nxplayr.fsl.ui.fragments.userconnection.viewmodel.ChatListModel
 import com.nxplayr.fsl.ui.fragments.userfollowers.viewmodel.CommonStatusModel
-import com.nxplayr.fsl.ui.fragments.userconnection.viewmodel.ConnectionListModel
-import com.nxplayr.fsl.ui.fragments.ownprofile.view.ProfileMainFragment
-import com.nxplayr.fsl.ui.fragments.friendrequest.viewmodel.FriendListModel
-import com.nxplayr.fsl.ui.fragments.userconnection.viewmodel.UserContactListModel
 import com.nxplayr.fsl.util.*
 import kotlinx.android.synthetic.main.common_recyclerview.*
 import kotlinx.android.synthetic.main.fragment_add_connections.*
@@ -40,7 +42,7 @@ import org.json.JSONException
 import org.json.JSONObject
 
 
-class AddConnectionsFragment : Fragment(),View.OnClickListener {
+class AddConnectionsFragment : Fragment(), View.OnClickListener {
 
     private var v: View? = null
     var list_connection: ArrayList<SuggestedFriendData?>? = null
@@ -62,20 +64,57 @@ class AddConnectionsFragment : Fragment(),View.OnClickListener {
     var y: Int = 0
     var sessionManager: SessionManager? = null
     var userData: SignupData? = null
-    private var l: CharArray? = charArrayOf('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z')
+    private var l: CharArray? = charArrayOf(
+        'A',
+        'B',
+        'C',
+        'D',
+        'E',
+        'F',
+        'G',
+        'H',
+        'I',
+        'J',
+        'K',
+        'L',
+        'M',
+        'N',
+        'O',
+        'P',
+        'Q',
+        'R',
+        'S',
+        'T',
+        'U',
+        'V',
+        'W',
+        'X',
+        'Y',
+        'Z'
+    )
     var followersId = ""
     var idx = 0
     var conneTypeList: ArrayList<ConnectionListData>? = ArrayList()
     var connectionList: ArrayList<String>? = ArrayList()
     var connectionId = ""
-    private lateinit var  followersModel: CommonStatusModel
-    private lateinit var  connectionListModel: ConnectionListModel
-    private lateinit var  userContactListModel: UserContactListModel
-    private lateinit var  friendListModel: FriendListModel
+    private lateinit var followersModel: CommonStatusModel
+    private lateinit var connectionListModel: ChatListModel
+    private lateinit var friendListModel: FriendListModel
 
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngAddConnections.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngAddConnections
+            if (!sessionManager?.LanguageLabel?.lngSearch.isNullOrEmpty())
+                search_connection.hint = sessionManager?.LanguageLabel?.lngSearch
+        }
+    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         if (v == null) {
             v = inflater.inflate(R.layout.fragment_add_connections, container, false)
         }
@@ -117,45 +156,45 @@ class AddConnectionsFragment : Fragment(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
 
-        connectionListModel.getConnectionTypeList(mActivity!!, false, jsonArray.toString())
-            .observe(viewLifecycleOwner,
-                androidx.lifecycle.Observer { connectionListpojo ->
-                    if (connectionListpojo != null && connectionListpojo.isNotEmpty()) {
+        connectionListModel.connectionList(jsonArray.toString())
+        connectionListModel.connectionSuccess.observe(viewLifecycleOwner) { connectionListpojo ->
+            if (connectionListpojo != null && connectionListpojo.isNotEmpty()) {
 
-                        if (connectionListpojo[0].status.equals("true", false)) {
+                if (connectionListpojo[0].status.equals("true", false)) {
 //                                    MyUtils.dismissProgressDialog()
 
-                            conneTypeList!!.clear()
+                    conneTypeList!!.clear()
 
-                            for (i in 0 until connectionListpojo[0].data.size) {
-                                if (connectionListpojo[0].data[i].conntypeName.equals("All")) {
-                                    conneTypeList!!.remove(connectionListpojo[0].data[i])
-                                } else {
-                                    conneTypeList!!.add(connectionListpojo[0].data[i])
-                                    connectionList = java.util.ArrayList()
-                                    connectionList!!.clear()
-                                    for (i in 0 until conneTypeList!!.size) {
-                                        connectionList!!.add(conneTypeList!![i].conntypeName!!)
-                                    }
-                                }
-
-                            }
-
+                    for (i in 0 until connectionListpojo[0].data.size) {
+                        if (connectionListpojo[0].data[i].conntypeName.equals("All")) {
+                            conneTypeList!!.remove(connectionListpojo[0].data[i])
                         } else {
+                            conneTypeList!!.add(connectionListpojo[0].data[i])
+                            connectionList = java.util.ArrayList()
+                            connectionList!!.clear()
+                            for (i in 0 until conneTypeList!!.size) {
+                                connectionList!!.add(conneTypeList!![i].conntypeName!!)
+                            }
                         }
 
-                    } else {
-                        ErrorUtil.errorMethod(ll_addConnection)
                     }
-                })
+
+                } else {
+                }
+
+            } else {
+                ErrorUtil.errorMethod(ll_addConnection)
+            }
+        }
     }
 
     private fun setupViewModel() {
-        followersModel = ViewModelProvider(this@AddConnectionsFragment).get(CommonStatusModel::class.java)
-        connectionListModel = ViewModelProvider(this@AddConnectionsFragment).get(ConnectionListModel::class.java)
-        userContactListModel = ViewModelProvider(this@AddConnectionsFragment).get(
-            UserContactListModel::class.java)
-        friendListModel = ViewModelProvider(this@AddConnectionsFragment).get(FriendListModel::class.java)
+        followersModel =
+            ViewModelProvider(this@AddConnectionsFragment).get(CommonStatusModel::class.java)
+        connectionListModel =
+            ViewModelProvider(this@AddConnectionsFragment).get(ChatListModel::class.java)
+        friendListModel =
+            ViewModelProvider(this@AddConnectionsFragment).get(FriendListModel::class.java)
     }
 
     private fun setupUI() {
@@ -171,66 +210,100 @@ class AddConnectionsFragment : Fragment(),View.OnClickListener {
         linearLayoutManager = LinearLayoutManager(mActivity)
         if (list_connection == null) {
             list_connection = ArrayList()
-            addConnectionListAdapter = AddConnectionListAdapter(activity as MainActivity, object : AddConnectionListAdapter.OnItemClick {
+            addConnectionListAdapter = AddConnectionListAdapter(
+                activity as MainActivity, object : AddConnectionListAdapter.OnItemClick {
 
-                override fun onClicklisneter(position: Int, name: String, connectionData: SuggestedFriendData?, view: View) {
-                    when (name) {
-                        "follow" -> {
-                            followUserApi(position, connectionData!!.userID, connectionData)
-                        }
-
-                        "unfollow" -> {
-                            userUnFollowApi(position, connectionData!!.userID, connectionData)
-                        }
-                        "connection" -> {
-                            if(!userData?.userID?.equals(list_connection?.get(position)?.userID)!!)
-                            {
-                                var bundle = Bundle()
-                                bundle.putString("userId",list_connection?.get(position)?.userID)
-                                (activity as MainActivity).navigateTo(
-                                    OtherUserProfileMainFragment(), bundle, OtherUserProfileMainFragment::class.java.name, true)
-
+                    override fun onClicklisneter(
+                        position: Int,
+                        name: String,
+                        connectionData: SuggestedFriendData?,
+                        view: View
+                    ) {
+                        when (name) {
+                            "follow" -> {
+                                followUserApi(position, connectionData!!.userID, connectionData)
                             }
-                            else
-                            {
-                                var bundle = Bundle()
-                                bundle.putString("userId",list_connection?.get(position)?.userID)
-                                (activity as MainActivity).navigateTo(ProfileMainFragment(), bundle, ProfileMainFragment::class.java.name, true)
 
+                            "unfollow" -> {
+                                userUnFollowApi(position, connectionData!!.userID, connectionData)
                             }
-                        }
+                            "connection" -> {
+                                if (!userData?.userID?.equals(list_connection?.get(position)?.userID)!!) {
+                                    var bundle = Bundle()
+                                    bundle.putString(
+                                        "userId",
+                                        list_connection?.get(position)?.userID
+                                    )
+                                    (activity as MainActivity).navigateTo(
+                                        OtherUserProfileMainFragment(),
+                                        bundle,
+                                        OtherUserProfileMainFragment::class.java.name,
+                                        true
+                                    )
 
-                        "addFriend" -> {
+                                } else {
+                                    var bundle = Bundle()
+                                    bundle.putString(
+                                        "userId",
+                                        list_connection?.get(position)?.userID
+                                    )
+                                    (activity as MainActivity).navigateTo(
+                                        ProfileMainFragment(),
+                                        bundle,
+                                        ProfileMainFragment::class.java.name,
+                                        true
+                                    )
 
-                            PopupMenu(mActivity!!, view!!, connectionList!!).showPopUp(object :
-                                PopupMenu.OnMenuSelectItemClickListener {
-                                override fun onItemClick(item: String, pos: Int) {
-
-                                    for (i in 0 until conneTypeList!!.size) {
-                                        if (item.equals(conneTypeList!![i]!!.conntypeName, false)) {
-                                            if (!connectionId.equals(conneTypeList!![i]!!.conntypeID))
-                                                connectionId = conneTypeList!![i]!!.conntypeID
-                                        }
-                                    }
-                                    addFriendApi(connectionId, connectionData!!.userID, position, connectionData)
                                 }
-                            })
-                        }
+                            }
 
+                            "addFriend" -> {
+
+                                PopupMenu(mActivity!!, view!!, connectionList!!).showPopUp(object :
+                                    PopupMenu.OnMenuSelectItemClickListener {
+                                    override fun onItemClick(item: String, pos: Int) {
+
+                                        for (i in 0 until conneTypeList!!.size) {
+                                            if (item.equals(
+                                                    conneTypeList!![i]!!.conntypeName,
+                                                    false
+                                                )
+                                            ) {
+                                                if (!connectionId.equals(conneTypeList!![i]!!.conntypeID))
+                                                    connectionId = conneTypeList!![i]!!.conntypeID
+                                            }
+                                        }
+                                        addFriendApi(
+                                            connectionId,
+                                            connectionData!!.userID,
+                                            position,
+                                            connectionData
+                                        )
+                                    }
+                                })
+                            }
+
+
+                        }
 
                     }
 
-                }
-
-            }, list_connection
+                }, list_connection
             )
             recyclerview.layoutManager = linearLayoutManager
             recyclerview.adapter = addConnectionListAdapter
             recyclerview.setHasFixedSize(true)
-            recyclerview.addItemDecoration(DividerItemDecoration(activity as MainActivity, DividerItemDecoration.VERTICAL), Color.RED)
+            recyclerview.addItemDecoration(
+                DividerItemDecoration(
+                    activity as MainActivity,
+                    DividerItemDecoration.VERTICAL
+                ), Color.RED
+            )
 
-            val divider = DividerItemDecoration(recyclerview.getContext(), DividerItemDecoration.VERTICAL)
-            divider.setDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.line_layout) }!!
+            val divider =
+                DividerItemDecoration(recyclerview.getContext(), DividerItemDecoration.VERTICAL)
+            divider.setDrawable(
+                context?.let { ContextCompat.getDrawable(it, R.drawable.line_layout) }!!
             )
             recyclerview.addItemDecoration(divider)
 
@@ -238,8 +311,10 @@ class AddConnectionsFragment : Fragment(),View.OnClickListener {
         }
 
         try {
-            val sectionItemDecoration = RecyclerSectionItemDecoration(resources.getDimensionPixelSize(R.dimen._30sdp), true,
-                getSectionCallback(list_connection!!))
+            val sectionItemDecoration = RecyclerSectionItemDecoration(
+                resources.getDimensionPixelSize(R.dimen._30sdp), true,
+                getSectionCallback(list_connection!!)
+            )
             recyclerview.addItemDecoration(sectionItemDecoration)
 
         } catch (e: ArrayIndexOutOfBoundsException) {
@@ -286,7 +361,9 @@ class AddConnectionsFragment : Fragment(),View.OnClickListener {
     fun getSectionCallback(people: ArrayList<SuggestedFriendData?>?): RecyclerSectionItemDecoration.SectionCallback {
         return object : RecyclerSectionItemDecoration.SectionCallback {
             override fun isSection(position: Int): Boolean {
-                return position == 0 || people?.get(position)?.userFirstName?.get(0)?.toUpperCase() != people?.get(position - 1)?.userFirstName?.get(0)?.toUpperCase()
+                return position == 0 || people?.get(position)?.userFirstName?.get(0)
+                    ?.toUpperCase() != people?.get(position - 1)?.userFirstName?.get(0)
+                    ?.toUpperCase()
             }
 
             override fun getSectionHeader(position: Int): CharSequence? {
@@ -329,66 +406,64 @@ class AddConnectionsFragment : Fragment(),View.OnClickListener {
         }
 
         jsonArray.put(jsonObject)
-        userContactListModel.getContactList(mActivity!!, false, jsonArray.toString(), "Contact_list")
-                .observe(viewLifecycleOwner, Observer<List<SuggestedFreindListPojo>> { list_connectionPojo ->
+        connectionListModel.connectionList(jsonArray.toString())
+        connectionListModel.userContactList.observe(viewLifecycleOwner) { list_connectionPojo ->
+            if (list_connectionPojo != null && list_connectionPojo.isNotEmpty()) {
+                isLoading = false
+                ll_no_data_found.visibility = View.GONE
+                nointernetMainRelativelayout.visibility = View.GONE
+                relativeprogressBar.visibility = View.GONE
 
+                if (pageNo > 0) {
+                    list_connection!!.removeAt(list_connection!!.size - 1)
+                    addConnectionListAdapter!!.notifyItemRemoved(list_connection!!.size)
+                }
 
-                    if (list_connectionPojo != null && list_connectionPojo.isNotEmpty()) {
-                        isLoading = false
-                        ll_no_data_found.visibility = View.GONE
-                        nointernetMainRelativelayout.visibility = View.GONE
-                        relativeprogressBar.visibility = View.GONE
+                if (list_connectionPojo[0].status.equals("true", false)) {
 
-                        if (pageNo > 0) {
-                            list_connection!!.removeAt(list_connection!!.size - 1)
-                            addConnectionListAdapter!!.notifyItemRemoved(list_connection!!.size)
-                        }
+                    recyclerview.visibility = View.VISIBLE
+                    if (pageNo == 0) {
+                        list_connection?.clear()
+                    }
 
-                        if (list_connectionPojo[0].status.equals("true", false)) {
+                    list_connection?.addAll(list_connectionPojo[0].data!!)
+                    addConnectionListAdapter?.notifyDataSetChanged()
+                    pageNo += 1
 
-                            recyclerview.visibility = View.VISIBLE
-                            if (pageNo == 0) {
-                                list_connection?.clear()
-                            }
+                    if (list_connectionPojo[0].data!!.size < 10) {
+                        isLastpage = true
+                    }
 
-                            list_connection?.addAll(list_connectionPojo[0].data!!)
-                            addConnectionListAdapter?.notifyDataSetChanged()
-                            pageNo += 1
-
-                            if (list_connectionPojo[0].data!!.size < 10) {
-                                isLastpage = true
-                            }
-
-                            if (list_connectionPojo[0].data!!.isNullOrEmpty()) {
-                                ll_no_data_found.visibility = View.VISIBLE
-                                recyclerview.visibility = View.GONE
-                            } else {
-                                ll_no_data_found.visibility = View.GONE
-                                recyclerview.visibility = View.VISIBLE
-                            }
-
-                        } else {
-                            relativeprogressBar.visibility = View.GONE
-
-                            if (list_connection!!.isNullOrEmpty()) {
-                                ll_no_data_found.visibility = View.VISIBLE
-                                recyclerview.visibility = View.GONE
-
-                            } else {
-                                ll_no_data_found.visibility = View.GONE
-                                recyclerview.visibility = View.VISIBLE
-
-                            }
-                        }
+                    if (list_connectionPojo[0].data!!.isNullOrEmpty()) {
+                        ll_no_data_found.visibility = View.VISIBLE
+                        recyclerview.visibility = View.GONE
                     } else {
-                        if (activity != null) {
-                            relativeprogressBar.visibility = View.GONE
-                            ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                        ll_no_data_found.visibility = View.GONE
+                        recyclerview.visibility = View.VISIBLE
+                    }
 
-                        }
+                } else {
+                    relativeprogressBar.visibility = View.GONE
+
+                    if (list_connection!!.isNullOrEmpty()) {
+                        ll_no_data_found.visibility = View.VISIBLE
+                        recyclerview.visibility = View.GONE
+
+                    } else {
+                        ll_no_data_found.visibility = View.GONE
+                        recyclerview.visibility = View.VISIBLE
 
                     }
-                })
+                }
+            } else {
+                if (activity != null) {
+                    relativeprogressBar.visibility = View.GONE
+                    ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+
+                }
+
+            }
+        }
     }
 
     private fun followUserApi(position: Int, userID: String, connectionData: SuggestedFriendData) {
@@ -412,30 +487,42 @@ class AddConnectionsFragment : Fragment(),View.OnClickListener {
         jsonArray.put(jsonObject)
 
         followersModel.getCommonStatus(mActivity!!, false, jsonArray.toString(), "userFollow")
-                .observe(this, Observer<List<CommonPojo>> { commonStatusPojo ->
+            .observe(this, Observer<List<CommonPojo>> { commonStatusPojo ->
 
-                    MyUtils.dismissProgressDialog()
+                MyUtils.dismissProgressDialog()
 
-                    if (commonStatusPojo != null && commonStatusPojo.isNotEmpty()) {
-                        if (commonStatusPojo[0].status.equals("true", true)) {
+                if (commonStatusPojo != null && commonStatusPojo.isNotEmpty()) {
+                    if (commonStatusPojo[0].status.equals("true", true)) {
 
-                            connectionData.isYouFollowing = "Yes"
-                            addConnectionListAdapter?.notifyDataSetChanged()
-                            MyUtils.showSnackbar(activity!!, commonStatusPojo[0].message, ll_addConnection)
+                        connectionData.isYouFollowing = "Yes"
+                        addConnectionListAdapter?.notifyDataSetChanged()
+                        MyUtils.showSnackbar(
+                            requireActivity(),
+                            commonStatusPojo[0].message,
+                            ll_addConnection
+                        )
 
-                        } else {
-
-                            MyUtils.showSnackbar(activity!!, commonStatusPojo[0].message, ll_addConnection)
-
-                        }
                     } else {
-                        MyUtils.dismissProgressDialog()
-                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+
+                        MyUtils.showSnackbar(
+                            requireActivity(),
+                            commonStatusPojo[0].message,
+                            ll_addConnection
+                        )
+
                     }
-                })
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    ErrorUtil.errorView(requireActivity(), nointernetMainRelativelayout)
+                }
+            })
     }
 
-    private fun userUnFollowApi(position: Int, userID: String, connectionData: SuggestedFriendData) {
+    private fun userUnFollowApi(
+        position: Int,
+        userID: String,
+        connectionData: SuggestedFriendData
+    ) {
 
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
@@ -454,32 +541,50 @@ class AddConnectionsFragment : Fragment(),View.OnClickListener {
         }
 
         jsonArray.put(jsonObject)
-        followersModel.getCommonStatus(activity!!, false, jsonArray.toString(), "userUnfollow")
-                .observe(this, Observer<List<CommonPojo>> { commonStatusPojo ->
+        followersModel.getCommonStatus(
+            requireActivity(),
+            false,
+            jsonArray.toString(),
+            "userUnfollow"
+        )
+            .observe(this, Observer<List<CommonPojo>> { commonStatusPojo ->
 
-                    relativeprogressBar.visibility = View.GONE
-                    recyclerview.visibility = View.VISIBLE
+                relativeprogressBar.visibility = View.GONE
+                recyclerview.visibility = View.VISIBLE
 
-                    if (commonStatusPojo != null && commonStatusPojo.isNotEmpty()) {
-                        if (commonStatusPojo[0].status.equals("true", true)) {
+                if (commonStatusPojo != null && commonStatusPojo.isNotEmpty()) {
+                    if (commonStatusPojo[0].status.equals("true", true)) {
 
-                            connectionData?.isYouFollowing = "No"
-                            addConnectionListAdapter?.notifyDataSetChanged()
+                        connectionData?.isYouFollowing = "No"
+                        addConnectionListAdapter?.notifyDataSetChanged()
 
-                            MyUtils.showSnackbar(activity!!, commonStatusPojo[0].message, ll_addConnection)
+                        MyUtils.showSnackbar(
+                            requireActivity(),
+                            commonStatusPojo[0].message,
+                            ll_addConnection
+                        )
 
 
-                        } else {
-                            MyUtils.showSnackbar(activity!!, commonStatusPojo[0].message, ll_addConnection)
-                        }
                     } else {
-                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                        MyUtils.showSnackbar(
+                            requireActivity(),
+                            commonStatusPojo[0].message,
+                            ll_addConnection
+                        )
                     }
-                })
+                } else {
+                    ErrorUtil.errorView(requireActivity(), nointernetMainRelativelayout)
+                }
+            })
 
     }
 
-    private fun addFriendApi(connectionId: String, userID: String, position: Int, connectionData: SuggestedFriendData) {
+    private fun addFriendApi(
+        connectionId: String,
+        userID: String,
+        position: Int,
+        connectionData: SuggestedFriendData
+    ) {
         MyUtils.showProgressDialog(mActivity!!, "Wait")
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
@@ -497,31 +602,33 @@ class AddConnectionsFragment : Fragment(),View.OnClickListener {
         }
         jsonArray.put(jsonObject)
 
-         friendListModel.getFriendList(mActivity!!, jsonArray.toString(), "friend_list")
-                .observe(this@AddConnectionsFragment!!,
-                        androidx.lifecycle.Observer { connectionListpojo ->
-                            if (connectionListpojo != null && connectionListpojo.isNotEmpty()) {
+        friendListModel.friendApi(jsonArray.toString(), "friend_list")
+        friendListModel.successFriend.observe(viewLifecycleOwner) { connectionListpojo ->
+            if (connectionListpojo != null && connectionListpojo.isNotEmpty()) {
 
-                                if (connectionListpojo[0].status.equals("true", false)) {
-                                    MyUtils.dismissProgressDialog()
+                if (connectionListpojo[0].status.equals("true", false)) {
+                    MyUtils.dismissProgressDialog()
 //                                    list_connection?.remove(connectionData);
 //                                    addConnectionListAdapter?.notifyDataSetChanged()
 
-                                } else {
-                                    MyUtils.dismissProgressDialog()
-                                    MyUtils.showSnackbar(mActivity!!, connectionListpojo[0].message, ll_addConnection)
-                                }
-                            } else {
-                                MyUtils.dismissProgressDialog()
-                                (activity as MainActivity).errorMethod()
-                            }
-                        })
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    MyUtils.showSnackbar(
+                        mActivity!!,
+                        connectionListpojo[0].message,
+                        ll_addConnection
+                    )
+                }
+            } else {
+                MyUtils.dismissProgressDialog()
+                (activity as MainActivity).errorMethod()
+            }
+        }
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-            R.id.btnRetry->{
+        when (v?.id) {
+            R.id.btnRetry -> {
                 suggestedListApi()
             }
         }

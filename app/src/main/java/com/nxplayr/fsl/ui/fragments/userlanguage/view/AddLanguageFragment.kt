@@ -39,7 +39,8 @@ import org.json.JSONException
 import org.json.JSONObject
 import kotlin.collections.ArrayList
 
-class AddLanguageFragment : Fragment(), BottomSheetListFragment.SelectLanguage,View.OnClickListener {
+class AddLanguageFragment : Fragment(), BottomSheetListFragment.SelectLanguage,
+    View.OnClickListener {
 
     private var v: View? = null
     var mActivity: AppCompatActivity? = null
@@ -54,13 +55,15 @@ class AddLanguageFragment : Fragment(), BottomSheetListFragment.SelectLanguage,V
     var position: Int = 0
     var languageData: ProfileLanguageData? = null
     var from = ""
-    private lateinit var  languagesModel: LanguagesModel
+    private lateinit var languagesModel: LanguagesModel
     private lateinit var addLanguageModel: ProfileLanguageModel
     private lateinit var profileLanguageModel: ProficiencyModel
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         if (v == null) {
             v = inflater.inflate(R.layout.fragment_add_languages, container, false)
         }
@@ -118,48 +121,58 @@ class AddLanguageFragment : Fragment(), BottomSheetListFragment.SelectLanguage,V
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        addLanguageModel.getLanguageList(mActivity!!, false, jsonArray.toString(), from)
-            .observe(this@AddLanguageFragment!!,
-                androidx.lifecycle.Observer { loginPojo ->
-                    if (loginPojo != null) {
-                        btn_add_language.endAnimation()
-                        if (loginPojo.get(0).status.equals("true", false)) {
-                            try {
+        addLanguageModel.profileApi(jsonArray.toString(), from)
+        addLanguageModel.successProfile
+            .observe(
+                viewLifecycleOwner
+            ) { loginPojo ->
+                if (loginPojo != null) {
+                    btn_add_language.endAnimation()
+                    if (loginPojo.get(0).status.equals("true", false)) {
+                        try {
 
 //                                        userData?.languages?.clear()
 
-                                if (from.equals("Add")) {
-                                    userData?.languages?.addAll(loginPojo.get(0).data)
-                                    StoreSessionManager(userData)
-                                } else if (from.equals("Edit")) {
-                                    for (i in 0 until userData?.languages!!.size) {
-                                        if (userlanguageID.equals(userData!!.languages!![i]!!.userlanguageID))
-                                            userData!!.languages!![i] = loginPojo!![0].data!![0]
-                                        break
-                                    }
-                                    StoreSessionManager(userData)
-                                    if (languageUpdateListener != null)
-                                        languageUpdateListener!!.onLanguageUpdate()
+                            if (from.equals("Add")) {
+                                userData?.languages?.addAll(loginPojo.get(0).data)
+                                StoreSessionManager(userData)
+                            } else if (from.equals("Edit")) {
+                                for (i in 0 until userData?.languages!!.size) {
+                                    if (userlanguageID.equals(userData!!.languages!![i]!!.userlanguageID))
+                                        userData!!.languages!![i] = loginPojo!![0].data!![0]
+                                    break
                                 }
-
-                                Handler().postDelayed({
-                                    (activity as MainActivity).onBackPressed()
-                                }, 2000)
-
-                                MyUtils.showSnackbar(mActivity!!, loginPojo.get(0).message, main_add_languages)
-                            } catch (e: Exception) {
-                                e.printStackTrace()
+                                StoreSessionManager(userData)
+                                if (languageUpdateListener != null)
+                                    languageUpdateListener!!.onLanguageUpdate()
                             }
 
-                        } else {
-                            MyUtils.showSnackbar(mActivity!!, loginPojo.get(0).message, main_add_languages)
+                            Handler().postDelayed({
+                                (activity as MainActivity).onBackPressed()
+                            }, 2000)
+
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                loginPojo.get(0).message,
+                                main_add_languages
+                            )
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
 
                     } else {
-                        btn_add_language.endAnimation()
-                        ErrorUtil.errorMethod(main_add_languages)
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            loginPojo.get(0).message,
+                            main_add_languages
+                        )
                     }
-                })
+
+                } else {
+                    btn_add_language.endAnimation()
+                    ErrorUtil.errorMethod(main_add_languages)
+                }
+            }
 
     }
 
@@ -172,9 +185,26 @@ class AddLanguageFragment : Fragment(), BottomSheetListFragment.SelectLanguage,V
         if (from.equals("edit")) {
             tvToolbarTitle.setText(getString(R.string.edit_languages))
             btn_add_language.progressText = resources.getString(R.string.update)
+            if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+                if (!sessionManager?.LanguageLabel?.lngEditLanguages.isNullOrEmpty())
+                    tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngEditLanguages
+            }
         } else {
             tvToolbarTitle.setText(getString(R.string.add_languages))
             btn_add_language.progressText = resources.getString(R.string.save)
+            if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+                if (!sessionManager?.LanguageLabel?.lngAddLanguages.isNullOrEmpty())
+                    tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngAddLanguages
+            }
+        }
+
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngLanguage.isNullOrEmpty())
+                tv_language_edit_text.hint = sessionManager?.LanguageLabel?.lngLanguage
+            if (!sessionManager?.LanguageLabel?.lngProficiency.isNullOrEmpty())
+                tv_proficiency_edit_text.hint = sessionManager?.LanguageLabel?.lngProficiency
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_add_language.progressText = sessionManager?.LanguageLabel?.lngSave
         }
 
         setLanguageData()
@@ -211,9 +241,11 @@ class AddLanguageFragment : Fragment(), BottomSheetListFragment.SelectLanguage,V
     }
 
     private fun setupViewModel() {
-      languagesModel = ViewModelProvider(this@AddLanguageFragment).get(LanguagesModel::class.java)
-      addLanguageModel = ViewModelProvider(this@AddLanguageFragment).get(ProfileLanguageModel::class.java)
-      profileLanguageModel = ViewModelProvider(this@AddLanguageFragment).get(ProficiencyModel::class.java)
+        languagesModel = ViewModelProvider(this@AddLanguageFragment).get(LanguagesModel::class.java)
+        addLanguageModel =
+            ViewModelProvider(this@AddLanguageFragment).get(ProfileLanguageModel::class.java)
+        profileLanguageModel =
+            ViewModelProvider(this@AddLanguageFragment).get(ProficiencyModel::class.java)
 
     }
 
@@ -290,27 +322,31 @@ class AddLanguageFragment : Fragment(), BottomSheetListFragment.SelectLanguage,V
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-      languagesModel.getLanguageist(mActivity!!, false, jsonArray.toString())
-                .observe(this@AddLanguageFragment!!,
-                    { languageListpojo ->
-                        if (languageListpojo != null && languageListpojo.isNotEmpty()) {
+        languagesModel.getLanguageist(mActivity!!, false, jsonArray.toString())
+            .observe(this@AddLanguageFragment!!,
+                { languageListpojo ->
+                    if (languageListpojo != null && languageListpojo.isNotEmpty()) {
 
-                            if (languageListpojo[0].status.equals("true", false)) {
-                                MyUtils.dismissProgressDialog()
+                        if (languageListpojo[0].status.equals("true", false)) {
+                            MyUtils.dismissProgressDialog()
 
-                                languageList!!.clear()
-                                languageList!!.addAll(languageListpojo[0].data)
-                                openLanguageList(languageList!!)
-                            } else {
-                                MyUtils.dismissProgressDialog()
-                                MyUtils.showSnackbar(mActivity!!, languageListpojo[0].message, main_add_languages)
-                            }
-
+                            languageList!!.clear()
+                            languageList!!.addAll(languageListpojo[0].data)
+                            openLanguageList(languageList!!)
                         } else {
                             MyUtils.dismissProgressDialog()
-                            ErrorUtil.errorMethod(main_add_languages)
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                languageListpojo[0].message,
+                                main_add_languages
+                            )
                         }
-                    })
+
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        ErrorUtil.errorMethod(main_add_languages)
+                    }
+                })
 
 
     }
@@ -330,26 +366,34 @@ class AddLanguageFragment : Fragment(), BottomSheetListFragment.SelectLanguage,V
         }
         jsonArray.put(jsonObject)
         profileLanguageModel.getProficiencyList(mActivity!!, false, jsonArray.toString())
-                .observe(this@AddLanguageFragment!!,
-                        androidx.lifecycle.Observer { proficiencyListpojo ->
-                            if (proficiencyListpojo != null && proficiencyListpojo.isNotEmpty()) {
+            .observe(this@AddLanguageFragment!!,
+                androidx.lifecycle.Observer { proficiencyListpojo ->
+                    if (proficiencyListpojo != null && proficiencyListpojo.isNotEmpty()) {
 
-                                if (proficiencyListpojo[0].status.equals("true", false)) {
-                                    MyUtils.dismissProgressDialog()
+                        if (proficiencyListpojo[0].status.equals("true", false)) {
+                            MyUtils.dismissProgressDialog()
 
-                                    proficiencyList!!.clear()
-                                    proficiencyList!!.addAll(proficiencyListpojo[0].data)
-                                    openProficiencyList(proficiencyList!!)
-                                } else {
-                                    MyUtils.dismissProgressDialog()
-                                    MyUtils.showSnackbar(mActivity!!, proficiencyListpojo[0].message, main_add_languages)
-                                }
+                            proficiencyList!!.clear()
+                            proficiencyList!!.addAll(proficiencyListpojo[0].data)
+                            openProficiencyList(proficiencyList!!)
+                        } else {
+                            MyUtils.dismissProgressDialog()
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                proficiencyListpojo[0].message,
+                                main_add_languages
+                            )
+                        }
 
-                            } else {
-                                MyUtils.dismissProgressDialog()
-                                Toast.makeText(mActivity!!,R.string.error_common_network, Toast.LENGTH_SHORT).show()
-                            }
-                        })
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        Toast.makeText(
+                            mActivity!!,
+                            R.string.error_common_network,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                })
 
 
     }
@@ -416,11 +460,11 @@ class AddLanguageFragment : Fragment(), BottomSheetListFragment.SelectLanguage,V
 
         val json = gson.toJson(uesedata)
         sessionManager?.create_login_session(
-                json,
-                uesedata!!.userMobile,
-                "",
-                true,
-                sessionManager!!.isEmailLogin()
+            json,
+            uesedata!!.userMobile,
+            "",
+            true,
+            sessionManager!!.isEmailLogin()
         )
 
     }
@@ -431,15 +475,14 @@ class AddLanguageFragment : Fragment(), BottomSheetListFragment.SelectLanguage,V
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-            R.id.proficiency_edit_text->{
+        when (v?.id) {
+            R.id.proficiency_edit_text -> {
                 proficiencyListApi()
             }
-            R.id.language_edit_text->{
+            R.id.language_edit_text -> {
                 languageListApi()
             }
-            R.id.btn_add_language->{
+            R.id.btn_add_language -> {
                 checkValidation()
             }
         }

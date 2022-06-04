@@ -49,16 +49,20 @@ class FootballLeagueFragment : Fragment(), View.OnClickListener {
     var football_language_list: ArrayList<UserLanguageList?>? = ArrayList()
     var footballLanguageListAdapter: FootballLanguageListAdapter? = null
 
-    var leagueID: String=""
-    var leagueName: String=""
-    var fromProfile=""
-    var userId=""
-    var otherUserData: SignupData?=null
-    private lateinit var  getUpdateResumeModel: UpdateResumeModel
-    private lateinit var  getLanguageModel: LanguageListDataModel
+    var leagueID: String = ""
+    var leagueName: String = ""
+    var fromProfile = ""
+    var userId = ""
+    var otherUserData: SignupData? = null
+    private lateinit var getUpdateResumeModel: UpdateResumeModel
+    private lateinit var getLanguageModel: LanguageListDataModel
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         v = inflater.inflate(R.layout.fragment_football_language, container, false)
         return v
     }
@@ -74,24 +78,21 @@ class FootballLeagueFragment : Fragment(), View.OnClickListener {
 
         if (sessionManager?.get_Authenticate_User() != null) {
             userData = sessionManager?.get_Authenticate_User()
-            fromProfile = arguments!!.getString("fromProfile","")
-            userId = arguments!!.getString("userId","")
-            if(!userId.equals(userData?.userID,false))
-            {
+            fromProfile = arguments!!.getString("fromProfile", "")
+            userId = arguments!!.getString("userId", "")
+            if (!userId.equals(userData?.userID, false)) {
                 otherUserData = arguments!!.getSerializable("otherUserData") as SignupData?
             }
-            if(!userId.equals(userData?.userID,false))
-            {
+            if (!userId.equals(userData?.userID, false)) {
                 if (!otherUserData?.leagueName.isNullOrEmpty()) {
-                    leagueID =otherUserData?.leagueID!!
+                    leagueID = otherUserData?.leagueID!!
                     leagueName = otherUserData?.leagueName!!
 
                 }
 
-            }
-            else{
+            } else {
                 if (!userData?.leagueName.isNullOrEmpty()) {
-                    leagueID =userData?.leagueID!!
+                    leagueID = userData?.leagueID!!
                     leagueName = userData?.leagueName!!
 
                 }
@@ -122,44 +123,50 @@ class FootballLeagueFragment : Fragment(), View.OnClickListener {
         Log.d("LANGUAGE_LIST_GRID", jsonObject.toString())
         jsonArray.put(jsonObject)
         getLanguageModel.getlanguageVList(mActivity!!, false, jsonArray.toString())
-            .observe(viewLifecycleOwner,
-                { languageListPojo ->
+            .observe(
+                viewLifecycleOwner
+            ) { languageListPojo ->
 
-                    relativeprogressBar.visibility = View.GONE
-                    if (languageListPojo != null && languageListPojo.isNotEmpty()) {
+                relativeprogressBar.visibility = View.GONE
+                if (languageListPojo != null && languageListPojo.isNotEmpty()) {
 
-                        if (languageListPojo[0].status.equals("true", true)) {
+                    if (languageListPojo[0].status.equals("true", true)) {
 
-                            football_language_list?.clear()
+                        football_language_list?.clear()
 
-                            football_language_list?.addAll(languageListPojo!![0]!!.data!!)
-                            footballLanguageListAdapter?.notifyDataSetChanged()
-
-                        } else {
-
-                            if (football_language_list!!.size == 0) {
-
-                                ll_no_data_found.visibility = View.VISIBLE
-
-                            } else {
-
-                                ll_no_data_found.visibility = View.GONE
-                            }
-
-                        }
+                        football_language_list?.addAll(languageListPojo!![0]!!.data!!)
+                        footballLanguageListAdapter?.notifyDataSetChanged()
 
                     } else {
 
-                        relativeprogressBar.visibility = View.GONE
-                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                        if (football_language_list!!.size == 0) {
+
+                            ll_no_data_found.visibility = View.VISIBLE
+
+                        } else {
+
+                            ll_no_data_found.visibility = View.GONE
+                        }
+
                     }
 
-                })
+                } else {
+
+                    relativeprogressBar.visibility = View.GONE
+                    ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                }
+
+            }
     }
 
     private fun setupUI() {
         tvToolbarTitle.text = getString(R.string.football_league)
-
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngFootballLeague.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngFootballLeague
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_save_footballLeague.progressText = sessionManager?.LanguageLabel?.lngSave
+        }
         toolbar.setNavigationOnClickListener {
             MyUtils.hideKeyboard1(mActivity!!)
             (activity as MainActivity).onBackPressed()
@@ -170,8 +177,10 @@ class FootballLeagueFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setupViewModel() {
-         getUpdateResumeModel = ViewModelProvider(this@FootballLeagueFragment).get(UpdateResumeModel::class.java)
-         getLanguageModel = ViewModelProvider(this@FootballLeagueFragment).get(LanguageListDataModel::class.java)
+        getUpdateResumeModel =
+            ViewModelProvider(this@FootballLeagueFragment).get(UpdateResumeModel::class.java)
+        getLanguageModel =
+            ViewModelProvider(this@FootballLeagueFragment).get(LanguageListDataModel::class.java)
 
     }
 
@@ -179,25 +188,35 @@ class FootballLeagueFragment : Fragment(), View.OnClickListener {
         linearLayoutManager = LinearLayoutManager(mActivity!!)
         if (football_language_list.isNullOrEmpty()) {
             rc_language.layoutManager = linearLayoutManager
-            footballLanguageListAdapter = FootballLanguageListAdapter(mActivity!!, object : FootballLanguageListAdapter.OnItemClick {
-                override fun onClicklisneter(pos: Int) {
+            footballLanguageListAdapter = FootballLanguageListAdapter(
+                mActivity!!,
+                object : FootballLanguageListAdapter.OnItemClick {
+                    override fun onClicklisneter(pos: Int) {
 
-                    for (i in 0 until football_language_list!!.size) {
-                        football_language_list!![i]!!.isSelect = i == pos
+                        for (i in 0 until football_language_list!!.size) {
+                            football_language_list!![i]!!.isSelect = i == pos
+                        }
+
+                        leagueID = football_language_list!!.get(pos)!!.leagueID!!
+                        leagueName = football_language_list!!.get(pos)!!.leagueName!!
+                        footballLanguageListAdapter?.notifyDataSetChanged()
+
+                        btn_save_footballLeague.backgroundTint =
+                            (resources.getColor(R.color.colorPrimary))
+                        btn_save_footballLeague.textColor = resources.getColor(R.color.black)
+                        btn_save_footballLeague.strokeColor =
+                            (resources.getColor(R.color.colorPrimary))
+
+                        footballLanguageListAdapter?.notifyDataSetChanged()
                     }
 
-                    leagueID = football_language_list!!.get(pos)!!.leagueID!!
-                    leagueName = football_language_list!!.get(pos)!!.leagueName!!
-                    footballLanguageListAdapter?.notifyDataSetChanged()
-
-                    btn_save_footballLeague.backgroundTint = (resources.getColor(R.color.colorPrimary))
-                    btn_save_footballLeague.textColor = resources.getColor(R.color.black)
-                    btn_save_footballLeague.strokeColor = (resources.getColor(R.color.colorPrimary))
-
-                    footballLanguageListAdapter?.notifyDataSetChanged()
-                }
-
-            }, football_language_list!!, false,leagueID!!,userId,userData?.userID)
+                },
+                football_language_list!!,
+                false,
+                leagueID!!,
+                userId,
+                userData?.userID
+            )
         }
         rc_language.setHasFixedSize(true)
         rc_language.adapter = footballLanguageListAdapter
@@ -226,28 +245,38 @@ class FootballLeagueFragment : Fragment(), View.OnClickListener {
 
                 getLanguageList()
 
-                if (!(userData!!.footbllevelID.isNullOrEmpty()) && (!userData!!.footbllevelID.equals("0"))) {
-              //  Toast.makeText(context, "Please Select Any Language", Toast.LENGTH_SHORT).show()
+                if (!(userData!!.footbllevelID.isNullOrEmpty()) && (!userData!!.footbllevelID.equals(
+                        "0"
+                    ))
+                ) {
+                    //  Toast.makeText(context, "Please Select Any Language", Toast.LENGTH_SHORT).show()
                     btn_save_footballLeague.textColor = resources.getColor(R.color.black)
                     btn_save_footballLeague.strokeColor = (resources.getColor(R.color.colorPrimary))
                 } else {
-                    btn_save_footballLeague.backgroundTint = (resources.getColor(R.color.transperent1))
+                    btn_save_footballLeague.backgroundTint =
+                        (resources.getColor(R.color.transperent1))
                     btn_save_footballLeague.textColor = resources.getColor(R.color.colorPrimary)
                     btn_save_footballLeague.strokeColor = (resources.getColor(R.color.grayborder))
                 }
-                if(leagueID.isNullOrEmpty() &&leagueName.isNullOrEmpty())
-                {
-                    MyUtils.showSnackbar(mActivity!!,"Please Select Any Football league",nointernetMainRelativelayout)
-                }
-                else{
+                if (leagueID.isNullOrEmpty() && leagueName.isNullOrEmpty()) {
+                    MyUtils.showSnackbar(
+                        mActivity!!,
+                        "Please Select Any Football league",
+                        nointernetMainRelativelayout
+                    )
+                } else {
                     updateFootbalLanguage()
                 }
             }
-            R.id.btn_save_footballLeague->{
+            R.id.btn_save_footballLeague -> {
                 if (!userData!!.leagueID.isEmpty() || !(userData!!.leagueID.isEmpty())) {
                     updateFootbalLanguage()
                 } else {
-                    MyUtils.showSnackbar(mActivity!!, getString(R.string.please_select_footballLeague), lly_league)
+                    MyUtils.showSnackbar(
+                        mActivity!!,
+                        getString(R.string.please_select_footballLeague),
+                        lly_league
+                    )
                 }
             }
         }
@@ -264,87 +293,69 @@ class FootballLeagueFragment : Fragment(), View.OnClickListener {
 
         try {
             jsonObject.put("apiType", RestClient.apiType)
-            jsonObject.put("apiVersion",  RestClient.apiVersion)
+            jsonObject.put("apiVersion", RestClient.apiVersion)
             jsonObject.put("loginuserID", userData?.userID!!)
             jsonObject.put("leagueID", leagueID)
-            if(!userData?.contractsituationID.isNullOrEmpty())
-            {
-                jsonObject.put("contractsituationID",  userData?.contractsituationID)
+            if (!userData?.contractsituationID.isNullOrEmpty()) {
+                jsonObject.put("contractsituationID", userData?.contractsituationID)
 
-            }
-            else{
+            } else {
                 jsonObject.put("contractsituationID", "")
 
             }
-            if(!userData?.userContractExpiryDate.isNullOrEmpty())
-            {
-                jsonObject.put("userContractExpiryDate",  userData?.userContractExpiryDate)
+            if (!userData?.userContractExpiryDate.isNullOrEmpty()) {
+                jsonObject.put("userContractExpiryDate", userData?.userContractExpiryDate)
 
-            }
-            else{
+            } else {
                 jsonObject.put("userContractExpiryDate", "")
 
             }
-            if(!userData?.userPreviousClubID.isNullOrEmpty())
-            {
-                jsonObject.put("userPreviousClubID",  userData?.userPreviousClubID)
+            if (!userData?.userPreviousClubID.isNullOrEmpty()) {
+                jsonObject.put("userPreviousClubID", userData?.userPreviousClubID)
 
-            }
-            else{
+            } else {
                 jsonObject.put("userPreviousClubID", "")
 
             }
-            if(!userData?.userJersyNumber.isNullOrEmpty())
-            {
-                jsonObject.put("userJersyNumber",  userData?.userJersyNumber)
+            if (!userData?.userJersyNumber.isNullOrEmpty()) {
+                jsonObject.put("userJersyNumber", userData?.userJersyNumber)
 
-            }
-            else{
+            } else {
                 jsonObject.put("userJersyNumber", "")
 
             }
-            if(!userData?.usertrophies.isNullOrEmpty())
-            {
-                jsonObject.put("usertrophies",  userData?.usertrophies)
+            if (!userData?.usertrophies.isNullOrEmpty()) {
+                jsonObject.put("usertrophies", userData?.usertrophies)
 
-            }
-            else{
+            } else {
                 jsonObject.put("usertrophies", "")
 
             }
-            if(!userData?.geomobilityID.isNullOrEmpty())
-            {
-                jsonObject.put("geomobilityID",  userData?.geomobilityID)
+            if (!userData?.geomobilityID.isNullOrEmpty()) {
+                jsonObject.put("geomobilityID", userData?.geomobilityID)
 
-            }
-            else{
+            } else {
                 jsonObject.put("geomobilityID", "")
 
             }
-            if(!userData?.userNationalCountryID.isNullOrEmpty())
-            {
-                jsonObject.put("userNationalCountryID",  userData?.userNationalCountryID)
+            if (!userData?.userNationalCountryID.isNullOrEmpty()) {
+                jsonObject.put("userNationalCountryID", userData?.userNationalCountryID)
 
-            }
-            else{
+            } else {
                 jsonObject.put("userNationalCountryID", "")
 
             }
-            if(!userData?.userNationalCap.isNullOrEmpty())
-            {
-                jsonObject.put("userNationalCap",  userData?.userNationalCap)
+            if (!userData?.userNationalCap.isNullOrEmpty()) {
+                jsonObject.put("userNationalCap", userData?.userNationalCap)
 
-            }
-            else{
+            } else {
                 jsonObject.put("userNationalCap", "")
 
             }
-            if(!userData?.useNationalGoals.isNullOrEmpty())
-            {
-                jsonObject.put("useNationalGoals",  userData?.useNationalGoals)
+            if (!userData?.useNationalGoals.isNullOrEmpty()) {
+                jsonObject.put("useNationalGoals", userData?.useNationalGoals)
 
-            }
-            else{
+            } else {
                 jsonObject.put("useNationalGoals", "")
 
             }
@@ -353,33 +364,41 @@ class FootballLeagueFragment : Fragment(), View.OnClickListener {
         }
         Log.d("UpdateObject", jsonObject.toString())
         jsonArray.put(jsonObject)
-            getUpdateResumeModel.getUpateResumeList(mActivity!!, false, jsonArray.toString())
-                .observe(this@FootballLeagueFragment!!,
-                        Observer { updateResumePojo ->
+        getUpdateResumeModel.getUpateResumeList(mActivity!!, false, jsonArray.toString())
+            .observe(this@FootballLeagueFragment!!,
+                Observer { updateResumePojo ->
 
-                            relativeprogressBar.visibility = View.GONE
+                    relativeprogressBar.visibility = View.GONE
 
-                            if (updateResumePojo != null && updateResumePojo.isNotEmpty()) {
+                    if (updateResumePojo != null && updateResumePojo.isNotEmpty()) {
 
-                                if (updateResumePojo[0].status.equals("true", true)) {
-                                    StoreSessionManager(updateResumePojo[0].data[0])
-                                    Handler().postDelayed({
-                                        (activity as MainActivity).onBackPressed()
-                                    }, 1000)
-                                    MyUtils.showSnackbar(mActivity!!, updateResumePojo.get(0).message, lly_footballeague)
-                                } else {
+                        if (updateResumePojo[0].status.equals("true", true)) {
+                            StoreSessionManager(updateResumePojo[0].data[0])
+                            Handler().postDelayed({
+                                (activity as MainActivity).onBackPressed()
+                            }, 1000)
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                updateResumePojo.get(0).message,
+                                lly_footballeague
+                            )
+                        } else {
 
-                                    MyUtils.showSnackbar(mActivity!!, updateResumePojo.get(0).message, lly_footballeague)
+                            MyUtils.showSnackbar(
+                                mActivity!!,
+                                updateResumePojo.get(0).message,
+                                lly_footballeague
+                            )
 
 
-                                }
+                        }
 
-                            } else {
-                                relativeprogressBar.visibility = View.GONE
-                                ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
-                            }
+                    } else {
+                        relativeprogressBar.visibility = View.GONE
+                        ErrorUtil.errorView(activity!!, nointernetMainRelativelayout)
+                    }
 
-                        })
+                })
     }
 
     private fun StoreSessionManager(uesedata: SignupData?) {
@@ -388,11 +407,11 @@ class FootballLeagueFragment : Fragment(), View.OnClickListener {
 
         val json = gson.toJson(uesedata)
         sessionManager?.create_login_session(
-                json,
-                uesedata!!.userMobile,
-                "",
-                true,
-                sessionManager!!.isEmailLogin()
+            json,
+            uesedata!!.userMobile,
+            "",
+            true,
+            sessionManager!!.isEmailLogin()
         )
 
     }

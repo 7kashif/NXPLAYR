@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.HobbiesPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
 
@@ -34,7 +37,7 @@ class HobbiesModel : ViewModel() {
 
     private fun getHobbiesListApi(): LiveData<List<HobbiesPojo>> {
         val data = MutableLiveData<List<HobbiesPojo>>()
-
+        viewModelScope.launch(Dispatchers.IO) {
         var call: Call<List<HobbiesPojo>>? = null
         when (from) {
             "Add" -> {
@@ -64,7 +67,7 @@ class HobbiesModel : ViewModel() {
                 data.value = null
             }
 
-        })
+        })}
 
         return data
     }

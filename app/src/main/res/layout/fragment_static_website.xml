@@ -37,7 +37,9 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/brandon_reg"
                 android:gravity="center"
-                android:textSize="@dimen/_18ssp"
+                android:textSize="@dimen/_15ssp"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:visibility="visible"
                 tools:text="Header" />
 

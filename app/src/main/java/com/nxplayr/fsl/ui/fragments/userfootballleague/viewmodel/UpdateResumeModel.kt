@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.SignupPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Response
 
 class UpdateResumeModel:ViewModel() {
@@ -35,6 +38,7 @@ class UpdateResumeModel:ViewModel() {
     private fun getUpdateResumeApi(): LiveData<List<SignupPojo>> {
 
         val data = MutableLiveData<List<SignupPojo>>()
+        viewModelScope.launch(Dispatchers.IO) {
         val call = RestClient.get()!!.userUpdateResumePost(json!!)
 
         call.enqueue(object : RestCallback<List<SignupPojo>>(mContext){
@@ -46,7 +50,7 @@ class UpdateResumeModel:ViewModel() {
                 data.value = null
             }
 
-        })
+        })}
 
         return data
     }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/exploreDataAll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/bg"
-    android:id="@+id/exploreDataAll"
     android:orientation="vertical">
 
     <LinearLayout
@@ -72,41 +72,61 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/_14ssp" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/img_listView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginRight="@dimen/_5sdp"
-                android:padding="@dimen/_3sdp"
-                android:src="@drawable/list_icon_selected" />
+            <!--            <androidx.appcompat.widget.AppCompatImageView-->
+            <!--                android:id="@+id/img_listView"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_gravity="center"-->
+            <!--                android:layout_marginRight="@dimen/_5sdp"-->
+            <!--                android:padding="@dimen/_3sdp"-->
+            <!--                android:src="@drawable/list_icon_unselected" />-->
+
+            <!--            <androidx.appcompat.widget.AppCompatImageView-->
+            <!--                android:id="@+id/img_listView2"-->
+            <!--                android:layout_width="@dimen/_25sdp"-->
+            <!--                android:layout_height="@dimen/_25sdp"-->
+            <!--                android:padding="@dimen/_3sdp"-->
+            <!--                android:layout_gravity="center"-->
+            <!--                android:src="@drawable/list_selected"-->
+            <!--                android:visibility="gone" />-->
+
+            <!--            <androidx.appcompat.widget.AppCompatImageView-->
+            <!--                android:id="@+id/img_expGridView"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_gravity="center"-->
+            <!--                android:layout_marginRight="@dimen/_5sdp"-->
+            <!--                android:padding="@dimen/_3sdp"-->
+            <!--                android:src="@drawable/thumb_view_selected" />-->
+
+            <!--            <androidx.appcompat.widget.AppCompatImageView-->
+            <!--                android:id="@+id/img_expGridView2"-->
+            <!--                android:layout_width="@dimen/_25sdp"-->
+            <!--                android:layout_height="@dimen/_25sdp"-->
+            <!--                android:padding="@dimen/_3sdp"-->
+            <!--                android:layout_gravity="center"-->
+            <!--                android:src="@drawable/thumb_view_unselected"-->
+            <!--                android:visibility="gone" />-->
+
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/img_listView2"
+                android:id="@+id/img_list"
                 android:layout_width="@dimen/_25sdp"
                 android:layout_height="@dimen/_25sdp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/_5sdp"
                 android:padding="@dimen/_3sdp"
-                android:layout_gravity="center"
-                android:src="@drawable/list_selected"
-                android:visibility="gone" />
+                android:src="@drawable/list_icon_unselected" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/img_expGridView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginRight="@dimen/_5sdp"
+                android:id="@+id/img_grid"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/_5sdp"
                 android:padding="@dimen/_3sdp"
                 android:src="@drawable/thumb_view_selected" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/img_expGridView2"
-                android:layout_width="@dimen/_25sdp"
-                android:layout_height="@dimen/_25sdp"
-                android:padding="@dimen/_3sdp"
-                android:layout_gravity="center"
-                android:src="@drawable/thumb_view_unselected"
-                android:visibility="gone" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -115,13 +135,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rc_all_video"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:layout_marginRight="@dimen/_5sdp"
-            android:orientation="horizontal" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rc_all_video"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:orientation="horizontal" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>

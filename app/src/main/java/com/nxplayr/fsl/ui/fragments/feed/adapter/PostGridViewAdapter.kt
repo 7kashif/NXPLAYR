@@ -18,11 +18,12 @@ import com.nxplayr.fsl.util.Constant
 import com.nxplayr.fsl.ui.fragments.feed.viewholder.LoaderViewHolder
 import kotlinx.android.synthetic.main.item_post_imagetype.view.*
 
-class PostGridViewAdapter(val context: Activity,
-                          val postlist: ArrayList<CreatePostData?>,
-                          val onItemClick: OnItemClick
+class PostGridViewAdapter(
+    val context: Activity,
+    val postlist: ArrayList<CreatePostData?>,
+    val onItemClick: OnItemClick
 ) :
-        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         var viewHolder: RecyclerView.ViewHolder?
 
@@ -30,16 +31,20 @@ class PostGridViewAdapter(val context: Activity,
             val view = LayoutInflater.from(parent.context).inflate(R.layout.loader, parent, false)
             viewHolder = LoaderViewHolder(view)
         } else if (viewType == Model.IMAGE_TYPE) {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_post_imagetype, parent, false)
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_post_imagetype, parent, false)
             viewHolder = PostsViewHolder(view, context)
         } else if (viewType == Model.Video_TYPE) {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_post_imagetype, parent, false)
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_post_imagetype, parent, false)
             viewHolder = PostsVideoViewHolder(view, context)
         } else if (viewType == Model.Link_TYPE) {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_post_imagetype, parent, false)
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_post_imagetype, parent, false)
             viewHolder = PostsLinkViewHolder(view, context)
         } else {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_post_imagetype, parent, false)
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_post_imagetype, parent, false)
             viewHolder = PostsViewHolder(view, context)
 
         }
@@ -97,265 +102,152 @@ class PostGridViewAdapter(val context: Activity,
     }
 
     class PostsViewHolder(itemView: View, context: Activity) : RecyclerView.ViewHolder(itemView) {
-        fun bind(listPosts: CreatePostData?, position: Int, onItemClick: OnItemClick) = with(itemView) {
-            var postprocessor: BlurPostprocessor? = null
-            if (listPosts != null)
-            {
-                if (!listPosts.postSerializedData.isNullOrEmpty() && !listPosts.postSerializedData[0].albummedia.isNullOrEmpty())
-                {
-                    if (!listPosts.postSerializedData[0].albummedia[0].albummediaFile.isNullOrEmpty())
-                    {
-                        img_postImageType1.setImageURI(RestClient.image_base_url_posts + listPosts.postSerializedData[0].albummedia[0].albummediaFile)
-                        img_postImageType?.visibility = View.VISIBLE
-                        img_postImageType1?.visibility = View.VISIBLE
-                        bluroverlay.visibility = View.VISIBLE
-                        img_placeolder.visibility = View.GONE
-                        postprocessor = BlurPostprocessor(context, 25, 10)
-                        try {
-                            var imagePath = RestClient.image_base_url_posts + listPosts.postSerializedData.get(0).albummedia.get(0).albummediaFile
-                            val request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(imagePath))
-                                    .setPostprocessor(postprocessor)
-                                    .build()
-                            val controller = Fresco.newDraweeControllerBuilder()
+        fun bind(listPosts: CreatePostData?, position: Int, onItemClick: OnItemClick) =
+            with(itemView) {
+                var postprocessor: BlurPostprocessor? = null
+                if (listPosts != null) {
+                    if (!listPosts.postSerializedData.isNullOrEmpty() && !listPosts.postSerializedData[0].albummedia.isNullOrEmpty()) {
+                        if (!listPosts.postSerializedData[0].albummedia[0].albummediaFile.isNullOrEmpty()) {
+                            img_postImageType1.setImageURI(RestClient.image_base_url_posts + listPosts.postSerializedData[0].albummedia[0].albummediaFile)
+                            img_postImageType?.visibility = View.VISIBLE
+                            img_postImageType1?.visibility = View.VISIBLE
+                            bluroverlay.visibility = View.VISIBLE
+                            img_placeolder.visibility = View.GONE
+                            postprocessor = BlurPostprocessor(context, 25, 10)
+                            try {
+                                var imagePath =
+                                    RestClient.image_base_url_posts + listPosts.postSerializedData.get(
+                                        0
+                                    ).albummedia.get(0).albummediaFile
+                                val request =
+                                    ImageRequestBuilder.newBuilderWithSource(Uri.parse(imagePath))
+                                        .setPostprocessor(postprocessor)
+                                        .build()
+                                val controller = Fresco.newDraweeControllerBuilder()
                                     .setImageRequest(request)
                                     .setOldController(img_postImageType?.controller)
                                     .build() as PipelineDraweeController
-                            img_postImageType?.controller = controller
+                                img_postImageType?.controller = controller
 
 
+                                when (listPosts.postMediaType) {
+                                    "Photo" -> {
+                                        bluroverlay.visibility = View.VISIBLE
+                                        img_postImageType1.visibility = View.VISIBLE
+                                        img_placeolder.visibility = View.GONE
+                                        img_postImageType1.hierarchy.setPlaceholderImage(R.drawable.create_post_photo_nobg)
+
+                                    }
+                                    "Video" -> {
+                                        bluroverlay.visibility = View.VISIBLE
+                                        img_postImageType1.visibility = View.VISIBLE
+                                        img_placeolder.visibility = View.GONE
+                                        img_postImageType1.hierarchy.setPlaceholderImage(R.drawable.create_post_video_nobg)
+
+
+                                    }
+                                    "Document" -> {
+                                        bluroverlay.visibility = View.VISIBLE
+                                        img_postImageType1.visibility = View.VISIBLE
+                                        img_placeolder.visibility = View.GONE
+                                        img_postImageType1.hierarchy.setPlaceholderImage(R.drawable.create_post_photo_nobg)
+
+
+                                    }
+                                    "Link" -> {
+                                        bluroverlay.visibility = View.VISIBLE
+                                        img_postImageType1.visibility = View.VISIBLE
+                                        img_placeolder.visibility = View.GONE
+                                        img_placeolder.setImageResource(R.drawable.small_link_icon)
+                                        img_postImageType1.hierarchy.setPlaceholderImage(R.drawable.create_post_link_nobg)
+
+
+                                    }
+                                }
+
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        } else {
                             when (listPosts.postMediaType) {
                                 "Photo" -> {
                                     bluroverlay.visibility = View.VISIBLE
-                                    img_postImageType1.visibility = View.VISIBLE
-                                    img_placeolder.visibility = View.GONE
-                                    img_postImageType1.hierarchy.setPlaceholderImage(R.drawable.create_post_photo_nobg)
+                                    img_postImageType1.visibility = View.GONE
+                                    img_placeolder.visibility = View.VISIBLE
+                                    img_placeolder.setImageResource(R.drawable.create_post_photo_nobg)
 
                                 }
                                 "Video" -> {
                                     bluroverlay.visibility = View.VISIBLE
-                                    img_postImageType1.visibility = View.VISIBLE
-                                    img_placeolder.visibility = View.GONE
-                                    img_postImageType1.hierarchy.setPlaceholderImage(R.drawable.create_post_video_nobg)
+                                    img_postImageType1.visibility = View.GONE
+                                    img_placeolder.visibility = View.VISIBLE
+                                    img_placeolder.setImageResource(R.drawable.create_post_video_nobg)
 
 
                                 }
                                 "Document" -> {
                                     bluroverlay.visibility = View.VISIBLE
-                                    img_postImageType1.visibility = View.VISIBLE
-                                    img_placeolder.visibility = View.GONE
-                                    img_postImageType1.hierarchy.setPlaceholderImage(R.drawable.create_post_photo_nobg)
-
+                                    img_postImageType1.visibility = View.GONE
+                                    img_placeolder.visibility = View.VISIBLE
+                                    img_placeolder.setImageResource(R.drawable.create_post_photo_nobg)
 
                                 }
                                 "Link" -> {
                                     bluroverlay.visibility = View.VISIBLE
-                                    img_postImageType1.visibility = View.VISIBLE
-                                    img_placeolder.visibility = View.GONE
-                                    img_placeolder.setImageResource(R.drawable.small_link_icon)
-                                    img_postImageType1.hierarchy.setPlaceholderImage(R.drawable.create_post_link_nobg)
-
+                                    img_postImageType1.visibility = View.GONE
+                                    img_placeolder.visibility = View.VISIBLE
+                                    img_placeolder.setImageResource(R.drawable.create_post_link_nobg)
 
 
                                 }
                             }
 
-                        } catch (e: Exception) {
-                            e.printStackTrace()
                         }
                     }
-                    else
-                    {
-                        when (listPosts.postMediaType) {
-                            "Photo" -> {
-                                bluroverlay.visibility = View.VISIBLE
-                                img_postImageType1.visibility = View.GONE
-                                img_placeolder.visibility = View.VISIBLE
-                                img_placeolder.setImageResource(R.drawable.create_post_photo_nobg)
+                    tv_feedType.text = listPosts.postMediaType
 
-                            }
-                            "Video" -> {
-                                bluroverlay.visibility = View.VISIBLE
-                                img_postImageType1.visibility = View.GONE
-                                img_placeolder.visibility = View.VISIBLE
-                                img_placeolder.setImageResource(R.drawable.create_post_video_nobg)
-
-
-                            }
-                            "Document" -> {
-                                bluroverlay.visibility = View.VISIBLE
-                                img_postImageType1.visibility = View.GONE
-                                img_placeolder.visibility = View.VISIBLE
-                                img_placeolder.setImageResource(R.drawable.create_post_photo_nobg)
-
-                            }
-                            "Link" -> {
-                                bluroverlay.visibility = View.VISIBLE
-                                img_postImageType1.visibility = View.GONE
-                                img_placeolder.visibility = View.VISIBLE
-                                img_placeolder.setImageResource(R.drawable.create_post_link_nobg)
-
-
-                            }
-                        }
-
+                    if (!listPosts.postDescription.isNullOrEmpty()) {
+                        tv_feedText.visibility = View.VISIBLE
+                        tv_feedText.text = Constant.decode(listPosts.postDescription)
+                        tv_feedText.doResizeTextView(tv_feedText, 3, "...See More", true)
+                    } else {
+                        tv_feedText.visibility = View.INVISIBLE
                     }
                 }
-                tv_feedType.text = listPosts.postMediaType
 
-                if(!listPosts.postDescription.isNullOrEmpty())
-                {
-                    tv_feedText.visibility=View.VISIBLE
-                    tv_feedText.text = Constant.decode(listPosts.postDescription)
-                    tv_feedText.doResizeTextView(tv_feedText,3, "...See More", true)
-
-
-                }else{
-                    tv_feedText.visibility=View.GONE
+                itemView.setOnClickListener {
+                    onItemClick.onClicled(position, "All")
                 }
             }
-
-            itemView.setOnClickListener {
-                onItemClick.onClicled(position, "All")
-            }
-        }
     }
 
-    class PostsVideoViewHolder(itemView: View, context: Activity) : RecyclerView.ViewHolder(itemView) {
-        fun bind(listPosts: CreatePostData?, position: Int, onItemClick: OnItemClick) = with(itemView) {
-            if (listPosts != null) {
-                tv_feedType.text = listPosts.postMediaType
-                if(!listPosts.postDescription.isNullOrEmpty())
-                {
-                    tv_feedText.visibility=View.VISIBLE
-                    tv_feedText.text = Constant.decode(listPosts.postDescription)
-                    tv_feedText.doResizeTextView(tv_feedText,3, "...See More", true)
+    class PostsVideoViewHolder(itemView: View, context: Activity) :
+        RecyclerView.ViewHolder(itemView) {
+        fun bind(listPosts: CreatePostData?, position: Int, onItemClick: OnItemClick) =
+            with(itemView) {
+                if (listPosts != null) {
+                    tv_feedType.text = listPosts.postMediaType
+                    if (!listPosts.postDescription.isNullOrEmpty()) {
+                        tv_feedText.visibility = View.VISIBLE
+                        tv_feedText.text = Constant.decode(listPosts.postDescription)
+                        tv_feedText.doResizeTextView(tv_feedText, 3, "...See More", true)
 
-                }
-                else
-                {
-                    tv_feedText.visibility=View.GONE
-                }
-
-                var videoPath =if(!listPosts.postSerializedData[0].albummedia.isNullOrEmpty() && !listPosts.postSerializedData[0].albummedia[0].albummediaThumbnail.isNullOrEmpty()){
-                    RestClient.image_base_url_posts + listPosts.postSerializedData[0].albummedia[0].albummediaThumbnail
-                } else{
-                    ""
-                }
-                if(!videoPath.isNullOrEmpty())
-                {
-                    img_postImageType?.visibility = View.VISIBLE
-                    bluroverlay.visibility = View.VISIBLE
-                    img_postImageType1.setImageURI(videoPath)
-                    img_postImageType1.visibility = View.VISIBLE
-                    img_placeolder.visibility = View.GONE
-                    when (listPosts.postMediaType) {
-                        "Photo" -> {
-                            bluroverlay.visibility = View.VISIBLE
-                            img_postImageType1.visibility = View.VISIBLE
-                            img_placeolder.visibility = View.GONE
-                            img_postImageType1.hierarchy.setPlaceholderImage(R.drawable.create_post_photo_nobg)
-
-                        }
-                        "Video" -> {
-                            bluroverlay.visibility = View.VISIBLE
-                            img_postImageType1.visibility = View.VISIBLE
-                            img_placeolder.visibility = View.GONE
-                            img_postImageType1.hierarchy.setPlaceholderImage(R.drawable.create_post_video_nobg)
-
-
-                        }
-                        "Document" -> {
-                            bluroverlay.visibility = View.VISIBLE
-                            img_postImageType1.visibility = View.VISIBLE
-                            img_placeolder.visibility = View.GONE
-                            img_postImageType1.hierarchy.setPlaceholderImage(R.drawable.create_post_photo_nobg)
-
-
-                        }
-                        "Link" -> {
-                            bluroverlay.visibility = View.VISIBLE
-                            img_postImageType1.visibility = View.VISIBLE
-                            img_placeolder.visibility = View.GONE
-                            img_placeolder.setImageResource(R.drawable.small_link_icon)
-                            img_postImageType1.hierarchy.setPlaceholderImage(R.drawable.create_post_link_nobg)
-
-
-
-                        }
+                    } else {
+                        tv_feedText.visibility = View.INVISIBLE
                     }
 
-                }
-                else
-                {
-                        when(listPosts.postMediaType){
-                            "Photo"->{
-                                bluroverlay.visibility = View.VISIBLE
-                                img_postImageType1.visibility = View.GONE
-                                img_placeolder.visibility = View.VISIBLE
-                                img_placeolder.setImageResource(R.drawable.create_post_photo_nobg)
-
-                            }
-                            "Video"->{
-                                bluroverlay.visibility = View.VISIBLE
-                                img_postImageType1.visibility = View.GONE
-                                img_placeolder.visibility = View.VISIBLE
-                                img_placeolder.setImageResource(R.drawable.create_post_video_nobg)
-
-
-                            }
-                            "Document"->{
-                                bluroverlay.visibility = View.VISIBLE
-                                img_postImageType1.visibility = View.GONE
-                                img_placeolder.visibility = View.VISIBLE
-                                img_placeolder.setImageResource(R.drawable.create_post_photo_nobg)
-
-                            }
-                            "Link"->{
-                                bluroverlay.visibility = View.VISIBLE
-                                img_postImageType1.visibility = View.GONE
-                                img_placeolder.visibility = View.VISIBLE
-                                img_placeolder.setImageResource(R.drawable.create_post_link_nobg)
-
-
-                            }
+                    var videoPath =
+                        if (!listPosts.postSerializedData[0].albummedia.isNullOrEmpty() && !listPosts.postSerializedData[0].albummedia[0].albummediaThumbnail.isNullOrEmpty()) {
+                            RestClient.image_base_url_posts + listPosts.postSerializedData[0].albummedia[0].albummediaThumbnail
+                        } else {
+                            ""
                         }
-                    }
-
-            }
-            itemView.setOnClickListener {
-                onItemClick.onClicled(position, "All")
-            }
-        }
-    }
-
-    class PostsLinkViewHolder(itemView: View, context: Activity) : RecyclerView.ViewHolder(itemView) {
-        var postprocessor: BlurPostprocessor? = null
-
-        fun bind(listPosts: CreatePostData?, position: Int, onItemClick: OnItemClick) = with(itemView) {
-
-            if (listPosts != null) {
-                if (!listPosts.postSerializedData[0].albummedia.isNullOrEmpty()) {
-                    if (!listPosts.postSerializedData[0].albummedia[0].albummediaFile.isNullOrEmpty())
-                    {
-                        img_postImageType1.setImageURI(RestClient.image_base_url_posts + listPosts.postSerializedData[0].albummedia[0].albummediaFile)
-                        tv_feedType.text = listPosts.postMediaType
-                        img_postImageType1.visibility = View.VISIBLE
-                        img_placeolder.visibility = View.GONE
+                    if (!videoPath.isNullOrEmpty()) {
                         img_postImageType?.visibility = View.VISIBLE
                         bluroverlay.visibility = View.VISIBLE
-                        postprocessor = BlurPostprocessor(context, 25, 10)
-                        try {
-                            val request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(RestClient.image_base_url_posts + listPosts.postSerializedData.get(0).albummedia.get(0).albummediaFile))
-                                    .setPostprocessor(postprocessor)
-                                    .build()
-                            val controller = Fresco.newDraweeControllerBuilder()
-                                    .setImageRequest(request)
-                                    .setOldController(img_postImageType?.controller)
-                                    .build() as PipelineDraweeController
-                            img_postImageType?.controller = controller
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
+                        img_postImageType1.setImageURI(videoPath)
+                        img_postImageType1.visibility = View.VISIBLE
+                        img_placeolder.visibility = View.GONE
                         when (listPosts.postMediaType) {
                             "Photo" -> {
                                 bluroverlay.visibility = View.VISIBLE
@@ -388,22 +280,19 @@ class PostGridViewAdapter(val context: Activity,
                                 img_postImageType1.hierarchy.setPlaceholderImage(R.drawable.create_post_link_nobg)
 
 
-
                             }
                         }
 
-                    }
-                    else
-                    {
-                        when(listPosts.postMediaType){
-                            "Photo"->{
+                    } else {
+                        when (listPosts.postMediaType) {
+                            "Photo" -> {
                                 bluroverlay.visibility = View.VISIBLE
                                 img_postImageType1.visibility = View.GONE
                                 img_placeolder.visibility = View.VISIBLE
                                 img_placeolder.setImageResource(R.drawable.create_post_photo_nobg)
 
                             }
-                            "Video"->{
+                            "Video" -> {
                                 bluroverlay.visibility = View.VISIBLE
                                 img_postImageType1.visibility = View.GONE
                                 img_placeolder.visibility = View.VISIBLE
@@ -411,14 +300,14 @@ class PostGridViewAdapter(val context: Activity,
 
 
                             }
-                            "Document"->{
+                            "Document" -> {
                                 bluroverlay.visibility = View.VISIBLE
                                 img_postImageType1.visibility = View.GONE
                                 img_placeolder.visibility = View.VISIBLE
                                 img_placeolder.setImageResource(R.drawable.create_post_photo_nobg)
 
                             }
-                            "Link"->{
+                            "Link" -> {
                                 bluroverlay.visibility = View.VISIBLE
                                 img_postImageType1.visibility = View.GONE
                                 img_placeolder.visibility = View.VISIBLE
@@ -427,39 +316,150 @@ class PostGridViewAdapter(val context: Activity,
 
                             }
                         }
-
                     }
+
                 }
-
-                icon_feedType.setImageResource(R.drawable.small_link_icon)
-                tv_feedType.text = listPosts.postMediaType
-                if(!listPosts.postDescription.isNullOrEmpty())
-                {
-                    tv_feedText.visibility=View.VISIBLE
-                    var des = listPosts.postDescription?.split("||")?.toTypedArray()
-                    val postdescription: String = if (!des.isNullOrEmpty()) {
-                        Constant.decode(des!![0])
-                    } else {
-                        ""
-                    }
-                    if (!postdescription.isNullOrEmpty()) {
-                        tv_feedText.displayFulltext(postdescription)
-                        tv_feedText?.visibility = View.VISIBLE
-
-                    } else {
-                        tv_feedText?.visibility = View.GONE
-                    }
-
-
-                    tv_feedText.doResizeTextView(tv_feedText,10, "...See More", true)
-                }else{
-                    tv_feedText.visibility=View.GONE
+                itemView.setOnClickListener {
+                    onItemClick.onClicled(position, "All")
                 }
             }
-            itemView.setOnClickListener {
-                onItemClick.onClicled(position, "All")
+    }
+
+    class PostsLinkViewHolder(itemView: View, context: Activity) :
+        RecyclerView.ViewHolder(itemView) {
+        var postprocessor: BlurPostprocessor? = null
+
+        fun bind(listPosts: CreatePostData?, position: Int, onItemClick: OnItemClick) =
+            with(itemView) {
+
+                if (listPosts != null) {
+                    if (!listPosts.postSerializedData[0].albummedia.isNullOrEmpty()) {
+                        if (!listPosts.postSerializedData[0].albummedia[0].albummediaFile.isNullOrEmpty()) {
+                            img_postImageType1.setImageURI(RestClient.image_base_url_posts + listPosts.postSerializedData[0].albummedia[0].albummediaFile)
+                            tv_feedType.text = listPosts.postMediaType
+                            img_postImageType1.visibility = View.VISIBLE
+                            img_placeolder.visibility = View.GONE
+                            img_postImageType?.visibility = View.VISIBLE
+                            bluroverlay.visibility = View.VISIBLE
+                            postprocessor = BlurPostprocessor(context, 25, 10)
+                            try {
+                                val request = ImageRequestBuilder.newBuilderWithSource(
+                                    Uri.parse(
+                                        RestClient.image_base_url_posts + listPosts.postSerializedData.get(
+                                            0
+                                        ).albummedia.get(0).albummediaFile
+                                    )
+                                )
+                                    .setPostprocessor(postprocessor)
+                                    .build()
+                                val controller = Fresco.newDraweeControllerBuilder()
+                                    .setImageRequest(request)
+                                    .setOldController(img_postImageType?.controller)
+                                    .build() as PipelineDraweeController
+                                img_postImageType?.controller = controller
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                            when (listPosts.postMediaType) {
+                                "Photo" -> {
+                                    bluroverlay.visibility = View.VISIBLE
+                                    img_postImageType1.visibility = View.VISIBLE
+                                    img_placeolder.visibility = View.GONE
+                                    img_postImageType1.hierarchy.setPlaceholderImage(R.drawable.create_post_photo_nobg)
+
+                                }
+                                "Video" -> {
+                                    bluroverlay.visibility = View.VISIBLE
+                                    img_postImageType1.visibility = View.VISIBLE
+                                    img_placeolder.visibility = View.GONE
+                                    img_postImageType1.hierarchy.setPlaceholderImage(R.drawable.create_post_video_nobg)
+
+
+                                }
+                                "Document" -> {
+                                    bluroverlay.visibility = View.VISIBLE
+                                    img_postImageType1.visibility = View.VISIBLE
+                                    img_placeolder.visibility = View.GONE
+                                    img_postImageType1.hierarchy.setPlaceholderImage(R.drawable.create_post_photo_nobg)
+
+
+                                }
+                                "Link" -> {
+                                    bluroverlay.visibility = View.VISIBLE
+                                    img_postImageType1.visibility = View.VISIBLE
+                                    img_placeolder.visibility = View.GONE
+                                    img_placeolder.setImageResource(R.drawable.small_link_icon)
+                                    img_postImageType1.hierarchy.setPlaceholderImage(R.drawable.create_post_link_nobg)
+
+
+                                }
+                            }
+
+                        } else {
+                            when (listPosts.postMediaType) {
+                                "Photo" -> {
+                                    bluroverlay.visibility = View.VISIBLE
+                                    img_postImageType1.visibility = View.GONE
+                                    img_placeolder.visibility = View.VISIBLE
+                                    img_placeolder.setImageResource(R.drawable.create_post_photo_nobg)
+
+                                }
+                                "Video" -> {
+                                    bluroverlay.visibility = View.VISIBLE
+                                    img_postImageType1.visibility = View.GONE
+                                    img_placeolder.visibility = View.VISIBLE
+                                    img_placeolder.setImageResource(R.drawable.create_post_video_nobg)
+
+
+                                }
+                                "Document" -> {
+                                    bluroverlay.visibility = View.VISIBLE
+                                    img_postImageType1.visibility = View.GONE
+                                    img_placeolder.visibility = View.VISIBLE
+                                    img_placeolder.setImageResource(R.drawable.create_post_photo_nobg)
+
+                                }
+                                "Link" -> {
+                                    bluroverlay.visibility = View.VISIBLE
+                                    img_postImageType1.visibility = View.GONE
+                                    img_placeolder.visibility = View.VISIBLE
+                                    img_placeolder.setImageResource(R.drawable.create_post_link_nobg)
+
+
+                                }
+                            }
+
+                        }
+                    }
+
+                    icon_feedType.setImageResource(R.drawable.small_link_icon)
+                    tv_feedType.text = listPosts.postMediaType
+                    if (!listPosts.postDescription.isNullOrEmpty()) {
+                        tv_feedText.visibility = View.VISIBLE
+                        var des = listPosts.postDescription?.split("||")?.toTypedArray()
+                        val postdescription: String = if (!des.isNullOrEmpty()) {
+                            Constant.decode(des!![0])
+                        } else {
+                            ""
+                        }
+                        if (!postdescription.isNullOrEmpty()) {
+                            tv_feedText.displayFulltext(postdescription)
+                            tv_feedText?.visibility = View.VISIBLE
+
+                        } else {
+                            tv_feedText?.visibility = View.GONE
+                        }
+
+
+                        tv_feedText.doResizeTextView(tv_feedText, 10, "...See More", true)
+                    } else {
+                        tv_feedText.visibility = View.INVISIBLE
+                    }
+                }
+                itemView.setOnClickListener {
+                    onItemClick.onClicled(position, "All")
+                }
             }
-        }
 
     }
 

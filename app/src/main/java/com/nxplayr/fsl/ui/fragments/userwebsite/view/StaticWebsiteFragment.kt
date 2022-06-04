@@ -24,11 +24,13 @@ import com.nxplayr.fsl.data.model.SiteList
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
+import kotlinx.android.synthetic.main.fragment_set_of_skills.*
 import kotlinx.android.synthetic.main.fragment_static_website.*
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
 import kotlinx.android.synthetic.main.toolbar.tvToolbarTitle
+import kotlinx.android.synthetic.main.toolbar2.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.ArrayList
@@ -237,10 +239,13 @@ class StaticWebsiteFragment : Fragment(), View.OnClickListener,
         )
     }
 
-
     override fun onResume() {
         super.onResume()
         webSiteListApi("1", userData?.userID!!, RestClient.apiType, RestClient.apiVersion)
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngLinkWebsite.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngLinkWebsite
+        }
     }
 
     override fun onClick(p0: View?) {

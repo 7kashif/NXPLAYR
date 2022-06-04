@@ -14,23 +14,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.google.gson.Gson
 import com.nxplayr.fsl.R
-import com.nxplayr.fsl.ui.fragments.userhashtag.adapter.AddHashtagAdapter
 import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.ui.fragments.userhashtag.viewmodel.HashtagsModel
 import com.nxplayr.fsl.data.model.Hashtags
 import com.nxplayr.fsl.data.model.HashtagsList
 import com.nxplayr.fsl.data.model.SignupData
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.fragments.bottomsheet.BottomSheetListFragment
+import com.nxplayr.fsl.ui.fragments.userhashtag.adapter.AddHashtagAdapter
+import com.nxplayr.fsl.ui.fragments.userhashtag.viewmodel.HashtagsModel
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
-import com.google.gson.Gson
-import com.nxplayr.fsl.ui.fragments.bottomsheet.BottomSheetListFragment
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
 import kotlinx.android.synthetic.main.common_recyclerview.*
 import kotlinx.android.synthetic.main.fragment_add_hashtag.*
-import kotlinx.android.synthetic.main.fragment_add_languages.*
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
@@ -39,7 +37,6 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class AddHashtagsFragment : Fragment(), BottomSheetListFragment.SelectLanguage,View.OnClickListener {
@@ -53,7 +50,6 @@ class AddHashtagsFragment : Fragment(), BottomSheetListFragment.SelectLanguage,V
     private var hashtagsUpdateListener: HashtagsUpdateListener? = null
     var hashtagtList: ArrayList<Hashtags?>? = ArrayList()
     var hashtagAdapter: AddHashtagAdapter? = null
-    private lateinit var  loginModel: SignupModel
     private lateinit var  addHashtagsModel: HashtagsModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -77,10 +73,18 @@ class AddHashtagsFragment : Fragment(), BottomSheetListFragment.SelectLanguage,V
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        sessionManager = SessionManager(mActivity!!)
 
         tvToolbarTitle.setText(getString(R.string.add_hashtags))
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngAddHashtags.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngAddHashtags
+            if (!sessionManager?.LanguageLabel?.lngHashtags.isNullOrEmpty())
+                add_hashtags_textInputLayout.hint = sessionManager?.LanguageLabel?.lngHashtags
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_savehashtag.progressText = sessionManager?.LanguageLabel?.lngSave
 
-        sessionManager = SessionManager(mActivity!!)
+        }
         if (sessionManager?.get_Authenticate_User() != null) {
             userData = sessionManager?.get_Authenticate_User()
         }
@@ -224,7 +228,6 @@ class AddHashtagsFragment : Fragment(), BottomSheetListFragment.SelectLanguage,V
 
     private fun setupViewModel() {
          addHashtagsModel = ViewModelProvider(this@AddHashtagsFragment).get(HashtagsModel::class.java)
-         loginModel = ViewModelProvider(this@AddHashtagsFragment).get(SignupModel::class.java)
     }
 
     override fun onLanguageSelect(value: String, from: String) {

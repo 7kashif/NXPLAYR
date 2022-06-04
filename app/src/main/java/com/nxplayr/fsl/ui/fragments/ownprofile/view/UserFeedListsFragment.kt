@@ -13,24 +13,24 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.R
-import com.nxplayr.fsl.ui.activity.post.view.CreatePostActivityTwo
-import com.nxplayr.fsl.ui.fragments.feed.adapter.HomeFeedListAdapter
 import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.ui.fragments.userfollowers.viewmodel.CommonStatusModel
-import com.nxplayr.fsl.ui.fragments.feed.viewmodel.CreatePostModel
 import com.nxplayr.fsl.data.model.CreatePostData
 import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.data.model.ThreedotsBottomPojo
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.activity.post.view.CreatePostActivityTwo
 import com.nxplayr.fsl.ui.fragments.bottomsheet.BottomSheetFragment
+import com.nxplayr.fsl.ui.fragments.bottomsheet.ThreeDotsBottomSheetFragment
+import com.nxplayr.fsl.ui.fragments.feed.adapter.HomeFeedListAdapter
+import com.nxplayr.fsl.ui.fragments.feed.viewmodel.CreatePostModelV2
 import com.nxplayr.fsl.ui.fragments.feedlikeviewlist.view.LikeViewFragment
 import com.nxplayr.fsl.ui.fragments.postcomment.view.RepostReasonFragment
-import com.nxplayr.fsl.ui.fragments.bottomsheet.ThreeDotsBottomSheetFragment
+import com.nxplayr.fsl.ui.fragments.postcomment.viewmodel.CommentModel
+import com.nxplayr.fsl.ui.fragments.userfollowers.viewmodel.CommonStatusModel
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
-import com.nxplayr.fsl.ui.fragments.postcomment.viewmodel.CommentModel
 import kotlinx.android.synthetic.main.common_recyclerview.*
 import kotlinx.android.synthetic.main.fragment_comment_like_list.*
 import kotlinx.android.synthetic.main.nodafound.*
@@ -64,7 +64,7 @@ class UserFeedListsFragment : Fragment(),View.OnClickListener  {
     var from = ""
     var userId = ""
 
-    private lateinit var createPostModel: CreatePostModel
+    private lateinit var createPostModel: CreatePostModelV2
     private lateinit var apiCall : CommentModel
     private lateinit var reportPostModel : CommonStatusModel
 
@@ -162,84 +162,7 @@ class UserFeedListsFragment : Fragment(),View.OnClickListener  {
         }
 
         jsonArray.put(jsonObject)
-        createPostModel.apiFunction(mActivity!!, jsonArray.toString(), "getPostList")
-            .observe(viewLifecycleOwner, { postListPojo ->
-
-
-                if (postListPojo != null && postListPojo.isNotEmpty()) {
-                    isLoading = false
-                    ll_no_data_found.visibility = View.GONE
-                    nointernetMainRelativelayout.visibility = View.GONE
-                    relativeprogressBar.visibility = View.GONE
-
-                    if (pageNo > 0) {
-                        postList!!.removeAt(postList!!.size - 1)
-                        homeFeedListAdapter!!.notifyItemRemoved(postList!!.size)
-                    }
-
-
-                    if (postListPojo[0].status.equals("true")) {
-
-                        recyclerview.visibility = View.VISIBLE
-
-                        if (pageNo == 0) {
-                            postList?.clear()
-                        }
-                        postList?.addAll(postListPojo[0].data!!)
-                        homeFeedListAdapter?.notifyDataSetChanged()
-                        pageNo += 1
-
-                        if (postListPojo[0].data!!.size < 10) {
-                            isLastpage = true
-                        }
-                        if (postListPojo[0].data!!.isNullOrEmpty()) {
-                            ll_no_data_found.visibility = View.VISIBLE
-                            recyclerview.visibility = View.GONE
-                        } else {
-                            ll_no_data_found.visibility = View.GONE
-                            recyclerview.visibility = View.VISIBLE
-                        }
-
-                    } else {
-                        relativeprogressBar.visibility = View.GONE
-
-                        if (postList!!.isNullOrEmpty()) {
-                            ll_no_data_found.visibility = View.VISIBLE
-                            recyclerview.visibility = View.GONE
-
-                        } else {
-                            ll_no_data_found.visibility = View.GONE
-                            recyclerview.visibility = View.VISIBLE
-
-                        }
-                    }
-                } else {
-                    if (activity != null) {
-                        relativeprogressBar.visibility = View.GONE
-                        try {
-                            nointernetMainRelativelayout.visibility = View.VISIBLE
-                            if (MyUtils.isInternetAvailable(activity!!)) {
-
-                                nointernetImageview.setImageDrawable(activity!!.getDrawable(R.drawable.ic_warning_black_24dp))
-                                nointernettextview.text =
-                                    (activity!!.getString(R.string.error_crash_error_message))
-
-                            } else {
-
-                                nointernetImageview.setImageDrawable(activity!!.getDrawable(R.drawable.ic_signal_wifi_off_black_24dp))
-                                nointernettextview.text =
-                                    (activity!!.getString(R.string.error_common_network))
-
-                            }
-                        } catch (e: java.lang.Exception) {
-                            e.printStackTrace()
-                        }
-
-                    }
-
-                }
-            })
-
+        createPostModel.postFunction(jsonArray.toString(), "getPostList")
     }
 
     private fun setupUI() {
@@ -329,9 +252,85 @@ class UserFeedListsFragment : Fragment(),View.OnClickListener  {
     }
 
     private fun setupViewModel() {
-        createPostModel = ViewModelProvider(this@UserFeedListsFragment).get(CreatePostModel::class.java)
+        createPostModel = ViewModelProvider(this@UserFeedListsFragment).get(CreatePostModelV2::class.java)
         apiCall = ViewModelProvider(this@UserFeedListsFragment).get(CommentModel::class.java)
         reportPostModel = ViewModelProvider(this@UserFeedListsFragment).get(CommonStatusModel::class.java)
+
+        createPostModel.postSuccessLiveData
+            .observe(viewLifecycleOwner) { postListPojo ->
+                if (postListPojo != null && postListPojo.isNotEmpty()) {
+                    isLoading = false
+                    ll_no_data_found.visibility = View.GONE
+                    nointernetMainRelativelayout.visibility = View.GONE
+                    relativeprogressBar.visibility = View.GONE
+
+                    if (pageNo > 0) {
+                        postList!!.removeAt(postList!!.size - 1)
+                        homeFeedListAdapter!!.notifyItemRemoved(postList!!.size)
+                    }
+
+
+                    if (postListPojo[0].status.equals("true")) {
+
+                        recyclerview.visibility = View.VISIBLE
+
+                        if (pageNo == 0) {
+                            postList?.clear()
+                        }
+                        postList?.addAll(postListPojo[0].data!!)
+                        homeFeedListAdapter?.notifyDataSetChanged()
+                        pageNo += 1
+
+                        if (postListPojo[0].data!!.size < 10) {
+                            isLastpage = true
+                        }
+                        if (postListPojo[0].data!!.isNullOrEmpty()) {
+                            ll_no_data_found.visibility = View.VISIBLE
+                            recyclerview.visibility = View.GONE
+                        } else {
+                            ll_no_data_found.visibility = View.GONE
+                            recyclerview.visibility = View.VISIBLE
+                        }
+
+                    } else {
+                        relativeprogressBar.visibility = View.GONE
+
+                        if (postList!!.isNullOrEmpty()) {
+                            ll_no_data_found.visibility = View.VISIBLE
+                            recyclerview.visibility = View.GONE
+
+                        } else {
+                            ll_no_data_found.visibility = View.GONE
+                            recyclerview.visibility = View.VISIBLE
+
+                        }
+                    }
+                } else {
+                    if (activity != null) {
+                        relativeprogressBar.visibility = View.GONE
+                        try {
+                            nointernetMainRelativelayout.visibility = View.VISIBLE
+                            if (MyUtils.isInternetAvailable(activity!!)) {
+
+                                nointernetImageview.setImageDrawable(activity!!.getDrawable(R.drawable.ic_warning_black_24dp))
+                                nointernettextview.text =
+                                    (activity!!.getString(R.string.error_crash_error_message))
+
+                            } else {
+
+                                nointernetImageview.setImageDrawable(activity!!.getDrawable(R.drawable.ic_signal_wifi_off_black_24dp))
+                                nointernettextview.text =
+                                    (activity!!.getString(R.string.error_common_network))
+
+                            }
+                        } catch (e: java.lang.Exception) {
+                            e.printStackTrace()
+                        }
+
+                    }
+
+                }
+            }
 
     }
 
@@ -404,7 +403,7 @@ class UserFeedListsFragment : Fragment(),View.OnClickListener  {
         }
         jsonArray.put(jsonObject)
         reportPostModel.getCommonStatus(mActivity!!, false, jsonArray.toString(), "savePost")
-                .observe(this@UserFeedListsFragment, Observer { it ->
+                .observe(viewLifecycleOwner, Observer { it ->
                     //            MyUtils.closeProgress()
 
                     if (it != null && it.isNotEmpty()) {
@@ -459,61 +458,121 @@ class UserFeedListsFragment : Fragment(),View.OnClickListener  {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        reportPostModel.getCommonStatus(mActivity!!, false, jsonArray.toString(), fromUser).observe(this@UserFeedListsFragment,
-            { trendingFeedDatum ->
-                if (trendingFeedDatum != null && trendingFeedDatum.isNotEmpty()) {
-                    MyUtils.dismissProgressDialog()
-                    if (trendingFeedDatum[0].status?.equals("true", false)!!) {
-                        (activity as MainActivity).showSnackBar(trendingFeedDatum[0].message!!)
-                        when (fromUser) {
-                            "userUnfollow" -> {
-                                postList?.get(position)?.isYouFollowing = "No"
-                                list_bottomsheet = ArrayList()
-                                list_bottomsheet?.clear()
-                                list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_share_via_icon, resources.getString(R.string.share_via)))
-                                list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_hide_post_icon, resources.getString(R.string.hide_this_post)))
-                                if (!userData?.userID.equals(postList!![position]!!.userID)) {
-                                    list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_unfollow_icon, resources.getString(R.string.follow)))
-                                }
-                                if (!userData?.userID.equals(postList!![position]!!.userID)) {
-                                    list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_report_icon, resources.getString(R.string.report_this_Post_ad)))
-                                    list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_copyright_icon, resources.getString(R.string.report_copyright_infringement)))
-
-                                }
-                                list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_save_post_icon, resources.getString(R.string.save_this_post)))
+        reportPostModel.getCommonStatus(mActivity!!, false, jsonArray.toString(), fromUser).observe(viewLifecycleOwner
+        ) { trendingFeedDatum ->
+            if (trendingFeedDatum != null && trendingFeedDatum.isNotEmpty()) {
+                MyUtils.dismissProgressDialog()
+                if (trendingFeedDatum[0].status?.equals("true", false)!!) {
+                    (activity as MainActivity).showSnackBar(trendingFeedDatum[0].message!!)
+                    when (fromUser) {
+                        "userUnfollow" -> {
+                            postList?.get(position)?.isYouFollowing = "No"
+                            list_bottomsheet = ArrayList()
+                            list_bottomsheet?.clear()
+                            list_bottomsheet!!.add(
+                                ThreedotsBottomPojo(
+                                    R.drawable.popup_share_via_icon,
+                                    resources.getString(R.string.share_via)
+                                )
+                            )
+                            list_bottomsheet!!.add(
+                                ThreedotsBottomPojo(
+                                    R.drawable.popup_hide_post_icon,
+                                    resources.getString(R.string.hide_this_post)
+                                )
+                            )
+                            if (!userData?.userID.equals(postList!![position]!!.userID)) {
+                                list_bottomsheet!!.add(
+                                    ThreedotsBottomPojo(
+                                        R.drawable.popup_unfollow_icon,
+                                        resources.getString(R.string.follow)
+                                    )
+                                )
+                            }
+                            if (!userData?.userID.equals(postList!![position]!!.userID)) {
+                                list_bottomsheet!!.add(
+                                    ThreedotsBottomPojo(
+                                        R.drawable.popup_report_icon,
+                                        resources.getString(R.string.report_this_Post_ad)
+                                    )
+                                )
+                                list_bottomsheet!!.add(
+                                    ThreedotsBottomPojo(
+                                        R.drawable.popup_copyright_icon,
+                                        resources.getString(R.string.report_copyright_infringement)
+                                    )
+                                )
 
                             }
-                            "userFollow" -> {
-                                postList?.get(position)?.isYouFollowing = "Yes"
-                                list_bottomsheet = ArrayList()
-                                list_bottomsheet?.clear()
-                                list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_share_via_icon, resources.getString(R.string.share_via)))
-                                list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_hide_post_icon, resources.getString(R.string.hide_this_post)))
-                                if (!userData?.userID.equals(postList!![position]!!.userID)) {
-                                    list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_unfollow_icon, resources.getString(R.string.unfollow)))
-                                }
-                                if (!userData?.userID.equals(postList!![position]!!.userID)) {
-                                    list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_report_icon, resources.getString(R.string.report_this_Post_ad)))
-                                    list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_copyright_icon, resources.getString(R.string.report_copyright_infringement)))
+                            list_bottomsheet!!.add(
+                                ThreedotsBottomPojo(
+                                    R.drawable.popup_save_post_icon,
+                                    resources.getString(R.string.save_this_post)
+                                )
+                            )
 
-                                }
-                                list_bottomsheet!!.add(ThreedotsBottomPojo(R.drawable.popup_save_post_icon, resources.getString(R.string.save_this_post)))
-
-                            }
                         }
-                    } else {
-                        (activity as MainActivity).showSnackBar(trendingFeedDatum[0].message!!)
+                        "userFollow" -> {
+                            postList?.get(position)?.isYouFollowing = "Yes"
+                            list_bottomsheet = ArrayList()
+                            list_bottomsheet?.clear()
+                            list_bottomsheet!!.add(
+                                ThreedotsBottomPojo(
+                                    R.drawable.popup_share_via_icon,
+                                    resources.getString(R.string.share_via)
+                                )
+                            )
+                            list_bottomsheet!!.add(
+                                ThreedotsBottomPojo(
+                                    R.drawable.popup_hide_post_icon,
+                                    resources.getString(R.string.hide_this_post)
+                                )
+                            )
+                            if (!userData?.userID.equals(postList!![position]!!.userID)) {
+                                list_bottomsheet!!.add(
+                                    ThreedotsBottomPojo(
+                                        R.drawable.popup_unfollow_icon,
+                                        resources.getString(R.string.unfollow)
+                                    )
+                                )
+                            }
+                            if (!userData?.userID.equals(postList!![position]!!.userID)) {
+                                list_bottomsheet!!.add(
+                                    ThreedotsBottomPojo(
+                                        R.drawable.popup_report_icon,
+                                        resources.getString(R.string.report_this_Post_ad)
+                                    )
+                                )
+                                list_bottomsheet!!.add(
+                                    ThreedotsBottomPojo(
+                                        R.drawable.popup_copyright_icon,
+                                        resources.getString(R.string.report_copyright_infringement)
+                                    )
+                                )
 
+                            }
+                            list_bottomsheet!!.add(
+                                ThreedotsBottomPojo(
+                                    R.drawable.popup_save_post_icon,
+                                    resources.getString(R.string.save_this_post)
+                                )
+                            )
+
+                        }
                     }
-
                 } else {
-                    if (activity != null) {
-                        MyUtils.dismissProgressDialog()
-                        ErrorUtil.errorMethod(mainRootRv)
+                    (activity as MainActivity).showSnackBar(trendingFeedDatum[0].message!!)
 
-                    }
                 }
-            })
+
+            } else {
+                if (activity != null) {
+                    MyUtils.dismissProgressDialog()
+                    ErrorUtil.errorMethod(mainRootRv)
+
+                }
+            }
+        }
     }
 
     private fun getHidePost(position: Int) {
@@ -531,7 +590,7 @@ class UserFeedListsFragment : Fragment(),View.OnClickListener  {
         }
         jsonArray.put(jsonObject)
         reportPostModel.getCommonStatus(mActivity!!, false, jsonArray.toString(), "hidePost")
-                .observe(this@UserFeedListsFragment, Observer { it ->
+                .observe(viewLifecycleOwner, Observer { it ->
 
                     if (it != null && it.isNotEmpty()) {
                         MyUtils.dismissProgressDialog()
@@ -569,7 +628,7 @@ class UserFeedListsFragment : Fragment(),View.OnClickListener  {
         }
         jsonArray.put(jsonObject)
         reportPostModel.getCommonStatus(mActivity!!, false, jsonArray.toString(), "deletePostList")
-                .observe(this@UserFeedListsFragment, Observer { it ->
+                .observe(viewLifecycleOwner, Observer { it ->
                     if (it != null && it.isNotEmpty()) {
                         MyUtils.dismissProgressDialog()
 
@@ -622,23 +681,23 @@ class UserFeedListsFragment : Fragment(),View.OnClickListener  {
 
         jsonArray.put(jsonObject)
         reportPostModel.getCommonStatus(activity!!, false, jsonArray.toString(), from)
-                .observe(this@UserFeedListsFragment,
-                    { commonPojo ->
-                        if (!commonPojo.isNullOrEmpty() && activity != null) {
+                .observe(this@UserFeedListsFragment
+                ) { commonPojo ->
+                    if (!commonPojo.isNullOrEmpty() && activity != null) {
 
-                            if (commonPojo[0].status.equals("true")) {
+                        if (commonPojo[0].status.equals("true")) {
 
-                                (activity as MainActivity).showSnackBar(commonPojo[0].message)
-                                homeFeedListAdapter?.notifyDataSetChanged()
+                            (activity as MainActivity).showSnackBar(commonPojo[0].message)
+                            homeFeedListAdapter?.notifyDataSetChanged()
 
-                            } else {
-                                (activity as MainActivity).showSnackBar(commonPojo[0].message)
-                            }
                         } else {
-                            (activity as MainActivity).errorMethod()
+                            (activity as MainActivity).showSnackBar(commonPojo[0].message)
                         }
+                    } else {
+                        (activity as MainActivity).errorMethod()
+                    }
 
-                    })
+                }
     }
 
     override fun onClick(v: View?) {

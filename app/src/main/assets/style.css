@@ -1,0 +1,55 @@
+
+
+@font-face
+{
+    font-family: 'brandon';
+    src: url('file:///android_asset/brandon_reg.otf') format('opentype');
+}
+
+
+:root {
+    font-family: 'brandon';
+    font-size:20px;
+    color: #ffffff;
+    font-weight: normal;
+    /* font: -apple-system-body; uncomment to use Apple system font */
+}
+
+a
+{
+    font-family: 'brandon';
+    font-size: 20px;
+    color: #ffffff;
+    font-weight: normal;
+}
+
+h1
+{
+    font-family: 'brandon';
+    font-size: 30px;
+    color: #ffffff;
+    font-weight: normal;
+}
+
+h2
+{
+    font-family: 'brandon';
+    font-size: 25px;
+    color: #ffffff;
+    font-weight: normal;
+}
+
+h3
+{
+    font-family: 'brandon';
+    font-size: 20px;
+    color: #ffffff;
+    font-weight: normal;
+}
+
+img {
+  width: 16px;
+  height: 16px;
+}
+
+

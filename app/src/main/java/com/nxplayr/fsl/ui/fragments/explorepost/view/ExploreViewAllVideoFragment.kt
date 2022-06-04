@@ -15,15 +15,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.R
-import com.nxplayr.fsl.ui.activity.filterfeed.view.FilterActivity
-import com.nxplayr.fsl.ui.fragments.explorepost.adapter.OldExploreVideoAdapater
-import com.nxplayr.fsl.ui.fragments.explorepost.adapter.ExploreVideoListAdapater
 import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.ui.fragments.explorepost.viewmodel.ExploreVideoModel
 import com.nxplayr.fsl.data.model.CreatePostData
 import com.nxplayr.fsl.data.model.SignupData
+import com.nxplayr.fsl.ui.activity.filterfeed.view.FilterActivity
+import com.nxplayr.fsl.ui.activity.main.view.MainActivity
+import com.nxplayr.fsl.ui.fragments.explorepost.adapter.ExploreAdapter
+import com.nxplayr.fsl.ui.fragments.explorepost.viewmodel.ExploreVideoModelV2
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.explore_view_all_video_activity.*
@@ -32,10 +31,11 @@ import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.*
 
-class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
+class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener,
+    View.OnClickListener {
 
+    private var isListView: Boolean = false
     private var v: View? = null
     var sessionManager: SessionManager? = null
     var userData: SignupData? = null
@@ -44,12 +44,11 @@ class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
     var userName: String? = null
     var getExploreType: String? = null
     var explore_video_list: ArrayList<CreatePostData?>? = ArrayList()
-    var oldExploreVideo_adapter: OldExploreVideoAdapater? = null
-    var exploreVideoListadapter: ExploreVideoListAdapater? = null
+    var oldExploreVideoAdapter: ExploreAdapter? = null
 
     var swipeCount = 0
 
-    private var linearLayoutManager: GridLayoutManager? = null
+    var linearLayoutManager: LinearLayoutManager? = null
     private var y: Int = 0
     var pageNo = 0
     private var visibleItemCount: Int = 0
@@ -59,16 +58,20 @@ class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
     private var isLastpage = false
     private var isBackFromB = false
 
-    var footballLevel=""
-    var countryID=""
-    var sortby=""
-    var pitchPosition=""
-    var gender=""
-    var footballagecatID=""
-    var footballType=""
-    var publicationTime=""
+    var footballLevel = ""
+    var countryID = ""
+    var sortby = ""
+    var pitchPosition = ""
+    var gender = ""
+    var footballagecatID = ""
+    var footballType = ""
+    var publicationTime = ""
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         v = inflater.inflate(R.layout.explore_view_all_video_activity, container, false)
         isBackFromB = false;
         return v
@@ -107,26 +110,42 @@ class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
                 firstVisibleItemPosition = linearLayoutManager!!.findFirstVisibleItemPosition()
                 if (!isLoading && !isLastpage) {
                     if (visibleItemCount + firstVisibleItemPosition >= totalItemCount
-                            && firstVisibleItemPosition >= 0
-                            && totalItemCount >= 10
+                        && firstVisibleItemPosition >= 0
+                        && totalItemCount >= 10
                     ) {
 
                         isLoading = true
 
-                        getViewAllExploreDataList("trending", RestClient.apiType, userData?.userID, "ExploreVideos", getExploreType!!, "",
-                                RestClient.apiVersion, "", "", pageNo, "0", "",
-                                "", "0", "", "", "Video", "10")
+                        getViewAllExploreDataList(
+                            "trending",
+                            RestClient.apiType,
+                            userData?.userID,
+                            "ExploreVideos",
+                            getExploreType!!,
+                            "",
+                            RestClient.apiVersion,
+                            "",
+                            "",
+                            pageNo,
+                            "0",
+                            "",
+                            "",
+                            "0",
+                            "",
+                            "",
+                            "Video",
+                            "10"
+                        )
                     }
                 }
             }
         })
 
         swipe_refresh_layout.setOnRefreshListener(this)
-        img_listView.setOnClickListener(this)
-        img_expGridView.setOnClickListener(this)
+        img_list.setOnClickListener(this)
+        img_grid.setOnClickListener(this)
         txtViewAll.setOnClickListener(this)
         btnRetry.setOnClickListener(this)
-        img_expGridView2.setOnClickListener(this)
         img_Filter.setOnClickListener(this)
 
     }
@@ -136,14 +155,31 @@ class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
         swipeCount += 1;
         if (swipeCount > 0) {
 
-            oldExploreVideo_adapter!!.notifyDataSetChanged()
+            oldExploreVideoAdapter!!.notifyDataSetChanged()
 
             swipe_refresh_layout.isRefreshing = false
 
             pageNo = 0
-            getViewAllExploreDataList("trending", RestClient.apiType, userData?.userID, "ExploreVideos", getExploreType!!, "",
-                    RestClient.apiVersion, "", "", pageNo, "0", "",
-                    "", "0", "", "", "Video", "10")
+            getViewAllExploreDataList(
+                "trending",
+                RestClient.apiType,
+                userData?.userID,
+                "ExploreVideos",
+                getExploreType!!,
+                "",
+                RestClient.apiVersion,
+                "",
+                "",
+                pageNo,
+                "0",
+                "",
+                "",
+                "0",
+                "",
+                "",
+                "Video",
+                "10"
+            )
 
         }
     }
@@ -154,10 +190,133 @@ class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
         linearLayoutManager = GridLayoutManager(mActivity!!, 2)
         if (explore_video_list.isNullOrEmpty() || pageNo == 0) {
 
-            oldExploreVideo_adapter = OldExploreVideoAdapater(mActivity!!, object : OldExploreVideoAdapater.OnItemClick {
-                override fun onClicklisneter(pos: Int) {
+            oldExploreVideoAdapter = ExploreAdapter(mActivity!!, object : ExploreAdapter.OnItemClick {
+                override fun onClickLisneter(pos: Int) {
 
-                    if (explore_video_list!!.get(pos)?.postAlbum.isNullOrEmpty() || explore_video_list!!.get(pos)?.posthashtag.isNullOrEmpty()) {
+                        if (explore_video_list!!.get(pos)?.postAlbum.isNullOrEmpty() || explore_video_list!!.get(
+                                pos
+                            )?.posthashtag.isNullOrEmpty()
+                        ) {
+
+                            var exploreDetailFragment = ExploreVideoDetailFragment()
+                            Bundle().apply {
+                                putString("user_ID", explore_video_list!!.get(pos)?.userID)
+                                putInt("pos", pos)
+                                putString("username", explore_video_list!!.get(pos)?.userFirstName)
+                                putString("like", explore_video_list!!.get(pos)?.postLike)
+                                putString("postComment", explore_video_list!!.get(pos)?.postComment)
+                                putString(
+                                    "postDescription",
+                                    explore_video_list!!.get(pos)?.postDescription
+                                )
+                                putString("view", explore_video_list!!.get(pos)?.postViews)
+                                putString(
+                                    "userProfile",
+                                    explore_video_list!!.get(pos)?.userProfilePicture
+                                )
+                                putString("postID", explore_video_list!!.get(pos)?.postID)
+                                putString("postLike", explore_video_list!!.get(pos)?.youpostLiked)
+                                putString(
+                                    "exploreVideo",
+                                    explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaFile
+                                )
+                                putString(
+                                    "exploreThumbnail",
+                                    explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaThumbnail
+                                )
+                                putString("posthashtag", "null")
+                                putString("albumID", "null")
+                                putString("subAlbumAId", "null")
+                                putString("collection", "Add")
+                                putSerializable("explore_video_list", explore_video_list)
+                                putString("postType", explore_video_list?.get(pos)?.postType)
+                                exploreDetailFragment.arguments = this
+                            }
+                            (context as MainActivity).navigateTo(
+                                exploreDetailFragment,
+                                exploreDetailFragment::class.simpleName!!,
+                                true
+                            )
+                        } else {
+
+                            val exploreDetailFragment = ExploreVideoDetailFragment()
+
+                            Bundle().apply {
+                                putString("user_ID", explore_video_list!!.get(pos)?.userID)
+                                putInt("pos", pos)
+                                putString("username", explore_video_list!!.get(pos)?.userFirstName)
+                                putString("like", explore_video_list!!.get(pos)?.postLike)
+                                putString("postComment", explore_video_list!!.get(pos)?.postComment)
+                                putString(
+                                    "postDescription",
+                                    explore_video_list!!.get(pos)?.postDescription
+                                )
+                                putString("view", explore_video_list!!.get(pos)?.postViews)
+                                putString(
+                                    "userProfile",
+                                    explore_video_list!!.get(pos)?.userProfilePicture
+                                )
+                                putString("postID", explore_video_list!!.get(pos)?.postID)
+                                putString("postLike", explore_video_list!!.get(pos)?.youpostLiked)
+                                putString("posthashtag", explore_video_list!!.get(pos)?.posthashtag)
+                                putString(
+                                    "exploreVideo",
+                                    explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaFile
+                                )
+                                putString(
+                                    "exploreThumbnail",
+                                    explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaThumbnail
+                                )
+                                putString(
+                                    "albumID",
+                                    explore_video_list!!.get(pos)?.postAlbum!![0].exalbumID
+                                )
+                                putString(
+                                    "subAlbumAId",
+                                    explore_video_list!!.get(pos)?.postAlbum!![0].exsubalbumID
+                                )
+                                putString("collection", "Remove")
+                                putString("AllVideo", "AddVideo")
+                                putSerializable("explore_video_list", explore_video_list)
+                                putString("postType", explore_video_list?.get(pos)?.postType)
+                                exploreDetailFragment.arguments = this
+                            }
+                            (context as MainActivity).navigateTo(
+                                exploreDetailFragment,
+                                exploreDetailFragment::class.simpleName!!,
+                                true
+                            )
+                        }
+
+                    }
+
+
+            }, explore_video_list, false)
+        }
+        rc_all_video.layoutManager = linearLayoutManager
+        rc_all_video.setHasFixedSize(true)
+        rc_all_video.adapter = oldExploreVideoAdapter
+
+        getViewAllExploreDataList(
+            "trending", RestClient.apiType, userData?.userID, "ExploreVideos", getExploreType!!, "",
+            RestClient.apiVersion, "", "", pageNo, "0", "",
+            "", "0", "", "", "Video", "10"
+        )
+
+    }
+
+    private fun getViewAllListExploreData() {
+
+        rc_all_video.layoutManager =
+            LinearLayoutManager(mActivity!!, LinearLayoutManager.VERTICAL, false)
+
+        oldExploreVideoAdapter = ExploreAdapter(mActivity!!, object : ExploreAdapter.OnItemClick {
+            override fun onClickLisneter(pos: Int) {
+
+                    if (explore_video_list!!.get(pos)?.postAlbum.isNullOrEmpty() || explore_video_list!!.get(
+                            pos
+                        )?.posthashtag.isNullOrEmpty()
+                    ) {
 
                         var exploreDetailFragment = ExploreVideoDetailFragment()
                         Bundle().apply {
@@ -166,22 +325,39 @@ class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
                             putString("username", explore_video_list!!.get(pos)?.userFirstName)
                             putString("like", explore_video_list!!.get(pos)?.postLike)
                             putString("postComment", explore_video_list!!.get(pos)?.postComment)
-                            putString("postDescription", explore_video_list!!.get(pos)?.postDescription)
+                            putString(
+                                "postDescription",
+                                explore_video_list!!.get(pos)?.postDescription
+                            )
                             putString("view", explore_video_list!!.get(pos)?.postViews)
-                            putString("userProfile", explore_video_list!!.get(pos)?.userProfilePicture)
+                            putString(
+                                "userProfile",
+                                explore_video_list!!.get(pos)?.userProfilePicture
+                            )
                             putString("postID", explore_video_list!!.get(pos)?.postID)
                             putString("postLike", explore_video_list!!.get(pos)?.youpostLiked)
-                            putString("exploreVideo", explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaFile)
-                            putString("exploreThumbnail", explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaThumbnail)
+                            putString(
+                                "exploreVideo",
+                                explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaFile
+                            )
+                            putString(
+                                "exploreThumbnail",
+                                explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaThumbnail
+                            )
                             putString("posthashtag", "null")
                             putString("albumID", "null")
                             putString("subAlbumAId", "null")
                             putString("collection", "Add")
-                            putSerializable("explore_video_list",explore_video_list)
-                            putString("postType",explore_video_list?.get(pos)?.postType)
+                            putSerializable("explore_video_list", explore_video_list)
+                            putString("postType", explore_video_list?.get(pos)?.postType)
                             exploreDetailFragment.arguments = this
                         }
-                        (context as MainActivity).navigateTo(exploreDetailFragment, exploreDetailFragment::class.simpleName!!, true)
+                        (context as MainActivity).navigateTo(
+                            exploreDetailFragment,
+                            exploreDetailFragment::class.simpleName!!,
+                            true
+                        )
+
                     } else {
 
                         val exploreDetailFragment = ExploreVideoDetailFragment()
@@ -192,115 +368,77 @@ class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
                             putString("username", explore_video_list!!.get(pos)?.userFirstName)
                             putString("like", explore_video_list!!.get(pos)?.postLike)
                             putString("postComment", explore_video_list!!.get(pos)?.postComment)
-                            putString("postDescription", explore_video_list!!.get(pos)?.postDescription)
+                            putString(
+                                "postDescription",
+                                explore_video_list!!.get(pos)?.postDescription
+                            )
                             putString("view", explore_video_list!!.get(pos)?.postViews)
-                            putString("userProfile", explore_video_list!!.get(pos)?.userProfilePicture)
+                            putString(
+                                "userProfile",
+                                explore_video_list!!.get(pos)?.userProfilePicture
+                            )
                             putString("postID", explore_video_list!!.get(pos)?.postID)
                             putString("postLike", explore_video_list!!.get(pos)?.youpostLiked)
                             putString("posthashtag", explore_video_list!!.get(pos)?.posthashtag)
-                            putString("exploreVideo", explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaFile)
-                            putString("exploreThumbnail", explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaThumbnail)
-                            putString("albumID", explore_video_list!!.get(pos)?.postAlbum!![0].exalbumID)
-                            putString("subAlbumAId", explore_video_list!!.get(pos)?.postAlbum!![0].exsubalbumID)
+                            putString(
+                                "exploreVideo",
+                                explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaFile
+                            )
+                            putString(
+                                "exploreThumbnail",
+                                explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaThumbnail
+                            )
+                            putString(
+                                "albumID",
+                                explore_video_list!!.get(pos)?.postAlbum!![0].exalbumID
+                            )
+                            putString(
+                                "subAlbumAId",
+                                explore_video_list!!.get(pos)?.postAlbum!![0].exsubalbumID
+                            )
                             putString("collection", "Remove")
-                            putString("AllVideo", "AddVideo")
-                            putSerializable("explore_video_list",explore_video_list)
-                            putString("postType",explore_video_list?.get(pos)?.postType)
+                            putSerializable("explore_video_list", explore_video_list)
+                            putString("postType", explore_video_list?.get(pos)?.postType)
                             exploreDetailFragment.arguments = this
                         }
-                        (context as MainActivity).navigateTo(exploreDetailFragment, exploreDetailFragment::class.simpleName!!, true)
+                        (context as MainActivity).navigateTo(
+                            exploreDetailFragment,
+                            exploreDetailFragment::class.simpleName!!,
+                            true
+                        )
+
                     }
 
                 }
-
-            }, explore_video_list, false)
-        }
-        rc_all_video.layoutManager = linearLayoutManager
-        rc_all_video.setHasFixedSize(true)
-        rc_all_video.adapter = oldExploreVideo_adapter
-
-        getViewAllExploreDataList("trending", RestClient.apiType, userData?.userID, "ExploreVideos", getExploreType!!, "",
-                RestClient.apiVersion, "", "", pageNo, "0", "",
-                "", "0", "", "", "Video", "10")
-
-    }
-
-    private fun getViewAllListExploreData() {
-
-        rc_all_video.layoutManager = LinearLayoutManager(mActivity!!, LinearLayoutManager.VERTICAL, false)
-
-        exploreVideoListadapter = ExploreVideoListAdapater(mActivity!!, object : ExploreVideoListAdapater.OnItemClick {
-            override fun onClicklisneter(pos: Int) {
-
-                if (explore_video_list!!.get(pos)?.postAlbum.isNullOrEmpty() || explore_video_list!!.get(pos)?.posthashtag.isNullOrEmpty()) {
-
-                    var exploreDetailFragment = ExploreVideoDetailFragment()
-                    Bundle().apply {
-                        putString("user_ID", explore_video_list!!.get(pos)?.userID)
-                        putInt("pos", pos)
-                        putString("username", explore_video_list!!.get(pos)?.userFirstName)
-                        putString("like", explore_video_list!!.get(pos)?.postLike)
-                        putString("postComment", explore_video_list!!.get(pos)?.postComment)
-                        putString("postDescription", explore_video_list!!.get(pos)?.postDescription)
-                        putString("view", explore_video_list!!.get(pos)?.postViews)
-                        putString("userProfile", explore_video_list!!.get(pos)?.userProfilePicture)
-                        putString("postID", explore_video_list!!.get(pos)?.postID)
-                        putString("postLike", explore_video_list!!.get(pos)?.youpostLiked)
-                        putString("exploreVideo", explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaFile)
-                        putString("exploreThumbnail", explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaThumbnail)
-                        putString("posthashtag", "null")
-                        putString("albumID", "null")
-                        putString("subAlbumAId", "null")
-                        putString("collection", "Add")
-                        putSerializable("explore_video_list",explore_video_list)
-                        putString("postType",explore_video_list?.get(pos)?.postType)
-                        exploreDetailFragment.arguments = this
-                    }
-                    (context as MainActivity).navigateTo(exploreDetailFragment, exploreDetailFragment::class.simpleName!!, true)
-
-                } else {
-
-                    val exploreDetailFragment = ExploreVideoDetailFragment()
-
-                    Bundle().apply {
-                        putString("user_ID", explore_video_list!!.get(pos)?.userID)
-                        putInt("pos", pos)
-                        putString("username", explore_video_list!!.get(pos)?.userFirstName)
-                        putString("like", explore_video_list!!.get(pos)?.postLike)
-                        putString("postComment", explore_video_list!!.get(pos)?.postComment)
-                        putString("postDescription", explore_video_list!!.get(pos)?.postDescription)
-                        putString("view", explore_video_list!!.get(pos)?.postViews)
-                        putString("userProfile", explore_video_list!!.get(pos)?.userProfilePicture)
-                        putString("postID", explore_video_list!!.get(pos)?.postID)
-                        putString("postLike", explore_video_list!!.get(pos)?.youpostLiked)
-                        putString("posthashtag", explore_video_list!!.get(pos)?.posthashtag)
-                        putString("exploreVideo", explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaFile)
-                        putString("exploreThumbnail", explore_video_list!!.get(pos)?.postSerializedData!![0].albummedia!![0].albummediaThumbnail)
-                        putString("albumID", explore_video_list!!.get(pos)?.postAlbum!![0].exalbumID)
-                        putString("subAlbumAId", explore_video_list!!.get(pos)?.postAlbum!![0].exsubalbumID)
-                        putString("collection", "Remove")
-                        putSerializable("explore_video_list",explore_video_list)
-                        putString("postType",explore_video_list?.get(pos)?.postType)
-                        exploreDetailFragment.arguments = this
-                    }
-                    (context as MainActivity).navigateTo(exploreDetailFragment, exploreDetailFragment::class.simpleName!!, true)
-
-                }
-
-            }
 
         }, explore_video_list!!, false)
 
         rc_all_video.setHasFixedSize(true)
-        rc_all_video.adapter = exploreVideoListadapter
+        rc_all_video.adapter = oldExploreVideoAdapter
 
     }
 
     //Api Calling Funcation
-    private fun getViewAllExploreDataList(trending: String, apiType: String, userID: String?, postType: String, sortby: String, publicationTime: String?,
-                                          apiVersion: String, footballLevel: String, gender: String, pageno: Int, postID: String, footballType: String,
-                                          agegroup: String, loginuserID: String, pitchPosition: String, tag: String,
-                                          postMediaType: String, pagesize: String) {
+    private fun getViewAllExploreDataList(
+        trending: String,
+        apiType: String,
+        userID: String?,
+        postType: String,
+        sortby: String,
+        publicationTime: String?,
+        apiVersion: String,
+        footballLevel: String,
+        gender: String,
+        pageno: Int,
+        postID: String,
+        footballType: String,
+        agegroup: String,
+        loginuserID: String,
+        pitchPosition: String,
+        tag: String,
+        postMediaType: String,
+        pagesize: String
+    ) {
 
         relativeprogressBar.visibility = View.VISIBLE
         ll_no_data_found.visibility = View.GONE
@@ -310,14 +448,14 @@ class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
 
             relativeprogressBar.visibility = View.VISIBLE
             explore_video_list?.clear()
-            oldExploreVideo_adapter?.notifyDataSetChanged()
+            oldExploreVideoAdapter?.notifyDataSetChanged()
 
         } else {
 
             relativeprogressBar.visibility = View.GONE
             rc_all_video.visibility = View.VISIBLE
             explore_video_list!!.add(null)
-            oldExploreVideo_adapter?.notifyItemInserted(explore_video_list!!.size - 1)
+            oldExploreVideoAdapter?.notifyItemInserted(explore_video_list!!.size - 1)
         }
 
         val jsonArray = JSONArray()
@@ -351,73 +489,74 @@ class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
         jsonArray.put(jsonObject)
 
         var getRisingModel =
-                ViewModelProviders.of(mActivity!!).get(ExploreVideoModel::class.java)
-        getRisingModel.getExploreVList(mActivity!!, false, jsonArray.toString())
-                .observe(mActivity!!,
-                        Observer { exploreVidelistpojo ->
+            ViewModelProviders.of(mActivity!!).get(ExploreVideoModelV2::class.java)
+        getRisingModel.getVideos(jsonArray.toString())
+        getRisingModel.exploreSuccessLiveData
+            .observe(viewLifecycleOwner,
+                Observer { exploreVidelistpojo ->
 
-                            if (exploreVidelistpojo != null && exploreVidelistpojo.isNotEmpty()) {
+                    if (exploreVidelistpojo != null && exploreVidelistpojo.isNotEmpty()) {
 
-                                isLoading = false
-                                ll_no_data_found.visibility = View.GONE
-                                nointernetMainRelativelayout.visibility = View.GONE
-                                relativeprogressBar.visibility = View.GONE
+                        isLoading = false
+                        ll_no_data_found.visibility = View.GONE
+                        nointernetMainRelativelayout.visibility = View.GONE
+                        relativeprogressBar.visibility = View.GONE
 
-                                if (pageNo > 0) {
+                        if (pageNo > 0) {
 
-                                    explore_video_list?.removeAt(explore_video_list!!.size - 1)
-                                    oldExploreVideo_adapter?.notifyItemRemoved(explore_video_list!!.size)
-                                }
+                            if (explore_video_list!!.size - 1 > -1)
+                                explore_video_list?.removeAt(explore_video_list!!.size - 1)
+                            oldExploreVideoAdapter?.notifyItemRemoved(explore_video_list!!.size)
+                        }
 
-                                if (exploreVidelistpojo[0].status.equals("true", true)) {
+                        if (exploreVidelistpojo[0].status.equals("true", true)) {
 
-                                    rc_all_video.visibility = View.VISIBLE
-                                    if (pageNo == 0) {
-                                        explore_video_list?.clear()
-                                    }
-
-                                    pageNo += 1
-                                    if (exploreVidelistpojo[0].data!!.size < 10) {
-                                        isLastpage = true
-                                    }
-                                    explore_video_list?.addAll(exploreVidelistpojo[0].data!!)
-                                    oldExploreVideo_adapter?.notifyDataSetChanged()
-                                    exploreVideoListadapter?.notifyDataSetChanged()
-
-                                    if (!exploreVidelistpojo[0].data!!.isNullOrEmpty()) {
-                                        if (exploreVidelistpojo[0].data!!.isNullOrEmpty()) {
-                                            ll_no_data_found.visibility = View.VISIBLE
-                                            rc_all_video.visibility = View.GONE
-                                        } else {
-                                            ll_no_data_found.visibility = View.GONE
-                                            rc_all_video.visibility = View.VISIBLE
-                                        }
-
-
-                                    } else {
-                                        ll_no_data_found.visibility = View.VISIBLE
-                                        rc_all_video.visibility = View.GONE
-                                    }
-                                } else {
-                                    if (explore_video_list!!.size == 0) {
-
-                                        ll_no_data_found.visibility = View.VISIBLE
-                                        rc_all_video.visibility = View.GONE
-                                    } else {
-
-                                        ll_no_data_found.visibility = View.GONE
-                                        rc_all_video.visibility = View.VISIBLE
-                                    }
-
-                                }
-
-                            } else {
-
-                                relativeprogressBar.visibility = View.GONE
-                                ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                            rc_all_video.visibility = View.VISIBLE
+                            if (pageNo == 0) {
+                                explore_video_list?.clear()
                             }
 
-                        })
+                            pageNo += 1
+                            if (exploreVidelistpojo[0].data!!.size < 10) {
+                                isLastpage = true
+                            }
+                            explore_video_list?.addAll(exploreVidelistpojo[0].data!!)
+                            oldExploreVideoAdapter?.notifyDataSetChanged()
+
+                            if (!exploreVidelistpojo[0].data!!.isNullOrEmpty()) {
+                                if (exploreVidelistpojo[0].data!!.isNullOrEmpty()) {
+                                    ll_no_data_found.visibility = View.VISIBLE
+                                    rc_all_video.visibility = View.GONE
+                                } else {
+                                    ll_no_data_found.visibility = View.GONE
+                                    rc_all_video.visibility = View.VISIBLE
+                                }
+
+
+                            } else {
+                                ll_no_data_found.visibility = View.VISIBLE
+                                rc_all_video.visibility = View.GONE
+                            }
+                        } else {
+                            if (explore_video_list!!.size == 0) {
+
+                                ll_no_data_found.visibility = View.VISIBLE
+                                rc_all_video.visibility = View.GONE
+                            } else {
+
+                                ll_no_data_found.visibility = View.GONE
+                                rc_all_video.visibility = View.VISIBLE
+                            }
+
+                        }
+
+                    } else {
+
+                        relativeprogressBar.visibility = View.GONE
+                        ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                    }
+
+                })
 
     }
 
@@ -430,65 +569,62 @@ class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
                 (context as MainActivity).onBackPressed()
             }
 
-            R.id.img_listView -> {
-
-                img_listView2.visibility = View.VISIBLE
-                img_expGridView2.visibility = View.VISIBLE
-                img_expGridView.visibility = View.GONE
-                img_listView.visibility = View.GONE
-
-                if (explore_video_list.isNullOrEmpty()) {
-
-                    getViewAllExploreDataList("trending", RestClient.apiType, userData?.userID, "ExploreVideos", getExploreType!!, "",
-                            RestClient.apiVersion, "", "", pageNo, "0", "",
-                            "", "0", "", "", "Video", "10")
-
-                } else {
-
-                    getViewAllListExploreData()
-                }
-
+            R.id.img_list -> {
+                isListView = true
+                img_grid.setImageResource(R.drawable.thumb_view_unselected)
+                img_list.setImageResource(R.drawable.list_icon_selected)
+                linearLayoutManager =
+                    LinearLayoutManager(mActivity!!, LinearLayoutManager.VERTICAL, false)
+                rc_all_video.layoutManager = linearLayoutManager
+                oldExploreVideoAdapter!!.changeView(isListView)
             }
 
-            R.id.img_expGridView2 -> {
-
-                img_expGridView2.visibility = View.GONE
-                img_listView2.visibility = View.GONE
-                img_listView.visibility = View.VISIBLE
-                img_expGridView.visibility = View.VISIBLE
-
-                if (explore_video_list.isNullOrEmpty()) {
-
-                    getViewAllExploreDataList("trending", RestClient.apiType, userData?.userID, "ExploreVideos", getExploreType!!, "",
-                            RestClient.apiVersion, "", "", pageNo, "0", "",
-                            "", "0", "", "", "Video", "10")
-
-                } else {
-
-                    getViewAllGridExploreData()
-                }
+            R.id.img_grid -> {
+                isListView = false
+                img_grid.setImageResource(R.drawable.thumb_view_selected)
+                img_list.setImageResource(R.drawable.list_icon_unselected)
+                linearLayoutManager = GridLayoutManager(mActivity!!, 2)
+                rc_all_video.layoutManager = linearLayoutManager
+                oldExploreVideoAdapter!!.changeView(isListView)
             }
 
             R.id.btnRetry -> {
 
                 pageNo = 0
-                getViewAllExploreDataList("trending", RestClient.apiType, userData?.userID, "ExploreVideos", getExploreType!!, "",
-                        RestClient.apiVersion, "", "", pageNo, "0", "",
-                        "", "0", "", "", "Video", "10")
+                getViewAllExploreDataList(
+                    "trending",
+                    RestClient.apiType,
+                    userData?.userID,
+                    "ExploreVideos",
+                    getExploreType!!,
+                    "",
+                    RestClient.apiVersion,
+                    "",
+                    "",
+                    pageNo,
+                    "0",
+                    "",
+                    "",
+                    "0",
+                    "",
+                    "",
+                    "Video",
+                    "10"
+                )
             }
 
-            R.id.img_Filter->{
+            R.id.img_Filter -> {
 
                 Intent(mActivity!!, FilterActivity::class.java).apply {
-                    putExtra("footballLevel",footballLevel)
-                    putExtra("countryID",countryID)
-                    putExtra("sortby",sortby)
-                    putExtra("pitchPosition",pitchPosition)
-                    putExtra("gender",gender)
-                    putExtra("footballagecatID",footballagecatID)
-                    putExtra("footballType",footballType)
-                    putExtra("publicationTime",publicationTime)
-                    startActivityForResult(this,820)
+                    putExtra("footballLevel", footballLevel)
+                    putExtra("countryID", countryID)
+                    putExtra("sortby", sortby)
+                    putExtra("pitchPosition", pitchPosition)
+                    putExtra("gender", gender)
+                    putExtra("footballagecatID", footballagecatID)
+                    putExtra("footballType", footballType)
+                    putExtra("publicationTime", publicationTime)
+                    startActivityForResult(this, 820)
                 }
             }
         }
@@ -522,9 +658,26 @@ class ExploreViewAllVideoFragment : Fragment(), SwipeRefreshLayout.OnRefreshList
         pageNo = 0
         isLastpage = false
         isLoading = false
-        getViewAllExploreDataList("trending", RestClient.apiType, userData?.userID, "ExploreVideos",sortby,publicationTime,
-                RestClient.apiVersion, footballLevel, gender, pageNo, "0", footballType,
-                "", "0", pitchPosition, "", "Video", "10")
+        getViewAllExploreDataList(
+            "trending",
+            RestClient.apiType,
+            userData?.userID,
+            "ExploreVideos",
+            sortby,
+            publicationTime,
+            RestClient.apiVersion,
+            footballLevel,
+            gender,
+            pageNo,
+            "0",
+            footballType,
+            "",
+            "0",
+            pitchPosition,
+            "",
+            "Video",
+            "10"
+        )
     }
 
     override fun onResume() {

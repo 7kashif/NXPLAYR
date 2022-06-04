@@ -26,6 +26,7 @@ import com.nxplayr.fsl.util.SessionManager
 import com.google.android.material.tabs.TabLayout
 import com.nxplayr.fsl.ui.fragments.invite.adapter.InviteViewPagerAdapter
 import kotlinx.android.synthetic.main.fragment_main_invite.*
+import kotlinx.android.synthetic.main.fragment_menu.*
 import kotlinx.android.synthetic.main.toolbar.*
 import java.io.ByteArrayOutputStream
 
@@ -117,9 +118,25 @@ class InviteMainFragment : Fragment(),View.OnClickListener {
 
     private fun setupViewPager(viewPager: ViewPager) {
         adapter = InviteViewPagerAdapter(activity!!,childFragmentManager)
-        adapter?.addFragment(ShareFragment(), resources.getString(R.string.share))
-        adapter?.addFragment(InviteTabFragment(), resources.getString(R.string.sms))
-        adapter?.addFragment(InviteTabFragment(), resources.getString(R.string.mail))
+        var share = resources.getString(R.string.share)
+        var sms = resources.getString(R.string.sms)
+        var mail = resources.getString(R.string.sms)
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngInvite.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngInvite
+            if (!sessionManager?.LanguageLabel?.lngSend.isNullOrEmpty())
+                menuToolbarItemsend.text = sessionManager?.LanguageLabel?.lngSend
+            if (!sessionManager?.LanguageLabel?.lngShare.isNullOrEmpty())
+                share = sessionManager?.LanguageLabel?.lngShare.toString()
+            if (!sessionManager?.LanguageLabel?.lngSMS.isNullOrEmpty())
+                sms = sessionManager?.LanguageLabel?.lngSMS.toString()
+            if (!sessionManager?.LanguageLabel?.lngMail.isNullOrEmpty())
+                mail = sessionManager?.LanguageLabel?.lngMail.toString()
+        }
+
+        adapter?.addFragment(ShareFragment(), share)
+        adapter?.addFragment(InviteTabFragment(), sms)
+        adapter?.addFragment(InviteTabFragment(), mail)
         viewPager.currentItem = position
         viewPager.offscreenPageLimit = 3
         viewPager.adapter = adapter
@@ -204,7 +221,7 @@ class InviteMainFragment : Fragment(),View.OnClickListener {
               }
               else
               if (invite_item_ViewPager.currentItem == 2) {
-                  sendEmail("FSL", "Join me on NxPlay.R. You can download it here: " + /*activity!!.packageName*/"https://www.nxplayr.com")
+                  sendEmail("NXPLAYR", "Join me on NxPlay.R. You can download it here: " + /*activity!!.packageName*/"https://www.nxplayr.com")
               }
 
           }

@@ -27,11 +27,14 @@ import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_recyclerview.*
 import kotlinx.android.synthetic.main.fragment_contract_sitiuation.*
 import kotlinx.android.synthetic.main.fragment_contract_sitiuation.btn_addNationality
+import kotlinx.android.synthetic.main.fragment_current_club.*
 import kotlinx.android.synthetic.main.fragment_passport_nationality.*
 import kotlinx.android.synthetic.main.nodafound.*
 import kotlinx.android.synthetic.main.nointernetconnection.*
 import kotlinx.android.synthetic.main.progressbar.*
+import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.android.synthetic.main.toolbar2.*
+import kotlinx.android.synthetic.main.toolbar2.toolbar
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -71,6 +74,16 @@ class ContractSitiuationFragment : Fragment(), View.OnClickListener {
         mActivity = context as AppCompatActivity
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngcontract.isNullOrEmpty())
+                tvToolbarTitle1.text = sessionManager?.LanguageLabel?.lngcontract
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_addNationality.progressText = sessionManager?.LanguageLabel?.lngSave
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         sessionManager = SessionManager(mActivity!!)
@@ -88,7 +101,6 @@ class ContractSitiuationFragment : Fragment(), View.OnClickListener {
                 } else {
                     ""
                 }
-
             }
         }
 

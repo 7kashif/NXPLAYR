@@ -15,28 +15,21 @@ import android.view.Window
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.gson.JsonParseException
 import com.nxplayr.fsl.R
-import com.nxplayr.fsl.ui.fragments.collection.adapter.CreateAlbumAdapater
 import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.ui.fragments.collection.viewmodel.CreateAlbumDeleteModel
-import com.nxplayr.fsl.ui.fragments.collection.viewmodel.EditAlbumModel
 import com.nxplayr.fsl.data.model.AlbumDatum
 import com.nxplayr.fsl.data.model.SignupData
+import com.nxplayr.fsl.ui.fragments.collection.adapter.CreateAlbumAdapater
+import com.nxplayr.fsl.ui.fragments.collection.viewmodel.CollectionViewModel
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.gson.JsonParseException
-import kotlinx.android.synthetic.main.custom_dialog_add_ablums_collection.*
 import kotlinx.android.synthetic.main.explore_album_option_sheet.*
-import kotlinx.android.synthetic.main.explore_video_option_sheet.*
-import kotlinx.android.synthetic.main.nodafound.*
-import kotlinx.android.synthetic.main.nointernetconnection.*
-import kotlinx.android.synthetic.main.progressbar.*
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.*
 
 class AlbumBottumSheetFragment : BottomSheetDialogFragment(), View.OnClickListener {
 
@@ -53,14 +46,17 @@ class AlbumBottumSheetFragment : BottomSheetDialogFragment(), View.OnClickListen
     var ExalbumID = ""
     var AlbumID = ""
     var AlbumName = ""
-    var onClick: BottomSheetListenerAlbum?=null
+    var onClick: BottomSheetListenerAlbum? = null
+    var collectionViewModel = CollectionViewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.CustomBottomSheetDialogTheme1);
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         val v = inflater.inflate(R.layout.explore_album_option_sheet, container, false)
 
@@ -70,6 +66,7 @@ class AlbumBottumSheetFragment : BottomSheetDialogFragment(), View.OnClickListen
     fun setOnclickLisner(mListener: BottomSheetListenerAlbum) {
         this.onClick = mListener
     }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -86,6 +83,8 @@ class AlbumBottumSheetFragment : BottomSheetDialogFragment(), View.OnClickListen
 
         }
 
+        collectionViewModel =
+            ViewModelProvider(this@AlbumBottumSheetFragment).get(CollectionViewModel::class.java)
         lyl_album_edit.setOnClickListener(this)
         lyl_album_delete.setOnClickListener(this)
     }
@@ -103,13 +102,20 @@ class AlbumBottumSheetFragment : BottomSheetDialogFragment(), View.OnClickListen
             }
 
             R.id.lyl_album_delete -> {
-                MyUtils.showMessageOKCancel(context!!,
-                        "Are you sure want to delete album ?",
-                        "Album Delete ",
-                        DialogInterface.OnClickListener { dialogInterface, i ->
+                MyUtils.showMessageOKCancel(requireContext(),
+                    "Are you sure want to delete album ?",
+                    "Album Delete ",
+                    DialogInterface.OnClickListener { dialogInterface, i ->
 
-                            getCreateAblumDelete(userData?.userID, ExalbumID, RestClient.apiVersion, RestClient.apiType,"Delete",lyl_album_delete)
-                        })
+                        getCreateAblumDelete(
+                            userData?.userID,
+                            ExalbumID,
+                            RestClient.apiVersion,
+                            RestClient.apiType,
+                            "Delete",
+                            lyl_album_delete
+                        )
+                    })
             }
         }
     }
@@ -117,6 +123,7 @@ class AlbumBottumSheetFragment : BottomSheetDialogFragment(), View.OnClickListen
     private fun showEditAlbums(lyl_album_edit: LinearLayout) {
         val dialogBuilder = AlertDialog.Builder(context)
         val inflater = (context as AppCompatActivity).getLayoutInflater()
+
         @SuppressLint("InflateParams")
         val rv = inflater.inflate(R.layout.custom_dialog_add_ablums_collection, null)
         dialogBuilder.setView(rv)
@@ -133,10 +140,19 @@ class AlbumBottumSheetFragment : BottomSheetDialogFragment(), View.OnClickListen
 
             if (AlbumName.equals("")) {
 
-                Toast.makeText(context!!, "Please Enter SubAlbum Name", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Please Enter SubAlbum Name", Toast.LENGTH_SHORT)
+                    .show()
             } else {
 
-                editAlbumName(userData?.userID, AlbumID, AlbumName, RestClient.apiType, RestClient.apiVersion,"Edit",lyl_album_edit)
+                editAlbumName(
+                    userData?.userID,
+                    AlbumID,
+                    AlbumName,
+                    RestClient.apiType,
+                    RestClient.apiVersion,
+                    "Edit",
+                    lyl_album_edit
+                )
             }
 
         }
@@ -154,8 +170,15 @@ class AlbumBottumSheetFragment : BottomSheetDialogFragment(), View.OnClickListen
         b!!.show()
     }
 
-    private fun getCreateAblumDelete(userID: String?, exalbumID: String?, apiVersion: String, apiType: String, from: String, lyl_album_delete: LinearLayout) {
-        MyUtils.showProgressDialog(context as Activity,"Please wait..")
+    private fun getCreateAblumDelete(
+        userID: String?,
+        exalbumID: String?,
+        apiVersion: String,
+        apiType: String,
+        from: String,
+        lyl_album_delete: LinearLayout
+    ) {
+        MyUtils.showProgressDialog(context as Activity, "Please wait..")
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
 
@@ -172,34 +195,44 @@ class AlbumBottumSheetFragment : BottomSheetDialogFragment(), View.OnClickListen
         Log.d("ALBUM_DELETE_LIST", jsonObject.toString())
         jsonArray.put(jsonObject)
         var getCreateAlbumDeleteModel =
-                ViewModelProviders.of(this@AlbumBottumSheetFragment).get(CreateAlbumDeleteModel::class.java)
-        getCreateAlbumDeleteModel.apiCreateAlbumDelete((context as Activity?)!!, false, jsonArray.toString())
-                .observe(this@AlbumBottumSheetFragment!!,
-                        Observer { albumDeletepojo ->
+            ViewModelProvider(this@AlbumBottumSheetFragment).get(CollectionViewModel::class.java)
+        getCreateAlbumDeleteModel.deleteAlbum(jsonArray.toString())
+        getCreateAlbumDeleteModel.deleteAlbum
+            .observe(viewLifecycleOwner,
+                Observer { albumDeletepojo ->
 
-                            if (albumDeletepojo != null && albumDeletepojo.isNotEmpty()) {
-                                MyUtils.dismissProgressDialog()
-                                if (albumDeletepojo[0].status.equals("true", true)) {
-                                   // Toast.makeText(context, albumDeletepojo[0].message, Toast.LENGTH_SHORT).show()
-                                       onClick?.onOptionClick(from)
-                                       dismiss()
-                                } else {
+                    if (albumDeletepojo != null && albumDeletepojo.isNotEmpty()) {
+                        MyUtils.dismissProgressDialog()
+                        if (albumDeletepojo[0].status.equals("true", true)) {
+                            // Toast.makeText(context, albumDeletepojo[0].message, Toast.LENGTH_SHORT).show()
+                            onClick?.onOptionClick(from)
+                            dismiss()
+                        } else {
 
 
-                                    Toast.makeText(context, albumDeletepojo[0].message, Toast.LENGTH_SHORT).show()
-                                }
+                            Toast.makeText(context, albumDeletepojo[0].message, Toast.LENGTH_SHORT)
+                                .show()
+                        }
 
-                            } else {
-                                MyUtils.dismissProgressDialog()
-                                ErrorUtil.errorMethod(lyl_album_delete)
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        ErrorUtil.errorMethod(lyl_album_delete)
 
-                            }
+                    }
 
-                        })
+                })
     }
 
-    private fun editAlbumName(useriD: String?, albumID: String?, albumName: String?, apiType: String, apiVersion: String, s: String, lyl_album_edit: LinearLayout) {
-        MyUtils.showProgressDialog(context as Activity,"Please wait..")
+    private fun editAlbumName(
+        useriD: String?,
+        albumID: String?,
+        albumName: String?,
+        apiType: String,
+        apiVersion: String,
+        s: String,
+        lyl_album_edit: LinearLayout
+    ) {
+        MyUtils.showProgressDialog(context as Activity, "Please wait..")
 
         val jsonObject = JSONObject()
         val jsonArray = JSONArray()
@@ -218,33 +251,34 @@ class AlbumBottumSheetFragment : BottomSheetDialogFragment(), View.OnClickListen
             e.printStackTrace()
         }
         Log.d("EditAlbumObject", jsonObject.toString())
-        var geteditModel =
-                ViewModelProviders.of(this@AlbumBottumSheetFragment).get(EditAlbumModel::class.java)
-        geteditModel.apiEditAlbumDelete((context as Activity?)!!, false, jsonArray.toString())
-                .observe(this@AlbumBottumSheetFragment,
-                        Observer { albumEditpojo ->
+        collectionViewModel.editAlbum(jsonArray.toString())
+        collectionViewModel.editAlbum
+            .observe(viewLifecycleOwner,
+                Observer { albumEditpojo ->
 
-                            if (albumEditpojo != null && albumEditpojo.isNotEmpty()) {
-                                MyUtils.dismissProgressDialog()
-                                if (albumEditpojo[0].status.equals("true", true)) {
+                    if (albumEditpojo != null && albumEditpojo.isNotEmpty()) {
+                        MyUtils.dismissProgressDialog()
+                        if (albumEditpojo[0].status.equals("true", true)) {
 
-                                    Toast.makeText(context, albumEditpojo[0].message, Toast.LENGTH_SHORT).show()
-                                   onClick?.onOptionClick(s)
-                                    dismiss()
-                                    b!!.dismiss()
+                            Toast.makeText(context, albumEditpojo[0].message, Toast.LENGTH_SHORT)
+                                .show()
+                            onClick?.onOptionClick(s)
+                            dismiss()
+                            b!!.dismiss()
 
-                                } else {
+                        } else {
 
-                                    Toast.makeText(context, albumEditpojo[0].message, Toast.LENGTH_SHORT).show()
-                                    b!!.dismiss()
-                                }
+                            Toast.makeText(context, albumEditpojo[0].message, Toast.LENGTH_SHORT)
+                                .show()
+                            b!!.dismiss()
+                        }
 
-                            } else {
-                                MyUtils.dismissProgressDialog()
-                                ErrorUtil.errorMethod(lyl_album_edit)
-                            }
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        ErrorUtil.errorMethod(lyl_album_edit)
+                    }
 
-                        })
+                })
     }
 
 }

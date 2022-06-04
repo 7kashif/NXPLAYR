@@ -53,6 +53,7 @@ class AddSkillsEndorsementsFragment : Fragment(),View.OnClickListener {
     var userData: SignupData? = null
     var skillId = ""
     var skillName = ""
+    var skillAdded = "Skills Added"
     private var skillsUpdateListener: SkillsUpdateListener? = null
     private lateinit var  skillsEndorsementsModel: SkillsEndorsementsModel
 
@@ -150,6 +151,21 @@ class AddSkillsEndorsementsFragment : Fragment(),View.OnClickListener {
     private fun setupUI() {
         tvToolbarTitle.text = getString(R.string.add_skills_endorsements)
 
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngAddSkillsEndorsements.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngAddSkillsEndorsements
+            if (!sessionManager?.LanguageLabel?.lngSearchSkills.isNullOrEmpty())
+                search_skills.hint = sessionManager?.LanguageLabel?.lngSearchSkills
+            if (!sessionManager?.LanguageLabel?.lngSkillAdded.isNullOrEmpty()) {
+                tv_skill_count.text = sessionManager?.LanguageLabel?.lngSkillAdded
+                skillAdded = sessionManager?.LanguageLabel?.lngSkillAdded.toString()
+            }
+            if (!sessionManager?.LanguageLabel?.lngSuggestedSkillBased.isNullOrEmpty())
+                tv_suggested_skill_added.text = sessionManager?.LanguageLabel?.lngSuggestedSkillBased
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_add_skills.progressText = sessionManager?.LanguageLabel?.lngSave
+        }
+
         toolbar.setNavigationOnClickListener {
             MyUtils.hideKeyboard1(mActivity!!)
             (activity as MainActivity).onBackPressed()
@@ -195,12 +211,12 @@ class AddSkillsEndorsementsFragment : Fragment(),View.OnClickListener {
                             if (addskillList!!.size > 0 || userData!!.skills.size > 0) {
                                 if (!userData?.skills.isNullOrEmpty()) {
                                     var count = userData!!.skills.size + addskillList!!.size
-                                    tv_skill_count.text = "Skills Added " + "(" + count + ")"
+                                    tv_skill_count.text = "$skillAdded " + "(" + count + ")"
                                 } else {
-                                    tv_skill_count.text = "Skills Added " + "(" + addskillList?.size + ")"
+                                    tv_skill_count.text = "$skillAdded " + "(" + addskillList?.size + ")"
                                 }
                             } else if (addskillList!!.size <= 0 || userData!!.skills.size <= 0) {
-                                tv_skill_count.text = "Skills Added "
+                                tv_skill_count.text = "$skillAdded "
                             }
                         }
                         skillsAdapter?.notifyDataSetChanged()
@@ -248,12 +264,12 @@ class AddSkillsEndorsementsFragment : Fragment(),View.OnClickListener {
                         if (addskillList!!.size > 0 || userData!!.skills.size > 0) {
                             if (!userData?.skills.isNullOrEmpty()) {
                                 var count = userData!!.skills.size + addskillList!!.size
-                                tv_skill_count.text = "Skills Added " + "(" + count + ")"
+                                tv_skill_count.text = "$skillAdded " + "(" + count + ")"
                             } else {
-                                tv_skill_count.text = "Skills Added " + "(" + addskillList?.size + ")"
+                                tv_skill_count.text = "$skillAdded " + "(" + addskillList?.size + ")"
                             }
                         } else if (addskillList!!.size <= 0 || userData!!.skills.size <= 0) {
-                            tv_skill_count.text = "Skills Added "
+                            tv_skill_count.text = "$skillAdded "
                         }
                         addskillsAdapter?.notifyDataSetChanged()
 
@@ -396,15 +412,15 @@ class AddSkillsEndorsementsFragment : Fragment(),View.OnClickListener {
                                     if (!userData?.skills.isNullOrEmpty()) {
                                         var count =
                                             skillsListPojo[0].businessskills.size + addskillList!!.size
-                                        tv_skill_count.text = "Skills Added " + "(" + count + ")"
+                                        tv_skill_count.text = "$skillAdded " + "(" + count + ")"
                                         skillListAdapter?.notifyDataSetChanged()
                                         addskillsAdapter?.notifyDataSetChanged()
                                     } else {
                                         tv_skill_count.text =
-                                            "Skills Added " + "(" + addskillList!!.size + ")"
+                                            "$skillAdded " + "(" + addskillList!!.size + ")"
                                     }
                                 } else if (addskillList!!.size <= 0) {
-                                    tv_skill_count.text = "Skills Added "
+                                    tv_skill_count.text = "$skillAdded "
                                 }
 
                             }
@@ -481,10 +497,10 @@ class AddSkillsEndorsementsFragment : Fragment(),View.OnClickListener {
 
                                         var count =
                                             deleteSkillsPojo[0].businessskills.size + addskillList!!.size
-                                        tv_skill_count.text = "Skills Added " + "(" + count + ")"
+                                        tv_skill_count.text = "$skillAdded " + "(" + count + ")"
 
                                     } else if (addskillList!!.size < 0 || deleteSkillsPojo[0].businessskills.size < 0) {
-                                        tv_skill_count.text = "Skills Added "
+                                        tv_skill_count.text = "$skillAdded "
                                     }
 
 

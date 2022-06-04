@@ -21,6 +21,7 @@
             android:visibility="visible">
 
             <include layout="@layout/toolbar" />
+
             <include layout="@layout/line_seperator" />
 
             <LinearLayout
@@ -59,7 +60,8 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/hashtags"
                     android:textColorHint="@color/colorPrimary"
-                    android:theme="@style/TextInputLayout">
+                    android:theme="@style/TextInputLayout"
+                    app:hintTextAppearance="@style/TextAppearance.AppCompat.Large.Inverse">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/add_hashtags_edit_text"
@@ -72,6 +74,7 @@
                         android:imeOptions="actionNext"
                         android:inputType="text"
                         android:maxLines="1"
+                        android:paddingTop="@dimen/_15sdp"
                         android:textCursorDrawable="@drawable/color_cursor"
                         android:textSize="@dimen/_16ssp"
                         app:backgroundTint="@color/blue_text_color" />
@@ -175,8 +178,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/_10sdp"
-                android:visibility="gone"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:visibility="gone" />
 
             <com.google.android.material.internal.BaselineLayout
                 android:id="@+id/baseline_hashtag"

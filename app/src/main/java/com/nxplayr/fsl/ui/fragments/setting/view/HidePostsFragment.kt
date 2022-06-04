@@ -33,7 +33,7 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
-class HidePostsFragment : Fragment(),View.OnClickListener {
+class HidePostsFragment : Fragment(), View.OnClickListener {
 
     private var v: View? = null
     var mActivity: AppCompatActivity? = null
@@ -50,15 +50,31 @@ class HidePostsFragment : Fragment(),View.OnClickListener {
     private var isLastpage = false
     var y: Int = 0
     private var linearLayoutManager: LinearLayoutManager? = null
-    private lateinit var  hidePostListModel: HidePostListModel
-    private lateinit var  commonStatusModel: CommonStatusModel
+    private lateinit var hidePostListModel: HidePostListModel
+    private lateinit var commonStatusModel: CommonStatusModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         if (v == null) {
             v = inflater.inflate(R.layout.fragment_hide_posts, container, false)
         }
         return v
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngHiddenPosts.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngHiddenPosts
+            if (!sessionManager?.LanguageLabel?.lngNoDataFound.isNullOrEmpty())
+                nodatafoundtextview.text = sessionManager?.LanguageLabel?.lngNoDataFound
+            if (!sessionManager?.LanguageLabel?.lngCheckNoInternet.isNullOrEmpty())
+                nointernettextview.text = sessionManager?.LanguageLabel?.lngCheckNoInternet
+            if (!sessionManager?.LanguageLabel?.lngUnhideThisPost.isNullOrEmpty())
+                tv_unhidePost.text = sessionManager?.LanguageLabel?.lngUnhideThisPost
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -66,10 +82,8 @@ class HidePostsFragment : Fragment(),View.OnClickListener {
         mActivity = context as AppCompatActivity
     }
 
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
 
         sessionManager = SessionManager(mActivity!!)
         if (sessionManager?.get_Authenticate_User() != null) {
@@ -109,10 +123,9 @@ class HidePostsFragment : Fragment(),View.OnClickListener {
 
         jsonArray.put(jsonObject)
         hidePostListModel.gethidePostList(
-            activity as MainActivity, false, jsonArray.toString(), "hidePostList")
-            .observe(mActivity!!, { hidePostListPojo ->
-
-
+            activity as MainActivity, false, jsonArray.toString(), "hidePostList"
+        )
+            .observe(mActivity!!) { hidePostListPojo ->
                 if (hidePostListPojo != null && hidePostListPojo.isNotEmpty()) {
                     isLoading = false
                     ll_no_data_found.visibility = View.GONE
@@ -165,8 +178,7 @@ class HidePostsFragment : Fragment(),View.OnClickListener {
                     }
 
                 }
-            })
-
+            }
     }
 
     private fun setupUI() {
@@ -179,24 +191,26 @@ class HidePostsFragment : Fragment(),View.OnClickListener {
         linearLayoutManager = LinearLayoutManager(mActivity)
         if (hideposts_list == null) {
             hideposts_list = ArrayList()
-            hidePostsAdapter = HidePostsAdapter(activity as MainActivity, hideposts_list, object : HidePostsAdapter.OnItemClick {
-                override fun onClicled(position: Int, from: String) {
-                    when (from) {
-
-                        "unhidePost" -> {
-                            tv_unhidePost.visibility = View.VISIBLE
-                            tv_unhidePost.setOnClickListener {
-                                unHidePostApi(hideposts_list!![position]!!.postID, position)
+            hidePostsAdapter = HidePostsAdapter(
+                activity as MainActivity,
+                hideposts_list,
+                object : HidePostsAdapter.OnItemClick {
+                    override fun onClicled(position: Int, from: String) {
+                        when (from) {
+                            "unhidePost" -> {
+                                tv_unhidePost.visibility = View.VISIBLE
+                                tv_unhidePost.setOnClickListener {
+                                    unHidePostApi(hideposts_list!![position]!!.postID, position)
+                                }
+                            }
+                            else -> {
+                                tv_unhidePost.visibility = View.GONE
                             }
                         }
-                        else -> {
-                            tv_unhidePost.visibility = View.GONE
-                        }
+
                     }
 
-                }
-
-            })
+                })
             recyclerview.setHasFixedSize(true)
             recyclerview.layoutManager = linearLayoutManager
             recyclerview.adapter = hidePostsAdapter
@@ -230,14 +244,19 @@ class HidePostsFragment : Fragment(),View.OnClickListener {
         btnRetry.setOnClickListener(this)
 
         var mDrawable = resources.getDrawable(R.drawable.post_view_icon_unselected)
-        mDrawable.setColorFilter(ContextCompat.getColor(mActivity!!, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
+        mDrawable.setColorFilter(
+            ContextCompat.getColor(mActivity!!, R.color.black),
+            android.graphics.PorterDuff.Mode.SRC_IN
+        )
         tv_unhidePost.setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null)
 
     }
 
     private fun setupViewModel() {
-        hidePostListModel = ViewModelProvider(this@HidePostsFragment).get(HidePostListModel::class.java)
-        commonStatusModel = ViewModelProvider(this@HidePostsFragment).get(CommonStatusModel::class.java)
+        hidePostListModel =
+            ViewModelProvider(this@HidePostsFragment).get(HidePostListModel::class.java)
+        commonStatusModel =
+            ViewModelProvider(this@HidePostsFragment).get(CommonStatusModel::class.java)
 
     }
 
@@ -257,31 +276,40 @@ class HidePostsFragment : Fragment(),View.OnClickListener {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        commonStatusModel.getCommonStatus(mActivity!!, false, jsonArray.toString(), "removehidePost")
-                .observe(this@HidePostsFragment!!,
-                    { commonStatuspojo ->
-                        if (commonStatuspojo != null && commonStatuspojo.isNotEmpty()) {
-                            if (commonStatuspojo[0].status.equals("true", false)) {
-                                MyUtils.dismissProgressDialog()
-                                hideposts_list?.removeAt(position);
-                                hidePostsAdapter?.notifyItemRemoved(position);
-                                hidePostsAdapter?.notifyItemChanged(position, hideposts_list?.size);
-                            } else {
-                                MyUtils.dismissProgressDialog()
-                                MyUtils.showSnackbar(mActivity!!, commonStatuspojo[0].message, ll_mainHidePost)
-                            }
+        commonStatusModel.getCommonStatus(
+            mActivity!!,
+            false,
+            jsonArray.toString(),
+            "removehidePost"
+        )
+            .observe(
+                this@HidePostsFragment!!
+            ) { commonStatuspojo ->
+                if (commonStatuspojo != null && commonStatuspojo.isNotEmpty()) {
+                    if (commonStatuspojo[0].status.equals("true", false)) {
+                        MyUtils.dismissProgressDialog()
+                        hideposts_list?.removeAt(position);
+                        hidePostsAdapter?.notifyItemRemoved(position);
+                        hidePostsAdapter?.notifyItemChanged(position, hideposts_list?.size);
+                    } else {
+                        MyUtils.dismissProgressDialog()
+                        MyUtils.showSnackbar(
+                            mActivity!!,
+                            commonStatuspojo[0].message,
+                            ll_mainHidePost
+                        )
+                    }
 
-                        } else {
-                            MyUtils.dismissProgressDialog()
-                            (activity as MainActivity).errorMethod()
-                        }
-                    })
+                } else {
+                    MyUtils.dismissProgressDialog()
+                    (activity as MainActivity).errorMethod()
+                }
+            }
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-            R.id.btnRetry->{
+        when (v?.id) {
+            R.id.btnRetry -> {
                 pageNo = 0
                 isLastpage = false
                 isLoading = false

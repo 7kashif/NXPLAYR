@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nxplayr.fsl.data.api.RestCallback
 import com.nxplayr.fsl.data.api.RestClient
 import com.nxplayr.fsl.data.model.HashtagsPojo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
 
@@ -34,7 +37,7 @@ class HashtagsModel : ViewModel() {
 
     private fun getHashtagsListApi(): LiveData<List<HashtagsPojo>> {
         val data = MutableLiveData<List<HashtagsPojo>>()
-
+        viewModelScope.launch(Dispatchers.IO) {
         var call : Call<List<HashtagsPojo>>?=null
        when(from)
        {
@@ -65,7 +68,7 @@ class HashtagsModel : ViewModel() {
                 data.value = null
             }
 
-        })
+        })}
 
         return data
     }

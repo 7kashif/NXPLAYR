@@ -10,7 +10,6 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextUtils
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -18,42 +17,56 @@ import android.view.ViewGroup
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat.finishAffinity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.nxplayr.fsl.R
+import com.nxplayr.fsl.data.api.RestClient
+import com.nxplayr.fsl.data.model.SignupData
 import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.ui.activity.onboarding.view.OtpVerificationActivity
-
-import com.nxplayr.fsl.R
 import com.nxplayr.fsl.ui.activity.onboarding.view.SignInActivity
-import com.nxplayr.fsl.data.api.RestClient
-import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModel
-import com.nxplayr.fsl.data.model.SignupData
+import com.nxplayr.fsl.ui.activity.onboarding.viewmodel.SignupModelV2
 import com.nxplayr.fsl.util.ErrorUtil
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
-import kotlinx.android.synthetic.main.activity_reset_pass.*
-import kotlinx.android.synthetic.main.activity_signin.*
-import kotlinx.android.synthetic.main.fragment_add_hashtag.*
-import kotlinx.android.synthetic.main.fragment_add_languages.*
 import kotlinx.android.synthetic.main.fragment_change_password.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
-class ChangePasswordFragment : Fragment(),View.OnClickListener {
+class ChangePasswordFragment : Fragment(), View.OnClickListener {
 
     private var v: View? = null
     var mActivity: Activity? = null
     var sessionManager: SessionManager? = null
     var userData: SignupData? = null
-    private lateinit var  changePasswordModel: SignupModel
+    private lateinit var changePasswordModel: SignupModelV2
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_change_password, container, false)
 
         return v
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngChangePassword.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngChangePassword
+            if (!sessionManager?.LanguageLabel?.lngCurrentPassword.isNullOrEmpty())
+                current_password_textInput.hint = sessionManager?.LanguageLabel?.lngCurrentPassword
+            if (!sessionManager?.LanguageLabel?.lngNewPassword.isNullOrEmpty())
+                newPassword_textInput.hint = sessionManager?.LanguageLabel?.lngNewPassword
+            if (!sessionManager?.LanguageLabel?.lngConfirmPassword.isNullOrEmpty())
+                confirm_password_textInput.hint = sessionManager?.LanguageLabel?.lngConfirmPassword
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_change_password.progressText = sessionManager?.LanguageLabel?.lngSave
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -73,8 +86,7 @@ class ChangePasswordFragment : Fragment(),View.OnClickListener {
 
         setupViewModel()
         setupUI()
-        setupObserver()
-
+//        setupObserver()
 
 
     }
@@ -99,52 +111,64 @@ class ChangePasswordFragment : Fragment(),View.OnClickListener {
 
         jsonArray.put(jsonObject)
 
-        changePasswordModel.userRegistration(mActivity!!, false, jsonArray.toString(), "changePassword")
-            .observe(viewLifecycleOwner, { changePassPojo ->
+        changePasswordModel.userChangePassword(jsonArray.toString())
+        changePasswordModel.userChangePassword.observe(viewLifecycleOwner) { changePassPojo ->
 
-                btn_change_password.endAnimation()
+            btn_change_password.endAnimation()
 
-                if (changePassPojo != null && changePassPojo.isNotEmpty()) {
-                    if (changePassPojo[0].status.equals("true", true)) {
+            if (changePassPojo != null && changePassPojo.isNotEmpty()) {
+                if (changePassPojo[0].status.equals("true", true)) {
 
-                        MyUtils.showSnackbar(mActivity!!, changePassPojo[0].message!!, changePass_main_layout)
+                    MyUtils.showSnackbar(
+                        mActivity!!,
+                        changePassPojo[0].message!!,
+                        changePass_main_layout
+                    )
 
-                        try {
+                    try {
 
-                            sessionManager!!.clear_login_session()
+                        sessionManager!!.clear_login_session()
 
-                            Handler().postDelayed({
-                                if (changePassPojo[0].data!![0]!!.userOVerified.equals("Yes", true)) {
-                                    MyUtils.startActivity(mActivity!!, SignInActivity::class.java, true)
-                                    finishAffinity(mActivity!!)
+                        Handler().postDelayed({
+                            if (changePassPojo[0].data!![0]!!.userOVerified.equals(
+                                    "Yes",
+                                    true
+                                )
+                            ) {
+                                MyUtils.startActivity(
+                                    mActivity!!,
+                                    SignInActivity::class.java,
+                                    true
+                                )
+                                finishAffinity(mActivity!!)
 
-                                } else {
-                                    var i = Intent(mActivity!!, OtpVerificationActivity::class.java)
-                                    i.putExtra("from", "LoginByOtpVerification")
-                                    startActivity(i)
-                                }
-                            }, 1000)
+                            } else {
+                                var i = Intent(mActivity!!, OtpVerificationActivity::class.java)
+                                i.putExtra("from", "LoginByOtpVerification")
+                                startActivity(i)
+                            }
+                        }, 1000)
 
 
-                        } catch (e: Exception) {
+                    } catch (e: Exception) {
 
-                        }
-
-                    } else {
-                        MyUtils.showSnackbar(
-                            mActivity!!,
-                            changePassPojo[0].message!!,
-                            changePass_main_layout
-                        )
                     }
 
-
                 } else {
-                    ErrorUtil.errorMethod(changePass_main_layout)
-
+                    MyUtils.showSnackbar(
+                        mActivity!!,
+                        changePassPojo[0].message!!,
+                        changePass_main_layout
+                    )
                 }
 
-            })
+
+            } else {
+                ErrorUtil.errorMethod(changePass_main_layout)
+
+            }
+
+        }
 
     }
 
@@ -156,7 +180,7 @@ class ChangePasswordFragment : Fragment(),View.OnClickListener {
             (activity as MainActivity).onBackPressed()
         }
 
-        btn_change_password.setOnClickListener (this)
+        btn_change_password.setOnClickListener(this)
 
         current_password_textInput.isHintAnimationEnabled = false
         newPassword_textInput.isHintAnimationEnabled = false
@@ -167,7 +191,9 @@ class ChangePasswordFragment : Fragment(),View.OnClickListener {
                 val DRAWABLE_RIGHT = 2
 
                 if (event.action == MotionEvent.ACTION_UP) {
-                    if (event.rawX >= edittext_current_pass.getRight() - edittext_current_pass.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()) {
+                    if (event.rawX >= edittext_current_pass.getRight() - edittext_current_pass.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds()
+                            .width()
+                    ) {
                         // your action here
                         edittext_current_pass.tooglePassWord()
 
@@ -182,7 +208,9 @@ class ChangePasswordFragment : Fragment(),View.OnClickListener {
                 val DRAWABLE_RIGHT = 2
 
                 if (event.action == MotionEvent.ACTION_UP) {
-                    if (event.rawX >= edittext_current_pass.getRight() - edittext_new_pass.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()) {
+                    if (event.rawX >= edittext_current_pass.getRight() - edittext_new_pass.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds()
+                            .width()
+                    ) {
                         // your action here
                         edittext_new_pass.toogleNewPassWord()
 
@@ -197,7 +225,9 @@ class ChangePasswordFragment : Fragment(),View.OnClickListener {
                 val DRAWABLE_RIGHT = 2
 
                 if (event.action == MotionEvent.ACTION_UP) {
-                    if (event.rawX >= edittext_current_pass.getRight() - edittext_confirm_pass.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width()) {
+                    if (event.rawX >= edittext_current_pass.getRight() - edittext_confirm_pass.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds()
+                            .width()
+                    ) {
                         // your action here
                         edittext_confirm_pass.toogleConfirmPassWord()
 
@@ -210,7 +240,8 @@ class ChangePasswordFragment : Fragment(),View.OnClickListener {
     }
 
     private fun setupViewModel() {
-         changePasswordModel = ViewModelProvider(this@ChangePasswordFragment).get(SignupModel::class.java)
+        changePasswordModel =
+            ViewModelProvider(this@ChangePasswordFragment).get(SignupModelV2::class.java)
 
     }
 
@@ -222,9 +253,19 @@ class ChangePasswordFragment : Fragment(),View.OnClickListener {
             (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
 
         if (this.tag as Boolean) {
-            edittext_current_pass.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.hide_icon_login, 0)
+            edittext_current_pass.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                R.drawable.hide_icon_login,
+                0
+            )
         } else {
-            edittext_current_pass.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.show_icon_login, 0)
+            edittext_current_pass.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                R.drawable.show_icon_login,
+                0
+            )
         }
 
         this.setSelection(this.length())
@@ -238,9 +279,19 @@ class ChangePasswordFragment : Fragment(),View.OnClickListener {
             (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
 
         if (this.tag as Boolean) {
-            edittext_new_pass.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.hide_icon_login, 0)
+            edittext_new_pass.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                R.drawable.hide_icon_login,
+                0
+            )
         } else {
-            edittext_new_pass.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.show_icon_login, 0)
+            edittext_new_pass.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                R.drawable.show_icon_login,
+                0
+            )
         }
 
         this.setSelection(this.length())
@@ -254,9 +305,19 @@ class ChangePasswordFragment : Fragment(),View.OnClickListener {
             (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
 
         if (this.tag as Boolean) {
-            edittext_confirm_pass.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.hide_icon_login, 0)
+            edittext_confirm_pass.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                R.drawable.hide_icon_login,
+                0
+            )
         } else {
-            edittext_confirm_pass.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.show_icon_login, 0)
+            edittext_confirm_pass.setCompoundDrawablesWithIntrinsicBounds(
+                0,
+                0,
+                R.drawable.show_icon_login,
+                0
+            )
         }
 
         this.setSelection(this.length())
@@ -335,24 +396,66 @@ class ChangePasswordFragment : Fragment(),View.OnClickListener {
     private fun changePasswordValidation() {
         MyUtils.hideKeyboard1(mActivity!!)
         if (TextUtils.isEmpty(edittext_current_pass.text.toString().trim())) {
-            context?.let { MyUtils.showSnackbar(it, resources.getString(R.string.enter_current_password), changePass_main_layout) }
+            context?.let {
+                MyUtils.showSnackbar(
+                    it,
+                    resources.getString(R.string.enter_current_password),
+                    changePass_main_layout
+                )
+            }
             edittext_current_pass.requestFocus()
         } else if (TextUtils.isEmpty(edittext_new_pass.text.toString().trim())) {
-            context?.let { MyUtils.showSnackbar(it, resources.getString(R.string.enter_new_password), changePass_main_layout) }
+            context?.let {
+                MyUtils.showSnackbar(
+                    it,
+                    resources.getString(R.string.enter_new_password),
+                    changePass_main_layout
+                )
+            }
             edittext_new_pass.requestFocus()
         } else if (edittext_new_pass.text.toString().trim().length < 6 || !MyUtils.isValidPassword(
-                        edittext_new_pass.text.toString().trim())) {
-            context?.let { MyUtils.showSnackbar(it, resources.getString(R.string.password_should_contain_six_character), changePass_main_layout) }
+                edittext_new_pass.text.toString().trim()
+            )
+        ) {
+            context?.let {
+                MyUtils.showSnackbar(
+                    it,
+                    resources.getString(R.string.password_should_contain_six_character),
+                    changePass_main_layout
+                )
+            }
             edittext_new_pass.requestFocus()
-        } else if (edittext_current_pass.text.toString().trim().equals(edittext_new_pass.text.toString().trim())) {
-            context?.let { MyUtils.showSnackbar(it, resources.getString(R.string.new_password_should_not_same), changePass_main_layout) }
+        } else if (edittext_current_pass.text.toString().trim()
+                .equals(edittext_new_pass.text.toString().trim())
+        ) {
+            context?.let {
+                MyUtils.showSnackbar(
+                    it,
+                    resources.getString(R.string.new_password_should_not_same),
+                    changePass_main_layout
+                )
+            }
             edittext_new_pass.requestFocus()
         } else if (TextUtils.isEmpty(edittext_confirm_pass.text.toString().trim())) {
-            context?.let { MyUtils.showSnackbar(it, getString(R.string.enter_confirm_new_pass), changePass_main_layout) }
+            context?.let {
+                MyUtils.showSnackbar(
+                    it,
+                    getString(R.string.enter_confirm_new_pass),
+                    changePass_main_layout
+                )
+            }
             edittext_confirm_pass.requestFocus()
 
-        } else if (!edittext_new_pass.text.toString().trim().equals(edittext_confirm_pass.text.toString().trim())) {
-            context?.let { MyUtils.showSnackbar(it, resources.getString(R.string.new_password_retypepass_not_match), changePass_main_layout) }
+        } else if (!edittext_new_pass.text.toString().trim()
+                .equals(edittext_confirm_pass.text.toString().trim())
+        ) {
+            context?.let {
+                MyUtils.showSnackbar(
+                    it,
+                    resources.getString(R.string.new_password_retypepass_not_match),
+                    changePass_main_layout
+                )
+            }
             edittext_confirm_pass.requestFocus()
 
         } else {
@@ -361,9 +464,8 @@ class ChangePasswordFragment : Fragment(),View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v?.id)
-        {
-            R.id.btn_change_password->{
+        when (v?.id) {
+            R.id.btn_change_password -> {
                 changePasswordValidation()
             }
 

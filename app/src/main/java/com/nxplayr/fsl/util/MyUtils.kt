@@ -498,6 +498,9 @@ class MyUtils {
                 if (type.equals("Video", ignoreCase = true)) {
                     filename =
                         s + i1.toString() + "post" + "_" + imageHeight.toString() + "X" + imageWidth.toString() + ".mp4"
+                } else if (type.equals("Thumb", ignoreCase = true)) {
+                    filename =
+                        s + i1.toString() + "post" + "_" + imageHeight.toString() + "X" + imageWidth.toString() + "_thumb.jpg"
                 } else if (type.equals("Audio", ignoreCase = true)) {
                     filename = "Audio" + s + i1.toString() + ".mp3"
                 } else {
@@ -1871,7 +1874,7 @@ return json;
             val snackbar = Snackbar.make(v, msg, Snackbar.LENGTH_LONG)
             val sbView = snackbar.view
 
-            sbView.setBackgroundColor(ContextCompat.getColor(c, R.color.red))
+            sbView.setBackgroundColor(ContextCompat.getColor(c, R.color.blue_text_color))
             snackbar.show()
         }
 

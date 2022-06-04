@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
@@ -34,7 +33,6 @@ import com.nxplayr.fsl.ui.fragments.userconnection.view.SendMessageFragment
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
 import kotlinx.android.synthetic.main.fragment_comment_main.*
-import kotlinx.android.synthetic.main.fragment_profile_main.*
 
 
 class HomeMainFragment : Fragment(), View.OnClickListener {
@@ -79,9 +77,8 @@ class HomeMainFragment : Fragment(), View.OnClickListener {
         mActivity = context as AppCompatActivity
     }
 
-    @SuppressLint("WrongConstant")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         ll_mainLinearLayout.visibility = View.VISIBLE
         ll_mainViewPager.visibility = View.VISIBLE
 
@@ -100,6 +97,28 @@ class HomeMainFragment : Fragment(), View.OnClickListener {
 
 
     }
+//
+//    @SuppressLint("WrongConstant")
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
+//        ll_mainLinearLayout.visibility = View.VISIBLE
+//        ll_mainViewPager.visibility = View.VISIBLE
+//
+//        sessionManager = SessionManager(mActivity!!)
+//
+//        if (arguments != null) {
+//            tab_position = arguments!!.getInt("tab_position", 0)
+//        }
+//        if (sessionManager?.get_Authenticate_User() != null) {
+//            userData = sessionManager?.get_Authenticate_User()
+//        }
+//        if (sessionManager?.LanguageLabel != null) {
+//            setLanguageLable()
+//        }
+//        initView()
+//
+//
+//    }
 
     private fun initView() {
         if (userData != null) {
@@ -252,7 +271,7 @@ class HomeMainFragment : Fragment(), View.OnClickListener {
         tabLayout_home.getTabAt(1)?.setIcon(tabIcons[1])
         tabLayout_home.getTabAt(2)?.setIcon(tabIcons[2])
         tabLayout_home.getTabAt(3)?.setIcon(tabIcons[3])
-        tabLayout_home.getTabAt(4)?.setIcon(tabIcons[4])
+//        tabLayout_home.getTabAt(4)?.setIcon(tabIcons[4])
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
@@ -262,9 +281,9 @@ class HomeMainFragment : Fragment(), View.OnClickListener {
             adapter?.addFragment(ExploreFragment(), "")
             adapter?.addFragment(CollectionsFragment(), "")
             adapter?.addFragment(SendMessageFragment(), "")
-            adapter?.addFragment(RssFeedFragment(), "")
+//            adapter?.addFragment(RssFeedFragment(), "")
       }
-        viewPager.offscreenPageLimit = 5
+        viewPager.offscreenPageLimit = 4
         viewPager.adapter = adapter
         viewPager.currentItem = tab_position
     }
@@ -298,7 +317,6 @@ class HomeMainFragment : Fragment(), View.OnClickListener {
             if (frag1 is HomeFeedListFragment) {
                 (frag1 as HomeFeedListFragment).isProgress(isVisiBle)
             }
-
         }
     }
 

@@ -57,6 +57,7 @@ class AddHobbiesFragment : Fragment(),View.OnClickListener {
     var infaltorScheduleMode: LayoutInflater? = null
     var addedhobbiesAdapter: HobbiesAdapter? = null
     private var hobbiesUpdateListener: HobbiesUpdateListener? = null
+    var addHobbies = "Hobbies Added"
 
     private lateinit var  addHobbiesModel: HobbiesModel
     private lateinit var  hobbiesListModel: HobbiesListModel
@@ -81,9 +82,24 @@ class AddHobbiesFragment : Fragment(),View.OnClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        sessionManager = SessionManager(mActivity!!)
+
         tvToolbarTitle.text = getString(R.string.add_hobbies)
 
-        sessionManager = SessionManager(mActivity!!)
+        if (sessionManager != null && sessionManager?.LanguageLabel != null) {
+            if (!sessionManager?.LanguageLabel?.lngAddHobbies.isNullOrEmpty())
+                tvToolbarTitle.text = sessionManager?.LanguageLabel?.lngAddHobbies
+            if (!sessionManager?.LanguageLabel?.lngSearch.isNullOrEmpty())
+                edit_searchHobbies.hint = sessionManager?.LanguageLabel?.lngSearch
+            if (!sessionManager?.LanguageLabel?.lngHobbiesAdded.isNullOrEmpty()) {
+                tv_hobbies_added.text = sessionManager?.LanguageLabel?.lngHobbiesAdded
+                addHobbies = sessionManager?.LanguageLabel?.lngHobbiesAdded.toString()
+            }
+            if (!sessionManager?.LanguageLabel?.lngSuggestedHobbiesBased.isNullOrEmpty())
+                tv_suggested_hobbies_added.text = sessionManager?.LanguageLabel?.lngSuggestedHobbiesBased
+            if (!sessionManager?.LanguageLabel?.lngSave.isNullOrEmpty())
+                btn_add_hobbies.progressText = sessionManager?.LanguageLabel?.lngSave
+        }
         if (sessionManager?.get_Authenticate_User() != null) {
             userData = sessionManager?.get_Authenticate_User()
         }
@@ -100,7 +116,7 @@ class AddHobbiesFragment : Fragment(),View.OnClickListener {
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
         try {
-            jsonObject.put("loginuserID", "0")
+            jsonObject.put("loginuserID", userData?.userID)
             jsonObject.put("apiType", RestClient.apiType)
             jsonObject.put("apiVersion", RestClient.apiVersion)
             jsonObject.put("searchWord", "")
@@ -111,45 +127,45 @@ class AddHobbiesFragment : Fragment(),View.OnClickListener {
         jsonArray.put(jsonObject)
 
        hobbiesListModel.getHobbiesList(mActivity!!, false, jsonArray.toString())
-            .observe(viewLifecycleOwner,
-                { hobbiesListpojo ->
+            .observe(viewLifecycleOwner
+            ) { hobbiesListpojo ->
 
-                    relativeprogressBar.visibility = View.GONE
-                    recyclerview.visibility = View.VISIBLE
+                relativeprogressBar.visibility = View.GONE
+                recyclerview.visibility = View.VISIBLE
 
-                    if (hobbiesListpojo != null && hobbiesListpojo.isNotEmpty()) {
+                if (hobbiesListpojo != null && hobbiesListpojo.isNotEmpty()) {
 
-                        if (hobbiesListpojo[0].status.equals("true", false)) {
+                    if (hobbiesListpojo[0].status.equals("true", false)) {
 
 
-                            hobbies_list?.clear()
-                            if (!userData!!.hobbies.isNullOrEmpty()) {
-                                val firstListIds = userData!!.hobbies.map { it.hobbyID }
-                                val new = hobbiesListpojo[0].data.filter { it.hobbyID !in firstListIds }
-                                hobbies_list?.addAll((new))
-                                hobbiesAdapter?.notifyDataSetChanged()
-                            } else {
-                                hobbies_list?.addAll(hobbiesListpojo[0].data)
-                            }
+                        hobbies_list?.clear()
+                        if (!userData!!.hobbies.isNullOrEmpty()) {
+                            val firstListIds = userData!!.hobbies.map { it.hobbyID }
+                            val new = hobbiesListpojo[0].data.filter { it.hobbyID !in firstListIds }
+                            hobbies_list?.addAll((new))
                             hobbiesAdapter?.notifyDataSetChanged()
-
                         } else {
-
-                            if (hobbies_list!!.size == 0) {
-                                ll_no_data_found.visibility = View.VISIBLE
-                                recyclerview.visibility = View.GONE
-
-                            } else {
-                                ll_no_data_found.visibility = View.GONE
-                                recyclerview.visibility = View.VISIBLE
-
-                            }
+                            hobbies_list?.addAll(hobbiesListpojo[0].data)
                         }
+                        hobbiesAdapter?.notifyDataSetChanged()
 
                     } else {
-                        ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+
+                        if (hobbies_list!!.size == 0) {
+                            ll_no_data_found.visibility = View.VISIBLE
+                            recyclerview.visibility = View.GONE
+
+                        } else {
+                            ll_no_data_found.visibility = View.GONE
+                            recyclerview.visibility = View.VISIBLE
+
+                        }
                     }
-                })
+
+                } else {
+                    ErrorUtil.errorView(mActivity!!, nointernetMainRelativelayout)
+                }
+            }
 
     }
 
@@ -193,12 +209,12 @@ class AddHobbiesFragment : Fragment(),View.OnClickListener {
                             if (addhobbies_list!!.size > 0 || userData!!.hobbies.size > 0) {
                                 if (!userData?.hobbies.isNullOrEmpty()) {
                                     var count = userData!!.hobbies.size + addhobbies_list!!.size
-                                    tv_hobbies_added.text = "Hobbies Added " + "(" + count + ")"
+                                    tv_hobbies_added.text = "$addHobbies " + "(" + count + ")"
                                 } else {
-                                    tv_hobbies_added.text = "Hobbies Added " + "(" + addhobbies_list?.size + ")"
+                                    tv_hobbies_added.text = "$addHobbies " + "(" + addhobbies_list?.size + ")"
                                 }
                             } else if (addhobbies_list!!.size <= 0 || userData!!.hobbies.size <= 0) {
-                                tv_hobbies_added.text = "Hobbies Added "
+                                tv_hobbies_added.text = "$addHobbies "
                             }
                         }
                         hobbiesAdapter?.notifyDataSetChanged()
@@ -246,12 +262,12 @@ class AddHobbiesFragment : Fragment(),View.OnClickListener {
                             if (addhobbies_list!!.size > 0 || userData!!.hobbies.size >= 0) {
                                 if (!userData?.hobbies.isNullOrEmpty()) {
                                     var count = userData!!.hobbies.size + addhobbies_list!!.size
-                                    tv_hobbies_added.text = "Hobbies Added " + "(" + count + ")"
+                                    tv_hobbies_added.text = "$addHobbies " + "(" + count + ")"
                                 } else {
-                                    tv_hobbies_added.text = "Hobbies Added " + "(" + addhobbies_list!!.size + ")"
+                                    tv_hobbies_added.text = "$addHobbies " + "(" + addhobbies_list!!.size + ")"
                                 }
                             } else {
-                                tv_hobbies_added.text = "Hobbies Added "
+                                tv_hobbies_added.text = "$addHobbies "
                             }
 //                            }
                         }
@@ -383,14 +399,14 @@ class AddHobbiesFragment : Fragment(),View.OnClickListener {
                                     if (addhobbies_list!!.size >= 0 || userData!!.hobbies.size >= 0) {
                                         if (!userData?.hobbies.isNullOrEmpty()) {
                                             var count = hobbiesListPojo[0].data.size + addhobbies_list!!.size
-                                            tv_hobbies_added.text = "Hobbies Added " + "(" + count + ")"
+                                            tv_hobbies_added.text = "$addHobbies " + "(" + count + ")"
                                             addHobbiesAdapter?.notifyDataSetChanged()
                                             addedhobbiesAdapter?.notifyDataSetChanged()
                                         } else {
-                                            tv_hobbies_added.text = "Hobbies Added " + "(" + addhobbies_list!!.size + ")"
+                                            tv_hobbies_added.text = "$addHobbies " + "(" + addhobbies_list!!.size + ")"
                                         }
                                     } else if (addhobbies_list!!.size <= 0) {
-                                        tv_hobbies_added.text = "Hobbies Added "
+                                        tv_hobbies_added.text = "$addHobbies "
                                     }
                                 }
                                 addedhobbiesAdapter?.notifyDataSetChanged()
@@ -453,10 +469,10 @@ class AddHobbiesFragment : Fragment(),View.OnClickListener {
                                     if (addhobbies_list!!.size >= 0 || userData!!.hobbies.size >= 0) {
 
                                         var count = hobbiespojo[0].data.size + addhobbies_list!!.size
-                                        tv_hobbies_added.text = "Hobbies Added " + "(" + count + ")"
+                                        tv_hobbies_added.text = "$addHobbies " + "(" + count + ")"
 
                                     } else if (addhobbies_list!!.size < 0 && hobbiespojo[0].data.size < 0) {
-                                        tv_hobbies_added.text = "Hobbies Added "
+                                        tv_hobbies_added.text = "$addHobbies "
                                     }
                                 }
 

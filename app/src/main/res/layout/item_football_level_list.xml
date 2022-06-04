@@ -36,15 +36,6 @@
             android:textColor="@color/white"
             android:textSize="@dimen/_18ssp" />
 
-        <!-- <ImageView
-             android:id="@+id/select_level"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_gravity="center"
-             android:src="@drawable/tick_black"
-             android:visibility="gone"
-             tools:visibility="visible" />-->
-
     </LinearLayout>
 
 </LinearLayout>

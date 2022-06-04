@@ -11,7 +11,6 @@ import android.view.WindowManager
 import android.view.animation.TranslateAnimation
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.nxplayr.fsl.BuildConfig
 import com.nxplayr.fsl.R
@@ -20,10 +19,9 @@ import com.nxplayr.fsl.data.model.LanguageListData
 import com.nxplayr.fsl.ui.activity.main.view.MainActivity
 import com.nxplayr.fsl.ui.activity.onboarding.view.OtpVerificationActivity
 import com.nxplayr.fsl.ui.activity.onboarding.view.SignInActivity
+import com.nxplayr.fsl.ui.fragments.setting.viewmodel.LanguageLabelModelV2
 import com.nxplayr.fsl.util.MyUtils
 import com.nxplayr.fsl.util.SessionManager
-import com.nxplayr.fsl.ui.fragments.setting.viewmodel.LanguageLabelModel
-import com.nxplayr.fsl.ui.fragments.usergeographical.viewmodel.UpdateResumeCallsViewModel
 import kotlinx.android.synthetic.main.activity_splash.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -35,7 +33,9 @@ import java.util.*
 class SplashActivity : AppCompatActivity() {
 
     var sessionManager: SessionManager? = null
-    private lateinit var languageLabelModel: LanguageLabelModel
+
+    //    private lateinit var languageLabelModel: LanguageLabelModel
+    private lateinit var languageLabelModel: LanguageLabelModelV2
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +56,7 @@ class SplashActivity : AppCompatActivity() {
 
     private fun setupViewModel() {
         languageLabelModel =
-            ViewModelProvider(this@SplashActivity).get(LanguageLabelModel::class.java)
+            ViewModelProvider(this@SplashActivity).get(LanguageLabelModelV2::class.java)
     }
 
     private fun runSplash() {
@@ -84,7 +84,6 @@ class SplashActivity : AppCompatActivity() {
             } else {
                 MyUtils.startActivity(this@SplashActivity, SignInActivity::class.java, true)
             }
-
         }
         // }, 300)
     }
@@ -94,6 +93,19 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun getLanguageLabelList() {
+
+        if (sessionManager?.getSelectedLanguage() != null)
+            if (sessionManager?.getSelectedLanguage()!!.languageName == "Automatic") {
+                sessionManager?.setSelectedLanguage(
+                    LanguageListData(
+                        "",
+                        "0",
+                        "Automatic",
+                        Locale.getDefault().language
+                    )
+                )
+            }
+
         progressBar.visibility = View.VISIBLE
         val jsonArray = JSONArray()
         val jsonObject = JSONObject()
@@ -101,7 +113,7 @@ class SplashActivity : AppCompatActivity() {
             jsonObject.put("loginuserID", "0")
             jsonObject.put(
                 "languageID", if (sessionManager?.getSelectedLanguage() == null)
-                    "1" else sessionManager?.getSelectedLanguage()?.languageID
+                    Locale.getDefault().language else sessionManager?.getSelectedLanguage()?.languageID
             )
             jsonObject.put("langLabelStatus", "")
             jsonObject.put("apiType", RestClient.apiType)
@@ -111,36 +123,54 @@ class SplashActivity : AppCompatActivity() {
             e.printStackTrace()
         }
         jsonArray.put(jsonObject)
-        languageLabelModel.getLanguageList(this@SplashActivity!!, false, jsonArray.toString())
-            .observe(
-                this@SplashActivity
-            ) { languageLabelPojo ->
-                progressBar.visibility = View.GONE
-                if (languageLabelPojo != null && languageLabelPojo.isNotEmpty()) {
-                    if (languageLabelPojo[0].status == true && !languageLabelPojo[0].data.isNullOrEmpty()) {
-
-                        sessionManager?.LanguageLabel = languageLabelPojo[0].data?.get(0)
-                        if (sessionManager?.getSelectedLanguage() == null)
-                            sessionManager?.setSelectedLanguage(
-                                LanguageListData(
-                                    "20180213170741.png",
-                                    "1",
-                                    "English",
-                                    "en"
-                                )
-                            )
-                        runSplash()
-
-                    } else {
-
-                        showSnackBar(languageLabelPojo[0]!!.info!!)
-                    }
-
-                } else {
-                    errorMethod()
-
-                }
-            }
+        languageLabelModel.getLabels(jsonArray.toString())
+        languageLabelModel.usersSuccessLiveData.observe(this) {
+            progressBar.visibility = View.GONE
+            sessionManager?.LanguageLabel = it[0].data?.get(0)
+            if (sessionManager?.getSelectedLanguage() == null)
+                sessionManager?.setSelectedLanguage(
+                    LanguageListData(
+                        "",
+                        "0",
+                        "Automatic",
+                        Locale.getDefault().language
+                    )
+                )
+            runSplash()
+        }
+        languageLabelModel.usersFailureLiveData.observe(this) {
+            progressBar.visibility = View.GONE
+        }
+//        languageLabelModel.getLanguageList(this@SplashActivity!!, false, jsonArray.toString())
+//            .observe(
+//                this@SplashActivity
+//            ) { languageLabelPojo ->
+//                progressBar.visibility = View.GONE
+//                if (languageLabelPojo != null && languageLabelPojo.isNotEmpty()) {
+//                    if (languageLabelPojo[0].status == true && !languageLabelPojo[0].data.isNullOrEmpty()) {
+//
+//                        sessionManager?.LanguageLabel = languageLabelPojo[0].data?.get(0)
+//                        if (sessionManager?.getSelectedLanguage() == null)
+//                            sessionManager?.setSelectedLanguage(
+//                                LanguageListData(
+//                                    "20180213170741.png",
+//                                    "1",
+//                                    "English",
+//                                    "en"
+//                                )
+//                            )
+//                        runSplash()
+//
+//                    } else {
+//
+//                        showSnackBar(languageLabelPojo[0]!!.info!!)
+//                    }
+//
+//                } else {
+//                    errorMethod()
+//
+//                }
+//            }
     }
 
     fun errorMethod() {
